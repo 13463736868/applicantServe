@@ -1,0 +1,101 @@
+@mixin borderRadius($radius) {
+  -webkit-border-radius: $radius;
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+  border-radius: $radius;
+}
+
+@mixin boxShadow($num...) {
+  -webkit-box-shadow: $num;
+  -moz-box-shadow: $num;
+  -ms-box-shadow: $num;
+  -o-box-shadow: $num;
+  box-shadow: $num;
+}
+
+@mixin backgroundLine($dir, $start, $end) {
+  background: -webkit-linear-gradient($dir, $start, $end);
+  background: -moz-linear-gradient($dir, $start, $end);
+  background: -ms-linear-gradient($dir, $start, $end);
+  background: -o-linear-gradient($dir, $start, $end);
+  background: linear-gradient(to $dir, $start, $end);
+}
+
+@mixin center {  
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin ct {  
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin cl {  
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@mixin bc {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@mixin text($aspect){
+  text-align: $aspect;
+}
+
+@mixin wh($width, $height){
+  width: $width;
+  height: $height;
+}
+
+@mixin mw($min-width){
+  min-width: $min-width;
+}
+
+@mixin mh($min-height){
+  min-height: $min-height;
+}
+
+@mixin font($size, $line-height, $family: 'Microsoft YaHei'){
+  font: #{$size}/#{$line-height} $family;
+}
+
+@mixin sc($size, $color){
+  font-size: $size;
+  color: $color;
+}
+
+@mixin hand {
+  -webkit-cursor: pointer;
+  -moz-cursor: pointer;
+  -ms-cursor: pointer;
+  -o-cursor: pointer;
+  cursor: pointer;
+}
+
+@mixin btn($bg, $width, $size, $height){
+  display: inline-block;
+  white-space: nowrap;
+  background: $bg;
+  color: #fff;
+  font-size: $size;
+  height: $height;
+  line-height: $height;
+  padding: 0 5px;
+  min-width: $width;
+  text-align: center;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  -webkit-cursor: pointer;
+  -moz-cursor: pointer;
+  -ms-cursor: pointer;
+  -o-cursor: pointer;
+  cursor: pointer;
+}
