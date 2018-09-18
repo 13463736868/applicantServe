@@ -4,14 +4,14 @@ import router from './router'
 import store from './store'
 import './axios'
 import iView from 'iview'
-// import logic from './logic'
-// import './mock'
+import logic from './logic'
+import './mock'
 
 Vue.config.productionTip = false
 
 Vue.use(iView)
 
-// router.beforeEach(logic.beforeEach)
+router.beforeEach(logic.beforeEach)
 
 /* eslint-disable no-new */
 new Vue({

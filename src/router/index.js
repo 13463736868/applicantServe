@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import 'iview/dist/styles/iview.css'
 
-const hellowWorld = r => require.ensure([], () => r(require('@/components/HelloWorld')), 'hellowWorld')
+const login = r => require.ensure([], () => r(require('@/page/login/login.vue')), 'login')
 
 Vue.use(Router)
 
@@ -10,9 +10,9 @@ export default new Router({
   mode: 'history',
   routes: [
     {
-      path: '/',
-      name: 'hellowWorld',
-      component: hellowWorld
+      path: '/login',
+      name: 'login',
+      component: login
     }
   ]
 })

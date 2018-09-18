@@ -1,7 +1,7 @@
 'use strict'
 import Cookies from 'js-cookie'
 
-const TokenKey = 'token'
+const TokenKey = 'client_token'
 
 export const getToken = () => Cookies.get(TokenKey)
 

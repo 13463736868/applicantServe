@@ -1,5 +1,7 @@
 export default {
-  userInfo: state => state.userInfo,
+  usersInfo: state => state.usersInfo,
+  menu: state => state.menu,
+  router: state => state.router,
   caseId: state => state.caseId,
   caseInfo: state => state.caseInfo,
   myCaseId: state => state.myCaseId,

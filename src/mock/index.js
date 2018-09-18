@@ -9,16 +9,14 @@ Mock.setup({
 const login = () => {
   let data = {
     id: '23244124',
+    loginname: '荼蘼花了我无缘',
+    name: '李二蛋',
     companyid: null,
     phone: null,
     password: null,
     state: null,
-    userType: 1,
-    identCode: null,
     token: 'sdf345dfg4567dfgh56',
-    verify: -1,
-    verifyDesc: '尚未完善信息描述',
-    userTypeDesc: '个人用户类型描述'
+    userType: 1
   }
   return {
     flag: true,
@@ -178,16 +176,6 @@ const evidenceDelete = () => {
   }
 }
 
-const checkPhone = () => {
-  let data = 1
-  return {
-    flag: true,
-    data: data,
-    code: '000000',
-    message: null
-  }
-}
-
 const sendMessage = () => {
   let data = 'ok'
   return {
@@ -209,7 +197,6 @@ const identCode = () => {
 }
 
 Mock.mock('/api/login', 'post', login)
-Mock.mock('/api/checkPhone', 'post', checkPhone)
 Mock.mock('/api/sendMessage', 'post', sendMessage)
 Mock.mock('/api/identCode', 'post', identCode)
 Mock.mock('/api/case/details', 'post', details)

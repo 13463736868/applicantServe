@@ -1,19 +1,38 @@
 import * as cookies from '@/cookies'
-// import store from '@/store'
+import store from '@/store'
+import router from '@/router'
+import {getRouter, getMenu} from '@/router/routers.js'
 
 const beforeEach = (to, from, next) => {
   let loc = null
   if (window.localStorage) {
     loc = window.localStorage
   }
+  console.log(to)
+  if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+    if (store.state.menu === null) {
+      store.commit('SET_MENU', getMenu(JSON.parse(loc.getItem('usersInfo')).userType))
+    }
+    if (store.state.router === null) {
+      let _gRouter = getRouter(JSON.parse(loc.getItem('usersInfo')).userType)
+      store.commit('SET_ROUTER', _gRouter)
+      router.addRoutes(_gRouter)
+      next({...to, replace: true})
+    }
+  }
   if (to.meta.requireAuth) {
-    // 如果使用store.state.admin_token 的话 需要注意页面刷新问题 登录成功后存俩份
-    // if (store.state.token === null) {
-    //   if (loc.getItem('token')) {
-    //     store.commit('SET_TOKEN', window.localStorage.getItem('token'))
-    //   }
-    // }
-    if (cookies.getToken() && loc !== null && loc.getItem('userInfo') !== null) {
+    if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+      if (store.state.usersInfo === null) {
+        if (loc.getItem('usersInfo')) {
+          store.commit('SET_USERSINFO', JSON.parse(loc.getItem('usersInfo')))
+        }
+      }
+      if (store.state.router === null) {
+        store.commit('SET_ROUTER', getRouter(store.state.usersInfo.userType))
+      }
+      if (store.state.menu === null) {
+        store.commit('SET_MENU', getMenu(store.state.usersInfo.userType))
+      }
       next()
     } else {
       next({
@@ -23,16 +42,26 @@ const beforeEach = (to, from, next) => {
     }
   } else {
     if (to.path === '/login') {
-      if (cookies.getToken() && loc !== null && loc.getItem('userInfo') !== null) {
-        let redirect = decodeURIComponent(to.query.redirect || '/')
-        next({
-          path: redirect
-        })
+      if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+        if (store.state.router === null) {
+          next()
+        } else {
+          let redirect = decodeURIComponent(to.query.redirect || '/')
+          next({
+            path: redirect
+          })
+        }
       } else {
         next()
       }
     } else {
-      next()
+      if (store.state.router === null) {
+        next({
+          path: '/login'
+        })
+      } else {
+        next()
+      }
     }
   }
   // iView.LoadingBar.start()

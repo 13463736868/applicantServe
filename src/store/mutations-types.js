@@ -1,4 +1,6 @@
-export const SET_USERINFO = 'SET_USERINFO'
+export const SET_USERSINFO = 'SET_USERSINFO'
+export const SET_MENU = 'SET_MENU'
+export const SET_ROUTER = 'SET_ROUTER'
 export const SET_CASEID = 'SET_CASEID'
 export const SET_CASEINFO = 'SET_CASEINFO'
 export const SET_FILING = 'SET_FILING'

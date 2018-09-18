@@ -1,7 +1,13 @@
 export default {
   //  小写
-  setUserInfo ({commit, state}, obj) {
-    commit('SET_USERINFO', obj)
+  setUsersInfo ({commit, state}, obj) {
+    commit('SET_USERSINFO', obj)
+  },
+  setMenu ({commit, state}, obj) {
+    commit('SET_MENU', obj)
+  },
+  setRouter ({commit, state}, obj) {
+    commit('SET_ROUTER', obj)
   },
   setCaseId ({commit, state}, id) {
     commit('SET_CASEID', id)

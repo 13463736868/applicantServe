@@ -7,7 +7,9 @@ import mutations from './mutations.js'
 Vue.use(Vuex)
 
 const state = {
-  userInfo: null,
+  usersInfo: null,
+  menu: null,
+  router: null,
   caseId: '',
   caseInfo: null,
   myCaseId: '',
