@@ -113,21 +113,40 @@ export default {
           username: this.user.username,
           password: this.user.password
         }).then(res => {
-          if (window.localStorage) {
-            let loc = window.localStorage
-            loc.setItem('usersInfo', JSON.stringify(res.data.data))
+          let _res = res.data.data
+          try {
+            if (_res.roleId === null) {
+              this.$Message.error({
+                content: '登录身份未知,禁止登录',
+                duration: 5
+              })
+            } else if ([1, 2, 3, 4, 5].indexOf(_res.roleId) === -1) {
+              this.$Message.error({
+                content: '登录身份未知,禁止登录',
+                duration: 5
+              })
+            } else {
+              if (window.localStorage) {
+                let loc = window.localStorage
+                loc.setItem('usersInfo', JSON.stringify(_res))
+              }
+              let _gMenu = getMenu(_res.roleId)
+              let _gRouter = getRouter(_res.roleId)
+              setToken(_res.client_token)
+              this.setUsersInfo(_res)
+              this.setMenu(_gMenu)
+              this.setRouter(_gRouter)
+              this.$router.addRoutes(_gRouter)
+              this.$router.push({
+                path: _gMenu[0].url
+              })
+            }
+          } catch (e) {
+            this.$Message.error({
+              content: '错误信息:' + e,
+              duration: 5
+            })
           }
-          let _gMenu = getMenu(res.data.data.userType)
-          let _gRouter = getRouter(res.data.data.userType)
-          setToken(res.data.data.token)
-          this.setUsersInfo(res.data.data)
-          this.setMenu(_gMenu)
-          this.setRouter(_gRouter)
-          this.$router.addRoutes(_gRouter)
-          // let redirect = decodeURIComponent(this.$route.query.redirect || '/')
-          this.$router.push({
-            path: _gMenu[0].url
-          })
         }).catch(e => {
           this.$Message.error({
             content: '错误信息:' + e,

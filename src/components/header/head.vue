@@ -81,7 +81,7 @@ export default {
       })
       setTimeout(() => {
         window.location.reload()
-      }, 0)
+      })
     },
     userOutCanc () {
       this.alertShowOut = false

@@ -8,16 +8,17 @@ const beforeEach = (to, from, next) => {
   if (window.localStorage) {
     loc = window.localStorage
   }
-  console.log(to)
-  if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
-    if (store.state.menu === null) {
-      store.commit('SET_MENU', getMenu(JSON.parse(loc.getItem('usersInfo')).userType))
-    }
-    if (store.state.router === null) {
-      let _gRouter = getRouter(JSON.parse(loc.getItem('usersInfo')).userType)
-      store.commit('SET_ROUTER', _gRouter)
-      router.addRoutes(_gRouter)
-      next({...to, replace: true})
+  if (to.path !== '/login') {
+    if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+      if (store.state.menu === null) {
+        store.commit('SET_MENU', getMenu(JSON.parse(loc.getItem('usersInfo')).roleId))
+      }
+      if (store.state.router === null) {
+        let _gRouter = getRouter(JSON.parse(loc.getItem('usersInfo')).roleId)
+        store.commit('SET_ROUTER', _gRouter)
+        router.addRoutes(_gRouter)
+        next({...to, replace: true})
+      }
     }
   }
   if (to.meta.requireAuth) {
@@ -28,10 +29,10 @@ const beforeEach = (to, from, next) => {
         }
       }
       if (store.state.router === null) {
-        store.commit('SET_ROUTER', getRouter(store.state.usersInfo.userType))
+        store.commit('SET_ROUTER', getRouter(store.state.usersInfo.roleId))
       }
       if (store.state.menu === null) {
-        store.commit('SET_MENU', getMenu(store.state.usersInfo.userType))
+        store.commit('SET_MENU', getMenu(store.state.usersInfo.roleId))
       }
       next()
     } else {

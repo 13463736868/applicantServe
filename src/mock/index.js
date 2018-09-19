@@ -16,7 +16,7 @@ const login = () => {
     password: null,
     state: null,
     token: 'sdf345dfg4567dfgh56',
-    userType: 1
+    roleId: 1
   }
   return {
     flag: true,

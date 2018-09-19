@@ -158,13 +158,13 @@ export const getRouter = (type) => {
   let _a = []
   let _r = []
   let _l = 0
-  if (type === 1) {
-    _a = ['/userMana', '/onesInfoA']
-  } else if (type === 2) {
-    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
-  } else if (type === 3) {
-    _a = ['/endCaseB', '/groupCase']
+  if (type === 3) {
+    _a = ['/userMana', '/postMana', '/depaMana']
   } else if (type === 4) {
+    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
+  } else if (type === 2) {
+    _a = ['/endCaseB', '/groupCase']
+  } else if (type === 1) {
     _a = ['/filingCase', '/endCaseA', '/groupAppl']
   } else if (type === 5) {
     _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
@@ -192,16 +192,16 @@ export const getMenu = (type) => {
   let _a = []
   let _t = []
   let _m = []
-  if (type === 1) {
+  if (type === 3) {
     _a = ['/userMana', '/postMana', '/depaMana']
     _t = ['用户管理', '职位管理', '部门管理']
-  } else if (type === 2) {
+  } else if (type === 4) {
     _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
     _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '交易记录', '文书审核']
-  } else if (type === 3) {
+  } else if (type === 2) {
     _a = ['/endCaseB', '/groupCase']
     _t = ['已结束案件', '组庭案件']
-  } else if (type === 4) {
+  } else if (type === 1) {
     _a = ['/filingCase', '/endCaseA', '/groupAppl']
     _t = ['已立案案件', '已结束案件', '组庭申请']
   } else if (type === 5) {
