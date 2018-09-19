@@ -9,44 +9,148 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/admin/userMana/userMana.vue')))
   },
   {
-    path: '/onesInfoA',
-    name: 'onesInfoA',
+    path: '/depaMana',
+    name: 'depaMana',
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/admin/onesInfo/onesInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/admin/depaMana/depaMana.vue')))
   },
   {
-    path: '/onesInfoB',
-    name: 'onesInfoB',
+    path: '/postMana',
+    name: 'postMana',
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/arbitratComm/onesInfo/onesInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/admin/postMana/postMana.vue')))
   },
   {
-    path: '/onesInfoC',
-    name: 'onesInfoC',
+    path: '/arbiEvas',
+    name: 'arbiEvas',
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/arbitrator/onesInfo/onesInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/arbiEvas/arbiEvas.vue')))
   },
   {
-    path: '/onesInfoD',
-    name: 'onesInfoD',
+    path: '/groupAudit',
+    name: 'groupAudit',
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/onesInfo/onesInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/groupAudit/groupAudit.vue')))
   },
   {
-    path: '/onesInfoE',
-    name: 'onesInfoE',
+    path: '/applReissue',
+    name: 'applReissue',
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/filingSecr/onesInfo/onesInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/applReissue/applReissue.vue')))
+  },
+  {
+    path: '/poliProtest',
+    name: 'poliProtest',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/poliProtest/poliProtest.vue')))
+  },
+  {
+    path: '/tranRecoD',
+    name: 'tranRecoD',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranReco/tranReco.vue')))
+  },
+  {
+    path: '/docuAudit',
+    name: 'docuAudit',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/docuAudit/docuAudit.vue')))
+  },
+  {
+    path: '/endCaseB',
+    name: 'endCaseB',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitrator/endCase/endCase.vue')))
+  },
+  {
+    path: '/groupCase',
+    name: 'groupCase',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitrator/groupCase/groupCase.vue')))
+  },
+  {
+    path: '/filingCase',
+    name: 'filingCase',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/filingCase/filingCase.vue')))
+  },
+  {
+    path: '/endCaseA',
+    name: 'endCaseA',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCase/endCase.vue')))
+  },
+  {
+    path: '/groupAppl',
+    name: 'groupAppl',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/groupAppl/groupAppl.vue')))
+  },
+  {
+    path: '/acceCase',
+    name: 'acceCase',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/acceCase/acceCase.vue')))
+  },
+  {
+    path: '/pendCase',
+    name: 'pendCase',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/pendCase/pendCase.vue')))
+  },
+  {
+    path: '/succCase',
+    name: 'succCase',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/succCase/succCase.vue')))
+  },
+  {
+    path: '/tranRecoE',
+    name: 'tranRecoE',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/tranReco/tranReco.vue')))
+  },
+  {
+    path: '/idenCheck',
+    name: 'idenCheck',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenCheck.vue')))
   }
 ]
 
@@ -57,13 +161,13 @@ export const getRouter = (type) => {
   if (type === 1) {
     _a = ['/userMana', '/onesInfoA']
   } else if (type === 2) {
-    _a = ['/onesInfoB']
+    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
   } else if (type === 3) {
-    _a = ['/onesInfoC']
+    _a = ['/endCaseB', '/groupCase']
   } else if (type === 4) {
-    _a = ['/onesInfoD']
+    _a = ['/filingCase', '/endCaseA', '/groupAppl']
   } else if (type === 5) {
-    _a = ['/onesInfoE']
+    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
   }
   _r.push({
     path: '/',
@@ -89,20 +193,20 @@ export const getMenu = (type) => {
   let _t = []
   let _m = []
   if (type === 1) {
-    _a = ['/userMana', '/onesInfoA']
-    _t = ['用户管理', '个人信息']
+    _a = ['/userMana', '/postMana', '/depaMana']
+    _t = ['用户管理', '职位管理', '部门管理']
   } else if (type === 2) {
-    _a = ['/onesInfoB']
-    _t = ['个人信息']
+    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
+    _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '交易记录', '文书审核']
   } else if (type === 3) {
-    _a = ['/onesInfoC']
-    _t = ['个人信息']
+    _a = ['/endCaseB', '/groupCase']
+    _t = ['已结束案件', '组庭案件']
   } else if (type === 4) {
-    _a = ['/onesInfoD']
-    _t = ['个人信息']
+    _a = ['/filingCase', '/endCaseA', '/groupAppl']
+    _t = ['已立案案件', '已结束案件', '组庭申请']
   } else if (type === 5) {
-    _a = ['/onesInfoE']
-    _t = ['个人信息']
+    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
+    _t = ['待受理案件', '待立案案件', '立案成功案件', '交易记录', '身份审核']
   }
   for (let k in _a) {
     let _o = {}

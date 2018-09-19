@@ -1,10 +1,10 @@
 <template>
-  <div class="onesInfo">
+  <div class="docuAudit">
     <head-top :isRegister="true">
-      <span class="f36 fcf">个人信息</span>
+      <span class="f36 fcf">文书审核</span>
     </head-top>
     <div class="_center pr">
-      仲裁秘书-个人信息
+      文书审核
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
 import headTop from '@/components/header/head'
 
 export default {
-  name: 'ones_info',
+  name: 'docu_audit',
   components: { headTop },
   data () {
     return {}

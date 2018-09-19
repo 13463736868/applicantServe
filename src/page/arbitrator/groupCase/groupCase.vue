@@ -1,10 +1,10 @@
 <template>
-  <div class="onesInfo">
+  <div class="groupCase">
     <head-top :isRegister="true">
-      <span class="f36 fcf">个人信息</span>
+      <span class="f36 fcf">组庭案件</span>
     </head-top>
     <div class="_center pr">
-      仲裁委-个人信息
+      组庭案件
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
 import headTop from '@/components/header/head'
 
 export default {
-  name: 'ones_info',
+  name: 'group_case',
   components: { headTop },
   data () {
     return {}

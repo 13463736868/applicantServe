@@ -1,10 +1,10 @@
 <template>
-  <div class="onesInfo">
+  <div class="poliProtest">
     <head-top :isRegister="true">
-      <span class="f36 fcf">个人信息</span>
+      <span class="f36 fcf">管辖权异议</span>
     </head-top>
     <div class="_center pr">
-      管理员-个人信息
+      管辖权异议
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
 import headTop from '@/components/header/head'
 
 export default {
-  name: 'ones_info',
+  name: 'poli_protest',
   components: { headTop },
   data () {
     return {}
