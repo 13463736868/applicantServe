@@ -110,10 +110,10 @@ export default {
       height: 100%;
       font-size: 14px;
       li {
+        padding: 0 15px;
         height: 100%;
         line-height: 6rem;
         text-align: center;
-        width: 92px;
         color: #fff;
       }
       li.router-link-exact-active {
