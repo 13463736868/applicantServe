@@ -98,22 +98,6 @@ export default function (val, type) {
     } else {
       return false
     }
-  } else if (type === 'idcard4xx') {
-    // 4律师执业证 废弃
-    let reg = new RegExp('^[0-9]{17}$|^[0-9]{12}$')
-    if (reg.test(val)) {
-      return true
-    } else {
-      return false
-    }
-  } else if (type === 'idcard5xx') {
-    // 5护照 废弃
-    let reg = new RegExp('^[A-Z]{1}[0-9]{8,9}$')
-    if (reg.test(val)) {
-      return true
-    } else {
-      return false
-    }
   } else if (type === 'entityNo1') {
     // 营业执照
     let reg = new RegExp('^[0-9A-Z]{15}$|^[0-9A-Z]{18}$')
@@ -136,8 +120,15 @@ export default function (val, type) {
     } else {
       return false
     }
-  } else if (type === 'company') {
+  } else if (type === 'reject') {
     let reg = new RegExp('[\u4e00-\u9fa5]{2,7}')
+    if (reg.test(val)) {
+      return true
+    } else {
+      return false
+    }
+  } else if (type === 'money') {
+    let reg = new RegExp('^(([0-9]|([1-9][0-9]{0,9}))((\\.[0-9]{1,2})?))$')
     if (reg.test(val)) {
       return true
     } else {

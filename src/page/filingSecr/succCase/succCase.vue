@@ -28,6 +28,13 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertObj.file" :isSaveBtn="true" @alertCancel="alertCanc('file')" alertTitle="文件列表">
+      <Row>
+        <Col span="24">
+          <Table stripe align="center" :loading="fileList.loading" :columns="fileList.header" :data="fileList.bodyList"></Table>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -35,13 +42,14 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'succ_case',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
-      spinShow: true,
+      spinShow: false,
       search: {
         text: ''
       },
@@ -129,6 +137,51 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertObj: {
+        file: false
+      },
+      fileList: {
+        header: [
+          {
+            title: '角色',
+            key: 'peopleType',
+            align: 'center',
+            render: (h, params) => {
+              return h('span', {
+              }, params.row.peopleType === '1' ? '申请人' : (params.row.peopleType === '2' ? '被申请人' : ''))
+            }
+          },
+          {
+            title: '文件文',
+            key: 'filename',
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'fileId',
+            align: 'center',
+            render: (h, params) => {
+              return h('div', [
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  style: {
+                    marginRight: '5px'
+                  },
+                  on: {
+                    click: () => {
+                      this.seeDoc(params.row.filepath)
+                    }
+                  }
+                }, '预览')
+              ])
+            }
+          }
+        ],
+        bodyList: []
       }
     }
   },
@@ -169,7 +222,25 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resFileList (index) {
-      console.log(this.caseList.bodyList[index])
+      let _obj = this.caseList.bodyList[index]
+      axios.post('/case/findCaseFileList', {
+        caseId: _obj.caseId,
+        caseState: 1
+      }).then(res => {
+        this.fileList.bodyList = res.data.data
+        this.alertObj.file = true
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    alertCanc (type) {
+      if (type === 'file') {
+        this.alertObj.file = false
+        this.fileList.bodyList = []
+      }
     },
     seeDoc (path) {
       window.open(path, '_blank')

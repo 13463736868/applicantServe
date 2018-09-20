@@ -28,6 +28,18 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertShow.conf" @alertConfirm="confSave" @alertCancel="alertCanc('conf')" alertTitle="确认立案">
+      <Row class="_labelFor">
+        <Col span="4" offset="2">
+          <div class="_label">纠纷类型：</div>
+        </Col>
+        <Col span="16">
+          <Select v-model="dataObj.confType">
+            <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -35,13 +47,14 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'pend_case',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
-      spinShow: true,
+      spinShow: false,
       search: {
         text: ''
       },
@@ -108,7 +121,16 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
-      }
+      },
+      alertShow: {
+        conf: false
+      },
+      dataObj: {
+        confCaseId: null,
+        confCosts: null,
+        confType: null
+      },
+      caseTypeList: []
     }
   },
   created () {
@@ -121,8 +143,8 @@ export default {
         startIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         keyword: this.search.text,
-        state: 3,
-        caseListType: 3
+        state: 2,
+        caseListType: 2
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -144,11 +166,62 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
-    goCaseInfo (index) {
-      console.log(this.caseList.bodyList[index])
-    },
     resConfCase (index) {
-      console.log(this.caseList.bodyList[index])
+      axios.post('/dictionary/findDictionaryList', {
+        type: 'caseType'
+      }).then(res => {
+        let _dataList = res.data.data
+        let _select = []
+        for (let k in _dataList) {
+          let _o = {}
+          _o.value = _dataList[k].itemValue
+          _o.label = _dataList[k].item
+          _select.push(_o)
+        }
+        this.caseTypeList = _select
+        this.alertShow.conf = true
+        this.dataObj.confCaseId = this.caseList.bodyList[index].caseId
+        this.dataObj.confCosts = this.caseList.bodyList[index].cost
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    confSave () {
+      if (this.dataObj.confType === null) {
+        this.$Message.warning({
+          content: '请选择纠纷类型',
+          duration: 5
+        })
+      } else {
+        axios.post('/case/updateCaseStateAndType', {
+          caseId: this.dataObj.confCaseId,
+          caseType: this.dataObj.confType,
+          costs: this.dataObj.confCosts
+        }).then(res => {
+          this.alertCanc('conf')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
+    alertCanc (type) {
+      if (type === 'conf') {
+        this.alertShow.conf = false
+        this.dataObj.confCaseId = null
+        this.dataObj.confCosts = null
+        this.dataObj.confType = null
+      }
     }
   }
 }
@@ -169,5 +242,8 @@ export default {
   ._caseList {
     margin-bottom: 20px;
   }
+}
+._labelFor ._label {
+  padding: 7px 0;
 }
 </style>
