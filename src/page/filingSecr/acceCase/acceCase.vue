@@ -344,7 +344,7 @@ export default {
       }
     },
     retrSave () {
-      axios.post('/case/findRegisterCaseList', {
+      axios.post('/user/updateCaseStateByCancel', {
         caseId: this.dataObj.retrCaseId
       }).then(res => {
         this.alertCanc('retr')

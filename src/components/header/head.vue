@@ -80,7 +80,7 @@ export default {
         path: '/login'
       })
       setTimeout(() => {
-        window.location.reload()
+        location.reload()
       })
     },
     userOutCanc () {

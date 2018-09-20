@@ -41,7 +41,7 @@ export default {
   components: { headTop, spinComp },
   data () {
     return {
-      spinShow: true,
+      spinShow: false,
       search: {
         text: ''
       },
