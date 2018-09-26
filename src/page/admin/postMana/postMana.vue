@@ -225,7 +225,7 @@ export default {
         }
       }).then(res => {
         let _data = res.data.data
-        this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
+        this.caseList.bodyList = _data === null ? [] : _data
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false

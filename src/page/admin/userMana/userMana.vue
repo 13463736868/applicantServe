@@ -85,6 +85,10 @@
         </Row>
       </div>
     </alert-btn-info>
+    <alert-btn-info :alertShow="userObj.stateShow" @alertConfirm="stateSave" @alertCancel="alertCanc('state')" alertTitle="操作">
+      <p v-if="userObj.stateCode === 2">确定要停用吗？</p>
+      <p v-else-if="userObj.stateCode === 1">确定要启用吗？</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -143,6 +147,7 @@ export default {
           {
             title: '操作',
             key: 'id',
+            minWidth: 70,
             align: 'center',
             render: (h, params) => {
               return this.renderBtn(h, params)
@@ -178,7 +183,12 @@ export default {
           value: 2,
           label: '停用'
         }
-      ]
+      ],
+      userId: null,
+      userObj: {
+        stateShow: false,
+        stateCode: null
+      }
     }
   },
   created () {
@@ -230,21 +240,7 @@ export default {
                 this.resResetUser(params.index)
               }
             }
-          }, '重置密码'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resDelUser(params.index)
-              }
-            }
-          }, '删除')
+          }, '重置密码')
         ])
       } else if (_obj.state === 2) {
         return h('div', [
@@ -289,21 +285,7 @@ export default {
                 this.resResetUser(params.index)
               }
             }
-          }, '重置密码'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resDelUser(params.index)
-              }
-            }
-          }, '删除')
+          }, '重置密码')
         ])
       } else {
         return h('div', [
@@ -320,8 +302,8 @@ export default {
         }
       }).then(res => {
         let _data = res.data.data
-        this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
-        this.pageObj.total = _data.totalCount
+        this.caseList.bodyList = _data.list === null ? [] : _data.list
+        this.pageObj.total = _data.total
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
@@ -339,9 +321,6 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
-    resDelUser (index) {
-      console.log(this.caseList.bodyList[index])
-    },
     resResetUser (index) {
       console.log(this.caseList.bodyList[index])
     },
@@ -349,7 +328,30 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resStatusUser (type, index) {
-      console.log(this.caseList.bodyList[index])
+      this.userObj.stateCode = type
+      this.userId = this.caseList.bodyList[index].id
+      this.userObj.stateShow = true
+    },
+    stateSave () {
+      axios.put('/user', {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        },
+        id: this.userId,
+        state: this.userObj.stateCode
+      }).then(res => {
+        this.alertCanc('state')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resAddUser () {
       this.alertShow.addUser = true
@@ -370,6 +372,13 @@ export default {
           department: '',
           role: ''
         }
+      } else if (type === 'state') {
+        this.userId = null
+        this.userObj.stateShow = false
+        this.userObj.stateCode = null
+      } else if (type === 'dele') {
+        this.userId = null
+        this.userObj.deleShow = false
       }
     }
   }
