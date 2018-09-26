@@ -72,7 +72,8 @@ export default {
         loginBtn: false,
         em: '',
         emStatus: false
-      }
+      },
+      roleArr: [1, 10, 7, 8, 9]
     }
   },
   created () {
@@ -120,7 +121,7 @@ export default {
                 content: '登录身份未知,禁止登录',
                 duration: 5
               })
-            } else if ([1, 2, 3, 4, 5].indexOf(_res.roleId) === -1) {
+            } else if (this.roleArr.indexOf(_res.roleId) === -1) {
               this.$Message.error({
                 content: '登录身份未知,禁止登录',
                 duration: 5
