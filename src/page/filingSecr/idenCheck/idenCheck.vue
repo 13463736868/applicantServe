@@ -47,6 +47,14 @@
         </TabPane>
       </Tabs>
     </div>
+    <alert-btn-info :alertShow="compObj.alert" @alertConfirm="compSave" @alertCancel="alertCanc('comp')" alertTitle="操作">
+      <p v-if="compObj.state === 1">确定通过审核吗？</p>
+      <Input v-else-if="compObj.state === 2" v-model="compObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
+    <alert-btn-info :alertShow="indiObj.alert" @alertConfirm="indiSave" @alertCancel="alertCanc('indi')" alertTitle="操作">
+      <p v-if="indiObj.state === 1">确定通过审核吗？</p>
+      <Input v-else-if="indiObj.state === 2" v-model="indiObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
   </div>
 </template>
 
@@ -54,10 +62,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'iden_check',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -177,6 +186,18 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      compObj: {
+        id: null,
+        state: null,
+        reason: null,
+        alert: false
+      },
+      indiObj: {
+        id: null,
+        state: null,
+        reason: null,
+        alert: false
       }
     }
   },
@@ -198,7 +219,7 @@ export default {
             },
             on: {
               click: () => {
-                this.resPassComp(params.index)
+                this.resComp(1, params.index)
               }
             }
           }, '通过'),
@@ -212,7 +233,7 @@ export default {
             },
             on: {
               click: () => {
-                this.resRejeComp(params.index)
+                this.resComp(2, params.index)
               }
             }
           }, '驳回')
@@ -236,7 +257,7 @@ export default {
             },
             on: {
               click: () => {
-                this.resPassIndi(params.index)
+                this.resIndi(1, params.index)
               }
             }
           }, '通过'),
@@ -250,7 +271,7 @@ export default {
             },
             on: {
               click: () => {
-                this.resRejeIndi(params.index)
+                this.resIndi(2, params.index)
               }
             }
           }, '驳回')
@@ -370,17 +391,72 @@ export default {
       this.indiPage.pageNum = page
       this.resCaseList('more')
     },
-    resPassComp (index) {
-      console.log(this.compList.bodyList[index])
+    resComp (type, index) {
+      this.compObj.id = this.compList.bodyList[index].id
+      this.compObj.state = type
+      this.compObj.alert = true
     },
-    resRejeComp (index) {
-      console.log(this.compList.bodyList[index])
+    compSave () {
+      let _data = {}
+      let _url = '/enterprise/verify'
+      if (this.compObj.state === 1) {
+        _data.id = this.compObj.id
+        _data.state = this.compObj.state
+        this.sendAjax(_url, _data, 'comp')
+      } else if (this.compObj.state === 2) {
+        _data.id = this.compObj.id
+        _data.state = this.compObj.state
+        _data.reason = this.compObj.reason === null ? '' : this.compObj.reason
+        this.sendAjax(_url, _data, 'comp')
+      }
     },
-    resPassIndi (index) {
-      console.log(this.indiList.bodyList[index])
+    resIndi (type, index) {
+      this.indiObj.id = this.indiList.bodyList[index].id
+      this.indiObj.state = type
+      this.indiObj.alert = true
     },
-    resRejeIndi (index) {
-      console.log(this.indiList.bodyList[index])
+    indiSave () {
+      let _data = {}
+      let _url = '/clientRequest/updateRegisterPersonal'
+      if (this.indiObj.state === 1) {
+        _data.id = this.indiObj.id
+        _data.state = this.indiObj.state
+        this.sendAjax(_url, _data, 'inde')
+      } else if (this.indiObj.state === 2) {
+        _data.id = this.indiObj.id
+        _data.state = this.indiObj.state
+        _data.reason = this.indiObj.reason === null ? '' : this.indiObj.reason
+        this.sendAjax(_url, _data, 'inde')
+      }
+    },
+    sendAjax (_url, _data, _type) {
+      axios.post(_url, _data).then(res => {
+        this.alertCanc(_type)
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList('')
+      }).catch(e => {
+        this.alertCanc(_type)
+        this.$Message.error({
+          content: '错误信息:' + e,
+          duration: 5
+        })
+      })
+    },
+    alertCanc (type) {
+      if (type === 'comp') {
+        this.compObj.alert = false
+        this.compObj.id = null
+        this.compObj.state = null
+        this.compObj.reason = null
+      } else if (type === 'indi') {
+        this.indiObj.alert = false
+        this.indiObj.id = null
+        this.indiObj.state = null
+        this.indiObj.reason = null
+      }
     }
   }
 }

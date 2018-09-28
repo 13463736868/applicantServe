@@ -28,6 +28,12 @@
         </Row>
       </div>
     </div>
+    <create-docu :alertShow="createObj.show" @alertConfirm="createSave" @alertSee="createSee" @alertCancel="alertCanc" alertTitle="生成决定书">
+      <Row>
+        <Col span="4" offset="1"><p class="_label">合同名称：</p></Col>
+        <Col span="16" offset="2"><Input v-model="createObj.contractName" placeholder="请输入合同名称..." /></Col>
+      </Row>
+    </create-docu>
   </div>
 </template>
 
@@ -35,13 +41,14 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import createDocu from '@/components/common/createDocu'
 
 export default {
   name: 'filing_case',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, createDocu },
   data () {
     return {
-      spinShow: true,
+      spinShow: false,
       search: {
         text: ''
       },
@@ -124,6 +131,12 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      createObj: {
+        id: null,
+        show: false,
+        contractName: '',
+        docType: null
       }
     }
   },
@@ -133,8 +146,22 @@ export default {
   methods: {
     renderBtn (h, params) {
       if (params.row.requestState === '3') {
-        if (params.row.pathUrl === null) {
+        if (params.row.pathUrl === null || params.row.pathUrl === '') {
           return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.createDoc(4, params.index)
+                }
+              }
+            }, '生成决定书')
           ])
         } else {
           return h('div', [
@@ -151,9 +178,57 @@ export default {
                   this.seeDoc(params.row.pathUrl)
                 }
               }
-            }, '查看申请书')
+            }, '查看申请书'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.createDoc(4, params.index)
+                }
+              }
+            }, '生成决定书')
           ])
         }
+      } else if (params.row.requestState === '2') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(9, params.index)
+              }
+            }
+          }, '生成决定书')
+        ])
+      } else if (params.row.requestState === '1') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(8, params.index)
+              }
+            }
+          }, '生成决定书')
+        ])
       } else {
         return h('div', [
         ])
@@ -193,6 +268,61 @@ export default {
     },
     seeDoc (path) {
       window.open(path, '_blank')
+    },
+    createDoc (type, index) {
+      this.createObj.show = true
+      this.createObj.docType = type
+    },
+    createSave () {
+      axios.post('/case/addDocumentFile', {
+        caseId: this.createObj.id,
+        documentType: this.createObj.docType,
+        jsonData: JSON.stringify({
+          contractName: this.createObj.contractName
+        })
+      }).then(res => {
+        this.alertCanc()
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+      }).catch(e => {
+        this.alertCanc()
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    createSee () {
+      axios.post('/case/previewDocumentFile', {
+        caseId: this.createObj.id,
+        documentType: this.createObj.docType,
+        jsonData: JSON.stringify({
+          contractName: this.createObj.contractName
+        })
+      }).then(res => {
+        let _path = res.data.data.filepath
+        if (_path !== null && _path !== '') {
+          window.open(_path, '_blank')
+        } else {
+          this.$Message.error({
+            content: '生成预览文书路径出错,稍后再试',
+            duration: 5
+          })
+        }
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    alertCanc () {
+      this.createObj.show = false
+      this.createObj.id = null
+      this.createObj.contractName = ''
+      this.createObj.docType = null
     }
   }
 }
@@ -213,5 +343,8 @@ export default {
   ._caseList {
     margin-bottom: 20px;
   }
+}
+._label {
+  padding: 7px 0;
 }
 </style>
