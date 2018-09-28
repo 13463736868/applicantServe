@@ -20,6 +20,12 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertShow.reje" @alertConfirm="rejeSave" @alertCancel="alertCanc('reje')" alertTitle="操作">
+      <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.agre" @alertConfirm="agreSave" @alertCancel="alertCanc('agre')" alertTitle="操作">
+      <p>仲裁员列表</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -27,10 +33,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'arbi_evas',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -102,6 +109,12 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertShow: {
+        reje: false,
+        rejeReason: '',
+        agre: false,
+        avoidRequestId: null
       }
     }
   },
@@ -173,10 +186,52 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resSaveEvas (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.agre = true
+      this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
+    },
+    agreSave () {
+      console.log('同意_axios仲裁员列表_选择仲裁员...')
     },
     resCancEvas (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.reje = true
+      this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
+    },
+    rejeSave () {
+      if (this.alertShow.rejeReason === '') {
+        this.$Message.warning({
+          content: '请填写驳回原因',
+          duration: 5
+        })
+      } else {
+        axios.post('/approve/updateAvoidRequestAppover', {
+          avoidRequestId: this.alertShow.avoidRequestId,
+          content: this.alertShow.rejeReason,
+          avoidState: 2
+        }).then(res => {
+          this.alertCanc('reje')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('reje')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
+    alertCanc (type) {
+      if (type === 'reje') {
+        this.alertShow.reje = false
+        this.alertShow.rejeReason = ''
+        this.alertShow.avoidRequestId = null
+      } else if (type === 'agre') {
+        this.alertShow.agre = false
+        this.alertShow.avoidRequestId = null
+      }
     }
   }
 }

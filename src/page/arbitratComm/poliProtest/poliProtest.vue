@@ -20,6 +20,10 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertShow.poli" @alertConfirm="poliSave" @alertCancel="alertCanc" alertTitle="操作">
+      <p v-if="alertShow.state === 1">确定要通过吗？</p>
+      <Input v-else-if="alertShow.state === 2" v-model="alertShow.poliReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
   </div>
 </template>
 
@@ -27,10 +31,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'poli_protest',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -92,6 +97,12 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertShow: {
+        state: null,
+        poli: false,
+        poliReason: '',
+        id: null
       }
     }
   },
@@ -163,10 +174,67 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resSavePoli (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.state = 1
+      this.alertShow.id = this.caseList.bodyList[index].jurisdictionRequestById
+      this.alertShow.poli = true
     },
     resCancPoli (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.state = 2
+      this.alertShow.id = this.caseList.bodyList[index].jurisdictionRequestById
+      this.alertShow.poli = true
+    },
+    poliSave () {
+      if (this.alertShow.state === 1) {
+        axios.post('/approve/updateAvoidRequestAppover', {
+          jurisdictionRequestById: this.alertShow.id,
+          jurisdictionRequestApprove: this.alertShow.state
+        }).then(res => {
+          this.alertCanc()
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc()
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      } else if (this.alertShow.state === 2) {
+        if (this.alertShow.poliReason === '') {
+          this.$Message.warning({
+            content: '请填写驳回原因',
+            duration: 5
+          })
+        } else {
+          axios.post('/approve/updateAvoidRequestAppover', {
+            jurisdictionRequestById: this.alertShow.id,
+            jurisdictionRequestApprove: this.alertShow.state,
+            jurisdictionRequestReason: this.alertShow.poliReason
+          }).then(res => {
+            this.alertCanc()
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.alertCanc()
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      }
+    },
+    alertCanc () {
+      this.alertShow.poli = false
+      this.alertShow.poliReason = ''
+      this.alertShow.id = null
+      this.alertShow.state = null
     }
   }
 }

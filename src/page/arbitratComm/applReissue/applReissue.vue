@@ -20,6 +20,10 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertShow.appl" @alertConfirm="applSave" @alertCancel="alertCanc" alertTitle="操作">
+      <p v-if="alertShow.state === 1">确认要通过吗？</p>
+      <p v-else-if="alertShow.state === 2">确认要驳回吗？</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -27,10 +31,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'appl_reissue',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -103,6 +108,11 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertShow: {
+        appl: false,
+        state: null,
+        id: null
       }
     }
   },
@@ -174,10 +184,38 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resSaveReis (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.state = 1
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.appl = true
     },
     resCancReis (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.state = 2
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.appl = true
+    },
+    applSave () {
+      axios.post('/clientRequest/updateCaseRevision', {
+        caseId: this.alertShow.id,
+        approveState: this.alertShow.state
+      }).then(res => {
+        this.alertCanc()
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc()
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    alertCanc () {
+      this.alertShow.appl = false
+      this.alertShow.state = null
+      this.alertShow.id = null
     }
   }
 }
