@@ -50,6 +50,9 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
+      <p>确定要通过吗？</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -144,7 +147,9 @@ export default {
         agre: false,
         tribId: null,
         caseId: null,
-        infoMoney: null
+        infoMoney: null,
+        pass: false,
+        passId: null
       },
       seleList: {
         loading: false,
@@ -270,7 +275,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resAssign(params.index)
+                  this.resPass(params.index)
                 }
               }
             }, '通过')
@@ -399,6 +404,31 @@ export default {
         })
       })
     },
+    resPass (index) {
+      this.alertShow.pass = true
+      this.alertShow.tribId = this.caseList.bodyList[index].tribunalRequestId
+      this.alertShow.caseId = this.caseList.bodyList[index].id
+      this.alertShow.passId = this.caseList.bodyList[index].approverId
+    },
+    passSave () {
+      axios.post('/approve/updateGroupApproveToArbitrator', {
+        caseId: this.alertShow.caseId,
+        tribunalRequestId: this.alertShow.tribId,
+        arbitratorIds: this.passId
+      }).then(res => {
+        this.alertCanc('pass')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+      }).catch(e => {
+        this.alertCanc('pass')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       if (type === 'agre') {
         this.alertShow.agre = false
@@ -407,6 +437,11 @@ export default {
         this.alertShow.infoMoney = null
         this.seleArr = []
         this.seleArrName = []
+      } else if (type === 'pass') {
+        this.alertShow.pass = false
+        this.alertShow.tribId = null
+        this.alertShow.caseId = null
+        this.alertShow.passId = null
       }
     }
   }
