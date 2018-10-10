@@ -27,6 +27,19 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertObj.subm" @alertConfirm="submSave" @alertCancel="alertCanc('subm')" alertTitle="操作">
+      <p>确定要提交吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertObj.begin" @alertConfirm="beginSave" @alertCancel="alertCanc('begin')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">指定开庭时间：</p>
+        </Col>
+        <Col span="12">
+          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -106,22 +119,7 @@ export default {
             key: 'id',
             align: 'center',
             render: (h, params) => {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.resFileList(params.index)
-                    }
-                  }
-                }, '查看文件')
-              ])
+              return this.renderBtn(h, params)
             }
           }
         ],
@@ -133,7 +131,12 @@ export default {
         pageSize: 10
       },
       alertObj: {
-        file: false
+        file: false,
+        subm: false,
+        begin: false,
+        caseId: null,
+        time: '',
+        type: null
       },
       fileList: {
         header: [
@@ -183,6 +186,138 @@ export default {
     this.resCaseList()
   },
   methods: {
+    renderBtn (h, params) {
+      if (params.row.state === 4) {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSubm(params.index)
+              }
+            }
+          }, '通过')
+        ])
+      } else if (params.row.state === 1) {
+        if (params.row.alreadyBeginTime === 1) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resFileList(params.index)
+                }
+              }
+            }, '查看文件'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resBeginTime('edit', params.index)
+                }
+              }
+            }, '修改开庭时间')
+          ])
+        } else if (params.row.alreadyBeginTime === 2) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resFileList(params.index)
+                }
+              }
+            }, '查看文件'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resBeginTime('once', params.index)
+                }
+              }
+            }, '指定开庭时间')
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resFileList(params.index)
+                }
+              }
+            }, '查看文件')
+          ])
+        }
+      } else {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件')
+        ])
+      }
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
@@ -227,10 +362,51 @@ export default {
         })
       })
     },
+    resSubm (index) {
+      this.alertObj.subm = true
+      this.alertObj.caseId = this.caseList.bodyList[index].id
+    },
+    submSave () {
+      axios.post('/approve/updateGroupApprove', {
+        caseId: this.alertObj.caseId
+      }).then(res => {
+        this.alertCanc('subm')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+      }).catch(e => {
+        this.alertCanc('subm')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    resBeginTime (type, index) {
+      this.alertObj.begin = true
+      this.alertObj.caseId = this.caseList.bodyList[index].id
+      this.alertObj.type = type
+    },
+    changeDate (val) {
+      // 去比较时间在不在区间范围内 如果在在赋值 否则提示
+      this.alertObj.time = val
+    },
+    beginSave () {
+      console.log(this.alertObj.time)
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
         this.fileList.bodyList = []
+      } else if (type === 'subm') {
+        this.alertObj.subm = false
+        this.alertObj.caseId = null
+      } else if (type === 'begin') {
+        this.alertObj.begin = false
+        this.alertObj.caseId = null
+        this.alertObj.time = ''
+        this.alertObj.type = null
       }
     },
     seeDoc (path) {
