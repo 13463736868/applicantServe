@@ -20,6 +20,36 @@
         </Row>
       </div>
     </div>
+    <alert-btn-info :alertShow="alertShow.agre" @alertConfirm="agreSave" @alertCancel="alertCanc('agre')" alertTitle="操作">
+      <div class="pb10">
+        <Row>
+          <Col span="20" offset="1">
+            <span><b>主 裁： </b></span>
+            <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
+          </Col>
+        </Row>
+        <Row v-if="seleShow">
+          <Col span="20" offset="1">
+            <span><b>边 裁：</b></span>
+            <span v-if="seleArrName[1] !== ''"><span class="ml5" v-text="seleArrName[1]"></span><Icon @click="resSeleDel(1)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
+          </Col>
+          <Col span="20" offset="1">
+            <span><b>边 裁：</b></span>
+            <span v-if="seleArrName[2] !== ''"><span class="ml5" v-text="seleArrName[2]"></span><Icon @click="resSeleDel(2)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
+          </Col>
+        </Row>
+      </div>
+      <Row>
+        <Col span="24" class="pl20 pr20">
+          <Table stripe align="center" :loading="seleList.loading" :columns="seleList.header" :data="seleList.bodyList"></Table>
+        </Col>
+      </Row>
+      <Row>
+        <Col span="12" offset="6" class="tc pt10">
+          <Page simple :total="selePageObj.total" :current="selePageObj.pageNum" :page-size="selePageObj.pageSize" show-total @on-change="resChanPage"></Page>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -27,10 +57,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'group_audit',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -108,13 +139,105 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertShow: {
+        agre: false,
+        tribId: null,
+        caseId: null,
+        infoMoney: null
+      },
+      seleList: {
+        loading: false,
+        header: [
+          {
+            title: '名称',
+            key: 'name',
+            align: 'center'
+          },
+          {
+            title: '邮箱',
+            key: 'email',
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          }
+        ],
+        bodyList: []
+      },
+      seleArr: [],
+      seleArrName: [],
+      selePageObj: {
+        total: 0,
+        pageNum: 1,
+        pageSize: 5
       }
     }
   },
   created () {
     this.resCaseList()
   },
+  computed: {
+    seleShow () {
+      if (this.alertShow.infoMoney === null) {
+        return false
+      } else if (this.alertShow.infoMoney < 1000000) {
+        return false
+      } else if (this.alertShow.infoMoney >= 1000000) {
+        return true
+      } else {
+        return false
+      }
+    }
+  },
   methods: {
+    renderCheck (h, params) {
+      let _id = params.row.id
+      if (this.seleArr.indexOf(_id) === -1) {
+        return h('div', [
+          h('Icon', {
+            props: {
+              type: 'md-square-outline',
+              size: '16'
+            },
+            style: {
+              color: '#2d8cf0',
+              cursor: 'pointer',
+              verticalAlign: 'text-top'
+            },
+            on: {
+              click: () => {
+                this.seleArrChange(params.index, true)
+              }
+            }
+          })
+        ])
+      } else {
+        return h('div', [
+          h('Icon', {
+            props: {
+              type: 'md-checkbox',
+              size: '16'
+            },
+            style: {
+              color: '#2d8cf0',
+              cursor: 'pointer',
+              verticalAlign: 'text-top'
+            },
+            on: {
+              click: () => {
+                this.seleArrChange(params.index, false)
+              }
+            }
+          })
+        ])
+      }
+    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.approverId === null || _obj.approverId === '') {
@@ -135,7 +258,7 @@ export default {
           }, '指定仲裁员')
         ])
       } else {
-        if (_obj.passFlag === 1) {
+        if (_obj.passFlag === 2) {
           return h('div', [
             h('Button', {
               props: {
@@ -147,27 +270,13 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resEditTime(params.index)
-                }
-              }
-            }, '修改开庭时间')
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resPass(params.index)
+                  this.resAssign(params.index)
                 }
               }
             }, '通过')
+          ])
+        } else {
+          return h('div', [
           ])
         }
       }
@@ -198,13 +307,107 @@ export default {
       console.log(this.caseList.bodyList[index])
     },
     resAssign (index) {
-      console.log(this.caseList.bodyList[index])
+      this.alertShow.agre = true
+      this.alertShow.tribId = this.caseList.bodyList[index].tribunalRequestId
+      this.alertShow.caseId = this.caseList.bodyList[index].id
+      this.alertShow.infoMoney = this.caseList.bodyList[index].money
+      this.seleArr = this.seleShow === true ? ['', '', ''] : ['']
+      this.seleArrName = this.seleShow === true ? ['', '', ''] : ['']
+      this.resUserList()
     },
-    resEditTime (index) {
-      console.log(this.caseList.bodyList[index])
+    resUserList () {
+      axios.post('/clientRequest/findUsersList', {
+        pageIndex: (this.selePageObj.pageNum - 1) * this.selePageObj.pageSize,
+        pageSize: this.selePageObj.pageSize,
+        roleName: 'arbitrator'
+      }).then(res => {
+        this.seleList.bodyList = res.data.data.dataList === null ? [] : res.data.data.dataList
+        this.selePageObj.total = res.data.data.totalCount
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
-    resPass (index) {
-      console.log(this.caseList.bodyList[index])
+    resChanPage (page) {
+      this.selePageObj.pageNum = page
+      this.resUserList()
+    },
+    seleArrChange (index, bool) {
+      let _id = this.seleList.bodyList[index].id
+      let _name = this.seleList.bodyList[index].name
+      let _userNum = this.seleShow === true ? '三' : '一'
+      if (bool) {
+        if (this.seleArr.indexOf(_id) === -1) {
+          let _t = false
+          for (let k in this.seleArr) {
+            if (this.seleArr[k] === '') {
+              this.seleArr[k] = _id
+              this.seleArrName[k] = _name
+              this.seleArr.splice(k, 0)
+              this.seleArrName.splice(k, 0)
+              _t = true
+              break
+            }
+          }
+          if (!_t) {
+            this.$Message.error({
+              content: '仲裁员最多只能选择' + _userNum + '位！',
+              duration: 5
+            })
+          }
+        }
+      } else {
+        if (this.seleArr.indexOf(_id) !== -1) {
+          this.seleArrName.splice(this.seleArr.indexOf(_id), 1, '')
+          this.seleArr.splice(this.seleArr.indexOf(_id), 1, '')
+        }
+      }
+    },
+    resSeleDel (num) {
+      this.seleArr[num] = ''
+      this.seleArrName[num] = ''
+      this.resUserList()
+    },
+    agreSave () {
+      for (let k in this.seleArr) {
+        if (this.seleArr[k] === '') {
+          this.$Message.error({
+            content: '请选择仲裁员后再点击确定',
+            duration: 5
+          })
+          return false
+        }
+      }
+      axios.post('/approve/updateGroupApproveToArbitrator', {
+        caseId: this.alertShow.caseId,
+        tribunalRequestId: this.alertShow.tribId,
+        arbitratorIds: this.seleArr.join(',')
+      }).then(res => {
+        this.selePageObj.pageNum = 1
+        this.alertCanc('agre')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+      }).catch(e => {
+        this.alertCanc('agre')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    alertCanc (type) {
+      if (type === 'agre') {
+        this.alertShow.agre = false
+        this.alertShow.tribId = null
+        this.alertShow.caseId = null
+        this.alertShow.infoMoney = null
+        this.seleArr = []
+        this.seleArrName = []
+      }
     }
   }
 }
