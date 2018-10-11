@@ -118,6 +118,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
+            minWidth: 70,
             render: (h, params) => {
               return this.renderBtn(h, params)
             }
@@ -389,7 +390,7 @@ export default {
       this.alertObj.type = type
     },
     changeDate (val) {
-      // 去比较时间在不在区间范围内 如果在在赋值 否则提示
+      // 去比较时间在不在区间范围内  如果在在赋值 否则提示
       this.alertObj.time = val
     },
     beginSave () {

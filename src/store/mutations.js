@@ -16,35 +16,5 @@ export default {
   },
   [types.SET_CASEINFO] (state, obj) {
     state.caseInfo = obj
-  },
-  [types.SET_FILING] (state, obj) {
-    state.caseInfo[obj.type] = obj.data
-  },
-  [types.SET_MYCASEID] (state, id) {
-    state.myCaseId = id
-  },
-  [types.SET_MYCASEOLDID] (state, id) {
-    state.myCaseOldId = id
-  },
-  [types.SET_MYCASESTATE] (state, obj) {
-    state.myCaseState = obj
-  },
-  [types.SET_GOPAYMENTOLDID] (state, id) {
-    state.goPaymentOldId = id
-  },
-  [types.SET_PAYMENTINFOID] (state, id) {
-    state.paymentInfoId = id
-  },
-  [types.SET_USERSTATE] (state, obj) {
-    state.userState = obj
-  },
-  [types.SET_MYCASESHOWBTN] (state, obj) {
-    state.myCaseShowBtn = obj
-  },
-  [types.SET_MYCASEPARTIETYPE] (state, obj) {
-    state.myCasePartieType = obj
-  },
-  [types.SET_MYCASECROSSE] (state, obj) {
-    state.myCaseCrossE = obj
   }
 }

@@ -153,6 +153,22 @@ const routerMap = [
       requireAuth: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenCheck.vue')))
+  },
+  {
+    path: '/onesInfo',
+    name: 'onesInfo',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/comm/onesInfo.vue')))
+  },
+  {
+    path: '/caseInfo',
+    name: 'caseInfo',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/comm/caseInfo.vue')))
   }
 ]
 
@@ -161,15 +177,15 @@ export const getRouter = (type) => {
   let _r = []
   let _l = 0
   if (type === roleArr[0]) {
-    _a = ['/userMana', '/postMana', '/depaMana']
+    _a = ['/userMana', '/postMana', '/depaMana', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[1]) {
-    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
+    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[2]) {
-    _a = ['/endCaseB', '/groupCase']
+    _a = ['/endCaseB', '/groupCase', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[3]) {
-    _a = ['/filingCase', '/endCaseA', '/groupAppl']
+    _a = ['/filingCase', '/endCaseA', '/groupAppl', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[4]) {
-    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
+    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck', '/onesInfo', '/caseInfo']
   }
   _r.push({
     path: '/',
@@ -199,7 +215,7 @@ export const getMenu = (type) => {
     _t = ['用户管理', '角色管理', '部门管理']
   } else if (type === roleArr[1]) {
     _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
-    _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '交易记录', '文书审核']
+    _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '案件查询', '文书审核']
   } else if (type === roleArr[2]) {
     _a = ['/endCaseB', '/groupCase']
     _t = ['已结束案件', '组庭案件']
@@ -208,7 +224,7 @@ export const getMenu = (type) => {
     _t = ['已立案案件', '已结束案件', '组庭申请']
   } else if (type === roleArr[4]) {
     _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
-    _t = ['待受理案件', '待立案案件', '立案成功案件', '交易记录', '身份审核']
+    _t = ['待受理案件', '待立案案件', '立案成功案件', '案件记录', '身份审核']
   }
   for (let k in _a) {
     let _o = {}

@@ -11,16 +11,7 @@ const state = {
   menu: null,
   router: null,
   caseId: '',
-  caseInfo: null,
-  myCaseId: '',
-  myCaseOldId: '',
-  myCaseState: null,
-  goPaymentOldId: '',
-  paymentInfoId: '',
-  userState: null,
-  myCaseShowBtn: null,
-  myCasePartieType: null,
-  myCaseCrossE: null
+  caseInfo: null
 }
 
 export default new Vuex.Store({
