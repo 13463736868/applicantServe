@@ -10,11 +10,14 @@ const beforeEach = (to, from, next) => {
   }
   if (to.path !== '/login') {
     if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+      if (store.state.menuArrObj === null) {
+        store.commit('SET_MENUARROBJ', JSON.parse(loc.getItem('menuArrObj')))
+      }
       if (store.state.menu === null) {
-        store.commit('SET_MENU', getMenu(JSON.parse(loc.getItem('usersInfo')).roleId))
+        store.commit('SET_MENU', getMenu(JSON.parse(loc.getItem('menuArrObj'))))
       }
       if (store.state.router === null) {
-        let _gRouter = getRouter(JSON.parse(loc.getItem('usersInfo')).roleId)
+        let _gRouter = getRouter(JSON.parse(loc.getItem('menuArrObj')))
         store.commit('SET_ROUTER', _gRouter)
         router.addRoutes(_gRouter)
         next({...to, replace: true})
@@ -29,10 +32,10 @@ const beforeEach = (to, from, next) => {
         }
       }
       if (store.state.router === null) {
-        store.commit('SET_ROUTER', getRouter(store.state.usersInfo.roleId))
+        store.commit('SET_ROUTER', getRouter(store.state.menuArrObj))
       }
       if (store.state.menu === null) {
-        store.commit('SET_MENU', getMenu(store.state.usersInfo.roleId))
+        store.commit('SET_MENU', getMenu(store.state.menuArrObj))
       }
       next()
     } else {

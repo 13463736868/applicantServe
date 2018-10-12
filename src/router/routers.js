@@ -1,5 +1,4 @@
 'use strict'
-const roleArr = [1, 10, 7, 8, 9]
 
 const routerMap = [
   {
@@ -164,21 +163,11 @@ const routerMap = [
   }
 ]
 
-export const getRouter = (type) => {
-  let _a = []
+export const getRouter = (obj) => {
+  let _a = obj.menu
   let _r = []
   let _l = 0
-  if (type === roleArr[0]) {
-    _a = ['/userMana', '/postMana', '/depaMana', '/onesInfo', '/caseInfo']
-  } else if (type === roleArr[1]) {
-    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit', '/onesInfo', '/caseInfo']
-  } else if (type === roleArr[2]) {
-    _a = ['/endCaseA', '/groupCase', '/onesInfo', '/caseInfo']
-  } else if (type === roleArr[3]) {
-    _a = ['/filingCase', '/endCaseA', '/groupAppl', '/onesInfo', '/caseInfo']
-  } else if (type === roleArr[4]) {
-    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck', '/onesInfo', '/caseInfo']
-  }
+  _a.push('/onesInfo', '/caseInfo')
   _r.push({
     path: '/',
     redirect: _a[0]
@@ -198,26 +187,10 @@ export const getRouter = (type) => {
   }
 }
 
-export const getMenu = (type) => {
-  let _a = []
-  let _t = []
+export const getMenu = (obj) => {
+  let _a = obj.menu
+  let _t = obj.menuName
   let _m = []
-  if (type === roleArr[0]) {
-    _a = ['/userMana', '/postMana', '/depaMana']
-    _t = ['用户管理', '角色管理', '部门管理']
-  } else if (type === roleArr[1]) {
-    _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
-    _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '案件查询', '文书审核']
-  } else if (type === roleArr[2]) {
-    _a = ['/endCaseA', '/groupCase']
-    _t = ['已结束案件', '组庭案件']
-  } else if (type === roleArr[3]) {
-    _a = ['/filingCase', '/endCaseA', '/groupAppl']
-    _t = ['已立案案件', '已结束案件', '组庭申请']
-  } else if (type === roleArr[4]) {
-    _a = ['/acceCase', '/pendCase', '/succCase', '/tranRecoE', '/idenCheck']
-    _t = ['待受理案件', '待立案案件', '立案成功案件', '案件记录', '身份审核']
-  }
   for (let k in _a) {
     let _o = {}
     _o.id = k

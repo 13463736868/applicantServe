@@ -1,3 +1,4 @@
+export const SET_MENUARROBJ = 'SET_MENUARROBJ'
 export const SET_USERSINFO = 'SET_USERSINFO'
 export const SET_MENU = 'SET_MENU'
 export const SET_ROUTER = 'SET_ROUTER'

@@ -1,4 +1,5 @@
 export default {
+  menuArrObj: state => state.menuArrObj,
   usersInfo: state => state.usersInfo,
   menu: state => state.menu,
   router: state => state.router,

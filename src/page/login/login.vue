@@ -73,7 +73,7 @@ export default {
         em: '',
         emStatus: false
       },
-      roleArr: [1, 10, 7, 8, 9]
+      loginInfo: null
     }
   },
   created () {
@@ -83,6 +83,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'setMenuArrObj',
       'setUsersInfo',
       'setMenu',
       'setRouter'
@@ -115,32 +116,16 @@ export default {
           password: this.user.password
         }).then(res => {
           let _res = res.data.data
+          this.loginInfo = res.data.data
           try {
             if (_res.roleId === null) {
               this.$Message.error({
                 content: '登录身份未知,禁止登录',
                 duration: 5
               })
-            } else if (this.roleArr.indexOf(_res.roleId) === -1) {
-              this.$Message.error({
-                content: '登录身份未知,禁止登录',
-                duration: 5
-              })
             } else {
-              if (window.localStorage) {
-                let loc = window.localStorage
-                loc.setItem('usersInfo', JSON.stringify(_res))
-              }
-              let _gMenu = getMenu(_res.roleId)
-              let _gRouter = getRouter(_res.roleId)
               setToken(_res.client_token)
-              this.setUsersInfo(_res)
-              this.setMenu(_gMenu)
-              this.setRouter(_gRouter)
-              this.$router.addRoutes(_gRouter)
-              this.$router.push({
-                path: _gMenu[0].url
-              })
+              this.resGetMeun()
             }
           } catch (e) {
             this.$Message.error({
@@ -155,6 +140,38 @@ export default {
           })
         })
       }
+    },
+    resGetMeun () {
+      axios.get('/auth/function/route').then(res => {
+        let _res = res.data.data
+        if (_res.menu !== [] && _res.menuName !== []) {
+          if (window.localStorage) {
+            let loc = window.localStorage
+            loc.setItem('usersInfo', JSON.stringify(this.loginInfo))
+            loc.setItem('menuArrObj', JSON.stringify(_res))
+          }
+          this.setUsersInfo(this.loginInfo)
+          this.setMenuArrObj(_res)
+          let _gMenu = getMenu(_res)
+          let _gRouter = getRouter(_res)
+          this.setMenu(_gMenu)
+          this.setRouter(_gRouter)
+          this.$router.addRoutes(_gRouter)
+          this.$router.push({
+            path: _gMenu[0].url
+          })
+        } else {
+          this.$Message.error({
+            content: '登录身份权限未知,禁止登录',
+            duration: 5
+          })
+        }
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e,
+          duration: 5
+        })
+      })
     }
   }
 }

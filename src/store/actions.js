@@ -1,5 +1,8 @@
 export default {
   //  小写
+  setMenuArrObj ({commit, state}, obj) {
+    commit('SET_MENUARROBJ', obj)
+  },
   setUsersInfo ({commit, state}, obj) {
     commit('SET_USERSINFO', obj)
   },

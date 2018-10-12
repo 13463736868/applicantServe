@@ -61,6 +61,7 @@ export default {
           {
             title: '案号',
             key: 'code',
+            minWidth: 20,
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -102,6 +103,7 @@ export default {
           {
             title: '被申请人仲裁员',
             key: 'respondentApprove',
+            minWidth: 6,
             align: 'center'
           },
           {
@@ -118,7 +120,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            minWidth: 70,
+            minWidth: 80,
             render: (h, params) => {
               return this.renderBtn(h, params)
             }
@@ -209,9 +211,6 @@ export default {
               type: 'primary',
               size: 'small'
             },
-            style: {
-              marginRight: '5px'
-            },
             on: {
               click: () => {
                 this.resSubm(params.index)
@@ -241,9 +240,6 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
-              style: {
-                marginRight: '5px'
-              },
               on: {
                 click: () => {
                   this.resBeginTime('edit', params.index)
@@ -271,9 +267,6 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
-              },
-              style: {
-                marginRight: '5px'
               },
               on: {
                 click: () => {
@@ -390,7 +383,7 @@ export default {
       this.alertObj.type = type
     },
     changeDate (val) {
-      // 去比较时间在不在区间范围内  如果在在赋值 否则提示
+      // 去比较时间在不在区间范围内 如果在在赋值 否则提示
       this.alertObj.time = val
     },
     beginSave () {
