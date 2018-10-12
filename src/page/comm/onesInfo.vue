@@ -118,6 +118,7 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import headTop from '@/components/header/head'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'ones_info',
@@ -146,7 +147,7 @@ export default {
   created () {
     if (this.usersInfo !== null) {
       if (this.usersInfo.id !== null) {
-        this.resGetInfo(this.usersInfo.id)
+        this.resGetInfo(this.usersInfo.id, true)
       }
     }
   },
@@ -156,14 +157,16 @@ export default {
     ])
   },
   methods: {
-    resGetInfo (id) {
+    resGetInfo (id, type) {
       axios.get('/user/' + id).then(res => {
         let _data = res.data.data
         this.dataObj = _data
-        if (_data.role.name === '仲裁员') {
-          this.fileObjShow = true
-          if (_data.fileId !== null) {
-            this.resGetFile(_data.fileId)
+        if (type) {
+          if (_data.role.name === '仲裁员') {
+            this.fileObjShow = true
+            if (_data.fileId !== null) {
+              this.resGetFile(_data.fileId)
+            }
           }
         }
       }).catch(e => {
@@ -267,10 +270,91 @@ export default {
       this.alertObj.pass = true
     },
     infoSave () {
-      console.log(this.alertData.email, this.alertData.phone)
+      if (this.alertData.email === null || this.alertData.email === '') {
+        this.$Message.warning({
+          content: '邮箱地址不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.alertData.email, 'email')) {
+        this.$Message.warning({
+          content: '请填写正确邮箱地址格式',
+          duration: 5
+        })
+      } else if (this.alertData.phone === null || this.alertData.phone === '') {
+        this.$Message.warning({
+          content: '手机号码不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.alertData.phone, 'phone')) {
+        this.$Message.warning({
+          content: '请填写正确手机号码格式',
+          duration: 5
+        })
+      } else {
+        axios.put('/user', {
+          headers: {
+            'content-Type': 'application/json;charset=UTF-8'
+          },
+          id: this.dataObj.id,
+          phone: this.alertData.phone,
+          email: this.alertData.email
+        }).then(res => {
+          this.alertCanc('info')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resGetInfo(this.usersInfo.id, false)
+        }).catch(e => {
+          this.alertCanc('info')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
     },
     passSave () {
-      console.log(this.alertData.pass, this.alertData.passT)
+      if (this.alertData.pass === null || this.alertData.pass === '') {
+        this.$Message.warning({
+          content: '密码不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.alertData.pass, 'password')) {
+        this.$Message.warning({
+          content: '密码长度6~20位,只能包含数字,字母,下划线',
+          duration: 5
+        })
+      } else if (this.alertData.passT === null || this.alertData.passT === '') {
+        this.$Message.warning({
+          content: '请再次输入密码',
+          duration: 5
+        })
+      } else if (this.alertData.pass !== this.alertData.passT) {
+        this.$Message.warning({
+          content: '俩次输入密码不一致',
+          duration: 5
+        })
+      } else {
+        axios.get('/user/updateUserPass', {
+          params: {
+            userId: this.dataObj.id,
+            pass: this.alertData.pass
+          }
+        }).then(res => {
+          this.alertCanc('pass')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+        }).catch(e => {
+          this.alertCanc('pass')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
     },
     alertCanc (type) {
       if (type === 'info') {

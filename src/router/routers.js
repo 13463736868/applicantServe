@@ -75,14 +75,6 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/docuAudit/docuAudit.vue')))
   },
   {
-    path: '/endCaseB',
-    name: 'endCaseB',
-    meta: {
-      requireAuth: true
-    },
-    component: r => require.ensure([], () => r(require('@/page/arbitrator/endCase/endCase.vue')))
-  },
-  {
     path: '/groupCase',
     name: 'groupCase',
     meta: {
@@ -181,7 +173,7 @@ export const getRouter = (type) => {
   } else if (type === roleArr[1]) {
     _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[2]) {
-    _a = ['/endCaseB', '/groupCase', '/onesInfo', '/caseInfo']
+    _a = ['/endCaseA', '/groupCase', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[3]) {
     _a = ['/filingCase', '/endCaseA', '/groupAppl', '/onesInfo', '/caseInfo']
   } else if (type === roleArr[4]) {
@@ -217,7 +209,7 @@ export const getMenu = (type) => {
     _a = ['/arbiEvas', '/groupAudit', '/applReissue', '/poliProtest', '/tranRecoD', '/docuAudit']
     _t = ['仲裁员回避', '组庭审核', '申请补证', '管辖权异议', '案件查询', '文书审核']
   } else if (type === roleArr[2]) {
-    _a = ['/endCaseB', '/groupCase']
+    _a = ['/endCaseA', '/groupCase']
     _t = ['已结束案件', '组庭案件']
   } else if (type === roleArr[3]) {
     _a = ['/filingCase', '/endCaseA', '/groupAppl']
