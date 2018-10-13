@@ -138,6 +138,7 @@ export default {
         subm: false,
         begin: false,
         caseId: null,
+        composeTime: null,
         time: '',
         type: null
       },
@@ -380,14 +381,89 @@ export default {
     resBeginTime (type, index) {
       this.alertObj.begin = true
       this.alertObj.caseId = this.caseList.bodyList[index].id
+      this.alertObj.composeTime = this.caseList.bodyList[index].composeTime
       this.alertObj.type = type
     },
     changeDate (val) {
-      // 去比较时间在不在区间范围内 如果在在赋值 否则提示
       this.alertObj.time = val
     },
     beginSave () {
-      console.log(this.alertObj.time)
+      if (this.alertObj.type === 'once') {
+        axios.post('/getDateSection').then(res => {
+          let _res = res.data.data
+          try {
+            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+            let _sTime = res.data.data.startDate.split('-').join('')
+            let _eTime = res.data.data.endDate.split('-').join('')
+            if (_time - _sTime < 0 || _time - _eTime > 0) {
+              this.$Message.warning({
+                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+                duration: 6
+              })
+            } else {
+              this.upTimeSave()
+            }
+          } catch (e) {
+            this.$Message.error({
+              content: '调取时间范围出错,稍后再试',
+              duration: 5
+            })
+          }
+        }).catch(e => {
+          this.$Message.error({
+            content: '调取时间范围出错,稍后再试',
+            duration: 5
+          })
+        })
+      } else if (this.alertObj.type === 'edit') {
+        axios.post('/getDateSection', {
+          baseDate: this.alertObj.composeTime
+        }).then(res => {
+          let _res = res.data.data
+          try {
+            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+            let _sTime = res.data.data.startDate.split('-').join('')
+            let _eTime = res.data.data.endDate.split('-').join('')
+            if (_time - _sTime < 0 || _time - _eTime > 0) {
+              this.$Message.warning({
+                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+                duration: 6
+              })
+            } else {
+              this.upTimeSave()
+            }
+          } catch (e) {
+            this.$Message.error({
+              content: '调取时间范围出错,稍后再试',
+              duration: 5
+            })
+          }
+        }).catch(e => {
+          this.$Message.error({
+            content: '调取时间范围出错,稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
+    upTimeSave () {
+      axios.post('/approve/updateBeginTime', {
+        caseId: this.alertObj.caseId,
+        begintime: this.alertObj.time
+      }).then(res => {
+        this.alertCanc('begin')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('begin')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     alertCanc (type) {
       if (type === 'file') {
@@ -399,6 +475,7 @@ export default {
       } else if (type === 'begin') {
         this.alertObj.begin = false
         this.alertObj.caseId = null
+        this.alertObj.composeTime = null
         this.alertObj.time = ''
         this.alertObj.type = null
       }
