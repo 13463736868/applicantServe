@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 import {removeToken} from '@/cookies'
 import alertTip from '@/components/common/alertTip'
@@ -62,6 +63,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'setMenuArrObj',
       'setMenu',
       'setRouter'
     ]),
@@ -69,18 +71,42 @@ export default {
       this.alertShowOut = true
     },
     userOutSave () {
-      if (window.localStorage) {
-        let loc = window.localStorage
-        loc.removeItem('usersInfo')
-      }
-      this.setMenu(null)
-      this.setRouter(null)
-      removeToken()
-      this.$router.replace({
-        path: '/login'
-      })
-      setTimeout(() => {
-        location.reload()
+      axios.post('/SignOut').then(res => {
+        if (window.localStorage) {
+          let loc = window.localStorage
+          loc.removeItem('usersInfo')
+          loc.removeItem('menuArrObj')
+        }
+        this.setMenuArrObj(null)
+        this.setMenu(null)
+        this.setRouter(null)
+        removeToken()
+        this.$router.replace({
+          path: '/login'
+        })
+        setTimeout(() => {
+          location.reload()
+        })
+      }).catch(e => {
+        if (window.localStorage) {
+          let loc = window.localStorage
+          loc.removeItem('usersInfo')
+          loc.removeItem('menuArrObj')
+        }
+        this.setMenuArrObj(null)
+        this.setMenu(null)
+        this.setRouter(null)
+        removeToken()
+        this.$router.replace({
+          path: '/login'
+        })
+        setTimeout(() => {
+          location.reload()
+        })
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
       })
     },
     userOutCanc () {

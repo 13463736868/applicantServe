@@ -13,7 +13,7 @@
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
         <Col span="2" offset="12">
-          <Button type="primary" @click="resAddUser">添加</Button>
+          <Button type="primary" @click="resAddUser('add')">添加</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -31,7 +31,7 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.addUser" @alertConfirm="addUserSave" @alertCancel="alertCanc('addUser')" alertTitle="添加用户">
+    <alert-btn-info :alertShow="alertShow.addUser" @alertConfirm="addUserSave" @alertCancel="alertCanc('addUser')" :alertTitle="alertShow.typeName">
       <div>
         <Row class="_labelFor">
           <Col span="6" offset="1">
@@ -49,7 +49,7 @@
             <Input v-model="addData.loginname"></Input>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <Row class="_labelFor" v-if="alertShow.type === 'add'">
           <Col span="6" offset="1">
             <p><span class="_span">*</span><b>登陆密码：</b></p>
           </Col>
@@ -83,11 +83,34 @@
             </Select>
           </Col>
         </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>部门：</b></p>
+          </Col>
+          <Col span="16">
+            <Select v-model="addData.department">
+              <Option v-for="item in depaList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>职位：</b></p>
+          </Col>
+          <Col span="16">
+            <Select v-model="addData.role">
+              <Option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </Col>
+        </Row>
       </div>
     </alert-btn-info>
     <alert-btn-info :alertShow="userObj.stateShow" @alertConfirm="stateSave" @alertCancel="alertCanc('state')" alertTitle="操作">
       <p v-if="userObj.stateCode === 2">确定要停用吗？</p>
       <p v-else-if="userObj.stateCode === 1">确定要启用吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="userObj.resetShow" @alertConfirm="resetSave" @alertCancel="alertCanc('reset')" alertTitle="操作">
+      <p>确定要重置密码吗？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -97,6 +120,7 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'user_mana',
@@ -162,7 +186,9 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        addUser: false
+        addUser: false,
+        type: '',
+        typeName: ''
       },
       addData: {
         name: '',
@@ -184,10 +210,13 @@ export default {
           label: '停用'
         }
       ],
+      depaList: [],
+      roleList: [],
       userId: null,
       userObj: {
         stateShow: false,
-        stateCode: null
+        stateCode: null,
+        resetShow: false
       }
     }
   },
@@ -322,10 +351,36 @@ export default {
       this.resCaseList()
     },
     resResetUser (index) {
-      console.log(this.caseList.bodyList[index])
+      this.userObj.resetShow = true
+      this.userId = this.caseList.bodyList[index].id
+    },
+    resetSave () {
+      axios.put('/user/password/' + this.userId).then(res => {
+        this.alertCanc('reset')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+      }).catch(e => {
+        this.alertCanc('reset')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resEditUser (index) {
-      console.log(this.caseList.bodyList[index])
+      let _res = this.caseList.bodyList[index]
+      this.userId = _res.id
+      this.addData.name = _res.name
+      this.addData.loginname = _res.loginname
+      this.addData.password = _res.password
+      this.addData.phone = _res.phone
+      this.addData.email = _res.email
+      this.addData.state = _res.state
+      this.addData.department = _res.department.id
+      this.addData.role = _res.role.id
+      this.resAddUser('edit')
     },
     resStatusUser (type, index) {
       this.userObj.stateCode = type
@@ -334,11 +389,12 @@ export default {
     },
     stateSave () {
       axios.put('/user', {
-        headers: {
-          'content-Type': 'application/json;charset=UTF-8'
-        },
         id: this.userId,
         state: this.userObj.stateCode
+      }, {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        }
       }).then(res => {
         this.alertCanc('state')
         this.$Message.success({
@@ -347,17 +403,169 @@ export default {
         })
         this.resCaseList()
       }).catch(e => {
+        this.alertCanc('state')
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
       })
     },
-    resAddUser () {
-      this.alertShow.addUser = true
+    resAddUser (type) {
+      if (type === 'add') {
+        this.alertShow.type = 'add'
+        this.alertShow.typeName = '添加用户'
+      } else if (type === 'edit') {
+        this.alertShow.type = 'edit'
+        this.alertShow.typeName = '修改用户'
+      }
+      axios.all([axios.get('/auth/department'), axios.get('/auth/role')]).then(axios.spread((resO, resT) => {
+        let listO = resO.data.data
+        let listT = resT.data.data
+        let selectO = []
+        let selectT = []
+        for (let k in listO) {
+          let _o = {}
+          _o.value = listO[k].id
+          _o.label = listO[k].name
+          selectO.push(_o)
+        }
+        for (let k in listT) {
+          let _t = {}
+          _t.value = listT[k].id
+          _t.label = listT[k].name
+          selectT.push(_t)
+        }
+        this.depaList = selectO
+        this.roleList = selectT
+        this.alertShow.addUser = true
+      })).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     addUserSave () {
-      console.log('axios_addUser')
+      if (this.addData.name === '') {
+        this.$Message.warning({
+          content: '用户名称不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.name, 'name')) {
+        this.$Message.warning({
+          content: '请输入正确用户名只能包含汉字',
+          duration: 5
+        })
+      } else if (this.addData.loginname === '') {
+        this.$Message.warning({
+          content: '登录名不能为空',
+          duration: 5
+        })
+      } else if (this.addData.password === '') {
+        this.$Message.warning({
+          content: '登录密码不能为空',
+          duration: 5
+        })
+      } else if (this.alertShow === 'add' && !setRegExp(this.addData.password, 'password')) {
+        this.$Message.warning({
+          content: '密码长度6~20位,只能包含数字,字母,下划线',
+          duration: 5
+        })
+      } else if (this.addData.phone === '') {
+        this.$Message.warning({
+          content: '手机号码不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.phone, 'phone')) {
+        this.$Message.warning({
+          content: '手机号码格式不正确',
+          duration: 5
+        })
+      } else if (this.addData.email === '') {
+        this.$Message.warning({
+          content: '邮箱地址不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.email, 'email')) {
+        this.$Message.warning({
+          content: '邮箱地址格式不正确',
+          duration: 5
+        })
+      } else if (this.addData.state !== 1 && this.addData.state !== 2) {
+        this.$Message.warning({
+          content: '请选择用户状态',
+          duration: 5
+        })
+      } else if (this.addData.department === '') {
+        this.$Message.warning({
+          content: '请选择部门',
+          duration: 5
+        })
+      } else if (this.addData.role === '') {
+        this.$Message.warning({
+          content: '请选择职位',
+          duration: 5
+        })
+      } else {
+        this.sendAjax()
+      }
+    },
+    sendAjax () {
+      let type = this.alertShow.type
+      if (type === 'add') {
+        axios.post('/user', {
+          name: this.addData.name,
+          loginname: this.addData.loginname,
+          password: this.addData.password,
+          phone: this.addData.phone,
+          email: this.addData.email,
+          state: this.addData.state,
+          departmentId: this.addData.department,
+          roleId: this.addData.role
+        }).then(res => {
+          this.alertCanc('addUser')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('addUser')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      } else if (type === 'edit') {
+        axios.put('/user', {
+          id: this.userId,
+          name: this.addData.name,
+          loginname: this.addData.loginname,
+          password: this.addData.password,
+          phone: this.addData.phone,
+          email: this.addData.email,
+          state: this.addData.state,
+          department: {id: this.addData.department},
+          role: {id: this.addData.role}
+        }, {
+          headers: {
+            'content-Type': 'application/json;charset=UTF-8'
+          }
+        }).then(res => {
+          this.alertCanc('addUser')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('addUser')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
     },
     alertCanc (type) {
       if (type === 'addUser') {
@@ -372,6 +580,11 @@ export default {
           department: '',
           role: ''
         }
+        this.depaList = []
+        this.roleList = []
+        this.alertShow.type = ''
+        this.alertShow.typeName = ''
+        this.userId = null
       } else if (type === 'state') {
         this.userId = null
         this.userObj.stateShow = false
@@ -379,6 +592,9 @@ export default {
       } else if (type === 'dele') {
         this.userId = null
         this.userObj.deleShow = false
+      } else if (type === 'reset') {
+        this.userId = null
+        this.userObj.resetShow = false
       }
     }
   }

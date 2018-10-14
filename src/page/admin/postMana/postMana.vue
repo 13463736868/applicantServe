@@ -13,7 +13,7 @@
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
         <Col span="2" offset="12">
-          <Button type="primary" @click="resAddPost">添加</Button>
+          <Button type="primary" @click="resAddPost('add')">添加</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -24,7 +24,11 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.addPost" @alertConfirm="addPostSave" @alertCancel="alertCanc('addPost')" alertTitle="添加角色">
+    <alert-btn-info :alertShow="userObj.stateShow" @alertConfirm="stateSave" @alertCancel="alertCanc('state')" alertTitle="操作">
+      <p v-if="userObj.stateCode === 2">确定要停用吗？</p>
+      <p v-else-if="userObj.stateCode === 1">确定要启用吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.addPost" @alertConfirm="addPostSave" @alertCancel="alertCanc('addPost')" :alertTitle="alertShow.typeName">
       <div>
         <Row class="_labelFor">
           <Col span="6" offset="1">
@@ -54,6 +58,7 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'post_mana',
@@ -98,7 +103,9 @@ export default {
         bodyList: []
       },
       alertShow: {
-        addPost: false
+        addPost: false,
+        type: '',
+        typeName: ''
       },
       addData: {
         name: '',
@@ -113,7 +120,12 @@ export default {
           value: 2,
           label: '停用'
         }
-      ]
+      ],
+      userId: null,
+      userObj: {
+        stateShow: false,
+        stateCode: null
+      }
     }
   },
   created () {
@@ -239,25 +251,133 @@ export default {
       this.resCaseList()
     },
     resStatusPost (type, index) {
-      console.log(this.caseList.bodyList[index])
+      this.userObj.stateCode = type
+      this.userId = this.caseList.bodyList[index].id
+      this.userObj.stateShow = true
+    },
+    stateSave () {
+      axios.put('/auth/role', {
+        id: this.userId,
+        state: this.userObj.stateCode
+      }, {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        }
+      }).then(res => {
+        this.alertCanc('state')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('state')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resEditPost (index) {
-      console.log(this.caseList.bodyList[index])
+      let _res = this.caseList.bodyList[index]
+      this.userId = _res.id
+      this.addData.name = _res.name
+      this.addData.state = _res.state
+      this.resAddPost('edit')
     },
     resRestPost (index) {
-      console.log(this.caseList.bodyList[index])
+      let _res = this.caseList.bodyList[index]
+      axios.get('/auth/function/' + _res.id).then(res => {
+        console.log(res.data.data)
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
-    resAddPost () {
+    resAddPost (type) {
+      if (type === 'add') {
+        this.alertShow.type = 'add'
+        this.alertShow.typeName = '添加角色'
+      } else if (type === 'edit') {
+        this.alertShow.type = 'edit'
+        this.alertShow.typeName = '修改角色'
+      }
       this.alertShow.addPost = true
     },
     addPostSave () {
-      console.log('axios_addPost')
+      if (this.addData.name === '') {
+        this.$Message.warning({
+          content: '角色名称不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.name, 'name')) {
+        this.$Message.warning({
+          content: '角色名称只能包含汉字',
+          duration: 5
+        })
+      } else {
+        this.sendAjax()
+      }
+    },
+    sendAjax () {
+      let type = this.alertShow.type
+      if (type === 'add') {
+        axios.post('/auth/role', {
+          name: this.addData.name,
+          state: this.addData.state
+        }).then(res => {
+          this.alertCanc('addPost')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('addPost')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      } else if (type === 'edit') {
+        axios.put('/auth/role', {
+          id: this.userId,
+          name: this.addData.name,
+          state: this.addData.state
+        }, {
+          headers: {
+            'content-Type': 'application/json;charset=UTF-8'
+          }
+        }).then(res => {
+          this.alertCanc('addPost')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('addPost')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
     },
     alertCanc (type) {
       if (type === 'addPost') {
         this.alertShow.addPost = false
         this.addData.name = ''
         this.addData.state = 1
+        this.userId = null
+        this.alertShow.type = ''
+        this.alertShow.typeName = ''
+      } else if (type === 'state') {
+        this.userId = null
+        this.userObj.stateShow = false
+        this.userObj.stateCode = null
       }
     }
   }
