@@ -54,7 +54,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>负责人：</b></p>
+            <p><span class="_span"></span><b class="ml5">负责人：</b></p>
           </Col>
           <Col span="16">
             <Select v-model="addData.leader">
@@ -134,7 +134,7 @@ export default {
         name: '',
         code: '',
         state: 1,
-        leader: ''
+        leader: null
       },
       stateList: [
         {
@@ -281,6 +281,7 @@ export default {
       this.userId = _res.id
       this.addData.name = _res.name
       this.addData.state = _res.state
+      this.addData.code = _res.code
       this.addData.leader = _res.leader === null ? '' : _res.leader.id
       this.resAddDepa('edit')
     },
@@ -304,7 +305,7 @@ export default {
         for (let k in _res) {
           let _o = {}
           _o.value = _res[k].id
-          _o.label = _res[k].name
+          _o.label = _res[k].name + ' (' + _res[k].phone + ')'
           select.push(_o)
         }
         this.principalList = select
@@ -348,7 +349,7 @@ export default {
           name: this.addData.name,
           code: this.addData.code,
           state: this.addData.state,
-          leader: this.addData.leader
+          leaderId: this.addData.leader
         }).then(res => {
           this.alertCanc('addDepa')
           this.$Message.success({
@@ -368,7 +369,7 @@ export default {
           id: this.userId,
           name: this.addData.name,
           state: this.addData.state,
-          leader: this.addData.leader
+          leader: {id: this.addData.leader}
         }, {
           headers: {
             'content-Type': 'application/json;charset=UTF-8'
@@ -395,7 +396,7 @@ export default {
         this.addData.name = ''
         this.addData.code = ''
         this.addData.state = 1
-        this.addData.leader = ''
+        this.addData.leader = null
         this.userId = null
         this.addData.principal = ''
         this.alertShow.type = ''

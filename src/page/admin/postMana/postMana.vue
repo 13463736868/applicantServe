@@ -50,6 +50,11 @@
         </Row>
       </div>
     </alert-btn-info>
+    <alert-btn-info :alertShow="userObj.restShow" @alertConfirm="restSave" @alertCancel="alertCanc('rest')" alertTitle="操作">
+      <div v-for="(item, index) in restList" :key="index">
+        <Checkbox class="pb5 ml10" v-model="item.check">{{item.name}}</Checkbox>
+      </div>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -124,8 +129,10 @@ export default {
       userId: null,
       userObj: {
         stateShow: false,
-        stateCode: null
-      }
+        stateCode: null,
+        restShow: false
+      },
+      restList: []
     }
   },
   created () {
@@ -287,9 +294,47 @@ export default {
     },
     resRestPost (index) {
       let _res = this.caseList.bodyList[index]
+      this.userId = _res.id
       axios.get('/auth/function/' + _res.id).then(res => {
-        console.log(res.data.data)
+        let _res = res.data.data
+        let _list = []
+        for (let k in _res) {
+          let _o = {}
+          _o.check = _res[k].checked
+          _o.name = _res[k].name
+          _o.id = _res[k].id
+          _list.push(_o)
+        }
+        this.restList = _list
+        this.userObj.restShow = true
       }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    restSave () {
+      let list = this.restList
+      let arr = []
+      for (let k in list) {
+        if (list[k].check) {
+          arr.push({id: list[k].id})
+        }
+      }
+      axios.put('/auth/function/' + this.userId, arr, {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        }
+      }).then(res => {
+        this.alertCanc('rest')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('rest')
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
@@ -378,6 +423,10 @@ export default {
         this.userId = null
         this.userObj.stateShow = false
         this.userObj.stateCode = null
+      } else if (type === 'rest') {
+        this.userObj.restShow = false
+        this.restList = []
+        this.userId = null
       }
     }
   }
