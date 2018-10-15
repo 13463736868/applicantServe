@@ -28,6 +28,105 @@
         </Row>
       </div>
     </div>
+    <create-docu :alertShow="alertShow.canc" @alertConfirm="docuSave('canc')" @alertSee="seeDocu('canc')" @alertCancel="alertCanc('canc')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>合同名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.contractName"></Input>
+        </Col>
+      </Row>
+    </create-docu>
+    <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('end')" @alertSee="seeDocu('end')" @alertCancel="alertCanc('end')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>文书类型：</b></p>
+        </Col>
+        <Col span="16">
+          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
+            <Radio :label="1">裁决书</Radio>
+            <Radio :label="2">调解书</Radio>
+          </RadioGroup>
+        </Col>
+      </Row>
+      <div v-if="alertShow.docuType === 1">
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>合同名称：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.contractName"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>合同约定情况：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.contractualStipulation"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>合同履行情况：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.contractPerformance"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>需要还款本金：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.repaymentPrincipal"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>还款基数：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.repaymentBase"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>年利率：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.annualRate"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b title="关于利息及逾期利息的计算">利息计算：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.interestCalculation"></Input>
+          </Col>
+        </Row>
+      </div>
+      <div v-else-if="alertShow.docuType === 2">
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>合同名称：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.contractName"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b title="自愿达成协议内容">协议内容：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="alertShow.agreementContent"></Input>
+          </Col>
+        </Row>
+      </div>
+    </create-docu>
   </div>
 </template>
 
@@ -35,10 +134,11 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import createDocu from '@/components/common/createDocu'
 
 export default {
   name: 'group_case',
-  components: { headTop, spinComp },
+  components: { headTop, spinComp, createDocu },
   data () {
     return {
       spinShow: false,
@@ -92,6 +192,7 @@ export default {
           {
             title: '开庭时间',
             key: 'beginTime',
+            minWidth: 18,
             align: 'center'
           },
           {
@@ -115,6 +216,20 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertShow: {
+        canc: false,
+        contractName: '',
+        docuType: null,
+        userId: null,
+        end: false,
+        contractualStipulation: '',
+        contractPerformance: '',
+        repaymentPrincipal: '',
+        repaymentBase: '',
+        annualRate: '',
+        interestCalculation: '',
+        agreementContent: ''
       }
     }
   },
@@ -298,11 +413,68 @@ export default {
         })
       })
     },
+    getFormatDate () {
+      let date = new Date()
+      let year = date.getFullYear()
+      let month = date.getMonth() + 1
+      let strD = date.getDate()
+      let hour = date.getHours()
+      let minu = date.getMinutes()
+      let sec = date.getSeconds()
+      let time = ''
+      if (month < 10) {
+        month = '0' + month
+      }
+      if (strD < 10) {
+        strD = '0' + strD
+      }
+      if (hour < 10) {
+        hour = '0' + hour
+      }
+      if (minu < 10) {
+        minu = '0' + minu
+      }
+      if (sec < 10) {
+        sec = '0' + sec
+      }
+      time = year + '-' + month + '-' + strD + ' ' + hour + ':' + minu + ':' + sec
+      return time
+    },
     resCancCase (index) {
-      console.log(this.caseList.bodyList[index])
+      let _res = this.caseList.bodyList[index]
+      let newTime = this.getFormatDate()
+      let newD = newTime.substr(0, 10).split('-').join('')
+      let newT = newTime.substr(11, 5).split('-').join('')
+      let beginTime = _res.beginTime
+      let beginD = beginTime.substr(0, 10).split('-').join('')
+      let beginT = beginTime.substr(11, 5).split('-').join('')
+      if (newD - beginD < 0) {
+        this.$Message.warning({
+          content: '只能开庭半小时之后点击撤回',
+          duration: 5
+        })
+      } else if (newD - beginD === 0) {
+        if (newT - beginT > 30) {
+          this.alertShow.userId = _res.id
+          this.alertShow.docuType = 6
+          this.alertShow.canc = true
+        } else {
+          this.$Message.warning({
+            content: '只能开庭半小时之后点击撤回',
+            duration: 5
+          })
+        }
+      } else if (newD - beginD > 0) {
+        this.alertShow.userId = _res.id
+        this.alertShow.docuType = 6
+        this.alertShow.canc = true
+      }
     },
     resEndCase (index) {
-      console.log(this.caseList.bodyList[index])
+      let _res = this.caseList.bodyList[index]
+      this.alertShow.userId = _res.id
+      this.alertShow.docuType = 1
+      this.alertShow.end = true
     },
     resPassReve (index) {
       console.log(this.caseList.bodyList[index])
@@ -312,6 +484,288 @@ export default {
     },
     resRenderDoc (index) {
       console.log(this.caseList.bodyList[index])
+    },
+    docuSave (type) {
+      switch (type) {
+        case 'canc':
+          if (this.alertShow.contractName === '') {
+            this.$Message.warning({
+              content: '请填写合同名称',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/addDocumentFile', {
+              caseId: this.alertShow.userId,
+              documentType: this.alertShow.docuType,
+              jsonData: JSON.stringify({contractName: this.alertShow.contractName})
+            }).then(res => {
+              this.alertCanc('canc')
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2
+              })
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
+        case 'end':
+          if (this.alertShow.docuType === 1) {
+            if (this.alertShow.contractName === '') {
+              this.$Message.warning({
+                content: '请填写合同名称',
+                duration: 5
+              })
+            } else if (this.alertShow.contractualStipulation === '') {
+              this.$Message.warning({
+                content: '请填写合同约定情况',
+                duration: 5
+              })
+            } else if (this.alertShow.contractPerformance === '') {
+              this.$Message.warning({
+                content: '请填写合同履行情况',
+                duration: 5
+              })
+            } else if (this.alertShow.repaymentPrincipal === '') {
+              this.$Message.warning({
+                content: '请填写需要还款本金',
+                duration: 5
+              })
+            } else if (this.alertShow.repaymentBase === '') {
+              this.$Message.warning({
+                content: '请填写还款基数',
+                duration: 5
+              })
+            } else if (this.alertShow.annualRate === '') {
+              this.$Message.warning({
+                content: '请填写年利率',
+                duration: 5
+              })
+            } else if (this.alertShow.interestCalculation === '') {
+              this.$Message.warning({
+                content: '请填写利息计算',
+                duration: 5
+              })
+            } else {
+              axios.post('/case/addDocumentFile', {
+                caseId: this.alertShow.userId,
+                documentType: this.alertShow.docuType,
+                jsonData: JSON.stringify({
+                  contractName: this.alertShow.contractName,
+                  contractualStipulation: this.alertShow.contractualStipulation,
+                  contractPerformance: this.alertShow.contractPerformance,
+                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
+                  repaymentBase: this.alertShow.repaymentBase,
+                  annualRate: this.alertShow.annualRate,
+                  interestCalculation: this.alertShow.interestCalculation
+                })
+              }).then(res => {
+                this.alertCanc('end')
+                this.$Message.success({
+                  content: '操作成功',
+                  duration: 2
+                })
+              }).catch(e => {
+                this.$Message.error({
+                  content: '错误信息:' + e + ' 稍后再试',
+                  duration: 5
+                })
+              })
+            }
+          } else if (this.alertShow.docuType === 2) {
+            if (this.alertShow.contractName === '') {
+              this.$Message.warning({
+                content: '请填写合同名称',
+                duration: 5
+              })
+            } else if (this.alertShow.agreementContent === '') {
+              this.$Message.warning({
+                content: '请填写协议内容',
+                duration: 5
+              })
+            } else {
+              axios.post('/case/addDocumentFile', {
+                caseId: this.alertShow.userId,
+                documentType: this.alertShow.docuType,
+                jsonData: JSON.stringify({
+                  contractName: this.alertShow.contractName,
+                  agreementContent: this.alertShow.agreementContent
+                })
+              }).then(res => {
+                this.alertCanc('end')
+                this.$Message.success({
+                  content: '操作成功',
+                  duration: 2
+                })
+              }).catch(e => {
+                this.$Message.error({
+                  content: '错误信息:' + e + ' 稍后再试',
+                  duration: 5
+                })
+              })
+            }
+          } else {
+            this.$Message.error({
+              content: '请稍后再试',
+              duration: 5
+            })
+          }
+          break
+        default:
+          break
+      }
+    },
+    seeDocu (type) {
+      switch (type) {
+        case 'canc':
+          if (this.alertShow.contractName === '') {
+            this.$Message.warning({
+              content: '请填写合同名称',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/previewDocumentFile', {
+              caseId: this.alertShow.userId,
+              documentType: this.alertShow.docuType,
+              jsonData: JSON.stringify({contractName: this.alertShow.contractName})
+            }).then(res => {
+              window.open(res.data.data.filepath, '_blank')
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
+        case 'end':
+          if (this.alertShow.docuType === 1) {
+            if (this.alertShow.contractName === '') {
+              this.$Message.warning({
+                content: '请填写合同名称',
+                duration: 5
+              })
+            } else if (this.alertShow.contractualStipulation === '') {
+              this.$Message.warning({
+                content: '请填写合同约定情况',
+                duration: 5
+              })
+            } else if (this.alertShow.contractPerformance === '') {
+              this.$Message.warning({
+                content: '请填写合同履行情况',
+                duration: 5
+              })
+            } else if (this.alertShow.repaymentPrincipal === '') {
+              this.$Message.warning({
+                content: '请填写需要还款本金',
+                duration: 5
+              })
+            } else if (this.alertShow.repaymentBase === '') {
+              this.$Message.warning({
+                content: '请填写还款基数',
+                duration: 5
+              })
+            } else if (this.alertShow.annualRate === '') {
+              this.$Message.warning({
+                content: '请填写年利率',
+                duration: 5
+              })
+            } else if (this.alertShow.interestCalculation === '') {
+              this.$Message.warning({
+                content: '请填写利息计算',
+                duration: 5
+              })
+            } else {
+              axios.post('/case/previewDocumentFile', {
+                caseId: this.alertShow.userId,
+                documentType: this.alertShow.docuType,
+                jsonData: JSON.stringify({
+                  contractName: this.alertShow.contractName,
+                  contractualStipulation: this.alertShow.contractualStipulation,
+                  contractPerformance: this.alertShow.contractPerformance,
+                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
+                  repaymentBase: this.alertShow.repaymentBase,
+                  annualRate: this.alertShow.annualRate,
+                  interestCalculation: this.alertShow.interestCalculation
+                })
+              }).then(res => {
+                window.open(res.data.data.filepath, '_blank')
+              }).catch(e => {
+                this.$Message.error({
+                  content: '错误信息:' + e + ' 稍后再试',
+                  duration: 5
+                })
+              })
+            }
+          } else if (this.alertShow.docuType === 2) {
+            if (this.alertShow.contractName === '') {
+              this.$Message.warning({
+                content: '请填写合同名称',
+                duration: 5
+              })
+            } else if (this.alertShow.agreementContent === '') {
+              this.$Message.warning({
+                content: '请填写协议内容',
+                duration: 5
+              })
+            } else {
+              axios.post('/case/previewDocumentFile', {
+                caseId: this.alertShow.userId,
+                documentType: this.alertShow.docuType,
+                jsonData: JSON.stringify({
+                  contractName: this.alertShow.contractName,
+                  agreementContent: this.alertShow.agreementContent
+                })
+              }).then(res => {
+                window.open(res.data.data.filepath, '_blank')
+              }).catch(e => {
+                this.$Message.error({
+                  content: '错误信息:' + e + ' 稍后再试',
+                  duration: 5
+                })
+              })
+            }
+          } else {
+            this.$Message.error({
+              content: '请稍后再试',
+              duration: 5
+            })
+          }
+          break
+        default:
+          break
+      }
+    },
+    alertCanc (type) {
+      switch (type) {
+        case 'canc':
+          this.alertShow.canc = false
+          this.alertShow.contractName = ''
+          this.alertShow.userId = null
+          this.alertShow.docuType = null
+          break
+        case 'end':
+        case 'docuType':
+          this.alertShow.contractName = ''
+          this.alertShow.contractualStipulation = ''
+          this.alertShow.contractPerformance = ''
+          this.alertShow.repaymentPrincipal = ''
+          this.alertShow.repaymentBase = ''
+          this.alertShow.annualRate = ''
+          this.alertShow.interestCalculation = ''
+          this.alertShow.agreementContent = ''
+          if (type === 'end') {
+            this.alertShow.end = false
+            this.alertShow.userId = null
+            this.alertShow.docuType = null
+          }
+          break
+        default:
+          break
+      }
     }
   }
 }
@@ -331,6 +785,15 @@ export default {
   }
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
   }
 }
 </style>
