@@ -421,12 +421,12 @@ export default {
       if (this.indiObj.state === 1) {
         _data.id = this.indiObj.id
         _data.state = this.indiObj.state
-        this.sendAjax(_url, _data, 'inde')
+        this.sendAjax(_url, _data, 'indi')
       } else if (this.indiObj.state === 2) {
         _data.id = this.indiObj.id
         _data.state = this.indiObj.state
         _data.reason = this.indiObj.reason === null ? '' : this.indiObj.reason
-        this.sendAjax(_url, _data, 'inde')
+        this.sendAjax(_url, _data, 'indi')
       }
     },
     sendAjax (_url, _data, _type) {
