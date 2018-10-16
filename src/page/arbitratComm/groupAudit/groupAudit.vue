@@ -396,6 +396,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
+        this.resCaseList()
       }).catch(e => {
         this.alertCanc('agre')
         this.$Message.error({
