@@ -86,7 +86,7 @@ export default {
         })
         setTimeout(() => {
           location.reload()
-        })
+        },0)
       }).catch(e => {
         if (window.localStorage) {
           let loc = window.localStorage
@@ -102,7 +102,7 @@ export default {
         })
         setTimeout(() => {
           location.reload()
-        })
+        },0)
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
