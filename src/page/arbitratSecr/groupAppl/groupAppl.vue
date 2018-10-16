@@ -370,6 +370,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
+        this.resCaseList()
       }).catch(e => {
         this.alertCanc('subm')
         this.$Message.error({
@@ -449,7 +450,7 @@ export default {
     upTimeSave () {
       axios.post('/approve/updateBeginTime', {
         caseId: this.alertObj.caseId,
-        begintime: this.alertObj.time
+        beginTime: this.alertObj.time
       }).then(res => {
         this.alertCanc('begin')
         this.$Message.success({
