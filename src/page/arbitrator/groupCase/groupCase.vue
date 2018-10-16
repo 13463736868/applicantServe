@@ -127,6 +127,43 @@
         </Row>
       </div>
     </create-docu>
+    <alert-btn-info :alertShow="alertShow.reve" @alertConfirm="reveSave" @alertCancel="alertCanc('reve')" alertTitle="操作">
+      <p>确定要同意撤回吗？</p>
+    </alert-btn-info>
+    <create-docu :alertShow="alertShow.addE" @alertConfirm="docuSave('addE')" @alertSee="seeDocu('addE')" @alertCancel="alertCanc('addE')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>裁决书第几页：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.pageNum"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>裁决书第几行：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.lineNum"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>更改之前内容：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.oldContent"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>更改之后内容：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.newContent"></Input>
+        </Col>
+      </Row>
+    </create-docu>
   </div>
 </template>
 
@@ -135,10 +172,11 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'group_case',
-  components: { headTop, spinComp, createDocu },
+  components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -229,7 +267,13 @@ export default {
         repaymentBase: '',
         annualRate: '',
         interestCalculation: '',
-        agreementContent: ''
+        agreementContent: '',
+        reve: false,
+        addE: false,
+        pageNum: '',
+        lineNum: '',
+        oldContent: '',
+        newContent: ''
       }
     }
   },
@@ -305,23 +349,41 @@ export default {
             ])
           } else {
             if (_obj.caseDocumentState1 === '2' || _obj.caseDocumentState2 === '2') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px',
-                    marginBottom: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.resRenderDoc(params.index)
+              if (_obj.caseDocumentState1 === '2') {
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resEndCase(params.index)
+                      }
                     }
-                  }
-                }, '重新生成补正书')
-              ])
+                  }, '重新生成文书')
+                ])
+              } else if (_obj.caseDocumentState2 === '2') {
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resAddEvid(params.index)
+                      }
+                    }
+                  }, '重新生成文书')
+                ])
+              }
             } else if (_obj.caseDocumentState2 === '3') {
               return h('div', [
                 h('Button', {
@@ -477,13 +539,33 @@ export default {
       this.alertShow.end = true
     },
     resPassReve (index) {
-      console.log(this.caseList.bodyList[index])
+      let res = this.caseList.bodyList[index]
+      this.alertShow.userId = res.id
+      this.alertShow.reve = true
+    },
+    reveSave () {
+      axios.post('/case/updateCaseStateByCancel', {
+        caseId: this.alertShow.userId
+      }).then(res => {
+        this.alertCanc('reve')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('reve')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resAddEvid (index) {
-      console.log(this.caseList.bodyList[index])
-    },
-    resRenderDoc (index) {
-      console.log(this.caseList.bodyList[index])
+      let res = this.caseList.bodyList[index]
+      this.alertShow.userId = res.id
+      this.alertShow.docuType = 3
+      this.alertShow.addE = true
     },
     docuSave (type) {
       switch (type) {
@@ -614,6 +696,51 @@ export default {
             })
           }
           break
+        case 'addE':
+          if (this.alertShow.pageNum === '') {
+            this.$Message.warning({
+              content: '请填写裁决书第几页',
+              duration: 5
+            })
+          } else if (this.alertShow.lineNum === '') {
+            this.$Message.warning({
+              content: '请填写裁决书第几行',
+              duration: 5
+            })
+          } else if (this.alertShow.oldContent === '') {
+            this.$Message.warning({
+              content: '请填写更改之前内容',
+              duration: 5
+            })
+          } else if (this.alertShow.newContent === '') {
+            this.$Message.warning({
+              content: '请填写更改之后内容',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/addDocumentFile', {
+              caseId: this.alertShow.userId,
+              documentType: this.alertShow.docuType,
+              jsonData: JSON.stringify({
+                pageNum: this.alertShow.pageNum,
+                lineNum: this.alertShow.lineNum,
+                oldContent: this.alertShow.oldContent,
+                newContent: this.alertShow.newContent
+              })
+            }).then(res => {
+              this.alertCanc('addE')
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2
+              })
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
         default:
           break
       }
@@ -735,6 +862,47 @@ export default {
             })
           }
           break
+        case 'addE':
+          if (this.alertShow.pageNum === '') {
+            this.$Message.warning({
+              content: '请填写裁决书第几页',
+              duration: 5
+            })
+          } else if (this.alertShow.lineNum === '') {
+            this.$Message.warning({
+              content: '请填写裁决书第几行',
+              duration: 5
+            })
+          } else if (this.alertShow.oldContent === '') {
+            this.$Message.warning({
+              content: '请填写更改之前内容',
+              duration: 5
+            })
+          } else if (this.alertShow.newContent === '') {
+            this.$Message.warning({
+              content: '请填写更改之后内容',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/previewDocumentFile', {
+              caseId: this.alertShow.userId,
+              documentType: this.alertShow.docuType,
+              jsonData: JSON.stringify({
+                pageNum: this.alertShow.pageNum,
+                lineNum: this.alertShow.lineNum,
+                oldContent: this.alertShow.oldContent,
+                newContent: this.alertShow.newContent
+              })
+            }).then(res => {
+              window.open(res.data.data.filepath, '_blank')
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
         default:
           break
       }
@@ -762,6 +930,19 @@ export default {
             this.alertShow.userId = null
             this.alertShow.docuType = null
           }
+          break
+        case 'reve':
+          this.alertShow.userId = null
+          this.alertShow.reve = false
+          break
+        case 'addE':
+          this.alertShow.userId = null
+          this.alertShow.docuType = null
+          this.alertShow.pageNum = ''
+          this.alertShow.lineNum = ''
+          this.alertShow.oldContent = ''
+          this.alertShow.newContent = ''
+          this.alertShow.addE = false
           break
         default:
           break
