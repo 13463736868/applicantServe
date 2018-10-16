@@ -501,9 +501,16 @@ export default {
       }
     },
     upTimeSave () {
+      let _type = null
+      if (this.alertObj.type === 'once') {
+        _type = 1
+      } else if (this.alertObj.type === 'edit') {
+        _type = 2
+      }
       axios.post('/approve/updateBeginTime', {
         caseId: this.alertObj.caseId,
-        beginTime: this.alertObj.time
+        beginTime: this.alertObj.time,
+        updateType: _type
       }).then(res => {
         this.alertCanc('begin')
         this.$Message.success({
