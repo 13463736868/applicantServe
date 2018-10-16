@@ -111,6 +111,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
+            minWidth: 98,
             render: (h, params) => {
               return this.renderBtn(h, params)
             }
@@ -126,7 +127,8 @@ export default {
       alertShow: {
         state: null,
         docu: false,
-        id: null
+        id: null,
+        caseDocuId: null
       }
     }
   },
@@ -237,18 +239,21 @@ export default {
     },
     resSaveDocu (index) {
       this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.caseDocuId = this.caseList.bodyList[index].caseDocuemntId
       this.alertShow.state = 1
       this.alertShow.docu = true
     },
     resCancDocu (index) {
       this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.caseDocuId = this.caseList.bodyList[index].caseDocuemntId
       this.alertShow.state = 2
       this.alertShow.docu = true
     },
     docuSave () {
       axios.post('/approve/updateCaseDocumentByApprove', {
         caseId: this.alertShow.id,
-        caseDocumentApprove: this.alertShow.state
+        caseDocumentApprove: this.alertShow.state,
+        caseDocuemntId: this.alertShow.caseDocuId
       }).then(res => {
         this.alertCanc()
         this.$Message.success({
@@ -268,6 +273,7 @@ export default {
       this.alertShow.docu = false
       this.alertShow.id = null
       this.alertShow.state = null
+      this.alertShow.caseDocuId = null
     }
   }
 }
