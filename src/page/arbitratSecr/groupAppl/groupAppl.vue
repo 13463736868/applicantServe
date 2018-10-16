@@ -206,7 +206,7 @@ export default {
                 this.resFileList(params.index)
               }
             }
-          }, '查看文件'),
+          }, '打印文件'),
           h('Button', {
             props: {
               type: 'primary',
@@ -235,7 +235,7 @@ export default {
                   this.resFileList(params.index)
                 }
               }
-            }, '查看文件'),
+            }, '打印文件'),
             h('Button', {
               props: {
                 type: 'primary',
@@ -263,7 +263,7 @@ export default {
                   this.resFileList(params.index)
                 }
               }
-            }, '查看文件'),
+            }, '打印文件'),
             h('Button', {
               props: {
                 type: 'primary',
@@ -291,7 +291,7 @@ export default {
                   this.resFileList(params.index)
                 }
               }
-            }, '查看文件')
+            }, '打印文件')
           ])
         }
       } else {
@@ -309,7 +309,7 @@ export default {
                 this.resFileList(params.index)
               }
             }
-          }, '查看文件')
+          }, '打印文件')
         ])
       }
     },
