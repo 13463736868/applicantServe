@@ -192,90 +192,138 @@ export default {
   methods: {
     renderBtn (h, params) {
       if (params.row.state === 4) {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
+        if (params.row.beginTime === null || params.row.beginTime === '') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resSubm(params.index)
+                }
               }
-            }
-          }, '打印文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            on: {
-              click: () => {
-                this.resSubm(params.index)
+            }, '通过')
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resFileList(params.index)
+                }
               }
-            }
-          }, '通过')
-        ])
+            }, '打印文件'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resSubm(params.index)
+                }
+              }
+            }, '通过')
+          ])
+        }
       } else if (params.row.state === 1) {
         if (params.row.alreadyBeginTime === 1) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resFileList(params.index)
+          if (params.row.beginTime === null || params.row.beginTime === '') {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    this.resBeginTime('edit', params.index)
+                  }
                 }
-              }
-            }, '打印文件'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.resBeginTime('edit', params.index)
+              }, '修改开庭时间')
+            ])
+          } else {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resFileList(params.index)
+                  }
                 }
-              }
-            }, '修改开庭时间')
-          ])
+              }, '打印文件'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    this.resBeginTime('edit', params.index)
+                  }
+                }
+              }, '修改开庭时间')
+            ])
+          }
         } else if (params.row.alreadyBeginTime === 2) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resFileList(params.index)
+          if (params.row.beginTime === null || params.row.beginTime === '') {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    this.resBeginTime('once', params.index)
+                  }
                 }
-              }
-            }, '打印文件'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.resBeginTime('once', params.index)
+              }, '指定开庭时间')
+            ])
+          } else {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resFileList(params.index)
+                  }
                 }
-              }
-            }, '指定开庭时间')
-          ])
+              }, '打印文件'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    this.resBeginTime('once', params.index)
+                  }
+                }
+              }, '指定开庭时间')
+            ])
+          }
         } else {
           return h('div', [
             h('Button', {
@@ -295,22 +343,27 @@ export default {
           ])
         }
       } else {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
+        if (params.row.beginTime === null || params.row.beginTime === '') {
+          return h('div', [
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resFileList(params.index)
+                }
               }
-            }
-          }, '打印文件')
-        ])
+            }, '打印文件')
+          ])
+        }
       }
     },
     resCaseList () {
