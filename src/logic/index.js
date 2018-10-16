@@ -37,6 +37,23 @@ const beforeEach = (to, from, next) => {
       if (store.state.menu === null) {
         store.commit('SET_MENU', getMenu(store.state.menuArrObj))
       }
+      if (to.fullPath.indexOf('idenInfo') === -1) {
+        loc.removeItem('idenCheckId')
+        loc.removeItem('idenCheckType')
+        store.commit('SET_IDENCHECKID', '')
+        store.commit('SET_IDENCHECKTYPE', '')
+      } else {
+        if (store.state.idenCheckId === null) {
+          if (loc.getItem('idenCheckId')) {
+            store.commit('SET_IDENCHECKID', loc.getItem('idenCheckId'))
+          }
+        }
+        if (store.state.idenCheckType === null) {
+          if (loc.getItem('idenCheckType')) {
+            store.commit('SET_IDENCHECKTYPE', loc.getItem('idenCheckType'))
+          }
+        }
+      }
       next()
     } else {
       next({

@@ -12,7 +12,9 @@ const state = {
   menu: null,
   router: null,
   caseId: '',
-  caseInfo: null
+  caseInfo: null,
+  idenCheckId: null,
+  idenCheckType: null
 }
 
 export default new Vuex.Store({

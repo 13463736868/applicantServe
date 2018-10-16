@@ -19,5 +19,11 @@ export default {
   },
   [types.SET_CASEINFO] (state, obj) {
     state.caseInfo = obj
+  },
+  [types.SET_IDENCHECKID] (state, obj) {
+    state.idenCheckId = obj
+  },
+  [types.SET_IDENCHECKTYPE] (state, obj) {
+    state.idenCheckType = obj
   }
 }

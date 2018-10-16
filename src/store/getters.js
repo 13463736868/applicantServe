@@ -4,5 +4,7 @@ export default {
   menu: state => state.menu,
   router: state => state.router,
   caseId: state => state.caseId,
-  caseInfo: state => state.caseInfo
+  caseInfo: state => state.caseInfo,
+  idenCheckId: state => state.idenCheckId,
+  idenCheckType: state => state.idenCheckType
 }

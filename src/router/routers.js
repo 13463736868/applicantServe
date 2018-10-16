@@ -146,6 +146,14 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenCheck.vue')))
   },
   {
+    path: '/idenInfo',
+    name: 'idenInfo',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenInfo.vue')))
+  },
+  {
     path: '/onesInfo',
     name: 'onesInfo',
     meta: {
@@ -167,7 +175,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo')
   _r.push({
     path: '/',
     redirect: _a[0]

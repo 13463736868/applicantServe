@@ -60,6 +60,7 @@
 
 <script>
 import axios from 'axios'
+import { mapActions } from 'vuex'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -79,7 +80,23 @@ export default {
           {
             title: '企业名称',
             key: 'name',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                },
+                on: {
+                  click: () => {
+                    this.goIdenInfo(2, params.index)
+                  }
+                }
+              }, params.row.name)
+            }
           },
           {
             title: '证照类型',
@@ -133,7 +150,23 @@ export default {
           {
             title: '姓名',
             key: 'name',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                },
+                on: {
+                  click: () => {
+                    this.goIdenInfo(1, params.index)
+                  }
+                }
+              }, params.row.name)
+            }
           },
           {
             title: '证件类型',
@@ -205,6 +238,10 @@ export default {
     this.dictionary()
   },
   methods: {
+    ...mapActions([
+      'setIdenCheckId',
+      'setIdenCheckType'
+    ]),
     renderCompBtn (h, params) {
       let _obj = params.row
       if (_obj.state === 3) {
@@ -457,6 +494,22 @@ export default {
         this.indiObj.state = null
         this.indiObj.reason = null
       }
+    },
+    goIdenInfo (type, index) {
+      if (type === 1) {
+        this.setIdenCheckId(this.indiList.bodyList[index].id)
+        window.localStorage.setItem('idenCheckId', this.indiList.bodyList[index].id)
+        this.setIdenCheckType(type)
+        window.localStorage.setItem('idenCheckType', type)
+      } else if (type === 2) {
+        this.setIdenCheckId(this.compList.bodyList[index].id)
+        window.localStorage.setItem('idenCheckId', this.compList.bodyList[index].id)
+        this.setIdenCheckType(type)
+        window.localStorage.setItem('idenCheckType', type)
+      }
+      this.$router.push({
+        path: '/idenInfo'
+      })
     }
   }
 }

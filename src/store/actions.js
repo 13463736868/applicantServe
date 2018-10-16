@@ -17,5 +17,11 @@ export default {
   },
   setCaseInfo ({commit, state}, obj) {
     commit('SET_CASEINFO', obj)
+  },
+  setIdenCheckId ({commit, state}, obj) {
+    commit('SET_IDENCHECKID', obj)
+  },
+  setIdenCheckType ({commit, state}, obj) {
+    commit('SET_IDENCHECKTYPE', obj)
   }
 }
