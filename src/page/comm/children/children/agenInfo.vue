@@ -21,11 +21,11 @@
       </Col>
       <Col class="_listR clearfix not_s" span="9" offset="1">
         <div v-if="isShowFile">
-          <Icon class="_iconLeft" type="chevron-left" @click="imgPrev"></Icon>
+          <Icon class="_iconLeft" type="ios-arrow-back" @click="imgPrev"></Icon>
           <div class="_imgBox">
             <img class="_fileImg" :class="{'_iconImg':isImgClass}" :src="fileImgSrc" alt="" :title="'点击查看: '+fileName" @click="seeImg(filePath)">
           </div>
-          <Icon class="_iconRight" type="chevron-right" @click="imgNext"></Icon>
+          <Icon class="_iconRight" type="ios-arrow-forward" @click="imgNext"></Icon>
         </div>
       </Col>
     </Row>
