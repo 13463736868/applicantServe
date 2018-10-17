@@ -22,7 +22,7 @@
         </Row>
       </div>
     </div>
-    <div class="_caseInfo">
+    <div class="_caseInfo" v-if="cIObj">
       <div class="_top">案件信息</div>
       <div class="_mid">
         <Row v-if="dataInfoShow">
@@ -45,7 +45,7 @@
             </p>
             <p>
               <span class="mr10"><b>仲裁员 :</b></span>
-              <span class="mr10" v-text="dataInfo.arbitrationName"></span>
+              <span class="mr10" v-text="dataInfo.arbitratorName"></span>
             </p>
             <p>
               <span class="mr10"><b>秘书 :</b></span>
@@ -70,6 +70,7 @@ export default {
   props: ['caseId', 'caseState'],
   data () {
     return {
+      cIObj: false,
       spinShow: false,
       progressText: null,
       logo: {
