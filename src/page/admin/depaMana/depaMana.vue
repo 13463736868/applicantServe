@@ -335,7 +335,7 @@ export default {
         })
       } else if (!setRegExp(this.addData.code, 'password')) {
         this.$Message.warning({
-          content: '部门编码只能包含数字,字母及下划线',
+          content: '部门编码只能包含数字,字母及下划线,长度6~20位',
           duration: 5
         })
       } else {
