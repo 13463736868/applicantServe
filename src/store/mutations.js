@@ -17,8 +17,8 @@ export default {
   [types.SET_CASEID] (state, id) {
     state.caseId = id
   },
-  [types.SET_CASEINFO] (state, obj) {
-    state.caseInfo = obj
+  [types.SET_CASESTATE] (state, obj) {
+    state.caseState = obj
   },
   [types.SET_IDENCHECKID] (state, obj) {
     state.idenCheckId = obj

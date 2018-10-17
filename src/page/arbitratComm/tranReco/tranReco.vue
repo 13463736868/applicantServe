@@ -53,6 +53,7 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import setRegExp from '@/config/regExp.js'
+import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'tran_reco_d',
@@ -237,7 +238,10 @@ export default {
       this.resCaseList()
     },
     goCaseInfo (index) {
-      console.log(this.caseList.bodyList[index])
+      let obj = {}
+      obj.caseId = this.caseList.bodyList[index].caseid
+      obj.state = this.caseList.bodyList[index].state
+      caseInfo(obj)
     }
   }
 }

@@ -48,6 +48,7 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_appl',
@@ -393,7 +394,10 @@ export default {
       this.resCaseList()
     },
     goCaseInfo (index) {
-      console.log(this.caseList.bodyList[index])
+      let obj = {}
+      obj.caseId = this.caseList.bodyList[index].id
+      obj.state = this.caseList.bodyList[index].state
+      caseInfo(obj)
     },
     resFileList (index) {
       let _obj = this.caseList.bodyList[index]

@@ -64,6 +64,7 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
+import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'acce_case',
@@ -80,7 +81,23 @@ export default {
           {
             title: '案件编号',
             key: 'caseId',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                },
+                on: {
+                  click: () => {
+                    this.goCaseInfo(params.index)
+                  }
+                }
+              }, params.row.caseId)
+            }
           },
           {
             title: '申请人',
@@ -100,6 +117,11 @@ export default {
           {
             title: '提交时间',
             key: 'createTime',
+            align: 'center'
+          },
+          {
+            title: '案件状态',
+            key: 'caseState',
             align: 'center'
           },
           {
@@ -376,6 +398,12 @@ export default {
         this.alertShow.retr = false
         this.dataObj.retrCaseId = null
       }
+    },
+    goCaseInfo (index) {
+      let obj = {}
+      obj.caseId = this.caseList.bodyList[index].caseId
+      obj.state = this.caseList.bodyList[index].state
+      caseInfo(obj)
     }
   }
 }

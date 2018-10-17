@@ -15,8 +15,8 @@ export default {
   setCaseId ({commit, state}, id) {
     commit('SET_CASEID', id)
   },
-  setCaseInfo ({commit, state}, obj) {
-    commit('SET_CASEINFO', obj)
+  setCaseState ({commit, state}, obj) {
+    commit('SET_CASESTATE', obj)
   },
   setIdenCheckId ({commit, state}, obj) {
     commit('SET_IDENCHECKID', obj)

@@ -41,12 +41,5 @@ export default {
   @include mw(1180px);
   @include bc;
   padding-top: 40px;
-  ._search {
-    max-width: 450px;
-    margin-bottom: 20px;
-  }
-  ._caseList {
-    margin-bottom: 20px;
-  }
 }
 </style>

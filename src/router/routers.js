@@ -167,7 +167,77 @@ const routerMap = [
     meta: {
       requireAuth: true
     },
-    component: r => require.ensure([], () => r(require('@/page/comm/caseInfo.vue')))
+    component: r => require.ensure([], () => r(require('@/page/comm/caseInfo.vue'))),
+    children: [
+      {
+        path: '',
+        redirect: '/caseInfo/basicInfo'
+      },
+      {
+        path: 'basicInfo',
+        name: 'basicInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/basicInfo.vue')), 'basicInfo')
+      },
+      {
+        path: 'proposerInfo',
+        name: 'proposerInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/proposerInfo.vue')), 'proposerInfo')
+      },
+      {
+        path: 'respondentInfo',
+        name: 'respondentInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/respondentInfo.vue')), 'respondentInfo')
+      },
+      {
+        path: 'claimItem',
+        name: 'claimItem',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/claimItem.vue')), 'claimItem')
+      },
+      {
+        path: 'revClaimItem',
+        name: 'revClaimItem',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/revClaimItem.vue')), 'revClaimItem')
+      },
+      {
+        path: 'evidencesInfo',
+        name: 'evidencesInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/evidencesInfo.vue')), 'evidencesInfo')
+      },
+      {
+        path: 'sendInfo',
+        name: 'sendInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/sendInfo.vue')), 'sendInfo')
+      },
+      {
+        path: 'endCaseInfo',
+        name: 'endCaseInfo',
+        meta: {
+          requireAuth: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/endCaseInfo.vue')), 'endCaseInfo')
+      }
+    ]
   }
 ]
 

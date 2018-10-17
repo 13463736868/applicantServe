@@ -173,6 +173,7 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_case',
@@ -460,7 +461,10 @@ export default {
       this.resCaseList()
     },
     goCaseInfo (index) {
-      console.log(this.caseList.bodyList[index])
+      let obj = {}
+      obj.caseId = this.caseList.bodyList[index].id
+      obj.state = this.caseList.bodyList[index].state
+      caseInfo(obj)
     },
     goCourtRoom (index) {
       let _info = this.caseList.bodyList[index]

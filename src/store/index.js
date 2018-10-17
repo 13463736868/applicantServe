@@ -12,7 +12,7 @@ const state = {
   menu: null,
   router: null,
   caseId: '',
-  caseInfo: null,
+  caseState: null,
   idenCheckId: null,
   idenCheckType: null
 }
