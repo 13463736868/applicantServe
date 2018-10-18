@@ -76,11 +76,11 @@ export default {
           },
           {
             title: '审核状态',
-            key: 'state',
+            key: 'jrState',
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.state === 1 ? '通过' : (params.row.state === 2 ? '驳回' : (params.row.state === 3 ? '未审核' : '')))
+              }, params.row.jrState === 1 ? '通过' : (params.row.jrState === 2 ? '驳回' : (params.row.jrState === 3 ? '未审核' : '')))
             }
           },
           {

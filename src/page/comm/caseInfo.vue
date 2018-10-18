@@ -155,7 +155,6 @@ export default {
     } else {
       this.menuClaim = this.menuClaimA
     }
-    console.log(this.caseId, this.caseState)
   },
   computed: {
     ...mapGetters([
