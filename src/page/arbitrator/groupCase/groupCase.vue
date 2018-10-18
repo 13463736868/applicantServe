@@ -469,7 +469,7 @@ export default {
     goCourtRoom (index) {
       let _info = this.caseList.bodyList[index]
       axios.post('/encryption', {
-        params: _info.id
+        params: _info.id + '$' + 1
       }).then(res => {
         window.open('https://192.168.1.249:3004/view/index.html#/' + res.data.data, '_blank')
       }).catch(e => {
