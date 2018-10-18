@@ -205,7 +205,7 @@ export default {
                   this.resSubm(params.index)
                 }
               }
-            }, '通过')
+            }, '提交')
           ])
         } else {
           return h('div', [
@@ -233,7 +233,7 @@ export default {
                   this.resSubm(params.index)
                 }
               }
-            }, '通过')
+            }, '提交')
           ])
         }
       } else if (params.row.state === 1) {
