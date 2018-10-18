@@ -590,6 +590,7 @@ export default {
                 content: '操作成功',
                 duration: 2
               })
+              this.resCaseList()
             }).catch(e => {
               this.$Message.error({
                 content: '错误信息:' + e + ' 稍后再试',
@@ -654,6 +655,7 @@ export default {
                   content: '操作成功',
                   duration: 2
                 })
+                this.resCaseList()
               }).catch(e => {
                 this.$Message.error({
                   content: '错误信息:' + e + ' 稍后再试',
@@ -686,6 +688,7 @@ export default {
                   content: '操作成功',
                   duration: 2
                 })
+                this.resCaseList()
               }).catch(e => {
                 this.$Message.error({
                   content: '错误信息:' + e + ' 稍后再试',
@@ -737,6 +740,7 @@ export default {
                 content: '操作成功',
                 duration: 2
               })
+              this.resCaseList()
             }).catch(e => {
               this.$Message.error({
                 content: '错误信息:' + e + ' 稍后再试',
