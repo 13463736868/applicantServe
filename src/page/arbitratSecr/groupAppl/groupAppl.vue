@@ -192,7 +192,7 @@ export default {
   },
   methods: {
     renderBtn (h, params) {
-      if (params.row.state === 4) {
+      if (params.row.tribunalRequestState === 4) {
         if (params.row.beginTime === null || params.row.beginTime === '') {
           return h('div', [
             h('Button', {
@@ -236,7 +236,7 @@ export default {
             }, '提交')
           ])
         }
-      } else if (params.row.state === 1) {
+      } else if (params.row.tribunalRequestState === 1) {
         if (params.row.alreadyBeginTime === 1) {
           if (params.row.beginTime === null || params.row.beginTime === '') {
             return h('div', [
