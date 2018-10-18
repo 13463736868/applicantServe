@@ -120,7 +120,7 @@
         </Row>
       </div>
     </div>
-    <Row v-if="seeShow" class="pb30">
+    <Row v-if="idenInfoState === 3" class="pb30">
       <Col class="tc" span="10" offset="1"><button class="_cancelBtn" @click="cancClick">驳 回</button></Col>
       <Col class="tc" span="10" offset="2"><button class="_saveBtn" @click="saveClick">通 过</button></Col>
     </Row>
@@ -137,7 +137,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'verify_c_info',
-  props: [ 'userType', 'idenInfoId' ],
+  props: [ 'userType', 'idenInfoId', 'idenInfoState' ],
   components: { alertBtnInfo },
   data () {
     return {

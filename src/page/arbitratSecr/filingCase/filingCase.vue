@@ -276,6 +276,7 @@ export default {
     createDoc (type, index) {
       this.createObj.show = true
       this.createObj.docType = type
+      this.createObj.id = this.caseList.bodyList[index].caseId
     },
     createSave () {
       axios.post('/case/addDocumentFile', {
@@ -290,6 +291,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
+        this.resCaseList()
       }).catch(e => {
         this.alertCanc()
         this.$Message.error({

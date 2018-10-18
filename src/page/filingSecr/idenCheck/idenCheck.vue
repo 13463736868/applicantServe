@@ -240,7 +240,8 @@ export default {
   methods: {
     ...mapActions([
       'setIdenCheckId',
-      'setIdenCheckType'
+      'setIdenCheckType',
+      'setIdenCheckState'
     ]),
     renderCompBtn (h, params) {
       let _obj = params.row
@@ -501,11 +502,15 @@ export default {
         window.localStorage.setItem('idenCheckId', this.indiList.bodyList[index].id)
         this.setIdenCheckType(type)
         window.localStorage.setItem('idenCheckType', type)
+        this.setIdenCheckState(this.indiList.bodyList[index].state)
+        window.localStorage.setItem('idenCheckState', this.indiList.bodyList[index].state)
       } else if (type === 2) {
         this.setIdenCheckId(this.compList.bodyList[index].id)
         window.localStorage.setItem('idenCheckId', this.compList.bodyList[index].id)
         this.setIdenCheckType(type)
         window.localStorage.setItem('idenCheckType', type)
+        this.setIdenCheckState(this.compList.bodyList[index].state)
+        window.localStorage.setItem('idenCheckState', this.compList.bodyList[index].state)
       }
       this.$router.push({
         path: '/idenInfo'
