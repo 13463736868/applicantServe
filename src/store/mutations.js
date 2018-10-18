@@ -25,5 +25,8 @@ export default {
   },
   [types.SET_IDENCHECKTYPE] (state, obj) {
     state.idenCheckType = obj
+  },
+  [types.SET_IDENCHECKSTATE] (state, obj) {
+    state.idenCheckState = obj
   }
 }

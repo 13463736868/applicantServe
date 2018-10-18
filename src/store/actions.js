@@ -23,5 +23,8 @@ export default {
   },
   setIdenCheckType ({commit, state}, obj) {
     commit('SET_IDENCHECKTYPE', obj)
+  },
+  setIdenCheckState ({commit, state}, obj) {
+    commit('SET_IDENCHECKSTATE', obj)
   }
 }

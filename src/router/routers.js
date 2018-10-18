@@ -163,7 +163,6 @@ const routerMap = [
   },
   {
     path: '/caseInfo',
-    name: 'caseInfo',
     meta: {
       requireAuth: true
     },
