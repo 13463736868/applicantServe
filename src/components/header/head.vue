@@ -71,23 +71,46 @@ export default {
       this.alertShowOut = true
     },
     userOutSave () {
-      axios.post('/SignOut').then(res => {
-        if (window.localStorage) {
-          let loc = window.localStorage
-          loc.removeItem('usersInfo')
-          loc.removeItem('menuArrObj')
-        }
-        this.setMenuArrObj(null)
-        this.setMenu(null)
-        this.setRouter(null)
-        removeToken()
-        this.$router.replace({
-          path: '/login'
+      try {
+        axios.post('/SignOut').then(res => {
+          removeToken()
+          if (window.localStorage) {
+            let loc = window.localStorage
+            loc.removeItem('usersInfo')
+            loc.removeItem('menuArrObj')
+          }
+          this.setMenuArrObj(null)
+          this.setMenu(null)
+          this.setRouter(null)
+          this.$router.replace({
+            path: '/login'
+          })
+          setTimeout(() => {
+            location.reload()
+          }, 0)
+        }).catch(e => {
+          removeToken()
+          if (window.localStorage) {
+            let loc = window.localStorage
+            loc.removeItem('usersInfo')
+            loc.removeItem('menuArrObj')
+          }
+          this.setMenuArrObj(null)
+          this.setMenu(null)
+          this.setRouter(null)
+          this.$router.replace({
+            path: '/login'
+          })
+          setTimeout(() => {
+            location.reload()
+          }, 0)
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
         })
-        setTimeout(() => {
-          location.reload()
-        }, 0)
-      }).catch(e => {
+      } catch (error) {
+        removeToken()
         if (window.localStorage) {
           let loc = window.localStorage
           loc.removeItem('usersInfo')
@@ -96,7 +119,6 @@ export default {
         this.setMenuArrObj(null)
         this.setMenu(null)
         this.setRouter(null)
-        removeToken()
         this.$router.replace({
           path: '/login'
         })
@@ -104,10 +126,10 @@ export default {
           location.reload()
         }, 0)
         this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
+          content: '错误信息:' + error + ' 稍后再试',
           duration: 5
         })
-      })
+      }
     },
     userOutCanc () {
       this.alertShowOut = false
