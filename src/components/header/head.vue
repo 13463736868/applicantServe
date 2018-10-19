@@ -88,6 +88,9 @@ export default {
           setTimeout(() => {
             location.reload()
           }, 0)
+          this.$router.replace({
+            path: '/login'
+          })
         }).catch(e => {
           removeToken()
           if (window.localStorage) {
@@ -104,6 +107,9 @@ export default {
           setTimeout(() => {
             location.reload()
           }, 0)
+          this.$router.replace({
+            path: '/login'
+          })
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
             duration: 5
@@ -125,6 +131,9 @@ export default {
         setTimeout(() => {
           location.reload()
         }, 0)
+        this.$router.replace({
+          path: '/login'
+        })
         this.$Message.error({
           content: '错误信息:' + error + ' 稍后再试',
           duration: 5
