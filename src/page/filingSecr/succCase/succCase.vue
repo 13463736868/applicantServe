@@ -34,6 +34,11 @@
           <Table stripe align="center" :loading="fileList.loading" :columns="fileList.header" :data="fileList.bodyList"></Table>
         </Col>
       </Row>
+      <Row class="pt15">
+        <Col span="12" offset="6" class="tc">
+          <Page simple :total="fileList.page.total" :current="fileList.page.pageNum" :page-size="fileList.page.pageSize" show-elevator show-total @on-change="reschangePageF"></Page>
+        </Col>
+      </Row>
     </alert-btn-info>
   </div>
 </template>
@@ -182,7 +187,13 @@ export default {
             }
           }
         ],
-        bodyList: []
+        bodyList: [],
+        page: {
+          total: 0,
+          pageNum: 1,
+          pageSize: 5
+        },
+        caseId: null
       }
     }
   },
@@ -226,13 +237,26 @@ export default {
       caseInfo(obj)
     },
     resFileList (index) {
-      let _obj = this.caseList.bodyList[index]
+      this.fileList.caseId = this.caseList.bodyList[index].caseId
+      this.sendFileList('once')
+    },
+    reschangePageF (page) {
+      this.fileList.page.pageNum = page
+      this.sendFileList('more')
+    },
+    sendFileList (type) {
       axios.post('/case/findCaseFileList', {
-        caseId: _obj.caseId,
+        pageIndex: (this.fileList.page.pageNum - 1) * this.fileList.page.pageSize,
+        pageSize: this.fileList.page.pageSize,
+        caseId: this.fileList.caseId,
         caseState: 1
       }).then(res => {
-        this.fileList.bodyList = res.data.data
-        this.alertObj.file = true
+        let _data = res.data.data
+        this.fileList.bodyList = _data.dataList === null ? [] : _data.dataList
+        this.fileList.page.total = _data.totalCount
+        if (type === 'once') {
+          this.alertObj.file = true
+        }
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
@@ -244,6 +268,9 @@ export default {
       if (type === 'file') {
         this.alertObj.file = false
         this.fileList.bodyList = []
+        this.fileList.page.pageNum = 1
+        this.fileList.page.total = 0
+        this.fileList.caseId = null
       }
     },
     seeDoc (path) {
