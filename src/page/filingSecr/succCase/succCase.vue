@@ -245,6 +245,9 @@ export default {
       this.sendFileList('more')
     },
     sendFileList (type) {
+      if (type === 'once') {
+        this.alertObj.file = true
+      }
       axios.post('/case/findCaseFileList', {
         pageIndex: (this.fileList.page.pageNum - 1) * this.fileList.page.pageSize,
         pageSize: this.fileList.page.pageSize,
@@ -254,9 +257,6 @@ export default {
         let _data = res.data.data
         this.fileList.bodyList = _data.dataList === null ? [] : _data.dataList
         this.fileList.page.total = _data.totalCount
-        if (type === 'once') {
-          this.alertObj.file = true
-        }
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
