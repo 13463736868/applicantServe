@@ -212,15 +212,22 @@ export default {
     resSuccess (res, file) {
       this.fileObj = null
       this.addInfoBtn = false
-      this.$Message.success({
-        content: '文件上传成功',
-        duration: 1,
-        onClose: () => {
-          setTimeout(() => {
-            this.$emit('saveClick', file.response.data)
-          })
-        }
-      })
+      if (res.flag === false) {
+        this.$Message.error({
+          content: '错误信息:' + res.message + '',
+          duration: 5
+        })
+      } else {
+        this.$Message.success({
+          content: '文件上传成功',
+          duration: 1,
+          onClose: () => {
+            setTimeout(() => {
+              this.$emit('saveClick', file.response.data)
+            })
+          }
+        })
+      }
     },
     resError (error, file) {
       this.addInfoBtn = false
