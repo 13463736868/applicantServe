@@ -26,7 +26,18 @@
             </Col>
             <Col span="18" class="tl">
               <input class="_input" v-model="user.password" placeholder="" :type="user.showPass === true?'text':'password'" @keyup.enter="resLogin"></input>
-              <Icon size="18" class="hand" :type="user.showPass === true?'eye':'eye-disabled'" @click="showPass"></Icon>
+              <Icon size="18" class="hand ml30 vtt" :type="user.showPass === true?'eye':'eye-disabled'" @click="showPass"></Icon>
+            </Col>
+          </Row>
+        </div>
+        <div class="_code bc">
+          <Row>
+            <Col span="6">
+              <label class="lh32 f16 fc9">验证码:</label>
+            </Col>
+            <Col span="18" class="tl">
+              <input class="_input" v-model="user.code" placeholder="" @keyup.enter="resLogin"></input>
+              <img class="_img" :src="codeImgSrc" alt="" @click="resGetCode">
             </Col>
           </Row>
         </div>
@@ -68,18 +79,25 @@ export default {
       user: {
         username: '',
         password: '',
+        code: '',
         showPass: false,
         loginBtn: false,
         em: '',
         emStatus: false
       },
-      loginInfo: null
+      loginInfo: null,
+      codeSrc: ''
     }
   },
   created () {
     this.clearTokenLoc()
   },
   mounted () {
+  },
+  computed: {
+    codeImgSrc () {
+      return '/api/verify/code' + this.codeSrc
+    }
   },
   methods: {
     ...mapActions([
@@ -98,6 +116,9 @@ export default {
     showPass () {
       this.user.showPass = !this.user.showPass
     },
+    resGetCode () {
+      this.codeSrc = '?t=' + (new Date()).valueOf()
+    },
     resLogin () {
       if (this.user.username === '') {
         this.user.emStatus = true
@@ -108,17 +129,27 @@ export default {
       } else if (!setRegExp(this.user.password, 'password')) {
         this.user.emStatus = true
         this.user.em = '密码错误'
+      } else if (this.user.code === '') {
+        this.user.emStatus = true
+        this.user.em = '请输入验证码'
+      } else if (this.user.code.length !== 4) {
+        this.user.emStatus = true
+        this.user.em = '请正确输入四位验证码'
       } else {
         this.user.emStatus = false
         this.user.em = ''
         axios.post('/login', {
           username: this.user.username,
-          password: this.user.password
+          password: this.user.password,
+          verifyCode: this.user.code
         }).then(res => {
           let _res = res.data.data
           this.loginInfo = res.data.data
           try {
             if (_res.roleId === null) {
+              this.user.password = ''
+              this.user.code = ''
+              this.resGetCode()
               this.$Message.error({
                 content: '登录身份未知,禁止登录',
                 duration: 5
@@ -128,12 +159,18 @@ export default {
               this.resGetMeun()
             }
           } catch (e) {
+            this.user.password = ''
+            this.user.code = ''
+            this.resGetCode()
             this.$Message.error({
               content: '错误信息:' + e,
               duration: 5
             })
           }
         }).catch(e => {
+          this.user.password = ''
+          this.user.code = ''
+          this.resGetCode()
           this.$Message.error({
             content: '错误信息:' + e,
             duration: 5
@@ -218,15 +255,16 @@ export default {
     ._bodyer {
       @include boxShadow(0 1px 6px -1px #bbb);
       background: #ffffff;
-      height: 290px;
-      ._username, ._password {
+      height: 325px;
+      padding-top: 15px;
+      ._username, ._password, ._code {
         width: 350px;
-        padding: 45px 0 5px;
+        padding: 25px 0 5px;
         border-bottom: 1px solid #ddd;
         letter-spacing: 1px;
         margin-bottom: 5px;
         ._input {
-          width: 80%;
+          width: 70%;
           letter-spacing: 1px;
           font-size: 16px;
           color: #666;
@@ -237,6 +275,11 @@ export default {
         ._input:focus {
           box-shadow: none;
           outline: 0px;
+        }
+        ._img {
+          width: 70px;
+          height: 32px;
+          float: right;
         }
       }
       ._footer {
