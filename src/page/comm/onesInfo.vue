@@ -61,6 +61,7 @@
                   :with-credentials="true"
                   :show-upload-list="false"
                   :format="fileType"
+                  :on-format-error="resFormError"
                   :on-success="resSuccess"
                   :on-error="resError"
                 ></Upload>
@@ -130,7 +131,7 @@ export default {
       dataObj: null,
       fileObjShow: false,
       fileObj: null,
-      fileType: ['png'],
+      fileType: ['jpg', 'jpeg', 'png'],
       imgUrl: '../../../static/images/sign.png',
       alertObj: {
         info: false,
@@ -228,6 +229,13 @@ export default {
           }
         })
       }
+    },
+    resFormError (file) {
+      this.addInfoBtn = false
+      this.$Message.error({
+        content: '文件格式错误只支持 ' + this.fileType,
+        duration: 2
+      })
     },
     resError (error, file) {
       this.addInfoBtn = false
