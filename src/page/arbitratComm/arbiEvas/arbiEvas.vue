@@ -25,6 +25,14 @@
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.agre" @alertConfirm="agreSave" @alertCancel="alertCanc('agre')" alertTitle="操作">
       <div class="pb10">
+        <Row class="mb5">
+          <Col span="3" offset="1">
+            <label class="lh25 f12 fb fl mr15">搜 索 :</label>
+          </Col>
+          <Col span="8">
+            <Input :maxlength="15" size="small" v-model.trim="searchText" icon="md-search" placeholder=""></Input>
+          </Col>
+        </Row>
         <Row v-if="alertShow.infoUser !== null">
           <Col span="20" offset="1" v-if="alertShow.infoUser[0] !== '-1'">
             <span><b>主 裁： </b></span>
@@ -176,11 +184,13 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 5
-      }
+      },
+      searchText: ''
     }
   },
   created () {
     this.resCaseList()
+    this.$watch('searchText', this.debounce(this.resSearch, 1000))
   },
   computed: {
     seleShow () {
@@ -338,7 +348,20 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
+    debounce (fn, idle) {
+      let setTm
+      if (!idle || idle <= 0) return fn
+      return () => {
+        clearTimeout(setTm)
+        setTm = setTimeout(fn.bind(this, ...arguments), idle)
+      }
+    },
+    resSearch () {
+      this.selePageObj.pageNum = 1
+      this.resUserList()
+    },
     resSaveEvas (index) {
+      this.selePageObj.pageNum = 1
       this.alertShow.agre = true
       this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
       this.alertShow.infoMoney = this.caseList.bodyList[index].money
@@ -351,7 +374,8 @@ export default {
       axios.post('/clientRequest/findUsersList', {
         pageIndex: (this.selePageObj.pageNum - 1) * this.selePageObj.pageSize,
         pageSize: this.selePageObj.pageSize,
-        roleName: 'arbitrator'
+        roleName: 'arbitrator',
+        keyword: this.searchText
       }).then(res => {
         this.seleList.bodyList = res.data.data.dataList === null ? [] : res.data.data.dataList
         this.selePageObj.total = res.data.data.totalCount
@@ -474,6 +498,7 @@ export default {
         this.alertShow.infoUser = null
         this.seleArr = []
         this.seleArrName = []
+        this.searchText = ''
       }
     }
   }
