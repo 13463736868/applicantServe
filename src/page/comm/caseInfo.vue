@@ -143,6 +143,7 @@ export default {
   },
   created () {
     if (this.caseId === null || this.caseState === null) {
+      this.menuClaim = this.menuClaimA
       this.$router.go(-1)
       return
     }

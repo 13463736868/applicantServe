@@ -37,6 +37,23 @@ const beforeEach = (to, from, next) => {
       if (store.state.menu === null) {
         store.commit('SET_MENU', getMenu(store.state.menuArrObj))
       }
+      if (to.fullPath.indexOf('caseInfo') === -1) {
+        loc.removeItem('caseId')
+        loc.removeItem('caseState')
+        store.commit('SET_CASEID', '')
+        store.commit('SET_CASESTATE', null)
+      } else {
+        if (store.state.caseId === '') {
+          if (loc.getItem('caseId')) {
+            store.commit('SET_CASEID', loc.getItem('caseId'))
+          }
+        }
+        if (store.state.caseState === null) {
+          if (loc.getItem('caseState')) {
+            store.commit('SET_CASESTATE', loc.getItem('caseState'))
+          }
+        }
+      }
       if (to.fullPath.indexOf('idenInfo') === -1) {
         loc.removeItem('idenCheckId')
         loc.removeItem('idenCheckType')
