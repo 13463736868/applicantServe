@@ -255,14 +255,14 @@ export default {
     ._bodyer {
       @include boxShadow(0 1px 6px -1px #bbb);
       background: #ffffff;
-      height: 325px;
-      padding-top: 15px;
+      height: 300px;
+      padding-top: 20px;
       ._username, ._password, ._code {
-        width: 350px;
-        padding: 25px 0 5px;
+        width: 330px;
+        padding: 15px 0 5px;
         border-bottom: 1px solid #ddd;
         letter-spacing: 1px;
-        margin-bottom: 5px;
+        margin-bottom: 10px;
         ._input {
           width: 70%;
           letter-spacing: 1px;
