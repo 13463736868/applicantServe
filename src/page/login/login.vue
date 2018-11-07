@@ -26,7 +26,7 @@
             </Col>
             <Col span="18" class="tl">
               <input class="_input" v-model="user.password" placeholder="" :type="user.showPass === true?'text':'password'" @keyup.enter="resLogin"></input>
-              <Icon size="18" class="hand ml30 vtt" :type="user.showPass === true?'eye':'eye-disabled'" @click="showPass"></Icon>
+              <Icon size="18" class="hand ml30 vtt" :type="user.showPass === true?'md-eye':'md-eye-off'" @click="showPass"></Icon>
             </Col>
           </Row>
         </div>
