@@ -20,10 +20,48 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.poli" @alertConfirm="poliSave" @alertCancel="alertCanc" alertTitle="操作">
-      <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <Input v-else-if="alertShow.state === 2" v-model="alertShow.poliReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
-    </alert-btn-info>
+    <create-docu :alertShow="alertShow.diss" @alertConfirm="docuSave('diss')" @alertSee="seeDocu('diss')" @alertCancel="alertCanc" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>合同名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.contractName"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>本会认为：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.conferenceThink" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b title="《中华人民共和国仲裁法》第几条">仲裁法第几条：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.num1"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b title="《中华人民共和国仲裁法》第几条">仲裁法第几条：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.num2"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b title="《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条">仲裁法第几条：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.num3"></Input>
+        </Col>
+      </Row>
+    </create-docu>
   </div>
 </template>
 
@@ -31,12 +69,12 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
-import alertBtnInfo from '@/components/common/alertBtnInfo'
+import createDocu from '@/components/common/createDocu'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'poli_protest',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { headTop, spinComp, createDocu },
   data () {
     return {
       spinShow: false,
@@ -100,10 +138,15 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        state: null,
-        poli: false,
-        poliReason: '',
-        id: null
+        byId: null,
+        docuType: null,
+        id: null,
+        diss: false,
+        contractName: '',
+        conferenceThink: '',
+        num1: '',
+        num2: '',
+        num3: ''
       }
     }
   },
@@ -178,67 +221,140 @@ export default {
       caseInfo(obj)
     },
     resSavePoli (index) {
-      this.alertShow.state = 1
-      this.alertShow.id = this.caseList.bodyList[index].jurisdictionRequestById
-      this.alertShow.poli = true
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.byId = this.caseList.bodyList[index].jurisdictionRequestById
+      this.alertShow.docuType = 8
+      this.alertShow.diss = true
     },
     resCancPoli (index) {
-      this.alertShow.state = 2
-      this.alertShow.id = this.caseList.bodyList[index].jurisdictionRequestById
-      this.alertShow.poli = true
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.byId = this.caseList.bodyList[index].jurisdictionRequestById
+      this.alertShow.docuType = 9
+      this.alertShow.diss = true
     },
-    poliSave () {
-      if (this.alertShow.state === 1) {
-        axios.post('/approve/updateJurisdictionRequestByid', {
-          jurisdictionRequestById: this.alertShow.id,
-          jurisdictionRequestApprove: this.alertShow.state
-        }).then(res => {
-          this.alertCanc()
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
-          this.resCaseList()
-        }).catch(e => {
-          this.alertCanc()
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      } else if (this.alertShow.state === 2) {
-        if (this.alertShow.poliReason === '') {
-          this.$Message.warning({
-            content: '请填写驳回原因',
-            duration: 5
-          })
-        } else {
-          axios.post('/approve/updateJurisdictionRequestByid', {
-            jurisdictionRequestById: this.alertShow.id,
-            jurisdictionRequestApprove: this.alertShow.state,
-            jurisdictionRequestReason: this.alertShow.poliReason
-          }).then(res => {
-            this.alertCanc()
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
-            this.resCaseList()
-          }).catch(e => {
-            this.alertCanc()
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
+    docuSave (type) {
+      switch (type) {
+        case 'diss':
+          if (this.alertShow.contractName === '') {
+            this.$Message.warning({
+              content: '请填写合同名称',
               duration: 5
             })
-          })
-        }
+          } else if (this.alertShow.conferenceThink === '') {
+            this.$Message.warning({
+              content: '请填写本会认为内容',
+              duration: 5
+            })
+          } else if (this.alertShow.num1 === '') {
+            this.$Message.warning({
+              content: '请填写《中华人民共和国仲裁法》第几条',
+              duration: 5
+            })
+          } else if (this.alertShow.num2 === '') {
+            this.$Message.warning({
+              content: '请填写《中华人民共和国仲裁法》第几条',
+              duration: 5
+            })
+          } else if (this.alertShow.num3 === '') {
+            this.$Message.warning({
+              content: '《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/addDocumentFile', {
+              caseId: this.alertShow.id,
+              documentType: this.alertShow.docuType,
+              jurisdictionRequestById: this.alertShow.byId,
+              jsonData: JSON.stringify({
+                contractName: this.alertShow.contractName,
+                conferenceThink: this.alertShow.conferenceThink,
+                num1: this.alertShow.num1,
+                num2: this.alertShow.num2,
+                num3: this.alertShow.num3
+              })
+            }).then(res => {
+              this.alertCanc()
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2
+              })
+              this.resCaseList()
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
+        default:
+          break
+      }
+    },
+    seeDocu (type) {
+      switch (type) {
+        case 'diss':
+          if (this.alertShow.contractName === '') {
+            this.$Message.warning({
+              content: '请填写合同名称',
+              duration: 5
+            })
+          } else if (this.alertShow.conferenceThink === '') {
+            this.$Message.warning({
+              content: '请填写本会认为内容',
+              duration: 5
+            })
+          } else if (this.alertShow.num1 === '') {
+            this.$Message.warning({
+              content: '请填写《中华人民共和国仲裁法》第几条',
+              duration: 5
+            })
+          } else if (this.alertShow.num2 === '') {
+            this.$Message.warning({
+              content: '请填写《中华人民共和国仲裁法》第几条',
+              duration: 5
+            })
+          } else if (this.alertShow.num3 === '') {
+            this.$Message.warning({
+              content: '《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条',
+              duration: 5
+            })
+          } else {
+            axios.post('/case/previewDocumentFile', {
+              caseId: this.alertShow.id,
+              documentType: this.alertShow.docuType,
+              jurisdictionRequestById: this.alertShow.byId,
+              jsonData: JSON.stringify({
+                contractName: this.alertShow.contractName,
+                conferenceThink: this.alertShow.conferenceThink,
+                num1: this.alertShow.num1,
+                num2: this.alertShow.num2,
+                num3: this.alertShow.num3
+              })
+            }).then(res => {
+              window.open(res.data.data.filepath, '_blank')
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
+        default:
+          break
       }
     },
     alertCanc () {
-      this.alertShow.poli = false
-      this.alertShow.poliReason = ''
+      this.alertShow.byId = null
+      this.alertShow.docuType = null
       this.alertShow.id = null
-      this.alertShow.state = null
+      this.alertShow.diss = false
+      this.alertShow.contractName = ''
+      this.alertShow.conferenceThink = ''
+      this.alertShow.num1 = ''
+      this.alertShow.num2 = ''
+      this.alertShow.num3 = ''
     }
   }
 }
@@ -258,6 +374,15 @@ export default {
   }
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
   }
 }
 </style>
