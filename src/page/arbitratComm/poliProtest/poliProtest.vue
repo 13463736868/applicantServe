@@ -113,7 +113,7 @@ export default {
   methods: {
     renderBtn (h, params) {
       let _obj = params.row
-      if (_obj.state === null || _obj.state === 3) {
+      if (_obj.jrState === null || _obj.jrState === 3) {
         return h('div', [
           h('Button', {
             props: {
