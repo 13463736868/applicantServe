@@ -189,7 +189,7 @@ export default {
     },
     poliSave () {
       if (this.alertShow.state === 1) {
-        axios.post('/approve/updateAvoidRequestAppover', {
+        axios.post('/approve/updateJurisdictionRequestByid', {
           jurisdictionRequestById: this.alertShow.id,
           jurisdictionRequestApprove: this.alertShow.state
         }).then(res => {
@@ -213,7 +213,7 @@ export default {
             duration: 5
           })
         } else {
-          axios.post('/approve/updateAvoidRequestAppover', {
+          axios.post('/approve/updateJurisdictionRequestByid', {
             jurisdictionRequestById: this.alertShow.id,
             jurisdictionRequestApprove: this.alertShow.state,
             jurisdictionRequestReason: this.alertShow.poliReason
