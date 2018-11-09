@@ -443,7 +443,7 @@ export default {
       axios.post('/approve/updateGroupApproveToArbitrator', {
         caseId: this.alertShow.caseId,
         tribunalRequestId: this.alertShow.tribId,
-        arbitratorIds: this.passId
+        arbitratorIds: this.alertShow.passId
       }).then(res => {
         this.alertCanc('pass')
         this.$Message.success({
