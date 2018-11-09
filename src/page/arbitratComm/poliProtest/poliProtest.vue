@@ -156,7 +156,7 @@ export default {
   methods: {
     renderBtn (h, params) {
       let _obj = params.row
-      if (_obj.jrState === null || _obj.jrState === 3) {
+      if (_obj.jrCaseDocumentState === '') {
         return h('div', [
           h('Button', {
             props: {
@@ -186,6 +186,64 @@ export default {
               }
             }
           }, '驳回')
+        ])
+      } else if (_obj.jrCaseDocumentState === '8') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSavePoli(params.index)
+              }
+            }
+          }, '重新生成文书')
+        ])
+      } else if (_obj.jrCaseDocumentState === '9') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resCancPoli(params.index)
+              }
+            }
+          }, '重新生成文书')
+        ])
+      } else if (_obj.jrCaseDocumentState === '10') {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0'
+            }
+          }, '文书审核通过')
+        ])
+      } else if (_obj.jrCaseDocumentState === '6') {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0'
+            }
+          }, '文书审核中')
         ])
       } else {
         return h('div', [

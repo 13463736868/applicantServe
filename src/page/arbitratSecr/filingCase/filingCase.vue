@@ -114,7 +114,7 @@ export default {
             render: (h, params) => {
               return h('span', {
 
-              }, params.row.requestState === '3' ? '撤回案件' : (params.row.requestState === '2' ? '管辖权驳回' : (params.row.requestState === '1' ? '管辖权通过' : '')))
+              }, params.row.requestState === '3' ? '撤回案件' : (params.row.requestState === '4' ? '撤回案件' : (params.row.requestState === '5' ? '撤回案件' : (params.row.requestState === '6' ? '撤回案件' : ''))))
             }
           },
           {
@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     renderBtn (h, params) {
-      if (params.row.requestState === '3') {
+      if (params.row.requestState === '4') {
         if (params.row.pathUrl === null || params.row.pathUrl === '') {
           return h('div', [
             h('Button', {
@@ -163,6 +163,59 @@ export default {
                 }
               }
             }, '生成决定书')
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px',
+                marginTop: '5px',
+                marginBottom: '5px'
+              },
+              on: {
+                click: () => {
+                  this.seeDoc(params.row.pathUrl)
+                }
+              }
+            }, '查看申请书'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px',
+                marginBottom: '5px'
+              },
+              on: {
+                click: () => {
+                  this.createDoc(4, params.index)
+                }
+              }
+            }, '生成决定书')
+          ])
+        }
+      } else if (params.row.requestState === '5') {
+        if (params.row.pathUrl === null || params.row.pathUrl === '') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.createDoc(4, params.index)
+                }
+              }
+            }, '重新生成决定书')
           ])
         } else {
           return h('div', [
@@ -193,42 +246,32 @@ export default {
                   this.createDoc(4, params.index)
                 }
               }
-            }, '生成决定书')
+            }, '重新生成决定书')
           ])
         }
-      } else if (params.row.requestState === '2') {
+      } else if (params.row.requestState === '3') {
         return h('div', [
-          h('Button', {
+          h('span', {
             props: {
-              type: 'primary',
+              type: 'text',
               size: 'small'
             },
             style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.createDoc(9, params.index)
-              }
+              color: '#2d8cf0'
             }
-          }, '生成决定书')
+          }, '撤案决定书审核通过')
         ])
-      } else if (params.row.requestState === '1') {
+      } else if (params.row.requestState === '6') {
         return h('div', [
-          h('Button', {
+          h('span', {
             props: {
-              type: 'primary',
+              type: 'text',
               size: 'small'
             },
             style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.createDoc(8, params.index)
-              }
+              color: '#2d8cf0'
             }
-          }, '生成决定书')
+          }, '撤案决定书审核中')
         ])
       } else {
         return h('div', [

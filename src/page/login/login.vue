@@ -91,6 +91,7 @@ export default {
   },
   created () {
     this.clearTokenLoc()
+    this.resGetCode()
   },
   mounted () {
   },
