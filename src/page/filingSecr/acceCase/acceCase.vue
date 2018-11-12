@@ -163,7 +163,7 @@ export default {
   },
   methods: {
     renderBtn (h, params) {
-      if (params.row.cancelFlage === '1') {
+      if (params.row.cancelFlag === '1') {
         return h('div', [
           h('Button', {
             props: {
