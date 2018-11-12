@@ -545,23 +545,16 @@ export default {
           duration: 5
         })
       } else {
-        if (_info.partieType === 1 || _info.partieType === 2) {
-          axios.post('/encryption', {
-            params: _info.id + '$' + 1
-          }).then(res => {
-            window.open('https://yun.youzhengkeji.com:3004/view/index.html#/' + res.data.data, '_blank')
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        } else {
+        axios.post('/encryption', {
+          params: _info.id + '$' + 1
+        }).then(res => {
+          window.open('https://yun.youzhengkeji.com:3004/view/index.html#/' + res.data.data, '_blank')
+        }).catch(e => {
           this.$Message.error({
-            content: '错误信息:用户案件类型未知',
+            content: '错误信息:' + e + ' 稍后再试',
             duration: 5
           })
-        }
+        })
       }
     },
     resCancCase (index) {
