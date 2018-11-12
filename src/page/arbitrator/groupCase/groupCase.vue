@@ -286,50 +286,83 @@ export default {
       let _obj = params.row
       if (_obj.arbitratorRole === 1) {
         if (_obj.state === 4) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.goCourtRoom(params.index)
+          if (_obj.beginTime === null || _obj.beginTime === '') {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resCancCase(params.index)
+                  }
                 }
-              }
-            }, '进入庭室'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resCancCase(params.index)
+              }, '撤回'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resEndCase(params.index)
+                  }
                 }
-              }
-            }, '撤回'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resEndCase(params.index)
+              }, '结案')
+            ])
+          } else {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.goCourtRoom(params.index)
+                  }
                 }
-              }
-            }, '结案')
-          ])
+              }, '进入庭室'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resCancCase(params.index)
+                  }
+                }
+              }, '撤回'),
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.resEndCase(params.index)
+                  }
+                }
+              }, '结案')
+            ])
+          }
         } else if (_obj.state === 6) {
           if (_obj.caseDocumentSupplement === '1') {
             return h('div', [
@@ -466,19 +499,6 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    goCourtRoom (index) {
-      let _info = this.caseList.bodyList[index]
-      axios.post('/encryption', {
-        params: _info.id + '$' + 1
-      }).then(res => {
-        window.open('https://yun.youzhengkeji.com:3004/view/index.html#/' + res.data.data, '_blank')
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     getFormatDate () {
       let date = new Date()
       let year = date.getFullYear()
@@ -505,6 +525,44 @@ export default {
       }
       time = year + '-' + month + '-' + strD + ' ' + hour + ':' + minu + ':' + sec
       return time
+    },
+    goCourtRoom (index) {
+      let _info = this.caseList.bodyList[index]
+      let newTime = this.getFormatDate()
+      let newD = newTime.substr(0, 10).split('-').join('')
+      let newT = newTime.substr(11, 5).split('-').join('')
+      let beginTime = _info.beginTime
+      let beginD = beginTime.substr(0, 10).split('-').join('')
+      let beginT = beginTime.substr(11, 5).split('-').join('')
+      if (newD !== beginD) {
+        this.$Message.warning({
+          content: '只能在开庭前十分钟及开庭后半小时内进入',
+          duration: 5
+        })
+      } else if (beginT - newT < 11 || newT - beginT < 31) {
+        this.$Message.warning({
+          content: '只能在开庭前十分钟及开庭后半小时内进入',
+          duration: 5
+        })
+      } else {
+        if (_info.partieType === 1 || _info.partieType === 2) {
+          axios.post('/encryption', {
+            params: _info.id + '$' + 1
+          }).then(res => {
+            window.open('https://yun.youzhengkeji.com:3004/view/index.html#/' + res.data.data, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        } else {
+          this.$Message.error({
+            content: '错误信息:用户案件类型未知',
+            duration: 5
+          })
+        }
+      }
     },
     resCancCase (index) {
       let _res = this.caseList.bodyList[index]
