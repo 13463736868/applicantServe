@@ -126,6 +126,14 @@ export default {
             }
           },
           {
+            title: '异议原因',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderReasBtn(h, params)
+            }
+          },
+          {
             title: '操作',
             key: 'id',
             align: 'center',
@@ -160,6 +168,24 @@ export default {
     this.resCaseList()
   },
   methods: {
+    renderReasBtn (h, params) {
+      return h('div', [
+        h('Button', {
+          props: {
+            type: 'primary',
+            size: 'small'
+          },
+          style: {
+            marginRight: '5px'
+          },
+          on: {
+            click: () => {
+              this.resPoliReas(params.index)
+            }
+          }
+        }, '查看')
+      ])
+    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.jrCaseDocumentState === '') {
@@ -191,21 +217,7 @@ export default {
                 this.resCancPoli(params.index)
               }
             }
-          }, '驳回'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
+          }, '驳回')
         ])
       } else if (_obj.jrCaseDocumentState === '8') {
         return h('div', [
@@ -222,21 +234,7 @@ export default {
                 this.resSavePoli(params.index)
               }
             }
-          }, '重新生成文书'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
+          }, '重新生成文书')
         ])
       } else if (_obj.jrCaseDocumentState === '9') {
         return h('div', [
@@ -253,21 +251,7 @@ export default {
                 this.resCancPoli(params.index)
               }
             }
-          }, '重新生成文书'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
+          }, '重新生成文书')
         ])
       } else if (_obj.jrCaseDocumentState === '10') {
         return h('div', [
@@ -279,21 +263,7 @@ export default {
             style: {
               color: '#2d8cf0'
             }
-          }, '文书审核通过'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
+          }, '文书审核通过')
         ])
       } else if (_obj.jrCaseDocumentState === '6') {
         return h('div', [
@@ -305,38 +275,10 @@ export default {
             style: {
               color: '#2d8cf0'
             }
-          }, '文书审核中'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
+          }, '文书审核中')
         ])
       } else {
         return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resPoliReas(params.index)
-              }
-            }
-          }, '异议原因')
         ])
       }
     },
