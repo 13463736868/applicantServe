@@ -530,10 +530,10 @@ export default {
       let _info = this.caseList.bodyList[index]
       let newTime = this.getFormatDate()
       let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = newTime.substr(11, 5).split('-').join('')
+      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
       let beginTime = _info.beginTime
       let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = beginTime.substr(11, 5).split('-').join('')
+      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
       if (newD !== beginD) {
         this.$Message.warning({
           content: '只能在开庭前十分钟及开庭后半小时内进入',
@@ -561,10 +561,10 @@ export default {
       let _res = this.caseList.bodyList[index]
       let newTime = this.getFormatDate()
       let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = newTime.substr(11, 5).split('-').join('')
+      let newT = newTime.substr(11, 5).split(':').join('')
       let beginTime = _res.beginTime
       let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = beginTime.substr(11, 5).split('-').join('')
+      let beginT = beginTime.substr(11, 5).split(':').join('')
       if (newD - beginD < 0) {
         this.$Message.warning({
           content: '只能开庭半小时之后点击撤回',
