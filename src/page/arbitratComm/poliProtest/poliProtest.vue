@@ -20,7 +20,7 @@
         </Row>
       </div>
     </div>
-    <create-docu :alertShow="alertShow.diss" @alertConfirm="docuSave('diss')" @alertSee="seeDocu('diss')" @alertCancel="alertCanc" alertTitle="操作">
+    <create-docu :alertShow="alertShow.diss" @alertConfirm="docuSave('diss')" @alertSee="seeDocu('diss')" @alertCancel="alertCanc('diss')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>合同名称：</b></p>
@@ -62,6 +62,9 @@
         </Col>
       </Row>
     </create-docu>
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="管辖权异议原因">
+      <p class="t2" v-text="alertShow.reasText"></p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -69,12 +72,13 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 import createDocu from '@/components/common/createDocu'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'poli_protest',
-  components: { headTop, spinComp, createDocu },
+  components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -146,7 +150,9 @@ export default {
         conferenceThink: '',
         num1: '',
         num2: '',
-        num3: ''
+        num3: '',
+        reas: false,
+        reasText: ''
       }
     }
   },
@@ -185,7 +191,21 @@ export default {
                 this.resCancPoli(params.index)
               }
             }
-          }, '驳回')
+          }, '驳回'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       } else if (_obj.jrCaseDocumentState === '8') {
         return h('div', [
@@ -202,7 +222,21 @@ export default {
                 this.resSavePoli(params.index)
               }
             }
-          }, '重新生成文书')
+          }, '重新生成文书'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       } else if (_obj.jrCaseDocumentState === '9') {
         return h('div', [
@@ -219,7 +253,21 @@ export default {
                 this.resCancPoli(params.index)
               }
             }
-          }, '重新生成文书')
+          }, '重新生成文书'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       } else if (_obj.jrCaseDocumentState === '10') {
         return h('div', [
@@ -231,7 +279,21 @@ export default {
             style: {
               color: '#2d8cf0'
             }
-          }, '文书审核通过')
+          }, '文书审核通过'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       } else if (_obj.jrCaseDocumentState === '6') {
         return h('div', [
@@ -243,10 +305,38 @@ export default {
             style: {
               color: '#2d8cf0'
             }
-          }, '文书审核中')
+          }, '文书审核中'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       } else {
         return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPoliReas(params.index)
+              }
+            }
+          }, '异议原因')
         ])
       }
     },
@@ -289,6 +379,10 @@ export default {
       this.alertShow.byId = this.caseList.bodyList[index].jurisdictionRequestById
       this.alertShow.docuType = 9
       this.alertShow.diss = true
+    },
+    resPoliReas (index) {
+      this.alertShow.reasText = this.caseList.bodyList[index].jurisdictionRequestReason
+      this.alertShow.reas = true
     },
     docuSave (type) {
       switch (type) {
@@ -403,16 +497,21 @@ export default {
           break
       }
     },
-    alertCanc () {
-      this.alertShow.byId = null
-      this.alertShow.docuType = null
-      this.alertShow.id = null
-      this.alertShow.diss = false
-      this.alertShow.contractName = ''
-      this.alertShow.conferenceThink = ''
-      this.alertShow.num1 = ''
-      this.alertShow.num2 = ''
-      this.alertShow.num3 = ''
+    alertCanc (type) {
+      if (type === 'diss') {
+        this.alertShow.byId = null
+        this.alertShow.docuType = null
+        this.alertShow.id = null
+        this.alertShow.diss = false
+        this.alertShow.contractName = ''
+        this.alertShow.conferenceThink = ''
+        this.alertShow.num1 = ''
+        this.alertShow.num2 = ''
+        this.alertShow.num3 = ''
+      } else if (type === 'reas') {
+        this.alertShow.reas = false
+        this.alertShow.reasText = ''
+      }
     }
   }
 }
