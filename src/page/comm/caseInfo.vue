@@ -136,9 +136,42 @@ export default {
           url: '/endCaseInfo'
         }
       ],
-      stateA: [1, 2, 9, '1', '2', '9'],
-      stateB: [3, 4, '3', '4'],
-      stateC: [6, 7, '6', '7']
+      menuClaimD: [
+        {
+          id: '0',
+          text: '基本信息',
+          url: '/basicInfo'
+        },
+        {
+          id: '1',
+          text: '申请方',
+          url: '/proposerInfo'
+        },
+        {
+          id: '2',
+          text: '被申请方',
+          url: '/respondentInfo'
+        },
+        {
+          id: '3',
+          text: '请求和答辩',
+          url: '/claimItem'
+        },
+        {
+          id: '5',
+          text: '证据和质证',
+          url: '/evidencesInfo'
+        },
+        {
+          id: '7',
+          text: '结案',
+          url: '/endCaseInfo'
+        }
+      ],
+      stateA: [1, 2, 8, 9, '1', '2', '8', '9'],
+      stateB: [3, 4, 99, '3', '4', '99'],
+      stateC: [6, 7, 98, '6', '7', '98'],
+      stateD: [5, '5']
     }
   },
   created () {
@@ -153,6 +186,8 @@ export default {
       this.menuClaim = this.menuClaimB
     } else if (this.stateC.indexOf(this.caseState) !== -1) {
       this.menuClaim = this.menuClaimC
+    } else if (this.stateD.indexOf(this.caseState) !== -1) {
+      this.menuClaim = this.menuClaimD
     } else {
       this.menuClaim = this.menuClaimA
     }

@@ -425,7 +425,7 @@ export default {
                 num3: this.alertShow.num3
               })
             }).then(res => {
-              this.alertCanc()
+              this.alertCanc('diss')
               this.$Message.success({
                 content: '操作成功',
                 duration: 2
