@@ -308,8 +308,8 @@ export default {
             ])
           }
         } else if (_obj.state === 6) {
-           if (_obj.caseDocumentState1 === '1') {
-             if (_obj.caseDocumentState2 === '1') {
+          if (_obj.caseDocumentState1 === '1') {
+            if (_obj.caseDocumentState2 === '1') {
               return h('div', [
                 h('span', {
                   props: {
@@ -331,8 +331,8 @@ export default {
                   }
                 }, '审核通过(补证书)')
               ])
-             } else if (_obj.caseDocumentState2 === '2') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '2') {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -355,8 +355,8 @@ export default {
                   }
                 }, '重新生成文书')
               ])
-             } else if (_obj.caseDocumentState2 === '3') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '3') {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -377,8 +377,8 @@ export default {
                   }
                 }, '审核中(补证书)')
               ])
-             } else if (_obj.caseDocumentState2 === '') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '') {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -401,8 +401,8 @@ export default {
                   }
                 }, '生成补证文书')
               ])
-             } else {
-               return h('div', [
+            } else {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -413,10 +413,10 @@ export default {
                   }
                 }, '审核通过(裁决决定书)')
               ])
-             }
-           } else {
-             if (_obj.caseDocumentState2 === '1') {
-               return h('div', [
+            }
+          } else {
+            if (_obj.caseDocumentState2 === '1') {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -427,8 +427,8 @@ export default {
                   }
                 }, '审核通过(补证书)')
               ])
-             } else if (_obj.caseDocumentState2 === '2') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '2') {
+              return h('div', [
                 h('Button', {
                   props: {
                     type: 'primary',
@@ -441,8 +441,8 @@ export default {
                   }
                 }, '重新生成文书')
               ])
-             } else if (_obj.caseDocumentState2 === '3') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '3') {
+              return h('div', [
                 h('span', {
                   props: {
                     type: 'text',
@@ -453,8 +453,8 @@ export default {
                   }
                 }, '审核中(补证书)')
               ])
-             } else if (_obj.caseDocumentState2 === '') {
-               return h('div', [
+            } else if (_obj.caseDocumentState2 === '') {
+              return h('div', [
                 h('Button', {
                   props: {
                     type: 'primary',
@@ -467,11 +467,11 @@ export default {
                   }
                 }, '生成补证文书')
               ])
-             } else {
-               return h('div', [
+            } else {
+              return h('div', [
               ])
-             }
-           }
+            }
+          }
         } else if (_obj.state === 4) {
           if (_obj.beginTime === null || _obj.beginTime === '') {
             if (_obj.caseDocumentState1 === '2') {
