@@ -120,6 +120,11 @@ export default {
             align: 'center'
           },
           {
+            title: '证据固化',
+            key: 'compareSolidifyHashFlag',
+            align: 'center'
+          },
+          {
             title: '案件状态',
             key: 'caseState',
             align: 'center'
