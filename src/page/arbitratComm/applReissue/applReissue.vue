@@ -20,9 +20,12 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.appl" @alertConfirm="applSave" @alertCancel="alertCanc" alertTitle="操作">
+    <alert-btn-info :alertShow="alertShow.appl" @alertConfirm="applSave" @alertCancel="alertCanc('appl')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确认要通过吗？</p>
       <p v-else-if="alertShow.state === 2">确认要驳回吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="补证原因">
+      <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
   </div>
 </template>
@@ -85,14 +88,17 @@ export default {
             align: 'center'
           },
           {
-            title: '补证原因',
-            key: 'correctionsReason',
-            align: 'center'
-          },
-          {
             title: '状态',
             key: 'correctionsOperationStatusName',
             align: 'center'
+          },
+          {
+            title: '补证原因',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderReasBtn(h, params)
+            }
           },
           {
             title: '操作',
@@ -113,7 +119,9 @@ export default {
       alertShow: {
         appl: false,
         state: null,
-        id: null
+        id: null,
+        reas: false,
+        reasText: ''
       }
     }
   },
@@ -121,6 +129,24 @@ export default {
     this.resCaseList()
   },
   methods: {
+    renderReasBtn (h, params) {
+      return h('div', [
+        h('Button', {
+          props: {
+            type: 'primary',
+            size: 'small'
+          },
+          style: {
+            marginRight: '5px'
+          },
+          on: {
+            click: () => {
+              this.resPoliReas(params.index)
+            }
+          }
+        }, '查看')
+      ])
+    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.correctionsOperationStatus === null || _obj.correctionsOperationStatus === 3) {
@@ -197,29 +223,38 @@ export default {
       this.alertShow.id = this.caseList.bodyList[index].id
       this.alertShow.appl = true
     },
+    resPoliReas (index) {
+      this.alertShow.reasText = this.caseList.bodyList[index].correctionsReason
+      this.alertShow.reas = true
+    },
     applSave () {
       axios.post('/clientRequest/updateCaseRevision', {
         caseId: this.alertShow.id,
         approveState: this.alertShow.state
       }).then(res => {
-        this.alertCanc()
+        this.alertCanc('appl')
         this.$Message.success({
           content: '操作成功',
           duration: 2
         })
         this.resCaseList()
       }).catch(e => {
-        this.alertCanc()
+        this.alertCanc('appl')
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
       })
     },
-    alertCanc () {
-      this.alertShow.appl = false
-      this.alertShow.state = null
-      this.alertShow.id = null
+    alertCanc (type) {
+      if (type === 'appl') {
+        this.alertShow.appl = false
+        this.alertShow.state = null
+        this.alertShow.id = null
+      } else if (type === 'reas') {
+        this.alertShow.reas = false
+        this.alertShow.reasText = ''
+      }
     }
   }
 }
