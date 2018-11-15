@@ -134,5 +134,12 @@ export default function (val, type) {
     } else {
       return false
     }
+  } else if (type === 'groupCase') {
+    let reg = new RegExp('[\u4e00-\u9fa5]{1}')
+    if (reg.test(val)) {
+      return true
+    } else {
+      return false
+    }
   }
 }

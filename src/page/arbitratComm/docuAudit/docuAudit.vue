@@ -23,6 +23,7 @@
     <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
   </div>
 </template>
@@ -129,7 +130,8 @@ export default {
         state: null,
         docu: false,
         id: null,
-        caseDocuId: null
+        caseDocuId: null,
+        rejeReason: ''
       }
     }
   },
@@ -254,30 +256,60 @@ export default {
       this.alertShow.docu = true
     },
     docuSave () {
-      axios.post('/approve/updateCaseDocumentByApprove', {
-        caseId: this.alertShow.id,
-        caseDocumentApprove: this.alertShow.state,
-        caseDocuemntId: this.alertShow.caseDocuId
-      }).then(res => {
-        this.alertCanc()
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
+      if (this.alertShow.state === 2) {
+        if (this.alertShow.rejeReason === '') {
+          this.$Message.warning({
+            content: '请填写驳回原因',
+            duration: 5
+          })
+        } else {
+          axios.post('/approve/updateCaseDocumentByApprove', {
+            caseId: this.alertShow.id,
+            caseDocumentApprove: this.alertShow.state,
+            caseDocuemntId: this.alertShow.caseDocuId,
+            caseDocumentReason: this.alertShow.rejeReason
+          }).then(res => {
+            this.alertCanc()
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.alertCanc()
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      } else {
+        axios.post('/approve/updateCaseDocumentByApprove', {
+          caseId: this.alertShow.id,
+          caseDocumentApprove: this.alertShow.state,
+          caseDocuemntId: this.alertShow.caseDocuId
+        }).then(res => {
+          this.alertCanc()
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc()
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
         })
-        this.resCaseList()
-      }).catch(e => {
-        this.alertCanc()
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
+      }
     },
     alertCanc () {
       this.alertShow.docu = false
       this.alertShow.id = null
       this.alertShow.state = null
       this.alertShow.caseDocuId = null
+      this.alertShow.rejeReason = ''
     }
   }
 }
