@@ -127,9 +127,16 @@
         </Row>
       </div>
     </create-docu>
-    <alert-btn-info :alertShow="alertShow.reve" @alertConfirm="reveSave" @alertCancel="alertCanc('reve')" alertTitle="操作">
-      <p>确定要同意撤回吗？</p>
-    </alert-btn-info>
+    <create-docu :alertShow="alertShow.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>合同名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertShow.contractName"></Input>
+        </Col>
+      </Row>
+    </create-docu>
     <create-docu :alertShow="alertShow.addE" @alertConfirm="docuSave('addE')" @alertSee="seeDocu('addE')" @alertCancel="alertCanc('addE')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -164,6 +171,9 @@
         </Col>
       </Row>
     </create-docu>
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
+      <p class="t2" v-text="alertShow.reasText"></p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -174,6 +184,7 @@ import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
+import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'group_case',
@@ -235,9 +246,12 @@ export default {
             align: 'center'
           },
           {
-            title: '重新生成原因',
-            key: 'caseDocumentReason',
-            align: 'center'
+            title: '原因',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.reasonBtn(h, params)
+            }
           },
           {
             title: '操作',
@@ -274,7 +288,8 @@ export default {
         pageNum: '',
         lineNum: '',
         oldContent: '',
-        newContent: ''
+        newContent: '',
+        reasText: ''
       }
     }
   },
@@ -282,353 +297,218 @@ export default {
     this.resCaseList()
   },
   methods: {
+    reasonBtn (h, params) {
+      let _obj = params.row
+      if (_obj.correctionsReason === '' || _obj.correctionsReason === null) {
+        if (_obj.caseDocumentReason === '' || _obj.caseDocumentReason === null) {
+          return h('div', [
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.seeReasonD(params.index)
+                }
+              }
+            }, '文书驳回原因')
+          ])
+        }
+      } else {
+        if (_obj.caseDocumentReason === '' || _obj.caseDocumentReason === null) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.seeReasonC(params.index)
+                }
+              }
+            }, '补证原因')
+          ])
+        } else {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.seeReasonC(params.index)
+                }
+              }
+            }, '补证原因'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.seeReasonD(params.index)
+                }
+              }
+            }, '文书驳回原因')
+          ])
+        }
+      }
+    },
     renderBtn (h, params) {
       let _obj = params.row
-      if (_obj.arbitratorRole === 1) {
-        if (_obj.state === 9 || _obj.state === 99) {
-          if (_obj.revokeFlag === '1') {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.resPassReve(params.index)
-                  }
+      if (!setRegExp(_obj.endCasePatten, 'groupCase')) {
+        if (_obj.endCasePatten === '1') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resPassReve(params.index)
                 }
-              }, '同意撤回')
-            ])
-          } else {
-            return h('div', [
-            ])
-          }
-        } else if (_obj.state === 6) {
-          if (_obj.caseDocumentState1 === '1') {
-            if (_obj.caseDocumentState2 === '1') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0',
-                    marginRight: '5px'
-                  }
-                }, '审核通过(裁决决定书)'),
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核通过(补证书)')
-              ])
-            } else if (_obj.caseDocumentState2 === '2') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0',
-                    marginRight: '5px'
-                  }
-                }, '审核通过(裁决决定书)'),
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resAddEvid(params.index)
-                    }
-                  }
-                }, '重新生成文书')
-              ])
-            } else if (_obj.caseDocumentState2 === '3') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0',
-                    marginRight: '5px'
-                  }
-                }, '审核通过(裁决决定书)'),
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核中(补证书)')
-              ])
-            } else if (_obj.caseDocumentState2 === '') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0',
-                    marginRight: '5px'
-                  }
-                }, '审核通过(裁决决定书)'),
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resAddEvid(params.index)
-                    }
-                  }
-                }, '生成补证文书')
-              ])
-            } else {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核通过(裁决决定书)')
-              ])
-            }
-          } else {
-            if (_obj.caseDocumentState2 === '1') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核通过(补证书)')
-              ])
-            } else if (_obj.caseDocumentState2 === '2') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resAddEvid(params.index)
-                    }
-                  }
-                }, '重新生成文书')
-              ])
-            } else if (_obj.caseDocumentState2 === '3') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核中(补证书)')
-              ])
-            } else if (_obj.caseDocumentState2 === '') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resAddEvid(params.index)
-                    }
-                  }
-                }, '生成补证文书')
-              ])
-            } else {
-              return h('div', [
-              ])
-            }
-          }
-        } else if (_obj.state === 4) {
-          if (_obj.beginTime === null || _obj.beginTime === '') {
-            if (_obj.caseDocumentState1 === '2') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resEndCase(params.index)
-                    }
-                  }
-                }, '重新生成文书')
-              ])
-            } else if (_obj.caseDocumentState1 === '3') {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核中(裁决决定书)')
-              ])
-            } else if (_obj.caseDocumentState1 === '') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resEndCase(params.index)
-                    }
-                  }
-                }, '结案')
-              ])
-            } else {
-              return h('div', [
-              ])
-            }
-          } else {
-            if (_obj.caseDocumentState1 === '2') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.goCourtRoom(params.index)
-                    }
-                  }
-                }, '进入庭室'),
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      this.resEndCase(params.index)
-                    }
-                  }
-                }, '重新生成文书')
-              ])
-            } else if (_obj.caseDocumentState1 === '3') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.goCourtRoom(params.index)
-                    }
-                  }
-                }, '进入庭室'),
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, '审核中(裁决决定书)')
-              ])
-            } else if (_obj.caseDocumentState1 === '') {
-              return h('div', [
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.goCourtRoom(params.index)
-                    }
-                  }
-                }, '进入庭室'),
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.resCancCase(params.index)
-                    }
-                  }
-                }, '撤回'),
-                h('Button', {
-                  props: {
-                    type: 'primary',
-                    size: 'small'
-                  },
-                  style: {
-                    marginRight: '5px'
-                  },
-                  on: {
-                    click: () => {
-                      this.resEndCase(params.index)
-                    }
-                  }
-                }, '结案')
-              ])
-            } else {
-              return h('div', [
-              ])
-            }
-          }
+              }
+            }, '同意撤回')
+          ])
+        } else if (_obj.endCasePatten === '2') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resPassReve(params.index)
+                }
+              }
+            }, '重新生成撤回书')
+          ])
+        } else if (_obj.endCasePatten === '3') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resAddEvid(params.index)
+                }
+              }
+            }, '生成补证书')
+          ])
+        } else if (_obj.endCasePatten === '4') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resAddEvid(params.index)
+                }
+              }
+            }, '重新生成补证书')
+          ])
+        } else if (_obj.endCasePatten === '5') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resEndCase(params.index)
+                }
+              }
+            }, '结案'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resCancCase(params.index)
+                }
+              }
+            }, '撤案')
+          ])
+        } else if (_obj.endCasePatten === '6') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resEndCase(params.index)
+                }
+              }
+            }, '重新生成文书')
+          ])
+        } else if (_obj.endCasePatten === '7') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resCancCase(params.index)
+                }
+              }
+            }, '重新生成撤案书')
+          ])
         } else {
           return h('div', [
           ])
         }
       } else {
         return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0'
+            }
+          }, _obj.endCasePatten)
         ])
       }
     },
@@ -727,10 +607,10 @@ export default {
       let _res = this.caseList.bodyList[index]
       let newTime = this.getFormatDate()
       let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = newTime.substr(11, 5).split(':').join('')
+      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
       let beginTime = _res.beginTime
       let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = beginTime.substr(11, 5).split(':').join('')
+      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
       if (newD - beginD < 0) {
         this.$Message.warning({
           content: '只能开庭半小时之后点击撤回',
@@ -762,25 +642,8 @@ export default {
     resPassReve (index) {
       let res = this.caseList.bodyList[index]
       this.alertShow.userId = res.id
+      this.alertShow.docuType = 5
       this.alertShow.reve = true
-    },
-    reveSave () {
-      axios.post('/case/updateCaseStateByCancel', {
-        caseId: this.alertShow.userId
-      }).then(res => {
-        this.alertCanc('reve')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
-        this.resCaseList()
-      }).catch(e => {
-        this.alertCanc('reve')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
     },
     resAddEvid (index) {
       let res = this.caseList.bodyList[index]
@@ -788,8 +651,17 @@ export default {
       this.alertShow.docuType = 3
       this.alertShow.addE = true
     },
+    seeReasonD (index) {
+      this.alertShow.reasText = this.caseList.bodyList[index].caseDocumentReason
+      this.alertShow.reas = true
+    },
+    seeReasonC (index) {
+      this.alertShow.reasText = this.caseList.bodyList[index].correctionsReason
+      this.alertShow.reas = true
+    },
     docuSave (type) {
       switch (type) {
+        case 'reve':
         case 'canc':
           if (this.alertShow.contractName === '') {
             this.$Message.warning({
@@ -802,7 +674,7 @@ export default {
               documentType: this.alertShow.docuType,
               jsonData: JSON.stringify({contractName: this.alertShow.contractName})
             }).then(res => {
-              this.alertCanc('canc')
+              this.alertCanc(type)
               this.$Message.success({
                 content: '操作成功',
                 duration: 2
@@ -972,6 +844,7 @@ export default {
     },
     seeDocu (type) {
       switch (type) {
+        case 'reve':
         case 'canc':
           if (this.alertShow.contractName === '') {
             this.$Message.warning({
@@ -1157,7 +1030,9 @@ export default {
           }
           break
         case 'reve':
+          this.alertShow.contractName = ''
           this.alertShow.userId = null
+          this.alertShow.docuType = null
           this.alertShow.reve = false
           break
         case 'addE':
@@ -1168,6 +1043,10 @@ export default {
           this.alertShow.oldContent = ''
           this.alertShow.newContent = ''
           this.alertShow.addE = false
+          break
+        case 'reas':
+          this.alertShow.reas = false
+          this.alertShow.reasText = ''
           break
         default:
           break
