@@ -478,7 +478,7 @@ export default {
                   this.goCourtRoom(params.index)
                 }
               }
-            }, '进入庭室'),
+            }, '进入庭室')
           ])
         } else if (_obj.endCasePatten === '6') {
           return h('div', [
