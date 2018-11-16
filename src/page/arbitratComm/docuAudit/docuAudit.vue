@@ -22,7 +22,7 @@
     </div>
     <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <p v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
   </div>

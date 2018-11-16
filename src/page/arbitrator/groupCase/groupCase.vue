@@ -459,12 +459,26 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                marginRight: '5px'
+              },
               on: {
                 click: () => {
                   this.resCancCase(params.index)
                 }
               }
-            }, '撤案')
+            }, '撤案'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.goCourtRoom(params.index)
+                }
+              }
+            }, '进入庭室'),
           ])
         } else if (_obj.endCasePatten === '6') {
           return h('div', [
@@ -493,6 +507,23 @@ export default {
                 }
               }
             }, '重新生成撤案书')
+          ])
+        } else if (_obj.endCasePatten === '8') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resCancCase(params.index)
+                }
+              }
+            }, '撤案')
           ])
         } else {
           return h('div', [
