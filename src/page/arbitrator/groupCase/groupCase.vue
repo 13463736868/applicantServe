@@ -616,7 +616,7 @@ export default {
           content: '只能在开庭前十分钟及开庭后半小时内进入',
           duration: 5
         })
-      } else if (beginT - newT < 11 || newT - beginT < 31) {
+      } else if (beginT - newT > 10 || newT - beginT > 30) {
         this.$Message.warning({
           content: '只能在开庭前十分钟及开庭后半小时内进入',
           duration: 5
