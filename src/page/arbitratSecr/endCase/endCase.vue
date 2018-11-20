@@ -96,6 +96,11 @@ export default {
             align: 'center'
           },
           {
+            title: '结案时间',
+            key: 'closingTime',
+            align: 'center'
+          },
+          {
             title: '结束时间',
             key: 'endTime',
             align: 'center'
@@ -120,7 +125,7 @@ export default {
         startIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         keyword: this.search.text,
-        state: 6,
+        state: 7,
         caseListType: 4
       }).then(res => {
         let _data = res.data.data
