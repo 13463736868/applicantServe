@@ -183,7 +183,18 @@ export default {
                       this.seeDoc(params.row.filepath)
                     }
                   }
-                }, '预览')
+                }, '预览'),
+                h('Button', {
+                  props: {
+                    type: 'primary',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.dowDoc(params.index)
+                    }
+                  }
+                }, '下载')
               ])
             }
           }
@@ -574,6 +585,9 @@ export default {
     },
     seeDoc (path) {
       window.open(path, '_blank')
+    },
+    dowDoc (index) {
+      window.open('/api/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
     }
   }
 }
