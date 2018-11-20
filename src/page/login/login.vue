@@ -3,7 +3,7 @@
     <img :src="style.icon.src" :style="style.loginLogo">
     <div class="_center not_s">
       <div class="_header tc">
-        <span class="fcf f26">登陆</span>
+        <span class="fcf f26">登录</span>
         <transition name="fade">
           <div class="_em" v-text="user.em" v-show="user.emStatus"></div>
         </transition>
