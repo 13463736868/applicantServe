@@ -2,14 +2,8 @@
   <div class="endCaseInfo">
     <div class="_endCase">
       <div class="_top">结案</div>
-      <div v-if="endCaseD !== null" class="_mid">
-        <Row>
-          <Col span="22" offset="1">
-            <p>结案方式：<span v-text="endCaseD.caseDocumentTypeName"></span></p>
-            <p>结案日期：<span v-text="endCaseD.endCaseDate"></span></p>
-            <p>结案文书：<span class="_file" v-text="endCaseD.filename" @click="seeFile(endCaseD.filepath)"></span></p>
-          </Col>
-        </Row>
+      <div v-if="endCaseD !== null" v-for="(item, index) in endCaseD" :key="index">
+        <end-info :infoData="item"></end-info>
       </div>
     </div>
   </div>
@@ -17,10 +11,12 @@
 
 <script>
 import axios from 'axios'
+import endInfo from '@/page/comm/children/children/endInfo'
 
 export default {
   name: 'endCaseInfo',
   props: ['caseId', 'caseState'],
+  components: { endInfo },
   data () {
     return {
       endCaseD: null
@@ -43,9 +39,6 @@ export default {
           duration: 5
         })
       })
-    },
-    seeFile (path) {
-      window.open(path, '_blank')
     }
   }
 }
@@ -65,27 +58,6 @@ export default {
     line-height: 44px;
     color: #fff;
     font-size: 20px;
-  }
-  ._endCase ._mid {
-    @include borderRadius(3px);
-    @include boxShadow(0 1px 6px -1px #bbb);
-    background: #fff;
-    padding: 10px 0;
-    margin-top: 10px;
-    p {
-      padding: 5px 0;
-    }
-    ._file {
-      @include hand;
-      color: #126eaf;
-    }
-    ._dowFile {
-      @include hand;
-      vertical-align: top;
-      margin-left: 10px;
-      font-size: 16px;
-      color: #126eaf;
-    }
   }
 }
 </style>
