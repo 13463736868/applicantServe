@@ -337,7 +337,7 @@ export default {
                   this.seeReasonC(params.index)
                 }
               }
-            }, '补证原因')
+            }, '补正原因')
           ])
         } else {
           return h('div', [
@@ -354,7 +354,7 @@ export default {
                   this.seeReasonC(params.index)
                 }
               }
-            }, '补证原因'),
+            }, '补正原因'),
             h('Button', {
               props: {
                 type: 'primary',
@@ -422,7 +422,7 @@ export default {
                   this.resAddEvid(params.index)
                 }
               }
-            }, '生成补证书')
+            }, '生成补正书')
           ])
         } else if (_obj.endCasePatten === '4') {
           return h('div', [
@@ -436,7 +436,7 @@ export default {
                   this.resAddEvid(params.index)
                 }
               }
-            }, '重新生成补证书')
+            }, '重新生成补正书')
           ])
         } else if (_obj.endCasePatten === '5') {
           return h('div', [

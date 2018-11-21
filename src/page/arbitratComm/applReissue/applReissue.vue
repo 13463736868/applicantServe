@@ -1,7 +1,7 @@
 <template>
   <div class="applReissue">
     <head-top :isRegister="true">
-      <span class="f36 fcf">申请补证</span>
+      <span class="f36 fcf">申请补正</span>
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
@@ -24,7 +24,7 @@
       <p v-if="alertShow.state === 1">确认要通过吗？</p>
       <p v-else-if="alertShow.state === 2">确认要驳回吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="补证原因">
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="补正原因">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
   </div>
@@ -93,7 +93,7 @@ export default {
             align: 'center'
           },
           {
-            title: '补证原因',
+            title: '补正原因',
             key: 'id',
             align: 'center',
             render: (h, params) => {
