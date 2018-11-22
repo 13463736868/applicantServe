@@ -8,7 +8,7 @@
               <span class="mr10">姓名 :</span>
               <span v-text="infoData.name"></span>
               <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="eye"></Icon>
+                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
               </span>
             </p>
             <p><span class="mr10" v-text="infoData.idcardTypeName"></span><span v-text="infoData.idcard"></span></p>
@@ -23,7 +23,7 @@
               <span class="mr10">企业名 :</span>
               <span v-text="infoData.enterpriseName"></span>
               <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="eye"></Icon>
+                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
               </span>
             </p>
             <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
@@ -38,7 +38,7 @@
               <span class="mr10">名称 :</span>
               <span v-text="infoData.enterpriseName"></span>
               <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="eye"></Icon>
+                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
               </span>
             </p>
             <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
@@ -53,7 +53,7 @@
               <span class="mr10">组织名称 :</span>
               <span v-text="infoData.enterpriseName"></span>
               <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="eye"></Icon>
+                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
               </span>
             </p>
             <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
@@ -203,7 +203,8 @@ export default {
       ._see {
         @include hand;
         font-size: 18px;
-        color: #126eaf
+        color: #126eaf;
+        margin-top: -3px;
       }
     }
   }
