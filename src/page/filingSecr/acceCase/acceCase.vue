@@ -122,7 +122,10 @@ export default {
           {
             title: '证据固化',
             key: 'compareSolidifyHashFlag',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return this.renderHashFlag(h, params)
+            }
           },
           {
             title: '案件状态',
@@ -167,6 +170,47 @@ export default {
     this.resCaseList()
   },
   methods: {
+    renderHashFlag (h, params) {
+      let _status = params.row.solidifyHashStatus
+      if (_status === '3') {
+        return h('span', {
+          props: {
+            type: 'text',
+            size: 'small'
+          },
+          style: {
+            color: '#ff9900'
+          }
+        }, params.row.compareSolidifyHashFlag)
+      } else if (_status === '1') {
+        return h('span', {
+          props: {
+            type: 'text',
+            size: 'small'
+          },
+          style: {
+            color: '#19be6b'
+          }
+        }, params.row.compareSolidifyHashFlag)
+      } else if (_status === '2') {
+        return h('span', {
+          props: {
+            type: 'text',
+            size: 'small'
+          },
+          style: {
+            color: '#ed4014'
+          }
+        }, params.row.compareSolidifyHashFlag)
+      } else {
+        return h('span', {
+          props: {
+            type: 'text',
+            size: 'small'
+          }
+        }, params.row.compareSolidifyHashFlag)
+      }
+    },
     renderBtn (h, params) {
       if (params.row.cancelFlag === '1') {
         return h('div', [
