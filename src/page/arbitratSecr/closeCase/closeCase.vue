@@ -99,13 +99,23 @@ export default {
             align: 'center'
           },
           {
-            title: '申请时间',
-            key: 'createTime',
+            title: '结案时间',
+            key: 'closingTime',
             align: 'center'
           },
           {
-            title: '结案时间',
-            key: 'closingTime',
+            title: '申请人视频路径',
+            key: 'applicantVideo',
+            align: 'center'
+          },
+          {
+            title: '被申请人视频路径',
+            key: 'respondentVideo',
+            align: 'center'
+          },
+          {
+            title: '仲裁员视频路径',
+            key: 'arbitratorVideo',
             align: 'center'
           },
           {
