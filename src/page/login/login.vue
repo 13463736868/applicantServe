@@ -73,7 +73,8 @@ export default {
           width: '210px',
           position: 'absolute',
           top: '20px',
-          right: '20px'
+          right: '20px',
+          userSelect: 'none'
         }
       },
       user: {
