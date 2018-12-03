@@ -666,9 +666,38 @@ export default {
     },
     resEndCase (index) {
       let _res = this.caseList.bodyList[index]
-      this.alertShow.userId = _res.id
-      this.alertShow.docuType = 1
-      this.alertShow.end = true
+      let newTime = this.getFormatDate()
+      let newD = newTime.substr(0, 10).split('-').join('')
+      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
+      let beginTime = _res.beginTime
+      let beginD = beginTime.substr(0, 10).split('-').join('')
+      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
+      if (beginTime === '' || beginTime === null) {
+        this.$Message.warning({
+          content: '没有开庭时间，禁止点击',
+          duration: 5
+        })
+      } else if (newD - beginD < 0) {
+        this.$Message.warning({
+          content: '开庭时间未到，禁止点击',
+          duration: 5
+        })
+      } else if (newD - beginD === 0) {
+        if (newT - beginT > 0) {
+          this.alertShow.userId = _res.id
+          this.alertShow.docuType = 1
+          this.alertShow.end = true
+        } else {
+          this.$Message.warning({
+            content: '开庭时间未到，禁止点击',
+            duration: 5
+          })
+        }
+      } else if (newD - beginD > 0) {
+        this.alertShow.userId = _res.id
+        this.alertShow.docuType = 1
+        this.alertShow.end = true
+      }
     },
     resPassReve (index) {
       let res = this.caseList.bodyList[index]
