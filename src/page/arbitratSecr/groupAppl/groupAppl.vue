@@ -216,19 +216,33 @@ export default {
     renderBtn (h, params) {
       if (params.row.tribunalRequestState === 4) {
         if (params.row.beginTime === null || params.row.beginTime === '') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.resSubm(params.index)
+          if (params.row.toBeSubmitted === null || params.row.toBeSubmitted === '') {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'primary',
+                  size: 'small'
+                },
+                on: {
+                  click: () => {
+                    this.resSubm(params.index)
+                  }
                 }
-              }
-            }, '提交')
-          ])
+              }, '提交')
+            ])
+          } else {
+            return h('div', [
+              h('span', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                }
+              }, params.row.toBeSubmitted)
+            ])
+          }
         } else {
           return h('div', [
             h('Button', {
