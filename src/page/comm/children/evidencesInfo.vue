@@ -70,10 +70,14 @@ export default {
         evidenceType: 2
       }).then(res => {
         this.revEvidData = res.data.data
-        if (this.revEvidData.length === 0) {
-          this.revEvidObj.list = false
+        if (this.revEvidData !== null) {
+          if (this.revEvidData.length === 0) {
+            this.revEvidObj.list = false
+          } else {
+            this.revEvidObj.list = true
+          }
         } else {
-          this.revEvidObj.list = true
+          this.revEvidObj.list = false
         }
       }).catch(e => {
         this.$Message.error({

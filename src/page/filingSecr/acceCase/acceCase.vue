@@ -179,7 +179,13 @@ export default {
             size: 'small'
           },
           style: {
-            color: '#ff9900'
+            color: '#ff9900',
+            cursor: 'pointer'
+          },
+          on: {
+            click: () => {
+              this.resGoCase(params.index)
+            }
           }
         }, params.row.compareSolidifyHashFlag)
       } else if (_status === '1') {
@@ -189,7 +195,13 @@ export default {
             size: 'small'
           },
           style: {
-            color: '#19be6b'
+            color: '#19be6b',
+            cursor: 'pointer'
+          },
+          on: {
+            click: () => {
+              this.resGoCase(params.index)
+            }
           }
         }, params.row.compareSolidifyHashFlag)
       } else if (_status === '2') {
@@ -199,7 +211,13 @@ export default {
             size: 'small'
           },
           style: {
-            color: '#ed4014'
+            color: '#ed4014',
+            cursor: 'pointer'
+          },
+          on: {
+            click: () => {
+              this.resGoCase(params.index)
+            }
           }
         }, params.row.compareSolidifyHashFlag)
       } else {
@@ -207,6 +225,14 @@ export default {
           props: {
             type: 'text',
             size: 'small'
+          },
+          style: {
+            cursor: 'pointer'
+          },
+          on: {
+            click: () => {
+              this.resGoCase(params.index)
+            }
           }
         }, params.row.compareSolidifyHashFlag)
       }
@@ -452,6 +478,13 @@ export default {
       let obj = {}
       obj.caseId = this.caseList.bodyList[index].caseId
       obj.state = this.caseList.bodyList[index].state
+      caseInfo(obj)
+    },
+    resGoCase (index) {
+      let obj = {}
+      obj.caseId = this.caseList.bodyList[index].caseId
+      obj.state = this.caseList.bodyList[index].state
+      obj.path = '/caseInfo/evidencesInfo'
       caseInfo(obj)
     }
   }
