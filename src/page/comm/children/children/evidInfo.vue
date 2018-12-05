@@ -21,6 +21,14 @@
               <span class="mr10">附件名称 :</span>
               <span class="_file" v-text="infoData.fileName" :title="'点击查看: '+infoData.fileName" @click="seeFile(infoData.filePath)"></span>
             </p>
+            <p>
+              <span class="mr10">固化状态 :</span>
+              <span v-if="infoData.solidifyHashStatus === 1" style="color:#19be6b;">证据固化一致</span>
+              <span v-else-if="infoData.solidifyHashStatus === 2" style="color:#ed3f14;">证据固化不一致</span>
+              <span v-else-if="infoData.solidifyHashStatus === 3" style="color:#ff9900;">证据未固化</span>
+              <span v-else-if="infoData.solidifyHashStatus === 4" style="color:#19be6b;">证据未固化 ( 补充证据 )</span>
+              <span v-else-if="infoData.solidifyHashStatus === null" style="color:#ff9900;">证据未固化</span>
+            </p>
           </Col>
         </Row>
       </Col>
