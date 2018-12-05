@@ -11,7 +11,13 @@ export const caseInfo = (obj) => {
   }
   store.commit('SET_CASEID', obj.caseId)
   store.commit('SET_CASESTATE', obj.state)
-  router.push({
-    path: '/caseInfo'
-  })
+  if (obj.path) {
+    router.push({
+      path: obj.path
+    })
+  } else {
+    router.push({
+      path: '/caseInfo'
+    })
+  }
 }
