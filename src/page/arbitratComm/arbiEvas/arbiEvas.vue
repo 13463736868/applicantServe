@@ -23,6 +23,9 @@
     <alert-btn-info :alertShow="alertShow.reje" @alertConfirm="rejeSave" @alertCancel="alertCanc('reje')" alertTitle="操作">
       <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.agreNew" @alertConfirm="agreNewSave" @alertCancel="alertCanc('agreNew')" alertTitle="操作">
+      <p>确定同意吗？</p>
+    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.agre" @alertConfirm="agreSave" @alertCancel="alertCanc('agre')" alertTitle="操作">
       <div class="pb10">
         <Row class="mb5">
@@ -152,7 +155,8 @@ export default {
         agre: false,
         avoidRequestId: null,
         infoUser: null,
-        infoMoney: null
+        infoMoney: null,
+        agreNew: false
       },
       seleList: {
         loading: false,
@@ -295,7 +299,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resSaveEvas(params.index)
+                  this.resNewSaveEvas(params.index)
                 }
               }
             }, '同意'),
@@ -369,6 +373,10 @@ export default {
       this.seleArr = JSON.parse(JSON.stringify(this.infoUserArr))
       this.seleArrName = JSON.parse(JSON.stringify(this.infoUserArr))
       this.resUserList()
+    },
+    resNewSaveEvas (index) {
+      this.alertShow.agreNew = true
+      this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
     },
     resUserList () {
       axios.post('/clientRequest/findUsersList', {
@@ -455,6 +463,25 @@ export default {
         })
       })
     },
+    agreNewSave () {
+      axios.post('/approve/updateAvoidRequestAppover', {
+        avoidRequestId: this.alertShow.avoidRequestId,
+        avoidState: 1
+      }).then(res => {
+        this.alertCanc('agreNew')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('agreNew')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     resCancEvas (index) {
       this.alertShow.reje = true
       this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
@@ -499,6 +526,8 @@ export default {
         this.seleArr = []
         this.seleArrName = []
         this.searchText = ''
+      } else if (type === 'agreNew') {
+        this.alertShow.agreNew = false
       }
     }
   }

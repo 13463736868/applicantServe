@@ -158,7 +158,8 @@ export default {
         caseId: null,
         infoMoney: null,
         pass: false,
-        passId: null
+        passId: null,
+        assignRest: false
       },
       seleList: {
         loading: false,
@@ -291,6 +292,23 @@ export default {
               }
             }, '通过')
           ])
+        } else if (_obj.passFlag === 3) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resAssignRest(params.index)
+                }
+              }
+            }, '重新指定仲裁员')
+          ])
         } else {
           return h('div', [
           ])
@@ -336,6 +354,10 @@ export default {
     resSearch () {
       this.selePageObj.pageNum = 1
       this.resUserList()
+    },
+    resAssignRest (index) {
+      this.alertShow.assignRest = true
+      this.resAssign(index)
     },
     resAssign (index) {
       this.selePageObj.pageNum = 1
@@ -413,25 +435,46 @@ export default {
           return false
         }
       }
-      axios.post('/approve/updateGroupApproveToArbitrator', {
-        caseId: this.alertShow.caseId,
-        tribunalRequestId: this.alertShow.tribId,
-        arbitratorIds: this.seleArr.join(',')
-      }).then(res => {
-        this.selePageObj.pageNum = 1
-        this.alertCanc('agre')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
+      if (this.alertShow.assignRest) {
+        axios.post('/approve/updateArbitrator', {
+          caseId: this.alertShow.caseId,
+          arbitratorIds: this.seleArr.join(',')
+        }).then(res => {
+          this.selePageObj.pageNum = 1
+          this.alertCanc('agre')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('agre')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
         })
-        this.resCaseList()
-      }).catch(e => {
-        this.alertCanc('agre')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
+      } else {
+        axios.post('/approve/updateGroupApproveToArbitrator', {
+          caseId: this.alertShow.caseId,
+          tribunalRequestId: this.alertShow.tribId,
+          arbitratorIds: this.seleArr.join(',')
+        }).then(res => {
+          this.selePageObj.pageNum = 1
+          this.alertCanc('agre')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc('agre')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
         })
-      })
+      }
     },
     resPass (index) {
       this.alertShow.pass = true
@@ -467,6 +510,7 @@ export default {
         this.seleArr = []
         this.seleArrName = []
         this.searchText = ''
+        this.alertShow.assignRest = false
       } else if (type === 'pass') {
         this.alertShow.pass = false
         this.alertShow.tribId = null
