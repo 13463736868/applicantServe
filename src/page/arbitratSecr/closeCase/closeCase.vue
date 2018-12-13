@@ -119,6 +119,11 @@ export default {
             align: 'center'
           },
           {
+            title: '开庭记录路径',
+            key: 'courtRecord',
+            align: 'center'
+          },
+          {
             title: '操作',
             key: 'caseId',
             align: 'center',

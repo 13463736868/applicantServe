@@ -174,6 +174,9 @@
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
+    <div v-if="alertShow.editorDest">
+      <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
+    </div>
   </div>
 </template>
 
@@ -183,12 +186,13 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'group_case',
-  components: { headTop, spinComp, createDocu, alertBtnInfo },
+  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor },
   data () {
     return {
       spinShow: false,
@@ -257,7 +261,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            minWidth: 70,
+            minWidth: 120,
             render: (h, params) => {
               return this.renderBtn(h, params)
             }
@@ -289,7 +293,10 @@ export default {
         lineNum: '',
         oldContent: '',
         newContent: '',
-        reasText: ''
+        reasText: '',
+        editor: false,
+        editorId: null,
+        editorDest: false
       }
     }
   },
@@ -473,12 +480,26 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                marginRight: '5px'
+              },
               on: {
                 click: () => {
                   this.goCourtRoom(params.index)
                 }
               }
-            }, '进入庭室')
+            }, '进入庭室'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resRecord(params.index)
+                }
+              }
+            }, '记录')
           ])
         } else if (_obj.endCasePatten === '6') {
           return h('div', [
@@ -602,6 +623,12 @@ export default {
       }
       time = year + '-' + month + '-' + strD + ' ' + hour + ':' + minu + ':' + sec
       return time
+    },
+    resRecord (index) {
+      let _info = this.caseList.bodyList[index]
+      this.alertShow.editorDest = true
+      this.alertShow.editor = true
+      this.alertShow.editorId = _info.id
     },
     goCourtRoom (index) {
       let _info = this.caseList.bodyList[index]
@@ -1065,6 +1092,25 @@ export default {
           break
       }
     },
+    editorSave (html, cont) {
+      axios.post('/case/saveTrialRecord', {
+        caseId: this.alertShow.editorId,
+        htmlContent: html,
+        content: cont
+      }).then(res => {
+        this.alertCanc('editor')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       switch (type) {
         case 'canc':
@@ -1107,6 +1153,11 @@ export default {
         case 'reas':
           this.alertShow.reas = false
           this.alertShow.reasText = ''
+          break
+        case 'editor':
+          this.alertShow.editor = false
+          this.alertShow.editorId = null
+          this.alertShow.editorDest = false
           break
         default:
           break
