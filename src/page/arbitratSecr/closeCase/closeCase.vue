@@ -119,9 +119,12 @@ export default {
             align: 'center'
           },
           {
-            title: '开庭记录路径',
-            key: 'courtRecord',
-            align: 'center'
+            title: '开庭记录文档',
+            key: 'fileName',
+            align: 'center',
+            render: (h, params) => {
+              return this.resSeeDocBtn(h, params)
+            }
           },
           {
             title: '操作',
@@ -222,6 +225,30 @@ export default {
     this.resCaseList()
   },
   methods: {
+    resSeeDocBtn (h, params) {
+      let _obj = params.row
+      if (_obj.fileName === null || _obj.fileName === '' || _obj.fileName === undefined || _obj.filePath === null || _obj.filePath === '' || _obj.filePath === undefined) {
+        return h('div', [
+        ])
+      } else {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.seeDoc(_obj.filePath)
+              }
+            }
+          }, _obj.fileName)
+        ])
+      }
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/case/findRegisterCaseList', {

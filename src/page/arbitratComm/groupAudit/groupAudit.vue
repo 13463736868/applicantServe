@@ -429,7 +429,7 @@ export default {
       for (let k in this.seleArr) {
         if (this.seleArr[k] === '') {
           this.$Message.error({
-            content: '请选择第 ' + (k + 1) + ' 位仲裁员后再点击确定',
+            content: '请选择第 ' + (k - 0 + 1) + ' 位仲裁员后再点击确定',
             duration: 5
           })
           return false
