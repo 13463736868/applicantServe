@@ -232,13 +232,14 @@ export default {
         ])
       } else {
         return h('div', [
-          h('Button', {
+          h('span', {
             props: {
-              type: 'primary',
+              type: 'text',
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              color: '#2d8cf0',
+              cursor: 'pointer'
             },
             on: {
               click: () => {
