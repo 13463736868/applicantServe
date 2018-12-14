@@ -64,6 +64,9 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="仲裁员回避原因">
+      <p class="t2" v-text="alertShow.reasText"></p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -134,6 +137,14 @@ export default {
             }
           },
           {
+            title: '回避原因',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderReasBtn(h, params)
+            }
+          },
+          {
             title: '操作',
             key: 'id',
             align: 'center',
@@ -156,7 +167,9 @@ export default {
         avoidRequestId: null,
         infoUser: null,
         infoMoney: null,
-        agreNew: false
+        agreNew: false,
+        reas: false,
+        reasText: ''
       },
       seleList: {
         loading: false,
@@ -236,6 +249,24 @@ export default {
     }
   },
   methods: {
+    renderReasBtn (h, params) {
+      return h('div', [
+        h('Button', {
+          props: {
+            type: 'primary',
+            size: 'small'
+          },
+          style: {
+            marginRight: '5px'
+          },
+          on: {
+            click: () => {
+              this.resArbiEvas(params.index)
+            }
+          }
+        }, '查看')
+      ])
+    },
     renderCheck (h, params) {
       let _id = params.row.id
       if (this.seleArr.indexOf(_id) === -1) {
@@ -323,6 +354,10 @@ export default {
         return h('div', [
         ])
       }
+    },
+    resArbiEvas (index) {
+      this.alertShow.reasText = this.caseList.bodyList[index].avoidReason
+      this.alertShow.reas = true
     },
     resCaseList () {
       this.spinShow = true
@@ -528,6 +563,9 @@ export default {
         this.searchText = ''
       } else if (type === 'agreNew') {
         this.alertShow.agreNew = false
+      } else if (type === 'reas') {
+        this.alertShow.reas = false
+        this.alertShow.reasText = ''
       }
     }
   }
