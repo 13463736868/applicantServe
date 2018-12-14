@@ -32,7 +32,7 @@ export default {
     return {
       randomId: 'editor_' + (Math.random() * 100000000000000000),
       editor: null,
-      value: '<p style="margin-left:48px;text-indent:59px"><a></a><strong><span style="font-size:29px;font-family:仿宋">仲裁委员会网络仲裁规则</span></strong></p>',
+      value: '',
       sendTimeOut: null,
       oldLen: 0
     }
