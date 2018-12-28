@@ -548,17 +548,6 @@ export default {
           ])
         } else if (_obj.endCasePatten === '9') {
           return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.goCourtRoom(params.index)
-                }
-              }
-            }, '进入庭室')
           ])
         } else {
           return h('div', [
