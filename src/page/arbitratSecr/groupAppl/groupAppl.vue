@@ -45,6 +45,19 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <create-docu :alertShow="alertObj.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>合同名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="alertObj.contractName"></Input>
+        </Col>
+      </Row>
+    </create-docu>
+    <alert-btn-info :alertShow="alertObj.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="撤案驳回原因">
+      <p class="t2" v-text="alertObj.reasText"></p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -52,12 +65,14 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
+import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'group_appl',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -146,7 +161,13 @@ export default {
         caseId: null,
         composeTime: null,
         time: '',
-        type: null
+        type: null,
+        userId: null,
+        docuType: null,
+        reve: false,
+        contractName: '',
+        reasText: '',
+        reas: false
       },
       fileList: {
         header: [
@@ -231,17 +252,72 @@ export default {
               }, '提交')
             ])
           } else {
-            return h('div', [
-              h('span', {
-                props: {
-                  type: 'text',
-                  size: 'small'
-                },
-                style: {
-                  color: '#2d8cf0'
-                }
-              }, params.row.toBeSubmitted)
-            ])
+            if (!setRegExp(params.row.toBeSubmitted, 'groupCase')) {
+              if (params.row.toBeSubmitted === '1') {
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resPassReve(params.index)
+                      }
+                    }
+                  }, '同意撤回')
+                ])
+              } else if (params.row.toBeSubmitted === '2') {
+                return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resSeeReas(params.index)
+                      }
+                    }
+                  }, '查看原因'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resPassReve(params.index)
+                      }
+                    }
+                  }, '重新生成撤回书')
+                ])
+              } else {
+                return h('div', [
+                ])
+              }
+            } else {
+              return h('div', [
+                h('span', {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  },
+                  style: {
+                    color: '#2d8cf0'
+                  }
+                }, params.row.toBeSubmitted)
+              ])
+            }
           }
         } else {
           return h('div', [
@@ -579,6 +655,67 @@ export default {
         })
       })
     },
+    resPassReve (index) {
+      let res = this.caseList.bodyList[index]
+      this.alertObj.userId = res.id
+      this.alertObj.docuType = 5
+      this.alertObj.reve = true
+    },
+    docuSave (type) {
+      if (type === 'reve') {
+        if (this.alertObj.contractName === '') {
+          this.$Message.warning({
+            content: '请填写合同名称',
+            duration: 5
+          })
+        } else {
+          axios.post('/case/addDocumentFile', {
+            caseId: this.alertObj.userId,
+            documentType: this.alertObj.docuType,
+            jsonData: JSON.stringify({contractName: this.alertObj.contractName})
+          }).then(res => {
+            this.alertCanc(type)
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      }
+    },
+    seeSave (type) {
+      if (type === 'reve') {
+        if (this.alertObj.contractName === '') {
+          this.$Message.warning({
+            content: '请填写合同名称',
+            duration: 5
+          })
+        } else {
+          axios.post('/case/previewDocumentFile', {
+            caseId: this.alertObj.userId,
+            documentType: this.alertObj.docuType,
+            jsonData: JSON.stringify({contractName: this.alertObj.contractName})
+          }).then(res => {
+            window.open(res.data.data.filepath, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      }
+    },
+    resSeeReas (index) {
+      this.alertObj.reasText = this.caseList.bodyList[index].caseDocumentReason === null ? '' : this.caseList.bodyList[index].caseDocumentReason
+      this.alertObj.reas = true
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -595,6 +732,14 @@ export default {
         this.alertObj.composeTime = null
         this.alertObj.time = ''
         this.alertObj.type = null
+      } else if (type === 'reve') {
+        this.alertObj.contractName = ''
+        this.alertObj.userId = null
+        this.alertObj.docuType = null
+        this.alertObj.reve = false
+      } else if (type === 'reas') {
+        this.alertObj.reasText = ''
+        this.alertObj.reas = false
       }
     },
     seeDoc (path) {
