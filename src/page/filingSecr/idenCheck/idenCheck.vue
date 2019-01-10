@@ -376,49 +376,49 @@ export default {
           })
         })
       } else {
-        if (this.tabStatus === 'comp') {
-          axios.post('/enterprise/list', {
-            pageIndex: (this.compPage.pageNum - 1) * this.compPage.pageSize,
-            pageSize: this.compPage.pageSize,
-            state: this.reviewStatus
-          }).then(res => {
-            let _data = res.data.data
-            this.compList.bodyList = _data.dataList === null ? [] : _data.dataList
-            this.compPage.total = _data.totalCount
-            this.spinShow = false
-          }).catch(e => {
-            this.spinShow = false
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+        // if (this.tabStatus === 'comp') {
+        axios.post('/enterprise/list', {
+          pageIndex: (this.compPage.pageNum - 1) * this.compPage.pageSize,
+          pageSize: this.compPage.pageSize,
+          state: this.reviewStatus
+        }).then(res => {
+          let _data = res.data.data
+          this.compList.bodyList = _data.dataList === null ? [] : _data.dataList
+          this.compPage.total = _data.totalCount
+          this.spinShow = false
+        }).catch(e => {
+          this.spinShow = false
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
           })
-        } else if (this.tabStatus === 'indi') {
-          axios.post('/clientRequest/findRegisterData', {
-            pageIndex: (this.indiPage.pageNum - 1) * this.indiPage.pageSize,
-            pageSize: this.indiPage.pageSize,
-            state: this.reviewStatus
-          }).then(res => {
-            let _data = res.data.data
-            this.indiList.bodyList = _data.dataList === null ? [] : _data.dataList
-            this.indiPage.total = _data.totalCount
-            this.spinShow = false
-          }).catch(e => {
-            this.spinShow = false
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+        })
+        // } else if (this.tabStatus === 'indi') {
+        axios.post('/clientRequest/findRegisterData', {
+          pageIndex: (this.indiPage.pageNum - 1) * this.indiPage.pageSize,
+          pageSize: this.indiPage.pageSize,
+          state: this.reviewStatus
+        }).then(res => {
+          let _data = res.data.data
+          this.indiList.bodyList = _data.dataList === null ? [] : _data.dataList
+          this.indiPage.total = _data.totalCount
+          this.spinShow = false
+        }).catch(e => {
+          this.spinShow = false
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
           })
-        }
+        })
+        // }
       }
     },
     resChangeStatus () {
-      if (this.tabStatus === 'comp') {
-        this.compPage.pageNum = 1
-      } else if (this.tabStatus === 'indi') {
-        this.indiPage.pageNum = 1
-      }
+      // if (this.tabStatus === 'comp') {
+      this.compPage.pageNum = 1
+      // } else if (this.tabStatus === 'indi') {
+      this.indiPage.pageNum = 1
+      // }
       this.resCaseList('change')
     },
     reschangeCompPage (page) {
