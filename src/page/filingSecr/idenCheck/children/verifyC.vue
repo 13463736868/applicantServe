@@ -58,7 +58,7 @@
             </Col>
             <Col span="10" offset="2">
               <Row class="_labelFor">
-                <Col span="24" class="_label">法定人姓名<b class="_b">*</b></Col>
+                <Col span="24" class="_label">法定代表人姓名<b class="_b">*</b></Col>
                 <Col span="24" class="_input"><span v-text="userAInfo.legal"></span></Col>
               </Row>
               <Row class="_labelFor">
@@ -99,10 +99,7 @@
           <Col span="10" offset="2">
             <img class="_imgB" :src="imgUrl.fileB" @click="resSeeImg('fileB')">
           </Col>
-          <Col class="pt20" span="10" offset="1">
-            <img class="_imgC" :src="imgUrl.fileC" @click="resSeeImg('fileC')">
-          </Col>
-          <Col class="pt20" span="10" offset="2">
+          <Col class="pt20" span="10" offset="7">
             <img class="_imgD" :src="imgUrl.fileD" @click="resSeeImg('fileD')">
           </Col>
         </Row>
@@ -193,11 +190,10 @@ export default {
           this.imgUrl.fileB = res.data.data.filePathList[1]
           this.imgUrl.fileC = res.data.data.filePathList[2]
         } else if (this.userType === 2) {
-          if (res.data.data.fileList.length >= 4) {
+          if (res.data.data.fileList.length >= 3) {
             this.imgUrl.fileA = res.data.data.fileList[0].filepath
             this.imgUrl.fileB = res.data.data.fileList[1].filepath
-            this.imgUrl.fileC = res.data.data.fileList[2].filepath
-            this.imgUrl.fileD = res.data.data.fileList[3].filepath
+            this.imgUrl.fileD = res.data.data.fileList[2].filepath
           } else {
             this.$Message.error({
               content: '获取附件信息出错,请稍后再试',
