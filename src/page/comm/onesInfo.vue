@@ -120,6 +120,7 @@ import { mapGetters } from 'vuex'
 import headTop from '@/components/header/head'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'ones_info',
@@ -127,12 +128,12 @@ export default {
   data () {
     return {
       addInfoBtn: false,
-      uploadUrl: '/api/user/uploadSignature',
+      uploadUrl: regi.api + '/user/uploadSignature',
       dataObj: null,
       fileObjShow: false,
       fileObj: null,
       fileType: ['jpg', 'jpeg', 'png'],
-      imgUrl: '../../../static/images/sign.png',
+      imgUrl: require('../../../static/images/sign.png'),
       alertObj: {
         info: false,
         pass: false
@@ -259,7 +260,7 @@ export default {
     cancClick () {
       this.fileObj = null
       this.$refs._formA.reset()
-      this.imgUrl = '../../../static/images/sign.png'
+      this.imgUrl = require('../../../static/images/sign.png')
       this.addInfoBtn = false
     },
     resGetFile (fileId) {

@@ -575,7 +575,7 @@ export default {
       }
     },
     resAddUpload () {
-      this.userObj.addU = true
+      // this.userObj.addU = true
     },
     addUSave () {
 

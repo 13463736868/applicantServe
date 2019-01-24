@@ -75,7 +75,7 @@ export default {
       spinShow: false,
       progressText: null,
       logo: {
-        url: '../../static/images/logoR.png'
+        url: require('../../static/images/logoR.png')
       },
       dataInfoShow: false,
       dataInfo: null
@@ -89,7 +89,7 @@ export default {
   computed: {
     dataMap () {
       return regi.dataMap
-    },
+    }
   },
   methods: {
     resCaseItem () {

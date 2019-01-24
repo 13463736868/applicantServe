@@ -129,15 +129,15 @@ export default {
         exte = this.infoData.fileList[_index].filename.split('.').pop().toLowerCase()
       }
       if (exte === null) {
-        return '../../static/images/file_icon.png'
+        return require('../../static/images/file_icon.png')
       } else if (_img.indexOf(exte) !== -1) {
         return this.infoData.fileList[_index].filepath
       } else if (_doc.indexOf(exte) !== -1) {
-        return '../../static/images/doc_icon.png'
+        return require('../../static/images/doc_icon.png')
       } else if (_pdf.indexOf(exte) !== -1) {
-        return '../../static/images/pdf_icon.png'
+        return require('../../static/images/pdf_icon.png')
       } else {
-        return '../../static/images/file_icon.png'
+        return require('../../static/images/file_icon.png')
       }
     },
     isImgClass () {

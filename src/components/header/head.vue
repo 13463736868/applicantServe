@@ -43,13 +43,13 @@ export default {
       userName: null,
       style: {
         bg: {
-          backgroundImage: "url('../../static/images/header_bg.png')",
+          backgroundImage: 'url(' + require('../../static/images/header_bg.png') + ')',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover'
         }
       },
       img: {
-        logoUrl: '../../static/images/logo.png'
+        logoUrl: require('../../static/images/logo.png')
       }
     }
   },

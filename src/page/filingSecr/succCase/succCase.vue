@@ -49,6 +49,7 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'succ_case',
@@ -288,7 +289,7 @@ export default {
       window.open(path, '_blank')
     },
     dowDoc (index) {
-      window.open('/api/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
+      window.open(regi.api + '/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
     }
   }
 }

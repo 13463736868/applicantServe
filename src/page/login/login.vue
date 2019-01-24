@@ -55,6 +55,7 @@ import { mapActions } from 'vuex'
 import {setToken, removeToken} from '@/cookies'
 import {getRouter, getMenu} from '@/router/routers.js'
 import setRegExp from '@/config/regExp.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'login',
@@ -62,12 +63,12 @@ export default {
     return {
       style: {
         bg: {
-          backgroundImage: "url('../../static/images/login_bg.png')",
+          backgroundImage: 'url(' + require('../../static/images/login_bg.png') + ')',
           backgroundRepeat: 'no-repeat',
           backgroundSize: 'cover'
         },
         icon: {
-          src: '../../static/images/login_icon.png'
+          src: require('../../static/images/login_icon.png')
         },
         loginLogo: {
           width: '210px',
@@ -98,7 +99,7 @@ export default {
   },
   computed: {
     codeImgSrc () {
-      return '/api/verify/code' + this.codeSrc
+      return regi.api + '/verify/code' + this.codeSrc
     }
   },
   methods: {
