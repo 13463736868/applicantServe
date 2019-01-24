@@ -575,6 +575,10 @@ export default {
       }
     },
     resAddUpload () {
+      this.$Message.success({
+        content: '正在测试中 敬请期待...',
+        duration: 2
+      })
       // this.userObj.addU = true
     },
     addUSave () {

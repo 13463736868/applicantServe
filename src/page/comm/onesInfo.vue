@@ -269,7 +269,11 @@ export default {
           fileId: fileId
         }
       }).then(res => {
-        this.imgUrl = res.data.data.filepath
+        if (res.data.data === null) {
+          
+        } else {
+          this.imgUrl = res.data.data.filepath
+        }
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
