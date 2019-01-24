@@ -269,9 +269,7 @@ export default {
           fileId: fileId
         }
       }).then(res => {
-        if (res.data.data === null) {
-          
-        } else {
+        if (res.data.data !== null) {
           this.imgUrl = res.data.data.filepath
         }
       }).catch(e => {
