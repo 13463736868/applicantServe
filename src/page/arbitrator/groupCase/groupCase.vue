@@ -189,6 +189,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_case',
@@ -673,7 +674,7 @@ export default {
         axios.post('/encryption', {
           params: _info.id + '$' + 1
         }).then(res => {
-          window.open('https://trialonline.yczcw.com.cn:3004/view/index.html#/' + res.data.data, '_blank')
+          window.open(regi.dataMap.goRoom + res.data.data, '_blank')
         }).catch(e => {
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',

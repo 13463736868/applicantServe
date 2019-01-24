@@ -12,7 +12,10 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
-        <Col span="2" offset="12">
+        <Col span="2" offset="10">
+          <Button type="primary" @click="resAddUpload">批量导入</Button>
+        </Col>
+        <Col span="2">
           <Button type="primary" @click="resAddUser('add')">添加</Button>
         </Col>
       </Row>
@@ -111,6 +114,9 @@
     </alert-btn-info>
     <alert-btn-info :alertShow="userObj.resetShow" @alertConfirm="resetSave" @alertCancel="alertCanc('reset')" alertTitle="操作">
       <p>确定要重置密码吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="userObj.addU" @alertConfirm="addUSave" @alertCancel="alertCanc('addU')" alertTitle="操作">
+      <p>addUpload？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -216,7 +222,8 @@ export default {
       userObj: {
         stateShow: false,
         stateCode: null,
-        resetShow: false
+        resetShow: false,
+        addU: false
       }
     }
   },
@@ -567,6 +574,12 @@ export default {
         })
       }
     },
+    resAddUpload () {
+      this.userObj.addU = true
+    },
+    addUSave () {
+
+    },
     alertCanc (type) {
       if (type === 'addUser') {
         this.alertShow.addUser = false
@@ -595,6 +608,8 @@ export default {
       } else if (type === 'reset') {
         this.userId = null
         this.userObj.resetShow = false
+      } else if (type === 'addU') {
+        this.userObj.addU = false
       }
     }
   }
