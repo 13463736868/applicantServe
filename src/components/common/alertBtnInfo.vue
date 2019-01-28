@@ -10,7 +10,7 @@
         <slot></slot>
       </div>
       <div slot="footer">
-        <Button size="large" @click="alertCancel">取消</Button>
+        <Button v-if="isCancBtn !== true" size="large" @click="alertCancel">取消</Button>
         <Button v-if="isSaveBtn !== true" type="primary" size="large" @click="alertConfirm">确定</Button>
       </div>
     </Modal>
@@ -20,7 +20,7 @@
 <script>
 export default {
   name: 'alert_btn_info',
-  props: ['alertShow', 'alertTitle', 'isSaveBtn'],
+  props: ['alertShow', 'alertTitle', 'isSaveBtn', 'isCancBtn'],
   data () {
     return {}
   },

@@ -115,8 +115,8 @@
     <alert-btn-info :alertShow="userObj.resetShow" @alertConfirm="resetSave" @alertCancel="alertCanc('reset')" alertTitle="操作">
       <p>确定要重置密码吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="userObj.addU" @alertConfirm="addUSave" @alertCancel="alertCanc('addU')" alertTitle="操作">
-      <p>addUpload？</p>
+    <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="userObj.addU" alertTitle="操作">
+      <upload-book :fileType="['xls','xlsx']" :uploadUrl="resUploadUrl" @dowDoc="dowDocBook" @saveClick="addUSave" @cancClick="alertCanc('addU')"></upload-book>
     </alert-btn-info>
   </div>
 </template>
@@ -126,11 +126,13 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import uploadBook from '@/components/common/uploadBook'
 import setRegExp from '@/config/regExp.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'user_mana',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { headTop, spinComp, alertBtnInfo, uploadBook },
   data () {
     return {
       spinShow: false,
@@ -229,6 +231,11 @@ export default {
   },
   created () {
     this.resCaseList()
+  },
+  computed: {
+    resUploadUrl () {
+      return regi.api + '/user/batchaddUser'
+    }
   },
   methods: {
     renderBtn (h, params) {
@@ -575,14 +582,18 @@ export default {
       }
     },
     resAddUpload () {
-      this.$Message.success({
-        content: '正在测试中 敬请期待...',
-        duration: 2
-      })
-      // this.userObj.addU = true
+      this.userObj.addU = true
     },
     addUSave () {
-
+      this.alertCanc('addU')
+      this.resSearch()
+      this.$Message.success({
+        content: '上传成功',
+        duration: 2
+      })
+    },
+    dowDocBook () {
+      window.open(regi.api + '', '_blank')
     },
     alertCanc (type) {
       if (type === 'addUser') {
