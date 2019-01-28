@@ -65,6 +65,7 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'acce_case',
@@ -352,29 +353,55 @@ export default {
       let _num = +num
       let _k = null
       let _v = null
-      if (_num < 1000) {
-        _k = 70
-        _v = 300
-      } else if (_num < 50000 && _num >= 1000) {
-        _k = 70 + (_num - 1000) * 0.045
-        _v = 300
-      } else if (_num < 100000 && _num >= 50000) {
-        _k = 2275 + (_num - 50000) * 0.035
-        _v = _k * 0.15
-      } else if (_num < 200000 && _num >= 100000) {
-        _k = 4025 + (_num - 100000) * 0.025
-        _v = _k * 0.15
-      } else if (_num < 500000 && _num >= 200000) {
-        _k = 6525 + (_num - 200000) * 0.015
-        _v = _k * 0.15
-      } else if (_num < 1000000 && _num >= 500000) {
-        _k = 11025 + (_num - 500000) * 0.007
-        _v = _k * 0.15
-      } else if (_num >= 1000000) {
-        _k = 14525 + (_num - 1000000) * 0.004
-        _v = _k * 0.15
+      if (regi.type === 'YanCheng') {
+        if (_num < 1000) {
+          _k = 70
+          _v = 300
+        } else if (_num < 50000 && _num >= 1000) {
+          _k = 70 + (_num - 1000) * 0.045
+          _v = 300
+        } else if (_num < 100000 && _num >= 50000) {
+          _k = 2275 + (_num - 50000) * 0.035
+          _v = _k * 0.15
+        } else if (_num < 200000 && _num >= 100000) {
+          _k = 4025 + (_num - 100000) * 0.025
+          _v = _k * 0.15
+        } else if (_num < 500000 && _num >= 200000) {
+          _k = 6525 + (_num - 200000) * 0.015
+          _v = _k * 0.15
+        } else if (_num < 1000000 && _num >= 500000) {
+          _k = 11025 + (_num - 500000) * 0.007
+          _v = _k * 0.15
+        } else if (_num >= 1000000) {
+          _k = 14525 + (_num - 1000000) * 0.004
+          _v = _k * 0.15
+        }
+        return ((_k + _v) * 0.7).toFixed(2)
+      } else if (regi.type === 'AnYang') {
+        if (_num <= 1000) {
+          _k = 80
+          _v = 300
+        } else if (_num <= 50000) {
+          _k = 40 + _num * 0.04
+          _v = _num <= 20000 ? 500 : 700
+        } else if (_num <= 100000) {
+          _k = 540 + _num * 0.03
+          _v = _k * 0.3
+        } else if (_num <= 200000) {
+          _k = 1540 + _num * 0.02
+          _v = _k * 0.3
+        } else if (_num <= 500000) {
+          _k = 2540 + _num * 0.015
+          _v = _k * 0.3
+        } else if (_num <= 1000000) {
+          _k = 5040 + _num * 0.01
+          _v = _k * 0.3
+        } else if (_num > 1000000) {
+          _k = 10040 + _num * 0.005
+          _v = _k * 0.3
+        }
+        return (_k + _v).toFixed(2)
       }
-      return ((_k + _v) * 0.7).toFixed(2)
     },
     acceSave (type) {
       if (type === 'acceA') {
