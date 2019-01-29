@@ -593,7 +593,7 @@ export default {
       })
     },
     dowDocBook () {
-      window.open(regi.api + '', '_blank')
+      window.open('http://223.223.196.73:8886/template/import_user_template.xlsx', '_blank')
     },
     alertCanc (type) {
       if (type === 'addUser') {

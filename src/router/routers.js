@@ -26,6 +26,14 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/admin/postMana/postMana.vue')))
   },
   {
+    path: '/ruleMana',
+    name: 'ruleMana',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/admin/ruleMana/ruleMana.vue')))
+  },
+  {
     path: '/arbiEvas',
     name: 'arbiEvas',
     meta: {
