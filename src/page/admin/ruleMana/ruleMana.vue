@@ -628,7 +628,7 @@ export default {
           duration: 5
         })
       } else {
-        axios.post('/clientRequest/addArbitrationRule', this.addData).then(res => {
+        axios.post('/arbitrationRule/addArbitrationRule', this.addData).then(res => {
           this.alertCanc('addRule')
           this.$Message.success({
             content: '操作成功',
