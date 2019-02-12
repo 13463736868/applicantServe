@@ -1,4 +1,5 @@
 'use strict'
+// YanCheng:/api  anyang:/trial   ;src/axios;src/router;index.html
 const api = '/api'
 const type = 'YanCheng'
 const infoMap = {
@@ -27,6 +28,7 @@ const infoMap = {
 const dataMap = infoMap[type]
 
 export default {
+  type,
   api,
   dataMap
 }
