@@ -116,7 +116,7 @@
       <p>确定要重置密码吗？</p>
     </alert-btn-info>
     <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="userObj.addU" alertTitle="操作">
-      <upload-book :fileType="['xls','xlsx']" :uploadUrl="resUploadUrl" @dowDoc="dowDocBook" @saveClick="addUSave" @cancClick="alertCanc('addU')"></upload-book>
+      <upload-book childName="批量导入用户" :dowShow="true" :fileType="['xls','xlsx']" :uploadUrl="resUploadUrl" @dowDoc="dowDocBook" @saveClick="addUSave" @cancClick="alertCanc('addU')"></upload-book>
     </alert-btn-info>
   </div>
 </template>
@@ -593,7 +593,7 @@ export default {
       })
     },
     dowDocBook () {
-      window.open('http://223.223.196.73:8886/template/import_user_template.xlsx', '_blank')
+      window.open(regi.api + '/file/templet/dowload/3', '_blank')
     },
     alertCanc (type) {
       if (type === 'addUser') {

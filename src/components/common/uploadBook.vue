@@ -6,8 +6,8 @@
     <Row>
       <Col span="22" offset="1">
         <Row class="_labelFor">
-          <Col span="12" class="_label">批量导入用户<b class="_b">*</b></Col>
-          <Col span="12" class="_label tr"><span class="_enDow hand" @click="dowDoc"><Icon class="mr5" type="md-download" size="16" color="#ff7a7a"/>批量导入用户模版下载</span></Col>
+          <Col span="12" class="_label"><span v-text="childName"></span><b class="_b">*</b></Col>
+          <Col v-if="dowShow" span="12" class="_label tr"><span class="_enDow hand" @click="dowDoc"><Icon class="mr5" type="md-download" size="16" color="#ff7a7a"/>批量导入用户模版下载</span></Col>
           <Col span="24">
             <Upload
               ref="upload"
@@ -50,7 +50,7 @@ import spinComp from '@/components/common/spin'
 export default {
   name: 'upload_appl_book',
   components: { spinComp },
-  props: ['uploadUrl', 'fileType'],
+  props: ['uploadUrl', 'fileType', 'childName', 'dowShow'],
   data () {
     return {
       spinShow: false,
