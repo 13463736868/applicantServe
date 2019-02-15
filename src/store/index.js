@@ -15,7 +15,8 @@ const state = {
   caseState: null,
   idenCheckId: null,
   idenCheckType: null,
-  idenCheckState: null
+  idenCheckState: null,
+  paymentInfoId: ''
 }
 
 export default new Vuex.Store({

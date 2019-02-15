@@ -17,6 +17,8 @@ axios.interceptors.request.use((config) => {
     // if (store.state.admin_token) {//如果不用cookie的话 给每个http header加token
     //   config.headers.Authorization = `token $(store.state.admin_token)`
     // }
+  } else {
+    config.url = '/api' + config.url
   }
   return config
 }, (error) => {

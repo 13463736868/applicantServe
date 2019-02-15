@@ -28,5 +28,8 @@ export default {
   },
   [types.SET_IDENCHECKSTATE] (state, obj) {
     state.idenCheckState = obj
+  },
+  [types.SET_PAYMENTINFOID] (state, id) {
+    state.paymentInfoId = id
   }
 }

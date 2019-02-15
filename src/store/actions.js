@@ -26,5 +26,8 @@ export default {
   },
   setIdenCheckState ({commit, state}, obj) {
     commit('SET_IDENCHECKSTATE', obj)
+  },
+  setPaymentInfoId ({commit, state}, id) {
+    commit('SET_PAYMENTINFOID', id)
   }
 }

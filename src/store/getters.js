@@ -7,5 +7,6 @@ export default {
   caseState: state => state.caseState,
   idenCheckId: state => state.idenCheckId,
   idenCheckType: state => state.idenCheckType,
-  idenCheckState: state => state.idenCheckState
+  idenCheckState: state => state.idenCheckState,
+  paymentInfoId: state => state.paymentInfoId
 }

@@ -71,6 +71,16 @@ const beforeEach = (to, from, next) => {
           }
         }
       }
+      if (to.fullPath.indexOf('paymentInfo') === -1) {
+        loc.removeItem('paymentInfoId')
+        // store.commit('SET_PAYMENTINFOID', '') 销毁组件前已经清理了
+      } else {
+        if (store.state.paymentInfoId === '') {
+          if (loc.getItem('paymentInfoId')) {
+            store.commit('SET_PAYMENTINFOID', loc.getItem('paymentInfoId'))
+          }
+        }
+      }
       next()
     } else {
       next({
