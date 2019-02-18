@@ -12,6 +12,10 @@
               <span class="mr10">请求项内容 :</span>
               <span v-text="infoData.content"></span>
             </p>
+            <p>
+              <span class="mr10">请求金额(元) :</span>
+              <span v-text="infoData.disputeFee"></span>
+            </p>
           </Col>
         </Row>
       </Col>
