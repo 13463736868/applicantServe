@@ -5,6 +5,14 @@
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
+      <Row class="pb20">
+        <Col span="2" offset="19">
+          <Button type="primary" @click="resBatch(1)">批量提交</Button>
+        </Col>
+        <Col span="3">
+          <Button type="primary" @click="resBatch(2)">批量指定开庭时间</Button>
+        </Col>
+      </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
@@ -27,8 +35,11 @@
         </Col>
       </Row>
       <Row class="pt15">
-        <Col span="12" offset="6" class="tc">
+        <Col span="16" class="tr">
           <Page simple :total="fileList.page.total" :current="fileList.page.pageNum" :page-size="fileList.page.pageSize" show-elevator show-total @on-change="reschangePageF"></Page>
+        </Col>
+        <Col span="8" class="tc">
+          <Button type="primary" size="small" @click="dowZip">一键下载</Button>
         </Col>
       </Row>
     </alert-btn-info>
@@ -58,6 +69,19 @@
     <alert-btn-info :alertShow="alertObj.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="撤案驳回原因">
       <p class="t2" v-text="alertObj.reasText"></p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
+      <p>确定要提交吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.time" @alertConfirm="timeSave" @alertCancel="alertCanc('time')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">指定开庭时间：</p>
+        </Col>
+        <Col span="12">
+          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -68,7 +92,6 @@ import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
-import setRegExp from '@/config/regExp.js'
 import regi from '@/config/regiType.js'
 
 export default {
@@ -80,6 +103,14 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案号',
             key: 'code',
@@ -228,6 +259,13 @@ export default {
           pageSize: 5
         },
         caseId: null
+      },
+      alertShow: {
+        ids: [],
+        batch: false,
+        state: [],
+        time: false,
+        fileIdArr: []
       }
     }
   },
@@ -236,248 +274,230 @@ export default {
   },
   methods: {
     renderBtn (h, params) {
-      if (params.row.tribunalRequestState === 4) {
-        if (params.row.beginTime === null || params.row.beginTime === '') {
-          if (params.row.toBeSubmitted === null || params.row.toBeSubmitted === '') {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.resSubm(params.index)
-                  }
-                }
-              }, '提交')
-            ])
-          } else {
-            if (!setRegExp(params.row.toBeSubmitted, 'groupCase')) {
-              if (params.row.toBeSubmitted === '1') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.resPassReve(params.index)
-                      }
-                    }
-                  }, '同意撤回')
-                ])
-              } else if (params.row.toBeSubmitted === '2') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.resSeeReas(params.index)
-                      }
-                    }
-                  }, '查看原因'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.resPassReve(params.index)
-                      }
-                    }
-                  }, '重新生成撤回书')
-                ])
-              } else {
-                return h('div', [
-                ])
+      let _info = params.row
+      if (_info.logicState === '1') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resSubm(params.index)
               }
-            } else {
-              return h('div', [
-                h('span', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  style: {
-                    color: '#2d8cf0'
-                  }
-                }, params.row.toBeSubmitted)
-              ])
             }
-          }
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resFileList(params.index)
-                }
+          }, '提交')
+        ])
+      } else if (_info.logicState === '2') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPassReve(params.index)
               }
-            }, '查看文件'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              on: {
-                click: () => {
-                  this.resSubm(params.index)
-                }
+            }
+          }, '同意撤回')
+        ])
+      } else if (_info.logicState === '3') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSeeReas(params.index)
               }
-            }, '提交')
-          ])
-        }
-      } else if (params.row.tribunalRequestState === 1) {
-        if (params.row.alreadyBeginTime === 1) {
-          if (params.row.beginTime === null || params.row.beginTime === '') {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.resBeginTime('edit', params.index)
-                  }
-                }
-              }, '修改开庭时间')
-            ])
-          } else {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.resFileList(params.index)
-                  }
-                }
-              }, '查看文件'),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.resBeginTime('edit', params.index)
-                  }
-                }
-              }, '修改开庭时间')
-            ])
-          }
-        } else if (params.row.alreadyBeginTime === 2) {
-          if (params.row.beginTime === null || params.row.beginTime === '') {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.resBeginTime('once', params.index)
-                  }
-                }
-              }, '指定开庭时间')
-            ])
-          } else {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.resFileList(params.index)
-                  }
-                }
-              }, '查看文件'),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.resBeginTime('once', params.index)
-                  }
-                }
-              }, '指定开庭时间')
-            ])
-          }
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resFileList(params.index)
-                }
+            }
+          }, '查看原因'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resPassReve(params.index)
               }
-            }, '查看文件')
-          ])
-        }
+            }
+          }, '重新生成撤回书')
+        ])
+      } else if (_info.logicState === '4') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resSubm(params.index)
+              }
+            }
+          }, '提交')
+        ])
+      } else if (_info.logicState === '5') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resBeginTime('edit', params.index)
+              }
+            }
+          }, '修改开庭时间')
+        ])
+      } else if (_info.logicState === '6') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resBeginTime('edit', params.index)
+              }
+            }
+          }, '修改开庭时间')
+        ])
+      } else if (_info.logicState === '7') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resBeginTime('once', params.index)
+              }
+            }
+          }, '指定开庭时间')
+        ])
+      } else if (_info.logicState === '8') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resBeginTime('once', params.index)
+              }
+            }
+          }, '指定开庭时间')
+        ])
+      } else if (_info.logicState === '9') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件')
+        ])
+      } else if (_info.logicState === '10') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件')
+        ])
+      } else if (_info.logicState === '11') {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0'
+            }
+          }, _info.logicContent)
+        ])
       } else {
-        if (params.row.beginTime === null || params.row.beginTime === '') {
-          return h('div', [
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resFileList(params.index)
-                }
-              }
-            }, '查看文件')
-          ])
-        }
+        return h('div', [
+        ])
       }
     },
     resCaseList () {
@@ -539,6 +559,24 @@ export default {
           duration: 5
         })
       })
+      axios.post('/case/findCaseFileList', {
+        pageIndex: 0,
+        pageSize: 999,
+        caseId: this.fileList.caseId,
+        caseState: 2
+      }).then(res => {
+        let _data = res.data.data
+        for (let k in _data.dataList) {
+          if (_data.dataList[k].fileId !== null) {
+            this.alertShow.fileIdArr.push(_data.dataList[k].fileId)
+          }
+        }
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resSubm (index) {
       this.alertObj.subm = true
@@ -553,7 +591,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
-        this.resCaseList()
+        this.resSearch()
       }).catch(e => {
         this.alertCanc('subm')
         this.$Message.error({
@@ -647,7 +685,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
-        this.resCaseList()
+        this.resSearch()
       }).catch(e => {
         this.alertCanc('begin')
         this.$Message.error({
@@ -717,6 +755,244 @@ export default {
       this.alertObj.reasText = this.caseList.bodyList[index].caseDocumentReason === null ? '' : this.caseList.bodyList[index].caseDocumentReason
       this.alertObj.reas = true
     },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (_obj.logicState === '1' || _obj.logicState === '4' || _obj.logicState === '7' || _obj.logicState === '8') {
+        if (this.alertShow.ids.indexOf(_obj.id) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (index, bool) {
+      let info = this.caseList.bodyList[index]
+      if (bool) {
+        if (this.alertShow.state.length === 0) {
+          if (this.alertShow.ids.indexOf(info.id) === -1) {
+            if (this.alertShow.ids.length >= 10) {
+              this.$Message.error({
+                content: '最多只能选择十个案件',
+                duration: 5
+              })
+              return false
+            } else {
+              if (info.logicState === '1' || info.logicState === '4') {
+                if (this.alertShow.state.length === 0) {
+                  this.alertShow.state.push('1')
+                }
+                this.alertShow.ids.push(info.id)
+              } else if (info.logicState === '7' || info.logicState === '8') {
+                if (this.alertShow.state.length === 0) {
+                  this.alertShow.state.push('7')
+                }
+                this.alertShow.ids.push(info.id)
+              }
+            }
+          }
+        } else if (this.alertShow.state.length === 1) {
+          if (this.alertShow.state[0] === '1') {
+            if (info.logicState === '1' || info.logicState === '4') {
+              if (this.alertShow.ids.indexOf(info.id) === -1) {
+                if (this.alertShow.ids.length >= 10) {
+                  this.$Message.error({
+                    content: '最多只能选择十个案件',
+                    duration: 5
+                  })
+                  return false
+                } else {
+                  if (info.logicState === '1' || info.logicState === '4') {
+                    if (this.alertShow.state.length === 0) {
+                      this.alertShow.state.push('1')
+                    }
+                    this.alertShow.ids.push(info.id)
+                  }
+                }
+              }
+            } else {
+              this.$Message.error({
+                content: '不能同时选择待提交案件，和待指定开庭时间案件',
+                duration: 5
+              })
+              return false
+            }
+          } else if (this.alertShow.state[0] === '7') {
+            if (info.logicState === '7' || info.logicState === '8') {
+              if (this.alertShow.ids.indexOf(info.id) === -1) {
+                if (this.alertShow.ids.length >= 10) {
+                  this.$Message.error({
+                    content: '最多只能选择十个案件',
+                    duration: 5
+                  })
+                  return false
+                } else {
+                  if (info.logicState === '7' || info.logicState === '8') {
+                    if (this.alertShow.state.length === 0) {
+                      this.alertShow.state.push('7')
+                    }
+                    this.alertShow.ids.push(info.id)
+                  }
+                }
+              }
+            } else {
+              this.$Message.error({
+                content: '不能同时选择待提交案件，和待指定开庭时间案件',
+                duration: 5
+              })
+              return false
+            }
+          }
+        } else {
+          this.$Message.error({
+            content: '错误信息:请刷新后重试',
+            duration: 5
+          })
+          return false
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.id) !== -1) {
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
+          if (this.alertShow.ids.length === 0) {
+            this.alertShow.state = []
+          }
+        }
+      }
+    },
+    resBatch (type) {
+      if (this.alertShow.ids.length === 0) {
+        this.$Message.error({
+          content: '请先选择一个案件',
+          duration: 5
+        })
+      } else {
+        if (type === 1) {
+          if (this.alertShow.state[0] === '1') {
+            this.alertShow.batch = true
+          } else {
+            this.$Message.error({
+              content: '当前选择的案件只能批量指定开庭时间',
+              duration: 5
+            })
+          }
+        } else if (type === 2) {
+          if (this.alertShow.state[0] === '7') {
+            this.alertShow.time = true
+          } else {
+            this.$Message.error({
+              content: '当前选择的案件只能批量提交',
+              duration: 5
+            })
+          }
+        }
+      }
+    },
+    batchSave () {
+      axios.post('/batchGroupCourt/saveGroupCourtBatch', {
+        caseIds: this.alertShow.ids.join(',')
+      }).then(res => {
+        this.alertCanc('batch')
+        this.alertShow.ids = []
+        this.alertShow.state = []
+        this.$Message.success({
+          content: res.data.data,
+          duration: 2
+        })
+        this.resSearch()
+      }).catch(e => {
+        this.alertCanc('batch')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    timeSave () {
+      axios.post('/getDateSection').then(res => {
+        let _res = res.data.data
+        try {
+          let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+          let _sTime = res.data.data.startDate.split('-').join('')
+          let _eTime = res.data.data.endDate.split('-').join('')
+          if (_time - _sTime < 0 || _time - _eTime > 0) {
+            this.$Message.warning({
+              content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+              duration: 6
+            })
+          } else {
+            this.timesSave()
+          }
+        } catch (e) {
+          this.$Message.error({
+            content: '调取时间范围出错,稍后再试',
+            duration: 5
+          })
+        }
+      }).catch(e => {
+        this.$Message.error({
+          content: '调取时间范围出错,稍后再试',
+          duration: 5
+        })
+      })
+    },
+    timesSave () {
+      axios.post('/batchGroupCourt/updateGroupOpenTime', {
+        caseIds: this.alertShow.ids.join(','),
+        beginTime: this.alertObj.time,
+        updateType: 1
+      }).then(res => {
+        this.alertCanc('time')
+        this.alertShow.ids = []
+        this.alertShow.state = []
+        this.$Message.success({
+          content: res.data.data,
+          duration: 2
+        })
+        this.resSearch()
+      }).catch(e => {
+        this.alertCanc('time')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -724,6 +1000,7 @@ export default {
         this.fileList.page.pageNum = 1
         this.fileList.page.total = 0
         this.fileList.caseId = null
+        this.alertShow.fileIdArr = []
       } else if (type === 'subm') {
         this.alertObj.subm = false
         this.alertObj.caseId = null
@@ -741,6 +1018,11 @@ export default {
       } else if (type === 'reas') {
         this.alertObj.reasText = ''
         this.alertObj.reas = false
+      } else if (type === 'batch') {
+        this.alertShow.batch = false
+      } else if (type === 'time') {
+        this.alertShow.time = false
+        this.alertObj.time = ''
       }
     },
     seeDoc (path) {
@@ -748,6 +1030,10 @@ export default {
     },
     dowDoc (index) {
       window.open(regi.api + '/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
+    },
+    dowZip () {
+      let _fileIds = this.alertShow.fileIdArr.join(',')
+      window.open(regi.api + '/file/documentZip/download?fileIds=' + _fileIds, '_blank')
     }
   }
 }

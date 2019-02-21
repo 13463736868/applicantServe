@@ -90,6 +90,22 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitrator/groupCase/groupCase.vue')))
   },
   {
+    path: '/trialList',
+    name: 'trialList',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitrator/trialList/trialList.vue')))
+  },
+  {
+    path: '/stencilList',
+    name: 'stencilList',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitrator/stencilList/stencilList.vue')))
+  },
+  {
     path: '/filingCase',
     name: 'filingCase',
     meta: {

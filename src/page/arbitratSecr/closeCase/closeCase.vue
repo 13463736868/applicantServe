@@ -35,8 +35,11 @@
         </Col>
       </Row>
       <Row class="pt15">
-        <Col span="12" offset="6" class="tc">
+        <Col span="16" class="tr">
           <Page simple :total="fileList.page.total" :current="fileList.page.pageNum" :page-size="fileList.page.pageSize" show-elevator show-total @on-change="reschangePageF"></Page>
+        </Col>
+        <Col span="8" class="tc">
+          <Button type="primary" size="small" @click="dowZip">一键下载</Button>
         </Col>
       </Row>
     </alert-btn-info>
@@ -159,7 +162,8 @@ export default {
         pageSize: 10
       },
       alertObj: {
-        file: false
+        file: false,
+        fileIdArr: []
       },
       fileList: {
         header: [
@@ -313,6 +317,24 @@ export default {
           duration: 5
         })
       })
+      axios.post('/case/findCaseFileList', {
+        pageIndex: 0,
+        pageSize: 999,
+        caseId: this.fileList.caseId,
+        caseState: 3
+      }).then(res => {
+        let _data = res.data.data
+        for (let k in _data.dataList) {
+          if (_data.dataList[k].fileId !== null) {
+            this.alertObj.fileIdArr.push(_data.dataList[k].fileId)
+          }
+        }
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     alertCanc (type) {
       if (type === 'file') {
@@ -321,6 +343,7 @@ export default {
         this.fileList.page.pageNum = 1
         this.fileList.page.total = 0
         this.fileList.caseId = null
+        this.alertObj.fileIdArr = []
       }
     },
     seeDoc (path) {
@@ -328,6 +351,10 @@ export default {
     },
     dowDoc (index) {
       window.open(regi.api + '/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
+    },
+    dowZip () {
+      let _fileIds = this.alertObj.fileIdArr.join(',')
+      window.open(regi.api + '/file/documentZip/download?fileIds=' + _fileIds, '_blank')
     }
   }
 }

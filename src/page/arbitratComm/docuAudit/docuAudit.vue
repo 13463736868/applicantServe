@@ -5,6 +5,14 @@
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
+      <Row class="pb20">
+        <Col span="2" offset="20">
+          <Button type="primary" @click="resBatch(1)">批量通过</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch(2)">批量驳回</Button>
+        </Col>
+      </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
@@ -21,6 +29,11 @@
       </div>
     </div>
     <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc" alertTitle="操作">
+      <p v-if="alertShow.state === 1">确定要通过吗？</p>
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
@@ -44,6 +57,14 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案号',
             key: 'code',
@@ -131,7 +152,10 @@ export default {
         docu: false,
         id: null,
         caseDocuId: null,
-        rejeReason: ''
+        rejeReason: '',
+        idsList: [],
+        ids: [],
+        batch: false
       }
     }
   },
@@ -304,12 +328,149 @@ export default {
         })
       }
     },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (_obj.caseDocuemntApproveState === 3) {
+        if (this.alertShow.ids.indexOf(_obj.id) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (index, bool) {
+      let info = this.caseList.bodyList[index]
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.$Message.error({
+              content: '最多只能选择十个案件',
+              duration: 5
+            })
+            return false
+          } else {
+            let _o = {}
+            _o.caseId = info.id
+            _o.documentId = info.caseDocuemntId
+            this.alertShow.idsList.push(_o)
+            this.alertShow.ids.push(info.id)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.id) !== -1) {
+          this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.id), 1)
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
+        }
+      }
+    },
+    resBatch (type) {
+      if (this.alertShow.ids.length === 0) {
+        this.$Message.error({
+          content: '请先选择一个案件',
+          duration: 5
+        })
+      } else {
+        this.alertShow.state = type
+        this.alertShow.batch = true
+      }
+    },
+    batchSave () {
+      if (this.alertShow.state === 2) {
+        if (this.alertShow.rejeReason === '') {
+          this.$Message.warning({
+            content: '请填写驳回原因',
+            duration: 5
+          })
+        } else {
+          axios.post('/approve/caseDocumentBatch', {
+            caseDocumentIds: JSON.stringify(this.alertShow.idsList),
+            caseDocumentApprove: this.alertShow.state,
+            caseDocumentReason: this.alertShow.rejeReason
+          }).then(res => {
+            this.alertCanc()
+            this.alertShow.idsList = []
+            this.alertShow.ids = []
+            this.$Message.success({
+              content: res.data.message,
+              duration: 2
+            })
+            this.pageObj.pageNum = 1
+            this.resCaseList()
+          }).catch(e => {
+            this.alertCanc()
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      } else {
+        axios.post('/approve/caseDocumentBatch', {
+          caseDocumentIds: JSON.stringify(this.alertShow.idsList),
+          caseDocumentApprove: this.alertShow.state
+        }).then(res => {
+          this.alertCanc()
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          this.$Message.success({
+            content: res.data.message,
+            duration: 2
+          })
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+        }).catch(e => {
+          this.alertCanc()
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
     alertCanc () {
       this.alertShow.docu = false
       this.alertShow.id = null
       this.alertShow.state = null
       this.alertShow.caseDocuId = null
       this.alertShow.rejeReason = ''
+      this.alertShow.batch = false
     }
   }
 }

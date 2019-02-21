@@ -12,6 +12,9 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
+        <Col span="2" class="tc" offset="11">
+          <Button type="primary" @click="resEnds">批量结案</Button>
+        </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
@@ -174,6 +177,9 @@
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batch"  @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
+      <p class="t2">确定要批量结案吗？</p>
+    </alert-btn-info>
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
@@ -203,6 +209,14 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案号',
             key: 'code',
@@ -242,6 +256,16 @@ export default {
           {
             title: '案件状态',
             key: 'caseState',
+            align: 'center'
+          },
+          {
+            title: '案件类型',
+            key: 'caseTypeName',
+            align: 'center'
+          },
+          {
+            title: '模版名称',
+            key: 'tempName',
             align: 'center'
           },
           {
@@ -297,7 +321,10 @@ export default {
         reasText: '',
         editor: false,
         editorId: null,
-        editorDest: false
+        editorDest: false,
+        ids: [],
+        idsList: [],
+        batch: false
       }
     }
   },
@@ -1133,6 +1160,107 @@ export default {
         })
       })
     },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (_obj.endCasePatten === '5' && _obj.tempCode !== null) {
+        if (this.alertShow.ids.indexOf(_obj.id) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (index, bool) {
+      let info = this.caseList.bodyList[index]
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.$Message.error({
+              content: '最多只能选择十个案件',
+              duration: 5
+            })
+            return false
+          } else {
+            let _o = {}
+            _o[info.id] = info.tempCode
+            this.alertShow.idsList.push(_o)
+            this.alertShow.ids.push(info.id)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.id) !== -1) {
+          this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.id), 1)
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
+        }
+      }
+    },
+    resEnds () {
+      if (this.alertShow.ids.length === 0) {
+        this.$Message.error({
+          content: '请先选择一个案件',
+          duration: 5
+        })
+      } else {
+        this.alertShow.batch = true
+      }
+    },
+    batchSave () {
+      axios.post('/batchCaseDocument/addCaseDocumentList', {
+        caseDocumentDataJson: JSON.stringify(this.alertShow.idsList)
+      }).then(res => {
+        this.alertCanc('batch')
+        this.alertShow.idsList = []
+        this.alertShow.ids = []
+        this.$Message.success({
+          content: res.data.message,
+          duration: 2
+        })
+        this.resSearch()
+      }).catch(e => {
+        this.alertCanc('batch')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       switch (type) {
         case 'canc':
@@ -1180,6 +1308,9 @@ export default {
           this.alertShow.editor = false
           this.alertShow.editorId = null
           this.alertShow.editorDest = false
+          break
+        case 'batch':
+          this.alertShow.batch = false
           break
         default:
           break

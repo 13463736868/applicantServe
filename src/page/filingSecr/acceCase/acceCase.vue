@@ -12,6 +12,20 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
+        <Col span="2" offset="2">
+          <label class="lh32 f16 fc6 fr mr15">状态</label>
+        </Col>
+        <Col span="4">
+          <Select v-model="reviewStatus" @on-change="resChangeStatus()">
+            <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+          </Select>
+        </Col>
+        <Col span="2" offset="1">
+          <Button type="primary" @click="resBatch(1)">批量受理</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch(2)">批量驳回</Button>
+        </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
@@ -55,6 +69,11 @@
     <alert-btn-info :alertShow="alertShow.retr" @alertConfirm="retrSave" @alertCancel="alertCanc('retr')" alertTitle="操作">
       <p>确定同意撤回案件？</p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
+      <p v-if="alertShow.state === 1">确定要受理吗？</p>
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
   </div>
 </template>
 
@@ -65,7 +84,6 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
-import regi from '@/config/regiType.js'
 
 export default {
   name: 'acce_case',
@@ -79,6 +97,14 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'caseId',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案件编号',
             key: 'caseId',
@@ -134,6 +160,19 @@ export default {
             align: 'center'
           },
           {
+            title: '仲裁费(元)',
+            key: 'cost',
+            align: 'center',
+            render: (h, params) => {
+              return h('span', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                }
+              }, params.row.cost === null ? '' : params.row.cost + ' 元')
+            }
+          },
+          {
             title: '操作',
             key: 'caseId',
             align: 'center',
@@ -156,7 +195,12 @@ export default {
       alertShow: {
         acceA: false,
         acceB: false,
-        retr: false
+        retr: false,
+        idsList: [],
+        ids: [],
+        state: null,
+        batch: false,
+        rejeReason: ''
       },
       dataObj: {
         acceAA: null,
@@ -164,7 +208,18 @@ export default {
         acceB: null,
         acceCaseId: null,
         retrCaseId: null
-      }
+      },
+      reviewStatus: 1,
+      reviewList: [
+        {
+          value: 1,
+          label: '待受理'
+        },
+        {
+          value: 2,
+          label: '待缴费'
+        }
+      ]
     }
   },
   created () {
@@ -257,36 +312,41 @@ export default {
           }, '同意撤回')
         ])
       } else {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resAcceptCase(1, params.index)
+        if (this.reviewStatus === 1) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resAcceptCase(1, params.index)
+                }
               }
-            }
-          }, '受理'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resAcceptCase(0, params.index)
+            }, '受理'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resAcceptCase(0, params.index)
+                }
               }
-            }
-          }, '驳回')
-        ])
+            }, '驳回')
+          ])
+        } else {
+          return h('div', [
+          ])
+        }
       }
     },
     resCaseList () {
@@ -295,7 +355,7 @@ export default {
         startIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         keyword: this.search.text,
-        state: 1,
+        state: this.reviewStatus,
         caseListType: 1
       }).then(res => {
         let _data = res.data.data
@@ -318,6 +378,9 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
+    resChangeStatus () {
+      this.resSearch()
+    },
     resRecallCase (index) {
       this.dataObj.retrCaseId = this.caseList.bodyList[index].caseId
       this.alertShow.retr = true
@@ -326,6 +389,8 @@ export default {
       this.dataObj.acceCaseId = this.caseList.bodyList[index].caseId
       if (status) {
         this.alertShow.acceA = true
+        this.dataObj.acceAA = this.caseList.bodyList[index].money
+        this.applMoney()
       } else {
         this.alertShow.acceB = true
       }
@@ -346,62 +411,21 @@ export default {
       } else {
         this.emObj.status = 0
         this.emObj.text = ''
-        this.dataObj.acceAB = this.countCost(this.dataObj.acceAA)
+        this.countCost(this.dataObj.acceAA)
       }
     },
     countCost (num) {
       let _num = +num
-      let _k = null
-      let _v = null
-      if (regi.type === 'YanCheng') {
-        if (_num < 1000) {
-          _k = 70
-          _v = 300
-        } else if (_num < 50000 && _num >= 1000) {
-          _k = 70 + (_num - 1000) * 0.045
-          _v = 300
-        } else if (_num < 100000 && _num >= 50000) {
-          _k = 2275 + (_num - 50000) * 0.035
-          _v = _k * 0.15
-        } else if (_num < 200000 && _num >= 100000) {
-          _k = 4025 + (_num - 100000) * 0.025
-          _v = _k * 0.15
-        } else if (_num < 500000 && _num >= 200000) {
-          _k = 6525 + (_num - 200000) * 0.015
-          _v = _k * 0.15
-        } else if (_num < 1000000 && _num >= 500000) {
-          _k = 11025 + (_num - 500000) * 0.007
-          _v = _k * 0.15
-        } else if (_num >= 1000000) {
-          _k = 14525 + (_num - 1000000) * 0.004
-          _v = _k * 0.15
-        }
-        return ((_k + _v) * 0.7).toFixed(2)
-      } else if (regi.type === 'AnYang') {
-        if (_num <= 1000) {
-          _k = 80
-          _v = 300
-        } else if (_num <= 50000) {
-          _k = 40 + _num * 0.04
-          _v = _num <= 20000 ? 500 : 700
-        } else if (_num <= 100000) {
-          _k = 540 + _num * 0.03
-          _v = _k * 0.3
-        } else if (_num <= 200000) {
-          _k = 1540 + _num * 0.02
-          _v = _k * 0.3
-        } else if (_num <= 500000) {
-          _k = 2540 + _num * 0.015
-          _v = _k * 0.3
-        } else if (_num <= 1000000) {
-          _k = 5040 + _num * 0.01
-          _v = _k * 0.3
-        } else if (_num > 1000000) {
-          _k = 10040 + _num * 0.005
-          _v = _k * 0.3
-        }
-        return (_k + _v).toFixed(2)
-      }
+      axios.post('/payMentRequest/findArbitrationFee', {
+        money: _num
+      }).then(res => {
+        this.dataObj.acceAB = res.data.data
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     acceSave (type) {
       if (type === 'acceA') {
@@ -484,6 +508,147 @@ export default {
         })
       })
     },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (this.reviewStatus === 1) {
+        if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (index, bool) {
+      let info = this.caseList.bodyList[index]
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.caseId) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.$Message.error({
+              content: '最多只能选择十个案件',
+              duration: 5
+            })
+            return false
+          } else {
+            let _o = {}
+            _o.caseId = info.caseId
+            this.alertShow.idsList.push(_o)
+            this.alertShow.ids.push(info.caseId)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.caseId) !== -1) {
+          this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.caseId), 1)
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.caseId), 1)
+        }
+      }
+    },
+    resBatch (type) {
+      if (this.alertShow.ids.length === 0) {
+        this.$Message.error({
+          content: '请先选择一个案件',
+          duration: 5
+        })
+      } else {
+        this.alertShow.state = type
+        this.alertShow.batch = true
+      }
+    },
+    batchSave () {
+      if (this.alertShow.state === 2) {
+        if (this.alertShow.rejeReason === '') {
+          this.$Message.warning({
+            content: '请填写驳回原因',
+            duration: 5
+          })
+        } else {
+          axios.put('/caseBatch/updateCaseState_batch', {
+            reason: this.alertShow.rejeReason,
+            items: JSON.stringify(this.alertShow.idsList),
+            state: this.alertShow.state + ''
+          }, {
+            headers: {
+              'content-Type': 'application/json;charset=UTF-8'
+            }
+          }).then(res => {
+            this.alertCanc('batch')
+            this.alertShow.idsList = []
+            this.alertShow.ids = []
+            this.$Message.success({
+              content: res.data.data,
+              duration: 2
+            })
+            this.resSearch()
+          }).catch(e => {
+            this.alertCanc('batch')
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      } else {
+        axios.put('/caseBatch/updateCaseState_batch', {
+          items: JSON.stringify(this.alertShow.idsList),
+          state: this.alertShow.state + ''
+        }, {
+          headers: {
+            'content-Type': 'application/json;charset=UTF-8'
+          }
+        }).then(res => {
+          this.alertCanc('batch')
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          this.$Message.success({
+            content: res.data.data,
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.alertCanc('batch')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
     alertCanc (type) {
       if (type === 'acceA') {
         this.alertShow.acceA = false
@@ -499,6 +664,10 @@ export default {
       } else if (type === 'retr') {
         this.alertShow.retr = false
         this.dataObj.retrCaseId = null
+      } else if (type === 'batch') {
+        this.alertShow.rejeReason = ''
+        this.alertShow.state = null
+        this.alertShow.batch = false
       }
     },
     goCaseInfo (index) {

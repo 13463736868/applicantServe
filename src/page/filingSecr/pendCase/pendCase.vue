@@ -12,6 +12,9 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
+        <Col span="2" offset="11">
+          <Button type="primary" @click="resBatch">批量立案</Button>
+        </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
@@ -29,6 +32,18 @@
       </div>
     </div>
     <alert-btn-info :alertShow="alertShow.conf" @alertConfirm="confSave" @alertCancel="alertCanc('conf')" alertTitle="确认立案">
+      <Row class="_labelFor">
+        <Col span="4" offset="2">
+          <div class="_label">纠纷类型：</div>
+        </Col>
+        <Col span="16">
+          <Select v-model="dataObj.confType">
+            <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
       <Row class="_labelFor">
         <Col span="4" offset="2">
           <div class="_label">纠纷类型：</div>
@@ -62,6 +77,14 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'caseId',
+            align: 'center',
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案件编号',
             key: 'caseId',
@@ -140,7 +163,10 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        conf: false
+        conf: false,
+        idsList: [],
+        ids: [],
+        batch: false
       },
       dataObj: {
         confCaseId: null,
@@ -160,7 +186,7 @@ export default {
         startIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         keyword: this.search.text,
-        state: 2,
+        state: 12,
         caseListType: 2
       }).then(res => {
         let _data = res.data.data
@@ -232,11 +258,141 @@ export default {
         })
       }
     },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
+        return h('div', [
+          h('Icon', {
+            props: {
+              type: 'md-square-outline',
+              size: '16'
+            },
+            style: {
+              color: '#2d8cf0',
+              cursor: 'pointer',
+              verticalAlign: 'text-top'
+            },
+            on: {
+              click: () => {
+                this.seleArrChange(params.index, true)
+              }
+            }
+          })
+        ])
+      } else {
+        return h('div', [
+          h('Icon', {
+            props: {
+              type: 'md-checkbox',
+              size: '16'
+            },
+            style: {
+              color: '#2d8cf0',
+              cursor: 'pointer',
+              verticalAlign: 'text-top'
+            },
+            on: {
+              click: () => {
+                this.seleArrChange(params.index, false)
+              }
+            }
+          })
+        ])
+      }
+    },
+    seleArrChange (index, bool) {
+      let info = this.caseList.bodyList[index]
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.caseId) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.$Message.error({
+              content: '最多只能选择十个案件',
+              duration: 5
+            })
+            return false
+          } else {
+            let _o = {}
+            _o.caseId = info.caseId
+            _o.costs = info.cost
+            this.alertShow.idsList.push(_o)
+            this.alertShow.ids.push(info.caseId)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.caseId) !== -1) {
+          this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.caseId), 1)
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.caseId), 1)
+        }
+      }
+    },
+    resBatch () {
+      if (this.alertShow.ids.length === 0) {
+        this.$Message.error({
+          content: '请先选择一个案件',
+          duration: 5
+        })
+      } else {
+        axios.post('/dictionary/findDictionaryList', {
+          type: 'caseType'
+        }).then(res => {
+          let _dataList = res.data.data
+          let _select = []
+          for (let k in _dataList) {
+            let _o = {}
+            _o.value = _dataList[k].itemValue
+            _o.label = _dataList[k].item
+            _select.push(_o)
+          }
+          this.caseTypeList = _select
+          this.alertShow.batch = true
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
+    batchSave () {
+      if (this.dataObj.confType === null) {
+        this.$Message.warning({
+          content: '请先选择案件类型',
+          duration: 5
+        })
+      } else {
+        axios.put('/caseBatch/updateCaseStateAndType_batch', {
+          caseType: this.dataObj.confType,
+          items: JSON.stringify(this.alertShow.idsList)
+        }, {
+          headers: {
+            'content-Type': 'application/json;charset=UTF-8'
+          }
+        }).then(res => {
+          this.alertCanc('batch')
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          this.$Message.success({
+            content: res.data.data,
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.alertCanc('batch')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
     alertCanc (type) {
       if (type === 'conf') {
         this.alertShow.conf = false
         this.dataObj.confCaseId = null
         this.dataObj.confCosts = null
+        this.dataObj.confType = null
+      } else if (type === 'batch') {
+        this.alertShow.batch = false
         this.dataObj.confType = null
       }
     },
