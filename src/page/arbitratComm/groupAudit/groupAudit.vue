@@ -187,8 +187,8 @@ export default {
             align: 'center'
           },
           {
-            title: '邮箱',
-            key: 'email',
+            title: '擅长领域',
+            key: 'sign',
             align: 'center'
           },
           {

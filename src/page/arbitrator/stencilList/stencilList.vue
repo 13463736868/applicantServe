@@ -89,13 +89,23 @@ export default {
             align: 'center'
           },
           {
+            title: '注册人名称',
+            key: 'userName',
+            align: 'center'
+          },
+          {
+            title: '案件类型名称',
+            key: 'caseTypeName',
+            align: 'center'
+          },
+          {
             title: '创建时间',
             key: 'createTime',
             align: 'center'
           },
           {
             title: '审核状态',
-            key: 'status',
+            key: 'approveStatus',
             align: 'center'
           },
           {

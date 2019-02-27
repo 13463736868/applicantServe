@@ -577,6 +577,20 @@ export default {
         } else if (_obj.endCasePatten === '9') {
           return h('div', [
           ])
+        } else if (_obj.endCasePatten === '10') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              on: {
+                click: () => {
+                  this.resEndCase(params.index)
+                }
+              }
+            }, '重新结案')
+          ])
         } else {
           return h('div', [
           ])
@@ -1162,7 +1176,7 @@ export default {
     },
     renderCheck (h, params) {
       let _obj = params.row
-      if (_obj.endCasePatten === '5' && _obj.tempCode !== null) {
+      if ((_obj.endCasePatten === '5' || _obj.endCasePatten === '10') && _obj.tempCode !== null) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {
