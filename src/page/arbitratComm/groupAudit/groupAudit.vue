@@ -6,7 +6,10 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="3" offset="21">
+        <Col span="2" offset="19">
+          <Button type="primary" @click="resFind">条件搜索</Button>
+        </Col>
+        <Col span="3">
           <Button type="primary" @click="resBatch">批量指定仲裁员</Button>
         </Col>
       </Row>
@@ -66,6 +69,28 @@
     <alert-btn-info :alertShow="alertShow.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
       <p>确定要通过吗？</p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>注册名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.requestName" filterable>
+            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="search.requestName !== ''">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>案件类型：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.caseType">
+            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -82,12 +107,19 @@ export default {
   data () {
     return {
       spinShow: false,
+      search: {
+        requestName: '',
+        caseType: '',
+        caseTypeList: {},
+        requestNameList: []
+      },
       caseList: {
         loading: false,
         header: [
           {
             title: '选择',
             key: 'id',
+            width: 60,
             align: 'center',
             render: (h, params) => {
               return this.renderCheckS(h, params)
@@ -117,6 +149,11 @@ export default {
           {
             title: '案件编号',
             key: 'id',
+            align: 'center'
+          },
+          {
+            title: '案件类型',
+            key: 'caseTypeName',
             align: 'center'
           },
           {
@@ -176,7 +213,8 @@ export default {
         idsList: [],
         ids: [],
         state: [],
-        idsType: ''
+        idsType: '',
+        find: false
       },
       seleList: {
         loading: false,
@@ -230,6 +268,20 @@ export default {
     }
   },
   methods: {
+    dictionary () {
+      axios.post('/batchCaseDocument/findCaseType').then(res => {
+        let _obj = res.data.data
+        this.search.requestNameList = _obj
+        this.search.requestNameList.map((a) => {
+          this.search.caseTypeList[a.userToken] = a.caseTypeList
+        })
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     renderCheck (h, params) {
       let _id = params.row.id
       if (this.seleArr.indexOf(_id) === -1) {
@@ -281,9 +333,6 @@ export default {
               type: 'primary',
               size: 'small'
             },
-            style: {
-              marginRight: '5px'
-            },
             on: {
               click: () => {
                 this.resAssign(params.index)
@@ -299,9 +348,6 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
-              style: {
-                marginRight: '5px'
-              },
               on: {
                 click: () => {
                   this.resPass(params.index)
@@ -315,9 +361,6 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
-              },
-              style: {
-                marginRight: '5px'
               },
               on: {
                 click: () => {
@@ -336,7 +379,9 @@ export default {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        registerToken: this.search.requestName,
+        caseTypeCode: this.search.caseType
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -369,6 +414,9 @@ export default {
       }
     },
     resSearch () {
+      this.search.requestName = ''
+      this.search.caseType = ''
+      this.alertCanc('clearIds')
       this.selePageObj.pageNum = 1
       this.resUserList()
     },
@@ -469,8 +517,7 @@ export default {
             content: '操作成功',
             duration: 2
           })
-          this.pageObj.pageNum = 1
-          this.resCaseList()
+          this.resSearch()
         }).catch(e => {
           this.alertCanc('agre')
           this.$Message.error({
@@ -487,15 +534,11 @@ export default {
           }).then(res => {
             this.selePageObj.pageNum = 1
             this.alertCanc('agre')
-            this.alertShow.ids = []
-            this.alertShow.idsList = []
-            this.alertShow.state = []
             this.$Message.success({
               content: '操作成功',
               duration: 2
             })
-            this.pageObj.pageNum = 1
-            this.resCaseList()
+            this.resSearch()
           }).catch(e => {
             this.alertCanc('agre')
             this.$Message.error({
@@ -514,8 +557,7 @@ export default {
               content: res.data.data,
               duration: 2
             })
-            this.pageObj.pageNum = 1
-            this.resCaseList()
+            this.resSearch()
           }).catch(e => {
             this.alertCanc('agre')
             this.$Message.error({
@@ -707,6 +749,17 @@ export default {
         this.resAssign('')
       }
     },
+    resFind () {
+      this.alertCanc('find')
+      this.alertShow.find = true
+      this.dictionary()
+    },
+    findSave () {
+      this.alertShow.find = false
+      this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
     alertCanc (type) {
       if (type === 'agre') {
         this.alertShow.agre = false
@@ -723,6 +776,16 @@ export default {
         this.alertShow.tribId = null
         this.alertShow.caseId = null
         this.alertShow.passId = null
+      } else if (type === 'find') {
+        this.alertShow.find = false
+        this.search.requestName = ''
+        this.search.caseType = ''
+        // this.search.caseTypeList = {}
+        // this.search.requestNameList = []
+      } else if (type === 'clearIds') {
+        this.alertShow.idsList = []
+        this.alertShow.ids = []
+        this.alertShow.state = []
       }
     }
   }
@@ -743,6 +806,16 @@ export default {
   }
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
+    vertical-align: text-top;
   }
 }
 </style>

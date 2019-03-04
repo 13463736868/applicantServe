@@ -12,7 +12,10 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
-        <Col span="2" class="tc" offset="11">
+        <Col span="2" offset="10">
+          <Button type="primary" @click="resFind">条件搜索</Button>
+        </Col>
+        <Col span="2">
           <Button type="primary" @click="resEnds">批量结案</Button>
         </Col>
       </Row>
@@ -183,6 +186,28 @@
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
+    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>注册名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.requestName" filterable>
+            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="search.requestName !== ''">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>案件类型：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.caseType">
+            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -204,7 +229,11 @@ export default {
     return {
       spinShow: false,
       search: {
-        text: ''
+        text: '',
+        requestName: '',
+        caseType: '',
+        caseTypeList: {},
+        requestNameList: []
       },
       caseList: {
         loading: false,
@@ -212,6 +241,7 @@ export default {
           {
             title: '选择',
             key: 'id',
+            width: 60,
             align: 'center',
             render: (h, params) => {
               return this.renderCheck(h, params)
@@ -324,7 +354,8 @@ export default {
         editorDest: false,
         ids: [],
         idsList: [],
-        batch: false
+        batch: false,
+        find: false
       }
     }
   },
@@ -332,6 +363,20 @@ export default {
     this.resCaseList()
   },
   methods: {
+    dictionary () {
+      axios.post('/batchCaseDocument/findCaseType').then(res => {
+        let _obj = res.data.data
+        this.search.requestNameList = _obj
+        this.search.requestNameList.map((a) => {
+          this.search.caseTypeList[a.userToken] = a.caseTypeList
+        })
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     reasonBtn (h, params) {
       let _obj = params.row
       if (_obj.correctionsReason === '' || _obj.correctionsReason === null) {
@@ -614,6 +659,8 @@ export default {
       axios.post('/case/findCaseGroupApproveList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
+        registerToken: this.search.requestName,
+        caseTypeCode: this.search.caseType,
         keyword: this.search.text
       }).then(res => {
         let _data = res.data.data
@@ -629,6 +676,9 @@ export default {
       })
     },
     resSearch () {
+      this.search.requestName = ''
+      this.search.caseType = ''
+      this.alertCanc('clearIds')
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
@@ -1260,8 +1310,6 @@ export default {
         caseDocumentDataJson: JSON.stringify(this.alertShow.idsList)
       }).then(res => {
         this.alertCanc('batch')
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
         this.$Message.success({
           content: res.data.message,
           duration: 2
@@ -1274,6 +1322,17 @@ export default {
           duration: 5
         })
       })
+    },
+    resFind () {
+      this.alertCanc('find')
+      this.alertShow.find = true
+      this.dictionary()
+    },
+    findSave () {
+      this.alertShow.find = false
+      this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
     },
     alertCanc (type) {
       switch (type) {
@@ -1325,6 +1384,17 @@ export default {
           break
         case 'batch':
           this.alertShow.batch = false
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.search.requestName = ''
+          this.search.caseType = ''
+          // this.search.caseTypeList = {}
+          // this.search.requestNameList = []
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
           break
         default:
           break

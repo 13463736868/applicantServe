@@ -237,6 +237,7 @@ export default {
           content: '操作成功',
           duration: 2
         })
+        this.pageObj.pageNum = 1
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('appl')

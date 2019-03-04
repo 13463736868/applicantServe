@@ -1,16 +1,13 @@
 <template>
-  <div class="stenciList">
+  <div class="tempAudit">
     <head-top :isRegister="true">
-      <span class="f36 fcf">模版列表</span>
+      <span class="f36 fcf">模版审核</span>
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <Col span="2" class="tc" offset="19">
+        <Col span="2" class="tc" offset="21">
           <Button type="primary" @click="resFind">条件搜索</Button>
-        </Col>
-        <Col span="2" class="tc">
-          <Button type="primary" @click="resAdd">新建模版</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -50,12 +47,11 @@
         </Col>
       </Row>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="驳回原因">
-      <p class="t2" v-text="alertShow.reasText"></p>
+    <alert-btn-info :alertShow="alertShow.temp" @alertConfirm="tempSave" @alertCancel="alertCanc('temp')" alertTitle="操作">
+      <p v-if="alertShow.state === 1">确定要通过吗？</p>
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.tempReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
-    <div v-if="alertShow.editorDest">
-      <alert-editor :alertShow="alertShow.editor" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" :alertName="alertShow.editorName" :alertToken="alertShow.editorToken" :alertTypeId="alertShow.editorTypeId" :alertContent="alertShow.editorContent" alertTitle="编辑"></alert-editor>
-    </div>
   </div>
 </template>
 
@@ -64,11 +60,10 @@ import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
-import alertEditor from '@/page/arbitrator/stencilList/children/alertEditor'
 
 export default {
-  name: 'stenci_list',
-  components: { headTop, spinComp, alertBtnInfo, alertEditor },
+  name: 'temp_audit',
+  components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -129,16 +124,10 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        find: false,
-        editor: false,
-        editorDest: false,
-        editorName: null,
-        editorToken: null,
-        editorTypeId: null,
-        editorContent: null,
-        editorTempId: null,
-        reas: false,
-        reasText: ''
+        temp: false,
+        state: null,
+        tempReason: '',
+        id: null
       }
     }
   },
@@ -162,7 +151,7 @@ export default {
     },
     renderBtn (h, params) {
       let _obj = params.row
-      if (_obj.status === 2) {
+      if (_obj.status === 3) {
         return h('div', [
           h('Button', {
             props: {
@@ -174,10 +163,10 @@ export default {
             },
             on: {
               click: () => {
-                this.seePdf(_obj.tempPath)
+                this.resSaveTemp(params.index)
               }
             }
-          }, '查看'),
+          }, '通过'),
           h('Button', {
             props: {
               type: 'primary',
@@ -188,55 +177,13 @@ export default {
             },
             on: {
               click: () => {
-                this.resEdit(params.index)
+                this.resCancTemp(params.index)
               }
             }
-          }, '修改'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resReas(_obj.reason)
-              }
-            }
-          }, '驳回原因')
+          }, '驳回')
         ])
       } else {
         return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.seePdf(_obj.tempPath)
-              }
-            }
-          }, '查看'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px'
-            },
-            on: {
-              click: () => {
-                this.resEdit(params.index)
-              }
-            }
-          }, '修改')
         ])
       }
     },
@@ -260,6 +207,10 @@ export default {
         })
       })
     },
+    resSearch () {
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resCaseList()
@@ -274,46 +225,62 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
-    seePdf (path) {
-      window.open(path, '_blank')
+    resSaveTemp (index) {
+      this.alertShow.state = 1
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.temp = true
     },
-    resAdd () {
-      this.alertShow.editorDest = true
-      this.alertShow.editor = true
+    resCancTemp (index) {
+      this.alertShow.state = 2
+      this.alertShow.id = this.caseList.bodyList[index].id
+      this.alertShow.temp = true
     },
-    resEdit (index) {
-      let obj = this.caseList.bodyList[index]
-      this.alertShow.editorName = obj.tempName
-      this.alertShow.editorToken = obj.userToken
-      this.alertShow.editorTypeId = obj.caseTypeId
-      this.alertShow.editorContent = obj.tempContent
-      this.alertShow.editorTempId = obj.id
-      this.alertShow.editorDest = true
-      this.alertShow.editor = true
-    },
-    editorSave (name, id, cont) {
-      axios.post('/batchCaseDocument/saveTemplate', {
-        tempName: name,
-        caseTypeId: id,
-        tempContent: cont,
-        templateId: this.alertShow.editorTempId
-      }).then(res => {
-        this.alertCanc('editor')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
+    tempSave () {
+      if (this.alertShow.state === 2) {
+        if (this.alertShow.tempReason === '') {
+          this.$Message.warning({
+            content: '请填写驳回原因',
+            duration: 5
+          })
+        } else {
+          axios.post('/batchCaseDocument/updateTemplateStatus', {
+            templateId: this.alertShow.id,
+            templateStatus: this.alertShow.state,
+            reason: this.alertShow.tempReason
+          }).then(res => {
+            this.alertCanc('temp')
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resSearch()
+          }).catch(e => {
+            this.alertCanc('temp')
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+        }
+      } else {
+        axios.post('/batchCaseDocument/updateTemplateStatus', {
+          templateId: this.alertShow.id,
+          templateStatus: this.alertShow.state
+        }).then(res => {
+          this.alertCanc('temp')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.alertCanc('temp')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
         })
-        this.resCaseList()
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
-    resReas (reason) {
-      this.alertShow.reasText = reason
-      this.alertShow.reas = true
+      }
     },
     alertCanc (type) {
       switch (type) {
@@ -324,18 +291,11 @@ export default {
           // this.search.caseTypeList = {}
           // this.search.requestNameList = []
           break
-        case 'editor':
-          this.alertShow.editor = false
-          this.alertShow.editorDest = false
-          this.alertShow.editorContent = null
-          this.alertShow.editorName = null
-          this.alertShow.editorToken = null
-          this.alertShow.editorTypeId = null
-          this.alertShow.editorTempId = null
-          break
-        case 'reas':
-          this.alertShow.reas = false
-          this.alertShow.reasText = ''
+        case 'temp':
+          this.alertShow.temp = false
+          this.alertShow.state = null
+          this.alertShow.id = null
+          this.alertShow.tempReason = ''
           break
         default:
           break

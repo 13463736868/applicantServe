@@ -72,7 +72,7 @@ import '../../../static/ueditor/ueditor.parse.min.js'
 
 export default {
   name: 'alert_editor',
-  props: ['alertShow', 'alertTitle'],
+  props: ['alertShow', 'alertTitle', 'alertContent', 'alertName', 'alertToken', 'alertTypeId'],
   data () {
     return {
       randomId: 'editor_' + (Math.random() * 100000000000000000),
@@ -92,6 +92,11 @@ export default {
     this.dictionary()
   },
   mounted () {
+    if (this.alertContent !== null) {
+      this.tempName = this.alertName
+      this.requestName = this.alertToken
+      this.caseTypeId = this.alertTypeId
+    }
     this.initEditor()
   },
   methods: {
@@ -101,7 +106,7 @@ export default {
     resDict () {
       axios.post('/batchCaseDocument/findCaseField', {
         pageIndex: 0,
-        pageSize: 500
+        pageSize: 999
       }).then(res => {
         this.btnData = res.data.data.dataList
       }).catch(e => {
@@ -131,7 +136,11 @@ export default {
     initEditor () {
       this.editor = window.UE.getEditor(this.randomId)
       this.editor.addListener('ready', () => {
-        this.editor.setContent('')
+        if (this.alertContent === null) {
+          this.editor.setContent('')
+        } else {
+          this.editor.setContent(this.alertContent)
+        }
       })
     },
     stringToByte (str) {

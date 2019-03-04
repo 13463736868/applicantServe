@@ -6,7 +6,10 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="2" offset="19">
+        <Col span="2" offset="17">
+          <Button type="primary" @click="resFind">条件搜索</Button>
+        </Col>
+        <Col span="2">
           <Button type="primary" @click="resBatch(1)">批量提交</Button>
         </Col>
         <Col span="3">
@@ -82,6 +85,28 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>注册名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.requestName" filterable>
+            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="search.requestName !== ''">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>案件类型：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.caseType">
+            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -100,12 +125,19 @@ export default {
   data () {
     return {
       spinShow: false,
+      search: {
+        requestName: '',
+        caseType: '',
+        caseTypeList: {},
+        requestNameList: []
+      },
       caseList: {
         loading: false,
         header: [
           {
             title: '选择',
             key: 'id',
+            width: 60,
             align: 'center',
             render: (h, params) => {
               return this.renderCheck(h, params)
@@ -136,6 +168,11 @@ export default {
           {
             title: '案件编号',
             key: 'id',
+            align: 'center'
+          },
+          {
+            title: '案件类型',
+            key: 'caseTypeName',
             align: 'center'
           },
           {
@@ -265,7 +302,8 @@ export default {
         batch: false,
         state: [],
         time: false,
-        fileIdArr: []
+        fileIdArr: [],
+        find: false
       }
     }
   },
@@ -273,6 +311,20 @@ export default {
     this.resCaseList()
   },
   methods: {
+    dictionary () {
+      axios.post('/batchCaseDocument/findCaseType').then(res => {
+        let _obj = res.data.data
+        this.search.requestNameList = _obj
+        this.search.requestNameList.map((a) => {
+          this.search.caseTypeList[a.userToken] = a.caseTypeList
+        })
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     renderBtn (h, params) {
       let _info = params.row
       if (_info.logicState === '1') {
@@ -504,7 +556,9 @@ export default {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        registerToken: this.search.requestName,
+        caseTypeCode: this.search.caseType
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -519,6 +573,9 @@ export default {
       })
     },
     resSearch () {
+      this.search.requestName = ''
+      this.search.caseType = ''
+      this.alertCanc('clearIds')
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
@@ -928,8 +985,6 @@ export default {
         caseIds: this.alertShow.ids.join(',')
       }).then(res => {
         this.alertCanc('batch')
-        this.alertShow.ids = []
-        this.alertShow.state = []
         this.$Message.success({
           content: res.data.data,
           duration: 2
@@ -978,8 +1033,6 @@ export default {
         updateType: 1
       }).then(res => {
         this.alertCanc('time')
-        this.alertShow.ids = []
-        this.alertShow.state = []
         this.$Message.success({
           content: res.data.data,
           duration: 2
@@ -992,6 +1045,17 @@ export default {
           duration: 5
         })
       })
+    },
+    resFind () {
+      this.alertCanc('find')
+      this.alertShow.find = true
+      this.dictionary()
+    },
+    findSave () {
+      this.alertShow.find = false
+      this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
     },
     alertCanc (type) {
       if (type === 'file') {
@@ -1023,6 +1087,15 @@ export default {
       } else if (type === 'time') {
         this.alertShow.time = false
         this.alertObj.time = ''
+      } else if (type === 'find') {
+        this.alertShow.find = false
+        this.search.requestName = ''
+        this.search.caseType = ''
+        // this.search.caseTypeList = {}
+        // this.search.requestNameList = []
+      } else if (type === 'clearIds') {
+        this.alertShow.ids = []
+        this.alertShow.state = []
       }
     },
     seeDoc (path) {
@@ -1053,6 +1126,16 @@ export default {
   }
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
+    vertical-align: text-top;
   }
 }
 </style>

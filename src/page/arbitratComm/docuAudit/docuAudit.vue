@@ -6,7 +6,10 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="2" offset="20">
+        <Col span="2" offset="18">
+          <Button type="primary" @click="resFind">条件搜索</Button>
+        </Col>
+        <Col span="2">
           <Button type="primary" @click="resBatch(1)">批量通过</Button>
         </Col>
         <Col span="2">
@@ -28,15 +31,37 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc" alertTitle="操作">
+    <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc" alertTitle="操作">
+    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>注册名称：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.requestName" filterable>
+            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="search.requestName !== ''">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>案件类型：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.caseType">
+            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
+          </Select>
+        </Col>
+      </Row>
     </alert-btn-info>
   </div>
 </template>
@@ -54,12 +79,19 @@ export default {
   data () {
     return {
       spinShow: false,
+      search: {
+        requestName: '',
+        caseType: '',
+        caseTypeList: {},
+        requestNameList: []
+      },
       caseList: {
         loading: false,
         header: [
           {
             title: '选择',
             key: 'id',
+            width: 60,
             align: 'center',
             render: (h, params) => {
               return this.renderCheck(h, params)
@@ -89,6 +121,11 @@ export default {
           {
             title: '案件编号',
             key: 'id',
+            align: 'center'
+          },
+          {
+            title: '案件类型',
+            key: 'caseTypeName',
             align: 'center'
           },
           {
@@ -155,7 +192,8 @@ export default {
         rejeReason: '',
         idsList: [],
         ids: [],
-        batch: false
+        batch: false,
+        find: false
       }
     }
   },
@@ -163,6 +201,20 @@ export default {
     this.resCaseList()
   },
   methods: {
+    dictionary () {
+      axios.post('/batchCaseDocument/findCaseType').then(res => {
+        let _obj = res.data.data
+        this.search.requestNameList = _obj
+        this.search.requestNameList.map((a) => {
+          this.search.caseTypeList[a.userToken] = a.caseTypeList
+        })
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.caseDocuemntApproveState === null || _obj.caseDocuemntApproveState === 3) {
@@ -233,7 +285,9 @@ export default {
       this.spinShow = true
       axios.post('/approve/findCaseDocumentList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        registerToken: this.search.requestName,
+        caseTypeCode: this.search.caseType
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -246,6 +300,13 @@ export default {
           duration: 5
         })
       })
+    },
+    resSearch () {
+      this.search.requestName = ''
+      this.search.caseType = ''
+      this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
     },
     reschangePage (page) {
       this.pageObj.pageNum = page
@@ -293,14 +354,14 @@ export default {
             caseDocuemntId: this.alertShow.caseDocuId,
             caseDocumentReason: this.alertShow.rejeReason
           }).then(res => {
-            this.alertCanc()
+            this.alertCanc('docu')
             this.$Message.success({
               content: '操作成功',
               duration: 2
             })
-            this.resCaseList()
+            this.resSearch()
           }).catch(e => {
-            this.alertCanc()
+            this.alertCanc('docu')
             this.$Message.error({
               content: '错误信息:' + e + ' 稍后再试',
               duration: 5
@@ -313,14 +374,14 @@ export default {
           caseDocumentApprove: this.alertShow.state,
           caseDocuemntId: this.alertShow.caseDocuId
         }).then(res => {
-          this.alertCanc()
+          this.alertCanc('docu')
           this.$Message.success({
             content: '操作成功',
             duration: 2
           })
-          this.resCaseList()
+          this.resSearch()
         }).catch(e => {
-          this.alertCanc()
+          this.alertCanc('docu')
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
             duration: 5
@@ -424,17 +485,16 @@ export default {
             caseDocumentApprove: this.alertShow.state,
             caseDocumentReason: this.alertShow.rejeReason
           }).then(res => {
-            this.alertCanc()
+            this.alertCanc('docu')
             this.alertShow.idsList = []
             this.alertShow.ids = []
             this.$Message.success({
               content: res.data.message,
               duration: 2
             })
-            this.pageObj.pageNum = 1
-            this.resCaseList()
+            this.resSearch()
           }).catch(e => {
-            this.alertCanc()
+            this.alertCanc('docu')
             this.$Message.error({
               content: '错误信息:' + e + ' 稍后再试',
               duration: 5
@@ -446,17 +506,16 @@ export default {
           caseDocumentIds: JSON.stringify(this.alertShow.idsList),
           caseDocumentApprove: this.alertShow.state
         }).then(res => {
-          this.alertCanc()
+          this.alertCanc('docu')
           this.alertShow.idsList = []
           this.alertShow.ids = []
           this.$Message.success({
             content: res.data.message,
             duration: 2
           })
-          this.pageObj.pageNum = 1
-          this.resCaseList()
+          this.resSearch()
         }).catch(e => {
-          this.alertCanc()
+          this.alertCanc('docu')
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
             duration: 5
@@ -464,13 +523,35 @@ export default {
         })
       }
     },
-    alertCanc () {
-      this.alertShow.docu = false
-      this.alertShow.id = null
-      this.alertShow.state = null
-      this.alertShow.caseDocuId = null
-      this.alertShow.rejeReason = ''
-      this.alertShow.batch = false
+    resFind () {
+      this.alertCanc('find')
+      this.alertShow.find = true
+      this.dictionary()
+    },
+    findSave () {
+      this.alertShow.find = false
+      this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
+    alertCanc (type) {
+      if (type === 'docu') {
+        this.alertShow.docu = false
+        this.alertShow.id = null
+        this.alertShow.state = null
+        this.alertShow.caseDocuId = null
+        this.alertShow.rejeReason = ''
+        this.alertShow.batch = false
+      } else if (type === 'find') {
+        this.alertShow.find = false
+        this.search.requestName = ''
+        this.search.caseType = ''
+        // this.search.caseTypeList = {}
+        // this.search.requestNameList = []
+      } else if (type === 'clearIds') {
+        this.alertShow.idsList = []
+        this.alertShow.ids = []
+      }
     }
   }
 }

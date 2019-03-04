@@ -82,6 +82,14 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/docuAudit/docuAudit.vue')))
   },
   {
+    path: '/tempAudit',
+    name: 'tempAudit',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/tempAudit/tempAudit.vue')))
+  },
+  {
     path: '/groupCase',
     name: 'groupCase',
     meta: {
