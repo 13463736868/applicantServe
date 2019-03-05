@@ -180,10 +180,38 @@ export default {
                 this.resCancTemp(params.index)
               }
             }
-          }, '驳回')
+          }, '驳回'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.seePdf(_obj.tempPath)
+              }
+            }
+          }, '查看')
         ])
       } else {
         return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.seePdf(_obj.tempPath)
+              }
+            }
+          }, '查看')
         ])
       }
     },
@@ -234,6 +262,9 @@ export default {
       this.alertShow.state = 2
       this.alertShow.id = this.caseList.bodyList[index].id
       this.alertShow.temp = true
+    },
+    seePdf (path) {
+      window.open(path, '_blank')
     },
     tempSave () {
       if (this.alertShow.state === 2) {
