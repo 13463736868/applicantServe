@@ -177,7 +177,7 @@ export default {
             }
           },
           {
-            title: '文件文',
+            title: '文件名',
             key: 'filename',
             align: 'center'
           },
