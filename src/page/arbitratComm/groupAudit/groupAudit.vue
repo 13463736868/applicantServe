@@ -413,10 +413,14 @@ export default {
         setTm = setTimeout(fn.bind(this, ...arguments), idle)
       }
     },
-    resSearch () {
+    resSearchList () {
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
+    resSearch () {
       this.selePageObj.pageNum = 1
       this.resUserList()
     },
@@ -517,7 +521,7 @@ export default {
             content: '操作成功',
             duration: 2
           })
-          this.resSearch()
+          this.resSearchList()
         }).catch(e => {
           this.alertCanc('agre')
           this.$Message.error({
@@ -538,7 +542,7 @@ export default {
               content: '操作成功',
               duration: 2
             })
-            this.resSearch()
+            this.resSearchList()
           }).catch(e => {
             this.alertCanc('agre')
             this.$Message.error({
@@ -557,7 +561,7 @@ export default {
               content: res.data.data,
               duration: 2
             })
-            this.resSearch()
+            this.resSearchList()
           }).catch(e => {
             this.alertCanc('agre')
             this.$Message.error({
