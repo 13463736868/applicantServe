@@ -56,7 +56,7 @@ const setSFZRegExp = (val) => {
 
 export default function (val, type) {
   if (type === 'phone') {
-    let reg = new RegExp('^(13|14|15|17|18)[0-9]{9}$')
+    let reg = new RegExp('^(13|14|15|16|17|18|19)[0-9]{9}$')
     if (reg.test(val)) {
       return true
     } else {
