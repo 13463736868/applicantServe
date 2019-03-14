@@ -765,7 +765,7 @@ export default {
         axios.post('/encryption', {
           params: _info.id + '$' + 1
         }).then(res => {
-          window.open(regi.dataMap.goRoom + res.data.data, '_blank')
+          window.open('' + res.data.data, '_blank')
         }).catch(e => {
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
