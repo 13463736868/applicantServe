@@ -220,7 +220,6 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
-import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_case',
