@@ -62,7 +62,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>手机号：</b></p>
+            <p><span class="_span">*</span><b>固定号码：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="addData.phone"></Input>
@@ -153,7 +153,7 @@ export default {
             align: 'center'
           },
           {
-            title: '手机号',
+            title: '固定号码',
             key: 'phone',
             align: 'center'
           },

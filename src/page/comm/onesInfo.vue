@@ -27,7 +27,7 @@
                       <p v-text="dataObj.name"></p>
                     </Col>
                     <Col class="_label" span="11" offset="2">
-                      <p>手机号：</p>
+                      <p>固定号码：</p>
                       <p v-text="dataObj.phone"></p>
                     </Col>
                   </Row>
@@ -86,10 +86,10 @@
       </Row>
       <Row class="pt10">
         <Col span="6" offset="1">
-          <p class="pt7 pb7">手机号：</p>
+          <p class="pt7 pb7">固定号码：</p>
         </Col>
         <Col span="12">
-           <Input v-model="alertData.phone" placeholder="请输入手机号..."/>
+           <Input v-model="alertData.phone" placeholder="请输入固定号码..."/>
         </Col>
       </Row>
     </alert-btn-info>
