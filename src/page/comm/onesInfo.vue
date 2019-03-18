@@ -300,12 +300,12 @@ export default {
         })
       } else if (this.alertData.phone === null || this.alertData.phone === '') {
         this.$Message.warning({
-          content: '手机号码不能为空',
+          content: '固定号码不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.alertData.phone, 'phone')) {
+      } else if (!setRegExp(this.alertData.phone, 'landline')) {
         this.$Message.warning({
-          content: '请填写正确手机号码格式',
+          content: '请填写正确固定号码格式',
           duration: 5
         })
       } else {

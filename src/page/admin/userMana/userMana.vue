@@ -487,12 +487,12 @@ export default {
         })
       } else if (this.addData.phone === '') {
         this.$Message.warning({
-          content: '手机号码不能为空',
+          content: '固定号码不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.addData.phone, 'phone')) {
+      } else if (!setRegExp(this.addData.phone, 'landline')) {
         this.$Message.warning({
-          content: '手机号码格式不正确',
+          content: '固定号码格式不正确',
           duration: 5
         })
       } else if (this.addData.email === '') {
