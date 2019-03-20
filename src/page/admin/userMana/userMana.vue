@@ -480,7 +480,7 @@ export default {
           content: '登录密码不能为空',
           duration: 5
         })
-      } else if (this.alertShow === 'add' && !setRegExp(this.addData.password, 'password')) {
+      } else if (this.alertShow.type === 'add' && !setRegExp(this.addData.password, 'password')) {
         this.$Message.warning({
           content: '密码长度6~20位,只能包含数字,字母,下划线',
           duration: 5
