@@ -368,6 +368,7 @@ export default {
         axios.put('/auth/department', {
           id: this.userId,
           name: this.addData.name,
+          code: this.addData.code,
           state: this.addData.state,
           leader: {id: this.addData.leader}
         }, {
