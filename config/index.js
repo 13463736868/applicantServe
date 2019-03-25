@@ -15,7 +15,7 @@ module.exports = {
         target: 'http://192.168.1.173:8081',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api': '/'
         }
       }
     },
@@ -59,7 +59,16 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-
+    // assetsPublicPath: '/judge/',
+    // proxyTable: {
+    //   '/trial': {
+    //     target: 'https://wlzc.anyang.gov.cn',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/trial': '/trial'
+    //     }
+    //   }
+    // },
     /**
      * Source Maps
      */

@@ -72,7 +72,7 @@
             <InputNumber :min="-1" v-model="addData.acceptLimitTime"></InputNumber>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>在受理通知5日内（请求变更受理限制天数）：</b></p>
           </Col>
@@ -87,10 +87,10 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.changeRequestAcceptTimeBack"></InputNumber>
           </Col>
-        </Row>
+        </Row> -->
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（答辩意见和受理限制天数）：</b></p>
+            <p><b>答辩期（自送达仲裁通知之日起）/ 反请求答辩期（自送达反请求受理通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.replyOpinion"></InputNumber>
@@ -98,7 +98,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（反请求限制天数）：</b></p>
+            <p><b>提出反请求时限（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.replyOpinionBack"></InputNumber>
@@ -106,7 +106,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（管辖权异议限制天数）：</b></p>
+            <p><b>管辖权异议期间（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.jurisdictionLimitTime"></InputNumber>
@@ -114,13 +114,13 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>当事人双方或者仲裁委员会（选择仲裁员限制天数）：</b></p>
+            <p><b>组庭时限（自送达受理通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.selectArbitratorLimitTime"></InputNumber>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>选择仲裁员个数：</b></p>
           </Col>
@@ -159,8 +159,8 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.reendOpenCourtTime"></InputNumber>
           </Col>
-        </Row>
-        <Row class="_labelFor">
+        </Row> -->
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>组庭成功后,仲裁员回避限制天数：</b></p>
           </Col>
@@ -191,7 +191,7 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.correctionTime"></InputNumber>
           </Col>
-        </Row>
+        </Row> -->
       </div>
     </alert-btn-info>
     <alert-btn-info :isSaveBtn="alertShow.saveBtn" :alertShow="alertShow.editRule" @alertConfirm="editRuleSave" @alertCancel="alertCanc('editRule')" :alertTitle="alertShow.typeName">
@@ -244,7 +244,7 @@
             <InputNumber :min="-1" v-model="editData.acceptLimitTime"></InputNumber>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>在受理通知5日内（请求变更受理限制天数）：</b></p>
           </Col>
@@ -259,10 +259,10 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.changeRequestAcceptTimeBack"></InputNumber>
           </Col>
-        </Row>
+        </Row> -->
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（答辩意见和受理限制天数）：</b></p>
+            <p><b>答辩期（自送达仲裁通知之日起）/ 反请求答辩期（自送达反请求受理通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.replyOpinion"></InputNumber>
@@ -270,7 +270,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（反请求限制天数）：</b></p>
+            <p><b>提出反请求时限（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.replyOpinionBack"></InputNumber>
@@ -278,7 +278,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>收到受理通知后（管辖权异议限制天数）：</b></p>
+            <p><b>管辖权异议期间（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.jurisdictionLimitTime"></InputNumber>
@@ -286,13 +286,13 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>当事人双方或者仲裁委员会（选择仲裁员限制天数）：</b></p>
+            <p><b>组庭时限（自送达受理通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.selectArbitratorLimitTime"></InputNumber>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>选择仲裁员个数：</b></p>
           </Col>
@@ -331,8 +331,8 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.reendOpenCourtTime"></InputNumber>
           </Col>
-        </Row>
-        <Row class="_labelFor">
+        </Row> -->
+        <!-- <Row class="_labelFor">
           <Col span="16" offset="1">
             <p><b>组庭成功后,仲裁员回避限制天数：</b></p>
           </Col>
@@ -363,7 +363,7 @@
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.correctionTime"></InputNumber>
           </Col>
-        </Row>
+        </Row> -->
       </div>
     </alert-btn-info>
   </div>
