@@ -301,10 +301,6 @@ export const getRouter = (obj) => {
   let _r = []
   let _l = 0
   _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo')
-  _r.push({
-    path: '/',
-    redirect: _a[0]
-  })
   for (let k in routerMap) {
     if (_a.indexOf(routerMap[k].path) !== -1) {
       _l++
