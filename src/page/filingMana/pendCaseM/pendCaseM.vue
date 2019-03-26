@@ -311,43 +311,48 @@ export default {
     },
     renderCheck (h, params) {
       let _obj = params.row
-      if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
-        return h('div', [
-          h('Icon', {
-            props: {
-              type: 'md-square-outline',
-              size: '16'
-            },
-            style: {
-              color: '#2d8cf0',
-              cursor: 'pointer',
-              verticalAlign: 'text-top'
-            },
-            on: {
-              click: () => {
-                this.seleArrChange(params.index, true)
+      if (_obj.pendBtnStatus === '3') {
+        if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, true)
+                }
               }
-            }
-          })
-        ])
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(params.index, false)
+                }
+              }
+            })
+          ])
+        }
       } else {
         return h('div', [
-          h('Icon', {
-            props: {
-              type: 'md-checkbox',
-              size: '16'
-            },
-            style: {
-              color: '#2d8cf0',
-              cursor: 'pointer',
-              verticalAlign: 'text-top'
-            },
-            on: {
-              click: () => {
-                this.seleArrChange(params.index, false)
-              }
-            }
-          })
         ])
       }
     },
