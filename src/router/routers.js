@@ -162,6 +162,22 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/filingSecr/pendCase/pendCase.vue')))
   },
   {
+    path: '/acceCaseM',
+    name: 'acceCaseM',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingMana/acceCaseM/acceCaseM.vue')))
+  },
+  {
+    path: '/pendCaseM',
+    name: 'pendCaseM',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingMana/pendCaseM/pendCaseM.vue')))
+  },
+  {
     path: '/succCase',
     name: 'succCase',
     meta: {

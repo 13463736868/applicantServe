@@ -1,7 +1,7 @@
 <template>
   <div class="pendCase">
     <head-top :isRegister="true">
-      <span class="f36 fcf">待立案案件</span>
+      <span class="f36 fcf">立案审核案件</span>
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
@@ -16,7 +16,7 @@
           <Button type="primary" @click="resFind">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch">批量立案</Button>
+          <Button type="primary" @click="resBatch">批量通过</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -35,28 +35,10 @@
       </div>
     </div>
     <alert-btn-info :alertShow="alertShow.conf" @alertConfirm="confSave" @alertCancel="alertCanc('conf')" alertTitle="确认立案">
-      <Row class="_labelFor">
-        <Col span="4" offset="2">
-          <div class="_label">纠纷类型：</div>
-        </Col>
-        <Col span="16">
-          <Select v-model="dataObj.confType">
-            <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
-          </Select>
-        </Col>
-      </Row>
+      <p>确定要通过吗？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
-      <Row class="_labelFor">
-        <Col span="4" offset="2">
-          <div class="_label">纠纷类型：</div>
-        </Col>
-        <Col span="16">
-          <Select v-model="dataObj.confType">
-            <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
-          </Select>
-        </Col>
-      </Row>
+      <p>确定要通过吗？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
       <Row class="_labelFor">
@@ -91,7 +73,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 
 export default {
-  name: 'pend_case',
+  name: 'pend_case_m',
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -171,7 +153,7 @@ export default {
             key: 'caseId',
             align: 'center',
             render: (h, params) => {
-              if (params.row.pendBtnStatus === '1') {
+              if (params.row.pendBtnStatus === '3') {
                 return h('div', [
                   h('Button', {
                     props: {
@@ -186,19 +168,24 @@ export default {
                         this.resConfCase(params.index)
                       }
                     }
-                  }, '确认立案')
-                ])
-              } else if (params.row.pendBtnStatus === '2') {
-                return h('div', [
-                  h('span', {
+                  }, '通过'),
+                  h('Button', {
                     props: {
-                      type: 'text',
+                      type: 'primary',
                       size: 'small'
                     },
                     style: {
-                      color: '#2d8cf0'
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.$Message.error({
+                          content: '暂不支持此操作',
+                          duration: 5
+                        })
+                      }
                     }
-                  }, '立案审核中')
+                  }, '驳回')
                 ])
               } else {
                 return h('div', [
@@ -305,30 +292,22 @@ export default {
       })
     },
     confSave () {
-      if (this.dataObj.confType === null) {
-        this.$Message.warning({
-          content: '请选择纠纷类型',
+      axios.post('/case/updateCaseStateAndType', {
+        caseId: this.dataObj.confCaseId,
+        costs: this.dataObj.confCosts
+      }).then(res => {
+        this.alertCanc('conf')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resSearch()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
-      } else {
-        axios.post('/case/updateCaseStateAndType', {
-          caseId: this.dataObj.confCaseId,
-          caseType: this.dataObj.confType,
-          costs: this.dataObj.confCosts
-        }).then(res => {
-          this.alertCanc('conf')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
-          this.resSearch()
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
+      })
     },
     renderCheck (h, params) {
       let _obj = params.row
@@ -426,34 +405,27 @@ export default {
       }
     },
     batchSave () {
-      if (this.dataObj.confType === null) {
-        this.$Message.warning({
-          content: '请先选择案件类型',
+      axios.put('/caseBatch/updateCaseStateAndType_batch', {
+        items: JSON.stringify(this.alertShow.idsList),
+        state: '1'
+      }, {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        }
+      }).then(res => {
+        this.alertCanc('batch')
+        this.$Message.success({
+          content: res.data.data,
+          duration: 2
+        })
+        this.resSearch()
+      }).catch(e => {
+        this.alertCanc('batch')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
-      } else {
-        axios.put('/caseBatch/updateCaseStateAndType_batch', {
-          caseType: this.dataObj.confType,
-          items: JSON.stringify(this.alertShow.idsList)
-        }, {
-          headers: {
-            'content-Type': 'application/json;charset=UTF-8'
-          }
-        }).then(res => {
-          this.alertCanc('batch')
-          this.$Message.success({
-            content: res.data.data,
-            duration: 2
-          })
-          this.resSearch()
-        }).catch(e => {
-          this.alertCanc('batch')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
+      })
     },
     resFind () {
       this.alertCanc('find')
@@ -471,10 +443,8 @@ export default {
         this.alertShow.conf = false
         this.dataObj.confCaseId = null
         this.dataObj.confCosts = null
-        this.dataObj.confType = null
       } else if (type === 'batch') {
         this.alertShow.batch = false
-        this.dataObj.confType = null
       } else if (type === 'find') {
         this.alertShow.find = false
         this.search.requestName = ''
