@@ -12,6 +12,7 @@
               <span class="hand fcf" v-if="userName !== null" v-text="userName + '，您好！'"></span>
               <DropdownMenu class="tl" slot="list">
                 <DropdownItem name="resOnes">个人信息</DropdownItem>
+                <DropdownItem name="resMeet" v-if="userName !== 'admin'">视频会议</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </Col>
@@ -161,6 +162,11 @@ export default {
         case 'resOnes':
           this.$router.replace({
             path: '/onesInfo'
+          })
+          break
+        case 'resMeet':
+          this.$router.replace({
+            path: '/meetList'
           })
           break
       }

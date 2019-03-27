@@ -218,6 +218,14 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/comm/onesInfo.vue')))
   },
   {
+    path: '/meetList',
+    name: 'meetList',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/meetList/meetList.vue')))
+  },
+  {
     path: '/caseInfo',
     meta: {
       requireAuth: true
@@ -300,7 +308,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
     redirect: _a[0]
