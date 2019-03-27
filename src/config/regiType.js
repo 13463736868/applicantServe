@@ -50,6 +50,14 @@ const infoMap = {
     address: '山东省莱芜市龙潭大街001号',
     goRoom: 'https://yun.youzhengkeji.com:3004/view/index.html#/',
     note: '莱芜演示'
+  },
+  'HaErBin': {
+    name: '中国哈尔滨仲裁委员会',
+    excName: 'HARBIN ARBITRATION COMMISSION',
+    tel: '0451-82815701',
+    address: '黑龙江省哈尔滨市道里区抚顺街1号',
+    goRoom: '',
+    note: '哈尔滨部署演示'
   }
 }
 const dataMap = infoMap[type]
