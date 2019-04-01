@@ -107,6 +107,9 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertObj.send" @alertConfirm="sendDocSave" @alertCancel="alertCanc('sendDoc')" alertTitle="操作">
+      <p>确定要发送邮件，短信通知吗？（确认内容无误后点击确定）</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -210,7 +213,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            minWidth: 80,
+            minWidth: 100,
             render: (h, params) => {
               return this.renderBtn(h, params)
             }
@@ -236,7 +239,9 @@ export default {
         reve: false,
         contractName: '',
         reasText: '',
-        reas: false
+        reas: false,
+        send: false,
+        sendId: null
       },
       fileList: {
         header: [
@@ -547,6 +552,48 @@ export default {
             }
           }, _info.logicContent)
         ])
+      } else if (_info.logicState === '12') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.resBeginTime('edit', params.index)
+              }
+            }
+          }, '修改开庭时间'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSendDoc(params.index)
+              }
+            }
+          }, '送达')
+        ])
       } else {
         return h('div', [
         ])
@@ -600,6 +647,24 @@ export default {
     sendFileList (type) {
       if (type === 'once') {
         this.alertObj.file = true
+        axios.post('/case/findCaseFileList', {
+          pageIndex: 0,
+          pageSize: 999,
+          caseId: this.fileList.caseId,
+          caseState: 2
+        }).then(res => {
+          let _data = res.data.data
+          for (let k in _data.dataList) {
+            if (_data.dataList[k].fileId !== null) {
+              this.alertShow.fileIdArr.push(_data.dataList[k].fileId)
+            }
+          }
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
       }
       axios.post('/case/findCaseFileList', {
         pageIndex: (this.fileList.page.pageNum - 1) * this.fileList.page.pageSize,
@@ -610,24 +675,6 @@ export default {
         let _data = res.data.data
         this.fileList.bodyList = _data.dataList === null ? [] : _data.dataList
         this.fileList.page.total = _data.totalCount
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-      axios.post('/case/findCaseFileList', {
-        pageIndex: 0,
-        pageSize: 999,
-        caseId: this.fileList.caseId,
-        caseState: 2
-      }).then(res => {
-        let _data = res.data.data
-        for (let k in _data.dataList) {
-          if (_data.dataList[k].fileId !== null) {
-            this.alertShow.fileIdArr.push(_data.dataList[k].fileId)
-          }
-        }
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
@@ -1057,6 +1104,27 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resSendDoc (index) {
+      this.alertObj.sendId = this.caseList.bodyList[index].id
+      this.alertObj.send = true
+    },
+    sendDocSave () {
+      axios.post('/electronic/service/102', {
+        caseId: this.alertObj.sendId
+      }).then(res => {
+        this.alertCanc('sendDoc')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -1096,6 +1164,9 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.ids = []
         this.alertShow.state = []
+      } else if (type === 'sendDoc') {
+        this.alertObj.send = false
+        this.alertObj.sendId = null
       }
     },
     seeDoc (path) {
