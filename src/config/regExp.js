@@ -99,7 +99,7 @@ export default function (val, type) {
     }
   } else if (type === 'idcard') {
     // 身份证 户口簿
-    let reg = new RegExp('^[1-9]{1}[0-9]{16}[0-9xX]$|^[1-9]{1}[0-9]{14}$')
+    let reg = new RegExp('^[1-9]{1}[0-9]{16}[0-9xX]$')
     if (reg.test(val)) {
       return setSFZRegExp(val)
     } else {
