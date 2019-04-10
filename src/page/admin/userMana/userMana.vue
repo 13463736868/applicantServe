@@ -92,7 +92,7 @@
           </Col>
           <Col span="16">
             <Select v-model="addData.department">
-              <Option v-for="item in depaList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option :disabled="item.state === 2" v-for="item in depaList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
         </Row>
@@ -102,7 +102,7 @@
           </Col>
           <Col span="16">
             <Select v-model="addData.role">
-              <Option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              <Option :disabled="item.state === 2" v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
             </Select>
           </Col>
         </Row>
@@ -441,12 +441,14 @@ export default {
           let _o = {}
           _o.value = listO[k].id
           _o.label = listO[k].name
+          _o.state = listO[k].state
           selectO.push(_o)
         }
         for (let k in listT) {
           let _t = {}
           _t.value = listT[k].id
           _t.label = listT[k].name
+          _t.state = listT[k].state
           selectT.push(_t)
         }
         this.depaList = selectO
