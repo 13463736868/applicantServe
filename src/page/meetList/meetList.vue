@@ -307,7 +307,7 @@ export default {
                   this.resToMeet(params.index)
                 }
               }
-            }, '进入庭室')
+            }, '进入会议')
           ])
         }
       }
