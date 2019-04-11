@@ -47,7 +47,7 @@
           <p><span class="_span">*</span><b>开始时间：</b></p>
         </Col>
         <Col span="16">
-          <DatePicker class="wmax" @on-change="changeDate" :options="alertData.options" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker class="wmax" @on-change="changeDate" :options="alertData.options" type="datetime" placeholder="请指定开始时间"></DatePicker>
         </Col>
       </Row>
       <Row class="_labelFor">
