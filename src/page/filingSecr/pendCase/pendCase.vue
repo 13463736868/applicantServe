@@ -294,6 +294,7 @@ export default {
           duration: 5
         })
       } else {
+        this.alertShow.conf = false
         axios.post('/case/updateCaseStateAndType', {
           caseId: this.dataObj.confCaseId,
           caseType: this.dataObj.confType,
@@ -415,6 +416,7 @@ export default {
           duration: 5
         })
       } else {
+        this.alertShow.batch = false
         axios.put('/caseBatch/updateCaseStateAndType_batch', {
           caseType: this.dataObj.confType,
           items: JSON.stringify(this.alertShow.idsList)

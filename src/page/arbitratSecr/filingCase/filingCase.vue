@@ -59,6 +59,7 @@ export default {
           {
             title: '案号',
             key: 'caseCode',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -85,26 +86,31 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '受理时间',
             key: 'acceptTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -322,6 +328,7 @@ export default {
       this.createObj.id = this.caseList.bodyList[index].caseId
     },
     createSave () {
+      this.createObj.show = false
       axios.post('/case/addDocumentFile', {
         caseId: this.createObj.id,
         documentType: this.createObj.docType,

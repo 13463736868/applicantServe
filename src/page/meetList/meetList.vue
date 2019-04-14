@@ -121,11 +121,13 @@ export default {
           {
             title: '开始时间',
             key: 'beginTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '结束时间',
             key: 'endTime',
+            tooltip: 'true',
             align: 'center'
           },
           {

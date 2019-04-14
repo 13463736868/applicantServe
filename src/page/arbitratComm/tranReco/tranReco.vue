@@ -125,16 +125,19 @@ export default {
           {
             title: '申请人',
             key: 'propName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'respName',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -145,11 +148,13 @@ export default {
           {
             title: '提交时间',
             key: 'subtime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '受理时间',
             key: 'acctime',
+            tooltip: 'true',
             align: 'center'
           }
         ],

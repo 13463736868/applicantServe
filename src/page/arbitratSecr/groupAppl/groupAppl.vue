@@ -150,6 +150,7 @@ export default {
             title: '案号',
             key: 'code',
             minWidth: 20,
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -176,37 +177,44 @@ export default {
           {
             title: '案件类型',
             key: 'caseTypeName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请人',
             key: 'applicantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请人仲裁员',
             key: 'applicantApprove',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'respondentName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人仲裁员',
             key: 'respondentApprove',
+            tooltip: 'true',
             minWidth: 6,
             align: 'center'
           },
           {
             title: '确认仲裁员',
             key: 'approver',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '开庭时间',
             key: 'beginTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -687,6 +695,7 @@ export default {
       this.alertObj.caseId = this.caseList.bodyList[index].id
     },
     submSave () {
+      this.alertObj.subm = false
       axios.post('/approve/updateGroupApprove', {
         caseId: this.alertObj.caseId
       }).then(res => {
@@ -779,6 +788,7 @@ export default {
       } else if (this.alertObj.type === 'edit') {
         _type = 2
       }
+      this.alertObj.begin = false
       axios.post('/approve/updateBeginTime', {
         caseId: this.alertObj.caseId,
         beginTime: this.alertObj.time,
@@ -812,6 +822,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertObj.reve = false
           axios.post('/case/addDocumentFile', {
             caseId: this.alertObj.userId,
             documentType: this.alertObj.docuType,
@@ -1028,6 +1039,7 @@ export default {
       }
     },
     batchSave () {
+      this.alertShow.batch = false
       axios.post('/batchGroupCourt/saveGroupCourtBatch', {
         caseIds: this.alertShow.ids.join(',')
       }).then(res => {
@@ -1074,6 +1086,7 @@ export default {
       })
     },
     timesSave () {
+      this.alertShow.time = false
       axios.post('/batchGroupCourt/updateGroupOpenTime', {
         caseIds: this.alertShow.ids.join(','),
         beginTime: this.alertObj.time,
@@ -1109,6 +1122,7 @@ export default {
       this.alertObj.send = true
     },
     sendDocSave () {
+      this.alertObj.send = false
       axios.post('/electronic/service/102', {
         caseId: this.alertObj.sendId
       }).then(res => {

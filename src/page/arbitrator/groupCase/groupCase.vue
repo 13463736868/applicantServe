@@ -249,6 +249,7 @@ export default {
           {
             title: '案号',
             key: 'code',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -275,11 +276,13 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -300,7 +303,7 @@ export default {
           {
             title: '开庭时间',
             key: 'beginTime',
-            minWidth: 18,
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -635,6 +638,37 @@ export default {
               }
             }, '重新结案')
           ])
+        } else if (_obj.endCasePatten === '11') {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resEndCase(params.index)
+                }
+              }
+            }, '结案'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px'
+              },
+              on: {
+                click: () => {
+                  this.resCancCase(params.index)
+                }
+              }
+            }, '撤案')
+          ])
         } else {
           return h('div', [
           ])
@@ -868,6 +902,7 @@ export default {
               duration: 5
             })
           } else {
+            this.alertShow[type] = false
             axios.post('/case/addDocumentFile', {
               caseId: this.alertShow.userId,
               documentType: this.alertShow.docuType,
@@ -925,6 +960,7 @@ export default {
                 duration: 5
               })
             } else {
+              this.alertShow.end = false
               axios.post('/case/addDocumentFile', {
                 caseId: this.alertShow.userId,
                 documentType: this.alertShow.docuType,
@@ -963,6 +999,7 @@ export default {
                 duration: 5
               })
             } else {
+              this.alertShow.end = false
               axios.post('/case/addDocumentFile', {
                 caseId: this.alertShow.userId,
                 documentType: this.alertShow.docuType,
@@ -1013,6 +1050,7 @@ export default {
               duration: 5
             })
           } else {
+            this.alertShow.addE = false
             axios.post('/case/addDocumentFile', {
               caseId: this.alertShow.userId,
               documentType: this.alertShow.docuType,
@@ -1305,6 +1343,7 @@ export default {
       }
     },
     batchSave () {
+      this.alertShow.batch = false
       axios.post('/batchCaseDocument/addCaseDocumentList', {
         caseDocumentDataJson: JSON.stringify(this.alertShow.idsList)
       }).then(res => {

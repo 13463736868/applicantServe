@@ -401,6 +401,7 @@ export default {
           {
             title: '创建时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -581,6 +582,7 @@ export default {
       this.userObj.stateShow = true
     },
     stateSave () {
+      this.userObj.stateShow = false
       axios.put('/arbitrationRule/updateArbitrationRule', {
         id: this.userId,
         status: this.userObj.stateCode
@@ -628,6 +630,7 @@ export default {
           duration: 5
         })
       } else {
+        this.alertShow.addRule = false
         axios.post('/arbitrationRule/addArbitrationRule', this.addData).then(res => {
           this.alertCanc('addRule')
           this.$Message.success({
@@ -651,6 +654,7 @@ export default {
           duration: 5
         })
       } else {
+        this.alertShow.editRule = false
         axios.put('/arbitrationRule/updateArbitrationRule', this.editData, {
           headers: {
             'content-Type': 'application/json;charset=UTF-8'

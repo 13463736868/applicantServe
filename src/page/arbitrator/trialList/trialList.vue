@@ -68,16 +68,19 @@ export default {
           {
             title: '模版名称',
             key: 'tempName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -88,6 +91,7 @@ export default {
           {
             title: '立案时间',
             key: 'upTime',
+            tooltip: 'true',
             align: 'center'
           },
           {

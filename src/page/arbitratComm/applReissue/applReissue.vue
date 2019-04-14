@@ -49,6 +49,7 @@ export default {
           {
             title: '案号',
             key: 'code',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -75,16 +76,19 @@ export default {
           {
             title: '申请人',
             key: 'applicantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请时间',
             key: 'correctionsTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '仲裁员',
             key: 'arbitratorName',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -228,6 +232,7 @@ export default {
       this.alertShow.reas = true
     },
     applSave () {
+      this.alertShow.appl = false
       axios.post('/clientRequest/updateCaseRevision', {
         caseId: this.alertShow.id,
         approveState: this.alertShow.state

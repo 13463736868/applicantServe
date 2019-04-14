@@ -78,31 +78,37 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '开庭时间',
             key: 'beginTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '结案时间',
             key: 'closingTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '结束时间',
             key: 'endTime',
+            tooltip: 'true',
             align: 'center'
           }
         ],

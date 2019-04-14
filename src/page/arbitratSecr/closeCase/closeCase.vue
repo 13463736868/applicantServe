@@ -69,6 +69,7 @@ export default {
           {
             title: '案号',
             key: 'caseCode',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return h('a', {
@@ -95,36 +96,43 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '结案时间',
             key: 'closingTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请人视频路径',
             key: 'applicantVideo',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人视频路径',
             key: 'respondentVideo',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '仲裁员视频路径',
             key: 'arbitratorVideo',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '开庭记录文档',
             key: 'fileName',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return this.resSeeDocBtn(h, params)
