@@ -5,8 +5,8 @@
     </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row class="pb20">
-        <Col span="2" offset="17">
+      <Row class="pb20 tc">
+        <Col span="2" offset="14">
           <Button type="primary" @click="resFind">条件搜索</Button>
         </Col>
         <Col span="2">
@@ -14,6 +14,9 @@
         </Col>
         <Col span="3">
           <Button type="primary" @click="resBatch(2)">批量指定开庭时间</Button>
+        </Col>
+        <Col span="3">
+          <Button type="primary" @click="resBatch(3)">批量转书面审理</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -109,6 +112,12 @@
     </alert-btn-info>
     <alert-btn-info :alertShow="alertObj.send" @alertConfirm="sendDocSave" @alertCancel="alertCanc('sendDoc')" alertTitle="操作">
       <p>确定要发送邮件，短信通知吗？（确认内容无误后点击确定）</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.noTime" @alertConfirm="noTimesSave('time')" @alertCancel="alertCanc('noTime')" alertTitle="操作">
+      <p>确定要批量转书面审理吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.noBegin" @alertConfirm="noTimesSave('begin')" @alertCancel="alertCanc('noBegin')" alertTitle="操作">
+      <p>确定要转书面审理吗？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -316,7 +325,9 @@ export default {
         state: [],
         time: false,
         fileIdArr: [],
-        find: false
+        find: false,
+        noTime: false,
+        noBegin: false
       }
     }
   },
@@ -479,12 +490,27 @@ export default {
               type: 'primary',
               size: 'small'
             },
+            style: {
+              marginRight: '5px'
+            },
             on: {
               click: () => {
                 this.resBeginTime('once', params.index)
               }
             }
-          }, '指定开庭时间')
+          }, '指定开庭时间'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            on: {
+              click: () => {
+                this.alertObj.caseId = params.row.id
+                this.alertShow.noBegin = true
+              }
+            }
+          }, '转书面审理')
         ])
       } else if (_info.logicState === '8') {
         return h('div', [
@@ -601,6 +627,54 @@ export default {
               }
             }
           }, '送达')
+        ])
+      } else if (_info.logicState === '13') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSendDoc(params.index)
+              }
+            }
+          }, '送达')
+        ])
+      } else if (_info.logicState === '14') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resFileList(params.index)
+              }
+            }
+          }, '查看文件')
         ])
       } else {
         return h('div', [
@@ -1022,13 +1096,17 @@ export default {
             this.alertShow.batch = true
           } else {
             this.$Message.error({
-              content: '当前选择的案件只能批量指定开庭时间',
+              content: '当前选择的案件只能批量指定开庭时间或者转书面审理',
               duration: 5
             })
           }
-        } else if (type === 2) {
+        } else if (type === 2 || type === 3) {
           if (this.alertShow.state[0] === '7') {
-            this.alertShow.time = true
+            if (type === 2) {
+              this.alertShow.time = true
+            } else if (type === 3) {
+              this.alertShow.noTime = true
+            }
           } else {
             this.$Message.error({
               content: '当前选择的案件只能批量提交',
@@ -1106,6 +1184,44 @@ export default {
         })
       })
     },
+    noTimesSave (type) {
+      if (type === 'time') {
+        this.alertCanc('noTime')
+        axios.post('/batchGroupCourt/updateGroupOpenTime', {
+          caseIds: this.alertShow.ids.join(','),
+          updateType: 3
+        }).then(res => {
+          this.$Message.success({
+            content: res.data.data,
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      } else if (type === 'begin') {
+        this.alertCanc('noBegin')
+        axios.post('/approve/updateBeginTime', {
+          caseId: this.alertObj.caseId,
+          updateType: 3
+        }).then(res => {
+          this.alertObj.caseId = null
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resSearch()
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }
+    },
     resFind () {
       this.alertCanc('find')
       this.alertShow.find = true
@@ -1181,6 +1297,10 @@ export default {
       } else if (type === 'sendDoc') {
         this.alertObj.send = false
         this.alertObj.sendId = null
+      } else if (type === 'noTime') {
+        this.alertShow.noTime = false
+      } else if (type === 'noBegin') {
+        this.alertShow.noBegin = false
       }
     },
     seeDoc (path) {

@@ -809,67 +809,79 @@ export default {
     },
     resCancCase (index) {
       let _res = this.caseList.bodyList[index]
-      let newTime = this.getFormatDate()
-      let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-      let beginTime = _res.beginTime
-      let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-      if (newD - beginD < 0) {
-        this.$Message.warning({
-          content: '只能开庭半小时之后点击撤回',
-          duration: 5
-        })
-      } else if (newD - beginD === 0) {
-        if (newT - beginT > 30) {
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 6
-          this.alertShow.canc = true
-        } else {
+      if (_res.writtenFlag === 1) {
+        this.alertShow.userId = _res.id
+        this.alertShow.docuType = 6
+        this.alertShow.canc = true
+      } else {
+        let newTime = this.getFormatDate()
+        let newD = newTime.substr(0, 10).split('-').join('')
+        let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
+        let beginTime = _res.beginTime
+        let beginD = beginTime.substr(0, 10).split('-').join('')
+        let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
+        if (newD - beginD < 0) {
           this.$Message.warning({
             content: '只能开庭半小时之后点击撤回',
             duration: 5
           })
+        } else if (newD - beginD === 0) {
+          if (newT - beginT > 30) {
+            this.alertShow.userId = _res.id
+            this.alertShow.docuType = 6
+            this.alertShow.canc = true
+          } else {
+            this.$Message.warning({
+              content: '只能开庭半小时之后点击撤回',
+              duration: 5
+            })
+          }
+        } else if (newD - beginD > 0) {
+          this.alertShow.userId = _res.id
+          this.alertShow.docuType = 6
+          this.alertShow.canc = true
         }
-      } else if (newD - beginD > 0) {
-        this.alertShow.userId = _res.id
-        this.alertShow.docuType = 6
-        this.alertShow.canc = true
       }
     },
     resEndCase (index) {
       let _res = this.caseList.bodyList[index]
-      let newTime = this.getFormatDate()
-      let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-      let beginTime = _res.beginTime
-      let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-      if (beginTime === '' || beginTime === null) {
-        this.$Message.warning({
-          content: '没有开庭时间，禁止点击',
-          duration: 5
-        })
-      } else if (newD - beginD < 0) {
-        this.$Message.warning({
-          content: '开庭时间未到，禁止点击',
-          duration: 5
-        })
-      } else if (newD - beginD === 0) {
-        if (newT - beginT > 0) {
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 1
-          this.alertShow.end = true
-        } else {
+      if (_res.writtenFlag === 1) {
+        this.alertShow.userId = _res.id
+        this.alertShow.docuType = 1
+        this.alertShow.end = true
+      } else {
+        let newTime = this.getFormatDate()
+        let newD = newTime.substr(0, 10).split('-').join('')
+        let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
+        let beginTime = _res.beginTime
+        let beginD = beginTime.substr(0, 10).split('-').join('')
+        let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
+        if (beginTime === '' || beginTime === null) {
+          this.$Message.warning({
+            content: '没有开庭时间，禁止点击',
+            duration: 5
+          })
+        } else if (newD - beginD < 0) {
           this.$Message.warning({
             content: '开庭时间未到，禁止点击',
             duration: 5
           })
+        } else if (newD - beginD === 0) {
+          if (newT - beginT > 0) {
+            this.alertShow.userId = _res.id
+            this.alertShow.docuType = 1
+            this.alertShow.end = true
+          } else {
+            this.$Message.warning({
+              content: '开庭时间未到，禁止点击',
+              duration: 5
+            })
+          }
+        } else if (newD - beginD > 0) {
+          this.alertShow.userId = _res.id
+          this.alertShow.docuType = 1
+          this.alertShow.end = true
         }
-      } else if (newD - beginD > 0) {
-        this.alertShow.userId = _res.id
-        this.alertShow.docuType = 1
-        this.alertShow.end = true
       }
     },
     resPassReve (index) {
@@ -1263,7 +1275,7 @@ export default {
     },
     renderCheck (h, params) {
       let _obj = params.row
-      if ((_obj.endCasePatten === '5' || _obj.endCasePatten === '10') && _obj.tempCode !== null) {
+      if ((_obj.endCasePatten === '5' || _obj.endCasePatten === '10' || _obj.endCasePatten === '11') && _obj.tempCode !== null) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {

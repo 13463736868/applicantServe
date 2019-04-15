@@ -28,8 +28,8 @@ const infoMap = {
     note: '前后不分离 注释掉ruleMana其中五项 发送邮件文书变成数组'
   },
   'HuiZhou': {
-    name: '中国惠州仲裁委员会',
-    excName: 'HuiZhou Arbitration Commission',
+    name: '惠州信用便民仲裁服务中心',
+    excName: 'HuiZhou Credit Arbitration Center',
     tel: '0752-2112666',
     address: '广东省惠州市惠城区鹅岭南路车世界广场三楼A区',
     goRoom: 'https://yun.youzhengkeji.com:3004/view/index.html#/',

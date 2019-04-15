@@ -451,13 +451,14 @@ export default {
       let beginD = beginTime.substr(0, 10).split('-').join('')
       let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
       let endTime = _info.endTime
+      let endD = endTime.substr(0, 10).split('-').join('')
       let endT = (endTime.substr(11, 2) - 0) * 60 + (endTime.substr(14, 2) - 0)
-      if (newD !== beginD) {
+      if ((newD !== beginD && newD - beginD < 0) || (newD !== beginD && newD - endD > 0)) {
         this.$Message.warning({
           content: '只能在会议开始前十分钟或会议结束前进入',
           duration: 5
         })
-      } else if (beginT - newT > 10 || endT - newT < 0) {
+      } else if ((newD === beginD && beginT - newT > 10) || (newD === endD && endT - newT < 0) || newD - endD > 0) {
         this.$Message.warning({
           content: '只能在会议开始前十分钟或会议结束前进入',
           duration: 5
