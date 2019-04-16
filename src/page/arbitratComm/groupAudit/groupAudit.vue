@@ -159,31 +159,37 @@ export default {
           {
             title: '申请人',
             key: 'applicantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '申请人仲裁员',
             key: 'applicantApprove',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'respondentName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人仲裁员',
             key: 'respondentApprove',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '最终仲裁员',
             key: 'approver',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '开庭时间',
             key: 'beginTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -511,6 +517,7 @@ export default {
         }
       }
       if (this.alertShow.assignRest) {
+        this.alertShow.agre = false
         axios.post('/approve/updateArbitrator', {
           caseId: this.alertShow.caseId,
           arbitratorIds: this.seleArr.join(',')
@@ -531,6 +538,7 @@ export default {
         })
       } else {
         if (this.alertShow.idsType === '') {
+          this.alertShow.agre = false
           axios.post('/approve/updateGroupApproveToArbitrator', {
             caseId: this.alertShow.caseId,
             tribunalRequestId: this.alertShow.tribId,
@@ -551,6 +559,7 @@ export default {
             })
           })
         } else {
+          this.alertShow.agre = false
           axios.post('/batchGroupCourt/updateChooseArbitratorBatch', {
             caseTribunalRequest: JSON.stringify(this.alertShow.idsList),
             arbitratorIds: this.seleArr.join(',')
@@ -579,6 +588,7 @@ export default {
       this.alertShow.passId = this.caseList.bodyList[index].approverId
     },
     passSave () {
+      this.alertShow.pass = false
       axios.post('/approve/updateGroupApproveToArbitrator', {
         caseId: this.alertShow.caseId,
         tribunalRequestId: this.alertShow.tribId,

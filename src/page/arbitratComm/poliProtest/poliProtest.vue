@@ -355,6 +355,7 @@ export default {
               duration: 5
             })
           } else {
+            this.alertShow.diss = false
             axios.post('/case/addDocumentFile', {
               caseId: this.alertShow.id,
               documentType: this.alertShow.docuType,

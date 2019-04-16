@@ -94,6 +94,7 @@ export default {
           {
             title: '创建时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -263,6 +264,7 @@ export default {
       this.userObj.stateShow = true
     },
     stateSave () {
+      this.userObj.stateShow = false
       axios.put('/auth/role', {
         id: this.userId,
         state: this.userObj.stateCode
@@ -322,6 +324,7 @@ export default {
           arr.push({id: list[k].id})
         }
       }
+      this.userObj.restShow = false
       axios.put('/auth/function/' + this.userId, arr, {
         headers: {
           'content-Type': 'application/json;charset=UTF-8'
@@ -369,6 +372,7 @@ export default {
     sendAjax () {
       let type = this.alertShow.type
       if (type === 'add') {
+        this.alertShow.addPost = false
         axios.post('/auth/role', {
           name: this.addData.name,
           state: this.addData.state
@@ -387,6 +391,7 @@ export default {
           })
         })
       } else if (type === 'edit') {
+        this.alertShow.addPost = false
         axios.put('/auth/role', {
           id: this.userId,
           name: this.addData.name,

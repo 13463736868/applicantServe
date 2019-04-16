@@ -468,6 +468,11 @@ export default {
       }
     },
     sendAjax (_url, _data, _type) {
+      if (_type === 'comp') {
+        this.compObj.alert = false
+      } else if (_type === 'indi') {
+        this.indiObj.alert = false
+      }
       axios.post(_url, _data).then(res => {
         this.alertCanc(_type)
         this.$Message.success({

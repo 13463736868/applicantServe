@@ -88,6 +88,7 @@ export default {
           {
             title: '提交时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {

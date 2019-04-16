@@ -126,26 +126,31 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '提交时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '受理时间',
             key: 'acceptTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -292,6 +297,7 @@ export default {
       })
     },
     confSave () {
+      this.alertShow.conf = false
       axios.post('/case/updateCaseStateAndType', {
         caseId: this.dataObj.confCaseId,
         costs: this.dataObj.confCosts
@@ -410,6 +416,7 @@ export default {
       }
     },
     batchSave () {
+      this.alertShow.batch = false
       axios.put('/caseBatch/updateCaseStateAndType_batch', {
         items: JSON.stringify(this.alertShow.idsList),
         state: '1'

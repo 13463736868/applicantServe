@@ -131,21 +131,25 @@ export default {
           {
             title: '申请人',
             key: 'applicantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'respondentName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '第一秘书',
             key: 'firstSecretary',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -156,6 +160,7 @@ export default {
           {
             title: '创建时间',
             key: 'createtime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -348,6 +353,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertShow.docu = false
           axios.post('/approve/updateCaseDocumentByApprove', {
             caseId: this.alertShow.id,
             caseDocumentApprove: this.alertShow.state,
@@ -369,6 +375,7 @@ export default {
           })
         }
       } else {
+        this.alertShow.docu = false
         axios.post('/approve/updateCaseDocumentByApprove', {
           caseId: this.alertShow.id,
           caseDocumentApprove: this.alertShow.state,
@@ -480,6 +487,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertShow.docu = false
           axios.post('/approve/caseDocumentBatch', {
             caseDocumentIds: JSON.stringify(this.alertShow.idsList),
             caseDocumentApprove: this.alertShow.state,
@@ -502,6 +510,7 @@ export default {
           })
         }
       } else {
+        this.alertShow.docu = false
         axios.post('/approve/caseDocumentBatch', {
           caseDocumentIds: JSON.stringify(this.alertShow.idsList),
           caseDocumentApprove: this.alertShow.state

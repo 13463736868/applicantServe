@@ -480,6 +480,7 @@ export default {
     sendAjax (type) {
       switch (type) {
         case 'addMeet':
+          this.alertObj.meetAdd = false
           axios.post('/meeting/saveOrUpdate', {
             subject: this.alertData.subject,
             beginTimeStr: this.alertData.beginTimeStr,
@@ -512,6 +513,7 @@ export default {
           })
           break
         case 'cancMeet':
+          this.alertObj.meetCanc = false
           axios.post('/meeting/cancel', {
             meetingId: this.alertObj.meetId
           }).then(res => {

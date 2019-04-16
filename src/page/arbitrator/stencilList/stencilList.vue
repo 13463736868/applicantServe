@@ -104,6 +104,7 @@ export default {
           {
             title: '创建时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {

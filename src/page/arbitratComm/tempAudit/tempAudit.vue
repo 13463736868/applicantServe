@@ -89,6 +89,7 @@ export default {
           {
             title: '注册人名称',
             key: 'userName',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -99,6 +100,7 @@ export default {
           {
             title: '创建时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -274,6 +276,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertShow.temp = false
           axios.post('/batchCaseDocument/updateTemplateStatus', {
             templateId: this.alertShow.id,
             templateStatus: this.alertShow.state,
@@ -294,6 +297,7 @@ export default {
           })
         }
       } else {
+        this.alertShow.temp = false
         axios.post('/batchCaseDocument/updateTemplateStatus', {
           templateId: this.alertShow.id,
           templateStatus: this.alertShow.state

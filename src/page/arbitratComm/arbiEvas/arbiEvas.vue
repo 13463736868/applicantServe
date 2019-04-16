@@ -114,6 +114,7 @@ export default {
             title: '案号',
             key: 'code',
             align: 'center',
+            tooltip: 'true',
             render: (h, params) => {
               return h('a', {
                 props: {
@@ -139,16 +140,19 @@ export default {
           {
             title: '申请人',
             key: 'applicantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'respondentName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被回避仲裁员',
             key: 'approver',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -163,6 +167,7 @@ export default {
           {
             title: '回避原因',
             key: 'id',
+            tooltip: 'true',
             align: 'center',
             render: (h, params) => {
               return this.renderReasBtn(h, params)
@@ -540,6 +545,7 @@ export default {
           return false
         }
       }
+      this.alertShow.agre = false
       axios.post('/approve/updateAvoidRequestAppover', {
         avoidRequestId: this.alertShow.avoidRequestId,
         avoidState: 1,
@@ -561,6 +567,7 @@ export default {
       })
     },
     agreNewSave () {
+      this.alertShow.agreNew = false
       axios.post('/approve/updateAvoidRequestAppover', {
         avoidRequestId: this.alertShow.avoidRequestId,
         avoidState: 1
@@ -606,6 +613,7 @@ export default {
               duration: 5
             })
           } else {
+            this.alertShow.reje = false
             axios.post('/approve/updateAvoidRequestAppover', {
               avoidRequestId: this.alertShow.avoidRequestId,
               content: this.alertShow.rejeReason,

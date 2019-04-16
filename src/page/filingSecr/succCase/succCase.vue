@@ -98,26 +98,31 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '提交时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '受理时间',
             key: 'acceptTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -345,6 +350,7 @@ export default {
       this.alertObj.send = true
     },
     sendDocSave () {
+      this.alertObj.send = false
       axios.post('/electronic/service/101', {
         caseId: this.alertObj.sendId
       }).then(res => {

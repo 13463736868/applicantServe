@@ -130,21 +130,25 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '提交时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -394,6 +398,7 @@ export default {
     },
     acceSave (type) {
       if (type === 'acceA') {
+        this.alertShow.acceA = false
         axios.post('/case/updateCaseState', {
           caseId: this.dataObj.acceCaseId,
           state: 1
@@ -422,6 +427,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertShow.acceB = false
           axios.post('/case/updateCaseState', {
             caseId: this.dataObj.acceCaseId,
             state: 2,
@@ -540,6 +546,7 @@ export default {
             duration: 5
           })
         } else {
+          this.alertShow.batch = false
           axios.put('/caseBatch/updateCaseState_batch', {
             reason: this.alertShow.rejeReason,
             items: JSON.stringify(this.alertShow.idsList),
