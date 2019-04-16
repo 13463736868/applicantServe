@@ -532,7 +532,7 @@ export default {
             duration: 5
           })
         } else {
-          this.alertShow.acceA = false
+          this.alertShow.acceB = false
           axios.post('/case/updateCaseState', {
             caseId: this.dataObj.acceCaseId,
             state: 2,
