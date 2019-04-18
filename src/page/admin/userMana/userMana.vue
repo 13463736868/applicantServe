@@ -10,7 +10,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="姓名"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="姓名"></Input>
         </Col>
         <Col span="2" offset="10">
           <Button type="primary" @click="resAddUpload">批量导入</Button>

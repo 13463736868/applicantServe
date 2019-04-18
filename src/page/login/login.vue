@@ -25,7 +25,7 @@
               <label class="lh32 f16 fc9">密 码:</label>
             </Col>
             <Col span="18" class="tl">
-              <input class="_input" v-model="user.password" placeholder="" :type="user.showPass === true?'text':'password'" @keyup.enter="resLogin"></input>
+              <input class="_input" v-model="user.password" :type="user.showPass === true?'text':'password'" @keyup.enter="resLogin"></input>
               <Icon size="18" class="hand ml30 vtt" :type="user.showPass === true?'md-eye':'md-eye-off'" @click="showPass"></Icon>
             </Col>
           </Row>
@@ -36,7 +36,7 @@
               <label class="lh32 f16 fc9">验证码:</label>
             </Col>
             <Col span="18" class="tl">
-              <input class="_input" v-model="user.code" placeholder="" @keyup.enter="resLogin"></input>
+              <input class="_input" v-model="user.code" @keyup.enter="resLogin"></input>
               <img class="_img" :src="codeImgSrc" alt="" @click="resGetCode">
             </Col>
           </Row>
