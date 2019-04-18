@@ -42,7 +42,7 @@
           <p><span class="_span">*</span><b>审批意见：</b></p>
         </Col>
         <Col span="16">
-          <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+          <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..."/>
         </Col>
       </Row>
     </create-docu>

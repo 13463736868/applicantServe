@@ -10,7 +10,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search-strong" placeholder="" class="_search" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="缴费单号"></Input>
+          <Input v-model="search.text" icon="ios-search-strong" class="_search" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="缴费单号"></Input>
         </Col>
       </Row>
       <div class="_payList clearfix">
