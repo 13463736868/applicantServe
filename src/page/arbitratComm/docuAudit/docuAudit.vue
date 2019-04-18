@@ -582,4 +582,14 @@ export default {
     margin-bottom: 20px;
   }
 }
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
+    vertical-align: text-top;
+  }
+}
 </style>

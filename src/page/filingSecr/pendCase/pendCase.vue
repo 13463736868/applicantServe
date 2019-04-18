@@ -10,7 +10,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
+          <Input v-model="search.text" icon="ios-search" placeholder="" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
         <Col span="2" offset="10">
           <Button type="primary" @click="resFind">条件搜索</Button>
@@ -144,26 +144,31 @@ export default {
           {
             title: '申请人',
             key: 'partyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '代理人',
             key: 'proxyName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '被申请人',
             key: 'defendantName',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '提交时间',
             key: 'createTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
             title: '受理时间',
             key: 'acceptTime',
+            tooltip: 'true',
             align: 'center'
           },
           {
