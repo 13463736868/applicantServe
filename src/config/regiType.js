@@ -9,7 +9,7 @@ const infoMap = {
     tel: '0934-8232372',
     address: '甘肃省庆阳市西峰区南大街51号',
     goRoom: '',
-    note: '前后不分离,去掉进入庭室,记录功能'
+    note: '前后不分离,去掉进入庭室,记录功能,以及仲裁员结案改成上传,不需要二级权限,依赖master打包'
   },
   'AnYang': {
     name: '中国安阳仲裁委员会',
@@ -25,7 +25,7 @@ const infoMap = {
     tel: '0515-88123589',
     address: '江苏省盐城市人民南路106号',
     goRoom: 'https://trialonline.yczcw.com.cn:3004/view/index.html#/',
-    note: '前后不分离 注释掉ruleMana其中五项 发送邮件文书变成数组'
+    note: '前后不分离 注释掉ruleMana其中五项 发送邮件文书变成数组,需要二级权限,依赖yancheng打包'
   },
   'HuiZhou': {
     name: '惠州信用便民仲裁服务中心',

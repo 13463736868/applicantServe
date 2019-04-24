@@ -15,7 +15,7 @@
         <Col span="2" offset="10">
           <Button type="primary" @click="resFind">条件搜索</Button>
         </Col>
-        <Col span="2">
+        <Col span="2" v-if="regiType !== 'QingYang'">
           <Button type="primary" @click="resEnds">批量结案</Button>
         </Col>
       </Row>
@@ -208,6 +208,20 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="alertShow.endQY" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>文书类型：</b></p>
+        </Col>
+        <Col span="16" style="padding:7px 0;">
+          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
+            <Radio :label="1" checkout>裁决书</Radio>
+            <Radio :label="2">调解书</Radio>
+          </RadioGroup>
+        </Col>
+      </Row>
+      <upload-book :uploadData="resUploadData" childName="请上传文书" :fileType="['pdf']" :uploadUrl="resUploadUrl" @saveClick="endQYSave" @cancClick="alertCanc('endQY')"></upload-book>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -218,12 +232,14 @@ import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/components/common/alertEditor'
+import uploadBook from '@/components/common/uploadBook'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_case',
-  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor },
+  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor, uploadBook },
   data () {
     return {
       spinShow: false,
@@ -332,6 +348,7 @@ export default {
         pageSize: 10
       },
       alertShow: {
+        endQY: false,
         canc: false,
         contractName: '',
         docuType: null,
@@ -363,6 +380,20 @@ export default {
   },
   created () {
     this.resCaseList()
+  },
+  computed: {
+    regiType () {
+      return regi.type
+    },
+    resUploadUrl () {
+      return regi.api + '/file/uploadCaseDocument'
+    },
+    resUploadData () {
+      let o = {}
+      o.caseId = this.alertShow.userId
+      o.type = this.alertShow.docuType
+      return o
+    }
   },
   methods: {
     dictionary () {
@@ -843,12 +874,27 @@ export default {
         }
       }
     },
+    resEndCaseS (_res) {
+      this.alertShow.userId = _res.id
+      this.alertShow.docuType = 1
+      if (this.regiType === 'QingYang') {
+        this.alertShow.endQY = true
+      } else {
+        this.alertShow.end = true
+      }
+    },
+    endQYSave () {
+      this.alertCanc('endQY')
+      this.resSearch()
+      this.$Message.success({
+        content: '上传成功',
+        duration: 2
+      })
+    },
     resEndCase (index) {
       let _res = this.caseList.bodyList[index]
       if (_res.writtenFlag === 1) {
-        this.alertShow.userId = _res.id
-        this.alertShow.docuType = 1
-        this.alertShow.end = true
+        this.resEndCaseS(_res)
       } else {
         let newTime = this.getFormatDate()
         let newD = newTime.substr(0, 10).split('-').join('')
@@ -868,9 +914,7 @@ export default {
           })
         } else if (newD - beginD === 0) {
           if (newT - beginT > 0) {
-            this.alertShow.userId = _res.id
-            this.alertShow.docuType = 1
-            this.alertShow.end = true
+            this.resEndCaseS(_res)
           } else {
             this.$Message.warning({
               content: '开庭时间未到，禁止点击',
@@ -878,9 +922,7 @@ export default {
             })
           }
         } else if (newD - beginD > 0) {
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 1
-          this.alertShow.end = true
+          this.resEndCaseS(_res)
         }
       }
     },
@@ -1391,6 +1433,9 @@ export default {
           this.alertShow.contractName = ''
           this.alertShow.userId = null
           this.alertShow.docuType = null
+          break
+        case 'endQY':
+          this.alertShow.endQY = false
           break
         case 'end':
         case 'docuType':

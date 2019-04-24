@@ -18,7 +18,7 @@
               :show-upload-list="false"
               :format="fileType"
               :max-size="10240"
-              :data="data"
+              :data="uploadData"
               :on-format-error="resFormError"
               :on-exceeded-size="resSzieError"
               :before-upload="resBefoUpload"
@@ -50,7 +50,7 @@ import spinComp from '@/components/common/spin'
 export default {
   name: 'upload_appl_book',
   components: { spinComp },
-  props: ['uploadUrl', 'fileType', 'childName', 'dowShow'],
+  props: ['uploadData', 'uploadUrl', 'fileType', 'childName', 'dowShow'],
   data () {
     return {
       spinShow: false,
@@ -59,7 +59,6 @@ export default {
         status: 0,
         text: ''
       },
-      data: {},
       fileObj: null
     }
   },
@@ -145,9 +144,7 @@ export default {
 @import '@/style/mixin';
 ._uploadApplBook {
   @include borderRadius(3px);
-  @include boxShadow(0 1px 6px -1px #bbb);
   margin-top: 10px;
-  padding: 15px;
   background: #fff;
   font-size: 12px;
   ._labelFor {
