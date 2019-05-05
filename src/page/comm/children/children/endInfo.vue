@@ -2,7 +2,7 @@
   <div class="_endInfo">
     <Row class="_listL">
       <Col span="22" offset="1">
-        <p>结案方式：<span v-text="infoData.caseDocumentType"></span></p>
+        <p>结案方式：<span v-text="infoData.caseDocumentTypeName"></span></p>
         <p>结案日期：<span v-text="infoData.endCaseDate"></span></p>
         <p>结案文书：<span class="_file" v-text="infoData.filename" @click="seeFile(infoData.filepath)"></span><Icon v-if="isIcon" @click="dowInfo" class="_dowFile" type="md-arrow-round-down"></Icon></p>
       </Col>
