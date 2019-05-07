@@ -15,7 +15,7 @@
             <p><span class="mr10">送达手机 :</span><span v-text="infoData.phone"></span></p>
             <p><span class="mr10">送达邮箱 :</span><span v-text="infoData.email"></span></p>
             <p><span class="mr10">联系地址 :</span><span v-text="infoData.address"></span></p>
-            <p><span class="mr10">委托人姓名 :</span><span v-text="infoData.propName"></span></p>
+            <p><span class="mr10">委托人姓名 :</span><span v-text="infoData.consigner"></span></p>
           </Col>
         </Row>
       </Col>
