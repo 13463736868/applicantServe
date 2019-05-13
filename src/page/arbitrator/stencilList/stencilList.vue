@@ -340,13 +340,13 @@ export default {
       this.alertShow.editorDest = true
       this.alertShow.editor = true
     },
-    editorSave (type, name, id, cont, docuType, ids) {
+    editorSave (tempId, type, name, id, cont, docuType, ids) {
       if (type === 'add') {
         axios.post('/batchCaseDocument/saveTemplate', {
           tempName: name,
           caseTypeId: id,
           tempContent: cont,
-          templateId: this.alertShow.editorTempId,
+          templateId: this.alertShow.editorTempId === null ? tempId : this.alertShow.editorTempId,
           caseDocumentType: docuType,
           caseFields: ids
         }).then(res => {

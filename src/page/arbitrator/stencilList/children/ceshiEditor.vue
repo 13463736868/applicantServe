@@ -112,7 +112,7 @@
                   <Tag closable
                        class="tagBox"
                        @click.native.stop="worldClick(item)"
-                       @on-close="handleClose1(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
+                       @on-close="handleClose(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
                   </Col>
                 </Row>
                 </Col>
@@ -137,7 +137,7 @@
                   <Tag closable
                        class="tagBox"
                        @click.native.stop="worldClick(item)"
-                       @on-close="handleClose2(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
+                       @on-close="handleClose(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
                   </Col>
                 </Row>
                 </Col>
@@ -163,7 +163,7 @@
                   <Tag closable
                        class="tagBox"
                        @click.native.stop="worldClick(item)"
-                       @on-close="handleClose3(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
+                       @on-close="handleClose(item)">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}</Tag>
                   </Col>
                 </Row>
                 </Col>
@@ -414,9 +414,9 @@ export default {
       requestNameList: [],
       tempName: '',
       btnData: null,
-      btnDataSecond: [], // 必有元素（选中的）
-      orHaveSecond: [], // 或有元素（选中的）
-      specificSecond: [], // 特有元素（选中的）
+      // btnDataSecond: [], // 必有元素（选中的）
+      // orHaveSecond: [], // 或有元素（选中的）
+      // specificSecond: [], // 特有元素（选中的）
       fieldBtnList: {}
     }
   },
@@ -460,6 +460,7 @@ export default {
         documentType: this.batchDocumentType
       }).then(res => {
         this.fieldBtnList = res.data.data
+        this.tempName = this.fieldBtnList.tempName
         this.editor.setContent(this.fieldBtnList.tempContent == null ? '' : this.fieldBtnList.tempContent)
       }).catch(e => {
         this.$Message.error({
@@ -635,36 +636,17 @@ export default {
       this.fieldDescription = item.fieldDescription
     },
     // 删除所选元素// 删除所选元素
-    handleClose1 (item) {
-      // let tagArr = []
-      this.fieldBtnList.must.forEach(arrItem => {
+    handleClose (item) {
+      let _type = item.type === 1 ? 'must' : item.type === 2 ? 'orHave' : item.type === 3 ? 'specific' : null
+      this.fieldBtnList[_type].forEach((arrItem, index) => {
         if (item.id === arrItem.id) {
           arrItem.status = 1
+          this.fieldBtnList[_type].splice(0, 0)
         }
       })
       var historyEdit = this.editor.getContent().replace(new RegExp(item.fieldNameShow, 'g'), '')
       this.editor.setContent(historyEdit)
     },
-    handleClose3 (item) {
-      // let tagArr = []
-      this.fieldBtnList.specific.forEach(arrItem => {
-        if (item.id === arrItem.id) {
-          arrItem.status = 1
-        }
-      })
-      var historyEdit = this.editor.getContent().replace(new RegExp(item.fieldNameShow, 'g'), '')
-      this.editor.setContent(historyEdit)
-    },
-    handleClose2 (item) {
-      this.fieldBtnList.orHave.forEach(arrItem => {
-        if (item.id === arrItem.id) {
-          arrItem.status = 1
-        }
-      })
-      var historyEdit = this.editor.getContent().replace(new RegExp(item.fieldNameShow, 'g'), '')
-      this.editor.setContent(historyEdit)
-    },
-
     resChange () {
       this.caseTypeId = ''
     },
@@ -703,7 +685,9 @@ export default {
       this.editor.execCommand('inserthtml', item.fieldNameShow)
     },
     btnClick (item) {
+      let _type = item.type === 1 ? 'must' : item.type === 2 ? 'orHave' : item.type === 3 ? 'specific' : null
       item.status = 2
+      this.fieldBtnList[_type].splice(0, 0)
     },
     initEditor () {
       this.editor = window.UE.getEditor(this.randomId)
@@ -765,7 +749,7 @@ export default {
         var allIdArr = mustId.concat(orHaveId, specificId)
         this.editor.execCommand('selectall')
         this.editor.execCommand('fontfamily', 'SimSun')
-        this.$emit('alertConfirm', type, this.tempName, this.caseTypeId, this.editor.getContent(), this.batchDocumentType, allIdArr.join(','))
+        this.$emit('alertConfirm', this.fieldBtnList.tempId, type, this.tempName, this.caseTypeId, this.editor.getContent(), this.batchDocumentType, allIdArr.join(','))
       }
     },
     alertCancel () {
