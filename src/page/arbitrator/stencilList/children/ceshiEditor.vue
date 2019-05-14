@@ -796,7 +796,13 @@ export default {
 }
 </style>
 <style>
-.ivu-modal {
-  padding-bottom: 100px;
+.dialog .ivu-modal {
+padding-bottom: 100px;
+}
+.dialog .ivu-modal-mask {
+z-index: 10 !important;
+}
+.dialog .ivu-modal-wrap {
+z-index: 10 !important;
 }
 </style>
