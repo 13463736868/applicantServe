@@ -206,7 +206,7 @@
                     <Icon class="vtt"
                           size="14"
                           @click.stop="deleteButton(item)"
-                          v-if="item.isDefault !==0"
+                          v-if="item.isDefault ===1"
                           type="ios-close-circle-outline" />
                     <Icon class="vtt"
                           size="14"
@@ -245,7 +245,7 @@
                           :title="item.fieldName.length > 7 ? item.fieldName : item.fieldPlaceholder">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
                     <Icon class="vtt"
                           size="14"
-                          v-if="item.isDefault !==0"
+                          v-if="item.isDefault ===1"
                           @click.stop="deleteButton(item)"
                           type="ios-close-circle-outline" />
                     <Icon class="vtt"
@@ -285,7 +285,7 @@
                           :title="item.fieldName.length > 7 ? item.fieldName : item.fieldPlaceholder">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
                     <Icon class="vtt"
                           size="14"
-                          v-if="item.isDefault !==0"
+                          v-if="item.isDefault ===1"
                           @click.stop="deleteButton(item)"
                           type="ios-close-circle-outline" />
                     <Icon class="vtt"
