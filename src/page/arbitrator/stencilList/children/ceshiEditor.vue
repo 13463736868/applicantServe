@@ -64,8 +64,7 @@
                 <Col span="16">
                 <Select v-model="caseTypeId"
                         transfer
-                        :disabled="alertDisType"
-                        @on-change="getCaseFieldList">
+                        :disabled="alertDisType">
                   <Option v-for="item in caseTypeList[requestName]"
                           :value="item.id"
                           :key="item.id">{{ item.caseTypeName }}</Option>
@@ -414,9 +413,6 @@ export default {
       requestNameList: [],
       tempName: '',
       btnData: null,
-      // btnDataSecond: [], // 必有元素（选中的）
-      // orHaveSecond: [], // 或有元素（选中的）
-      // specificSecond: [], // 特有元素（选中的）
       fieldBtnList: {}
     }
   },
@@ -427,7 +423,6 @@ export default {
       this.caseTypeId = this.alertTypeId
       this.batchDocumentType = this.alertDocument
     }
-    // this.resDict()// 获取button
     this.dictionary()
     this.getCaseFieldList()
     this.batchDocuTypeList()
@@ -461,7 +456,9 @@ export default {
       }).then(res => {
         this.fieldBtnList = res.data.data
         this.tempName = this.fieldBtnList.tempName
-        this.editor.setContent(this.fieldBtnList.tempContent == null ? '' : this.fieldBtnList.tempContent)
+        if (typeof this.fieldBtnList.tempContent === 'string') {
+          this.editor.setContent(this.fieldBtnList.tempContent)
+        }
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
