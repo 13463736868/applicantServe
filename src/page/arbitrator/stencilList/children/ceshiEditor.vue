@@ -64,7 +64,8 @@
                 <Col span="16">
                 <Select v-model="caseTypeId"
                         transfer
-                        :disabled="alertDisType">
+                        :disabled="alertDisType"
+                        @on-change="getCaseFieldList">
                   <Option v-for="item in caseTypeList[requestName]"
                           :value="item.id"
                           :key="item.id">{{ item.caseTypeName }}</Option>
