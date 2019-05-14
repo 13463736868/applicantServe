@@ -460,10 +460,10 @@ export default {
           this.editor.setContent(this.fieldBtnList.tempContent)
         }
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        // this.$Message.error({
+        //   content: '错误信息:' + e + ' 稍后再试',
+        //   duration: 5
+        // })
       })
     },
     // 取消添加
