@@ -211,7 +211,6 @@
                     <Icon class="vtt"
                           size="14"
                           @click.stop="editTag(item)"
-                          v-if="item.isDefault !==0"
                           type="md-create" />
                   </Button>
                   </Col>
@@ -251,7 +250,6 @@
                           type="ios-close-circle-outline" />
                     <Icon class="vtt"
                           size="14"
-                          v-if="item.isDefault !==0"
                           @click.stop="editTag(item)"
                           type="md-create" />
                   </Button>
@@ -292,7 +290,6 @@
                           type="ios-close-circle-outline" />
                     <Icon class="vtt"
                           size="14"
-                          v-if="item.isDefault !==0"
                           @click.stop="
                           editTag(item)"
                           type="md-create" />
@@ -456,7 +453,9 @@ export default {
         documentType: this.batchDocumentType
       }).then(res => {
         this.fieldBtnList = res.data.data
-        this.tempName = this.fieldBtnList.tempName
+        if (typeof this.fieldBtnList.tempName === 'string') {
+          this.tempName = this.fieldBtnList.tempName
+        }
         if (typeof this.fieldBtnList.tempContent === 'string') {
           this.editor.setContent(this.fieldBtnList.tempContent)
         }
