@@ -87,6 +87,11 @@ export default {
             align: 'center'
           },
           {
+            title: '模板文书类型',
+            key: 'templateDocumentType',
+            align: 'center'
+          },
+          {
             title: '注册人名称',
             key: 'userName',
             tooltip: 'true',
