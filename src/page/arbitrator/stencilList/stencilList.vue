@@ -86,6 +86,9 @@
       <p class="t2"
          v-text="alertShow.reasText"></p>
     </alert-btn-info>
+    <alertBtnInfo :alertShow="alertShow.subm" @alertConfirm="submSave" @alertCancel="alertCanc('subm')" alertTitle="操作">
+      <p>确定要提交吗？</p>
+    </alertBtnInfo>
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor"
                     @alertConfirm="editorSave"
@@ -189,7 +192,9 @@ export default {
         editorTempId: null,
         documentType: null,
         reas: false,
-        reasText: ''
+        reasText: '',
+        subm: false,
+        sumbId: null
       }
     }
   },
@@ -258,7 +263,24 @@ export default {
             }
           }, '驳回原因')
         ])
-      } else {
+      } else if (_obj.status === 1 || _obj.status === 3) {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.seePdf(_obj.tempPath)
+              }
+            }
+          }, '查看')
+        ])
+      } else if (_obj.status === 4) {
         return h('div', [
           h('Button', {
             props: {
@@ -287,7 +309,21 @@ export default {
                 this.resEdit(params.index)
               }
             }
-          }, '修改')
+          }, '修改'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resSubm(params.index)
+              }
+            }
+          }, '提交')
         ])
       }
     },
@@ -327,6 +363,31 @@ export default {
     },
     seePdf (path) {
       window.open(path, '_blank')
+    },
+    resSubm (index) {
+      let obj = this.caseList.bodyList[index]
+      this.alertShow.sumbId = obj.id
+      this.alertShow.subm = true
+    },
+    submSave () {
+      this.alertShow.subm = false
+      axios.post('/batchCaseDocument/updateTemplateStatus', {
+        templateId: this.alertShow.sumbId,
+        templateStatus: '3'
+      }).then(res => {
+        this.alertCanc('sumb')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.alertCanc('sumb')
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
     },
     resAdd () {
       this.alertShow.disType = false
@@ -413,7 +474,9 @@ export default {
           this.alertShow.reas = false
           this.alertShow.reasText = ''
           break
-        default:
+        case 'subm':
+          this.alertShow.subm = false
+          this.alertShow.sumbId = null
           break
       }
     }
