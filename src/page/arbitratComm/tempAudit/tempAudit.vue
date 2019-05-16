@@ -82,11 +82,6 @@ export default {
             align: 'center'
           },
           {
-            title: '模板编码',
-            key: 'tempCode',
-            align: 'center'
-          },
-          {
             title: '模板文书类型',
             key: 'templateDocumentType',
             align: 'center'

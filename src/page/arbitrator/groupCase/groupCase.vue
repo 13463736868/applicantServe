@@ -207,6 +207,16 @@
           </Select>
         </Col>
       </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>结案方式：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="search.batchDocuType">
+            <Option v-if="item.item !== '仲裁申请书'" v-for="item in search.batchDocuTypeList" :value="item.itemValue" :key="item.itemValue">{{ item.item }}</Option>
+          </Select>
+        </Col>
+      </Row>
     </alert-btn-info>
   </div>
 </template>
@@ -232,7 +242,9 @@ export default {
         requestName: '',
         caseType: '',
         caseTypeList: {},
-        requestNameList: []
+        requestNameList: [],
+        batchDocuType: null,
+        batchDocuTypeList: []
       },
       caseList: {
         loading: false,
@@ -366,6 +378,16 @@ export default {
   },
   methods: {
     dictionary () {
+      axios.post('/dictionary/findDictionaryList', {
+        type: 'batchDocumentType'
+      }).then(res => {
+        this.search.batchDocuTypeList = res.data.data
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
       axios.post('/batchCaseDocument/findCaseType').then(res => {
         let _obj = res.data.data
         this.search.requestNameList = _obj
@@ -694,7 +716,8 @@ export default {
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        keyword: this.search.text
+        keyword: this.search.text,
+        caseDocementType: this.search.batchDocuType
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -1345,7 +1368,12 @@ export default {
       }
     },
     resEnds () {
-      if (this.alertShow.ids.length === 0) {
+      if (this.search.batchDocuType === null || this.search.batchDocuType === undefined) {
+        this.$Message.error({
+          content: '请先在条件搜索里选择一个结案方式进行搜索',
+          duration: 5
+        })
+      } else if (this.alertShow.ids.length === 0) {
         this.$Message.error({
           content: '请先选择一个案件',
           duration: 5
