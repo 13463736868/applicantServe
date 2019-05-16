@@ -128,7 +128,7 @@
             <p><span class="_span">*</span><b title="自愿达成协议内容">协议内容：</b></p>
           </Col>
           <Col span="16">
-            <Input v-model="alertShow.agreementContent"></Input>
+            <Input v-model="alertShow.agreementContent" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
           </Col>
         </Row>
       </div>
