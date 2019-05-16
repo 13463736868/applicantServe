@@ -129,7 +129,8 @@ export default {
         temp: false,
         state: null,
         tempReason: '',
-        id: null
+        id: null,
+        find: false
       }
     }
   },
