@@ -1,7 +1,7 @@
 'use strict'
 // YanCheng:/api  anyang:/trial   ;src/axios;src/router;index.html
 const api = '/api'
-const type = 'YanCheng'
+const type = 'YouZheng'
 const infoMap = {
   'QingYang': {
     name: '中国庆阳仲裁委员会',
