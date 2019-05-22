@@ -335,7 +335,7 @@ export default {
           content: '部门编码不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.addData.code, 'password')) {
+      } else if (!setRegExp(this.addData.code, 'depaCode')) {
         this.$Message.warning({
           content: '部门编码只能包含数字,字母及下划线,长度6~20位',
           duration: 5
