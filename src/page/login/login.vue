@@ -54,7 +54,6 @@ import axios from 'axios'
 import { mapActions } from 'vuex'
 import {setToken, removeToken} from '@/cookies'
 import {getRouter, getMenu} from '@/router/routers.js'
-import setRegExp from '@/config/regExp.js'
 import regi from '@/config/regiType.js'
 
 export default {
@@ -129,9 +128,6 @@ export default {
       } else if (this.user.password === '') {
         this.user.emStatus = true
         this.user.em = '请输入密码'
-      } else if (!setRegExp(this.user.password, 'password')) {
-        this.user.emStatus = true
-        this.user.em = '密码错误'
       } else if (this.user.code === '') {
         this.user.emStatus = true
         this.user.em = '请输入验证码'
