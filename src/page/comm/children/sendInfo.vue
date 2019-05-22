@@ -99,7 +99,7 @@ export default {
         loading: false,
         header: [
           {
-            title: '当事人 (申请人)',
+            title: '当事人',
             key: 'toName',
             align: 'center'
           },
@@ -140,7 +140,7 @@ export default {
         loading: false,
         header: [
           {
-            title: '当事人 (申请人)',
+            title: '当事人',
             key: 'toName',
             align: 'center'
           },
