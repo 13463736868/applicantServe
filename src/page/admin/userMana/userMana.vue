@@ -487,7 +487,7 @@ export default {
         })
       } else if (this.alertShow.type === 'add' && !setRegExp(this.addData.password, 'password')) {
         this.$Message.warning({
-          content: '密码长度6~20位,只能包含数字,字母,下划线',
+          content: '密码长度8~30位,必须包含大写字母,小写字母,数字,特殊符号(且不能包含下划线_)',
           duration: 5
         })
       } else if (this.addData.phone === '') {

@@ -77,7 +77,7 @@ export default function (val, type) {
       return false
     }
   } else if (type === 'password') {
-    let reg = new RegExp('^[a-zA-Z_0-9]{6,20}$')
+    let reg = new RegExp('^(?![A-Za-z0-9]+$)(?![a-z0-9\\W]+$)(?![A-Za-z\\W]+$)(?![A-Z0-9\\W]+$)[a-zA-Z0-9\\W]{8,30}$')
     if (reg.test(val)) {
       return true
     } else {
@@ -143,6 +143,13 @@ export default function (val, type) {
     }
   } else if (type === 'groupCase') {
     let reg = new RegExp('[\u4e00-\u9fa5]{1}')
+    if (reg.test(val)) {
+      return true
+    } else {
+      return false
+    }
+  } else if (type === 'depaCode') {
+    let reg = new RegExp('^[a-zA-Z_0-9]{6,20}$')
     if (reg.test(val)) {
       return true
     } else {
