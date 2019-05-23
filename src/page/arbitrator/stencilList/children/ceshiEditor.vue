@@ -734,6 +734,11 @@ export default {
           content: '请选择注册名称和案件类型',
           duration: 5
         })
+      } else if (this.batchDocumentType === null) {
+        this.$Message.error({
+          content: '请选择文书类型',
+          duration: 5
+        })
       } else if (this.editor.getContent().length === 0) {
         this.$Message.error({
           content: '模版内容不为空',
