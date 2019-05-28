@@ -202,7 +202,7 @@
                           class="rightButton"
                           :disabled="item.status===2"
                           @click.stop="btnClick(item)"
-                          :title="item.fieldName.length > 7 ? item.fieldName : item.fieldPlaceholder">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
+                          :title="item.fieldName">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
                     <Icon class="vtt"
                           size="14"
                           @click.stop="deleteButton(item)"
@@ -242,7 +242,7 @@
                           class="rightButton"
                           :disabled="item.status===2"
                           @click.stop="btnClick(item)"
-                          :title="item.fieldName.length > 7 ? item.fieldName : item.fieldPlaceholder">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
+                          :title="item.fieldName">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
                     <Icon class="vtt"
                           size="14"
                           v-if="item.isDefault ===1"
@@ -282,7 +282,7 @@
                           class="rightButton"
                           :disabled="item.status===2"
                           @click.stop="btnClick(item)"
-                          :title="item.fieldName.length > 7 ? item.fieldName : item.fieldPlaceholder">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
+                          :title="item.fieldName">{{item.fieldName.length > 7 ? item.fieldName.substr(0, 6) + '...' : item.fieldName}}
                     <Icon class="vtt"
                           size="14"
                           v-if="item.isDefault ===1"
@@ -608,7 +608,7 @@ export default {
     addNews (item) {
       if (this.caseTypeId === '') {
         this.$Message.error({
-          content: '案件类型不能为空',
+          content: '请选择注册名称和案件类型',
           duration: 5
         })
       } else if (this.batchDocumentType === null) {
