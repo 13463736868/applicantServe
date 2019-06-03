@@ -28,12 +28,22 @@
         </Row>
       </div>
     </div>
-    <create-docu :alertShow="createObj.show" @alertConfirm="createSave" @alertSee="createSee" @alertCancel="alertCanc" alertTitle="生成决定书">
+    <create-docu :alertShow="createObj.show" @alertConfirm="createSave" @alertSee="createSee" @alertCancel="alertCanc('create')" alertTitle="生成决定书">
       <Row>
         <Col span="4" offset="1"><p class="_label">合同名称：</p></Col>
         <Col span="16" offset="2"><Input v-model="createObj.contractName" placeholder="请输入合同名称..." /></Col>
       </Row>
     </create-docu>
+    <alert-btn-info :alertShow="sendDocObj.show"  @alertConfirm="saveSendDoc" @alertCancel="alertCanc('sendDoc')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">指定送达回证时间：</p>
+        </Col>
+        <Col span="16">
+          <DatePicker class="wmax" :options="dateDisa" @on-change="sendDocChange" type="datetime"></DatePicker>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -41,14 +51,20 @@
 import axios from 'axios'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 import createDocu from '@/components/common/createDocu'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'filing_case',
-  components: { headTop, spinComp, createDocu },
+  components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
+      dateDisa: {
+        disabledDate (date) {
+          return date && date.valueOf() > Date.now()
+        }
+      },
       spinShow: false,
       search: {
         text: ''
@@ -144,6 +160,11 @@ export default {
         show: false,
         contractName: '',
         docType: null
+      },
+      sendDocObj: {
+        id: null,
+        show: false,
+        servDate: ''
       }
     }
   },
@@ -152,110 +173,88 @@ export default {
   },
   methods: {
     renderBtn (h, params) {
-      if (params.row.requestState === '4') {
-        if (params.row.pathUrl === null || params.row.pathUrl === '') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.createDoc(4, params.index)
-                }
+      let _state = params.row.requestState
+      if (_state === '1') {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0',
+              marginRight: '5px'
+            }
+          }, '撤案决定书审核通过')
+        ])
+      } else if (_state === '2') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(4, params.index)
               }
-            }, '生成决定书')
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                marginTop: '5px',
-                marginBottom: '5px'
-              },
-              on: {
-                click: () => {
-                  this.seeDoc(params.row.pathUrl)
-                }
+            }
+          }, '生成决定书')
+        ])
+      } else if (_state === '3') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(4, params.index)
               }
-            }, '查看申请书'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                marginBottom: '5px'
-              },
-              on: {
-                click: () => {
-                  this.createDoc(4, params.index)
-                }
-              }
-            }, '生成决定书')
-          ])
-        }
-      } else if (params.row.requestState === '5') {
-        if (params.row.pathUrl === null || params.row.pathUrl === '') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.createDoc(4, params.index)
-                }
-              }
-            }, '重新生成决定书')
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.seeDoc(params.row.pathUrl)
-                }
-              }
-            }, '查看申请书'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.createDoc(4, params.index)
-                }
-              }
-            }, '重新生成决定书')
-          ])
-        }
-      } else if (params.row.requestState === '3') {
+            }
+          }, '重新生成决定书')
+        ])
+      } else if (_state === '4') {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            },
+            style: {
+              color: '#2d8cf0',
+              marginRight: '5px'
+            }
+          }, '撤案决定书审核中')
+        ])
+      } else if (_state === '5') {
+        return h('div', [
+          // h('Button', {
+          //   props: {
+          //     type: 'primary',
+          //     size: 'small'
+          //   },
+          //   style: {
+          //     marginRight: '5px'
+          //   },
+          //   on: {
+          //     click: () => {
+          //       this.resSendDoc(params.index)
+          //     }
+          //   }
+          // }, '线下送达')
+        ])
+      } else if (_state === '6') {
+        return h('div', [
+        ])
+      } else if (_state === '7') {
         return h('div', [
           h('span', {
             props: {
@@ -267,7 +266,41 @@ export default {
             }
           }, '撤案决定书审核通过')
         ])
-      } else if (params.row.requestState === '6') {
+      } else if (_state === '8') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(4, params.index)
+              }
+            }
+          }, '生成决定书')
+        ])
+      } else if (_state === '9') {
+        return h('div', [
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.createDoc(4, params.index)
+              }
+            }
+          }, '重新生成决定书')
+        ])
+      } else if (_state === '10') {
         return h('div', [
           h('span', {
             props: {
@@ -322,6 +355,39 @@ export default {
     seeDoc (path) {
       window.open(path, '_blank')
     },
+    resSendDoc (index) {
+      this.sendDocObj.id = this.caseList.bodyList[index].caseId
+      this.sendDocObj.show = true
+    },
+    sendDocChange (val) {
+      this.sendDocObj.servDate = val
+    },
+    saveSendDoc () {
+      if (this.sendDocObj.servDate === '') {
+        this.$Message.error({
+          content: '请选择指定送达回证时间',
+          duration: 5
+        })
+        return false
+      }
+      axios.post('/case/addDocumentFile', {
+        caseId: this.sendDocObj.id,
+        documentType: 10,
+        jsonData: JSON.stringify({serviceDate: this.sendDocObj.servDate})
+      }).then(res => {
+        this.alertCanc('sendDoc')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     createDoc (type, index) {
       this.createObj.show = true
       this.createObj.docType = type
@@ -336,14 +402,14 @@ export default {
           contractName: this.createObj.contractName
         })
       }).then(res => {
-        this.alertCanc()
+        this.alertCanc('create')
         this.$Message.success({
           content: '操作成功',
           duration: 2
         })
         this.resCaseList()
       }).catch(e => {
-        this.alertCanc()
+        this.alertCanc('create')
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
@@ -374,11 +440,17 @@ export default {
         })
       })
     },
-    alertCanc () {
-      this.createObj.show = false
-      this.createObj.id = null
-      this.createObj.contractName = ''
-      this.createObj.docType = null
+    alertCanc (type) {
+      if (type === 'create') {
+        this.createObj.show = false
+        this.createObj.id = null
+        this.createObj.contractName = ''
+        this.createObj.docType = null
+      } else if (type === 'sendDoc') {
+        this.sendDocObj.show = false
+        this.sendDocObj.servDate = ''
+        this.sendDocObj.id = null
+      }
     }
   }
 }

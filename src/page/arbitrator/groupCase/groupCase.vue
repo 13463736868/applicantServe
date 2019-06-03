@@ -1385,7 +1385,8 @@ export default {
     batchSave () {
       this.alertShow.batch = false
       axios.post('/batchCaseDocument/addCaseDocumentList', {
-        caseDocumentDataJson: JSON.stringify(this.alertShow.idsList)
+        caseDocumentDataJson: JSON.stringify(this.alertShow.idsList),
+        batchDocumentType: this.search.batchDocuType
       }).then(res => {
         this.alertCanc('batch')
         this.$Message.success({

@@ -46,6 +46,16 @@
     <alert-btn-info :alertShow="alertObj.send" @alertConfirm="sendDocSave" @alertCancel="alertCanc('sendDoc')" alertTitle="操作">
       <p>确定要发送邮件，短信通知吗？（确认内容无误后点击确定）</p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="sendDocObj.show"  @alertConfirm="saveSendDoc" @alertCancel="alertCanc('sendDo')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">指定送达回证时间：</p>
+        </Col>
+        <Col span="16">
+          <DatePicker class="wmax" :options="dateDisa" @on-change="sendDocChange" type="datetime"></DatePicker>
+        </Col>
+      </Row>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -62,6 +72,11 @@ export default {
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
+      dateDisa: {
+        disabledDate (date) {
+          return date && date.valueOf() > Date.now()
+        }
+      },
       spinShow: false,
       search: {
         text: ''
@@ -130,24 +145,55 @@ export default {
             key: 'caseId',
             align: 'center',
             render: (h, params) => {
+              let _state = params.row.requestState
               let _obj = params.row
               if (_obj.state === 3) {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px'
-                    },
-                    on: {
-                      click: () => {
-                        this.resFileList(params.index)
+                if (_state === '5') {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px'
+                      },
+                      on: {
+                        click: () => {
+                          this.resFileList(params.index)
+                        }
                       }
-                    }
-                  }, '查看文件')
-                ])
+                    }, '查看文件'),
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      on: {
+                        click: () => {
+                          this.resSendDo(params.index)
+                        }
+                      }
+                    }, '线下送达')
+                  ])
+                } else if (_state === '6') {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px'
+                      },
+                      on: {
+                        click: () => {
+                          this.resFileList(params.index)
+                        }
+                      }
+                    }, '查看文件')
+                  ])
+                }
               } else if (_obj.state === 12) {
                 return h('div', [
                   h('Button', {
@@ -257,6 +303,11 @@ export default {
           pageSize: 5
         },
         caseId: null
+      },
+      sendDocObj: {
+        id: null,
+        show: false,
+        servDate: ''
       }
     }
   },
@@ -367,6 +418,39 @@ export default {
         })
       })
     },
+    resSendDo (index) {
+      this.sendDocObj.id = this.caseList.bodyList[index].caseId
+      this.sendDocObj.show = true
+    },
+    sendDocChange (val) {
+      this.sendDocObj.servDate = val
+    },
+    saveSendDoc () {
+      if (this.sendDocObj.servDate === '') {
+        this.$Message.error({
+          content: '请选择指定送达回证时间',
+          duration: 5
+        })
+        return false
+      }
+      axios.post('/case/addDocumentFile', {
+        caseId: this.sendDocObj.id,
+        documentType: 10,
+        jsonData: JSON.stringify({serviceDate: this.sendDocObj.servDate})
+      }).then(res => {
+        this.alertCanc('sendDo')
+        this.$Message.success({
+          content: '操作成功',
+          duration: 2
+        })
+        this.resCaseList()
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -378,6 +462,10 @@ export default {
       } else if (type === 'sendDoc') {
         this.alertObj.send = false
         this.alertObj.sendId = null
+      } else if (type === 'sendDo') {
+        this.sendDocObj.show = false
+        this.sendDocObj.servDate = ''
+        this.sendDocObj.id = null
       }
     },
     seeDoc (path) {
