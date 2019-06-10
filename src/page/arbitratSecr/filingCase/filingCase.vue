@@ -136,7 +136,7 @@ export default {
             render: (h, params) => {
               return h('span', {
 
-              }, params.row.requestState === '3' ? '撤回案件' : (params.row.requestState === '4' ? '撤回案件' : (params.row.requestState === '5' ? '撤回案件' : (params.row.requestState === '6' ? '撤回案件' : ''))))
+              }, params.row.requestState === '7' ? '撤回案件' : (params.row.requestState === '8' ? '撤回案件' : (params.row.requestState === '9' ? '撤回案件' : (params.row.requestState === '10' ? '撤回案件' : ''))))
             }
           },
           {
