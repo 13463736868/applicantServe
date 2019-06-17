@@ -131,5 +131,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+._alertEditor .ivu-modal-mask {
+  z-index: 10;
+}
 </style>
