@@ -69,7 +69,8 @@ export default {
     }
     ._file {
       @include hand;
-      color: #337BB5
+      color: #337BB5;
+      margin-right: 60px;
     }
   }
 }
