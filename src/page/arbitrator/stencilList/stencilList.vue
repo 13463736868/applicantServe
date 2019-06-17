@@ -266,7 +266,7 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.filePath === '' ? 'none' : '',
+              display: _obj.filePath === '' ? 'none' : ''
             },
             on: {
               click: () => {
@@ -298,7 +298,7 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.filePath === '' ? 'none' : '',
+              display: _obj.filePath === '' ? 'none' : ''
             },
             on: {
               click: () => {
