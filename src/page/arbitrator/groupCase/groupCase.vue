@@ -44,7 +44,30 @@
         </Col>
       </Row>
     </create-docu>
-    <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('end')" @alertSee="seeDocu('end')" @alertCancel="alertCanc('end')" alertTitle="操作">
+    <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('endNew')" @alertSee="seeDocu('endNew')" @alertCancel="alertCanc('endNew')" alertTitle="操作">
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>文书类型：</b></p>
+        </Col>
+        <Col span="16">
+          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
+            <Radio :label="1">裁决书</Radio>
+            <Radio :label="2">调解书</Radio>
+          </RadioGroup>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>结案模版：</b></p>
+        </Col>
+        <Col span="16">
+          <Select v-model="alertShow.endNewTempCode">
+            <Option v-if="item.tempDocumentType === alertShow.docuType" v-for="item in alertShow.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </create-docu>
+    <!-- <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('end')" @alertSee="seeDocu('end')" @alertCancel="alertCanc('end')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>文书类型：</b></p>
@@ -132,7 +155,7 @@
           </Col>
         </Row>
       </div>
-    </create-docu>
+    </create-docu> -->
     <create-docu :alertShow="alertShow.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -344,6 +367,8 @@ export default {
         pageSize: 10
       },
       alertShow: {
+        endNewTempList: [],
+        endNewTempCode: '',
         canc: false,
         contractName: '',
         docuType: null,
@@ -869,9 +894,17 @@ export default {
     resEndCase (index) {
       let _res = this.caseList.bodyList[index]
       if (_res.writtenFlag === 1) {
-        this.alertShow.userId = _res.id
-        this.alertShow.docuType = 1
-        this.alertShow.end = true
+        axios.post('/caseType/findAllTemplate').then(res => {
+          this.alertShow.endNewTempList = res.data.data
+          this.alertShow.userId = _res.id
+          this.alertShow.docuType = 1
+          this.alertShow.end = true
+        }).catch(e => {
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
       } else {
         let newTime = this.getFormatDate()
         let newD = newTime.substr(0, 10).split('-').join('')
@@ -891,9 +924,17 @@ export default {
           })
         } else if (newD - beginD === 0) {
           if (newT - beginT > 0) {
-            this.alertShow.userId = _res.id
-            this.alertShow.docuType = 1
-            this.alertShow.end = true
+            axios.post('/caseType/findAllTemplate').then(res => {
+              this.alertShow.endNewTempList = res.data.data
+              this.alertShow.userId = _res.id
+              this.alertShow.docuType = 1
+              this.alertShow.end = true
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
           } else {
             this.$Message.warning({
               content: '开庭时间未到，禁止点击',
@@ -901,9 +942,17 @@ export default {
             })
           }
         } else if (newD - beginD > 0) {
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 1
-          this.alertShow.end = true
+          axios.post('/caseType/findAllTemplate').then(res => {
+            this.alertShow.endNewTempList = res.data.data
+            this.alertShow.userId = _res.id
+            this.alertShow.docuType = 1
+            this.alertShow.end = true
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
         }
       }
     },
@@ -957,7 +1006,35 @@ export default {
             })
           }
           break
+        case 'endNew':
+          if (this.alertShow.endNewTempCode === '') {
+            this.$Message.warning({
+              content: '请选择结案模版',
+              duration: 5
+            })
+          } else {
+            let _o = {}
+            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
+            axios.post('/batchCaseDocument/addCaseDocument', {
+              documentType: this.alertShow.docuType,
+              caseDocumentDataJson: JSON.stringify([_o])
+            }).then(res => {
+              this.alertCanc('end')
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2
+              })
+              this.resCaseList()
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
         case 'end':
+          // 单案结案改成选模版次处废掉
           if (this.alertShow.docuType === 1) {
             if (this.alertShow.contractName === '') {
               this.$Message.warning({
@@ -1138,7 +1215,30 @@ export default {
             })
           }
           break
+        case 'endNew':
+          if (this.alertShow.endNewTempCode === '') {
+            this.$Message.warning({
+              content: '请选择结案模版',
+              duration: 5
+            })
+          } else {
+            let _o = {}
+            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
+            axios.post('/batchCaseDocument/findPreviewCaseDocument', {
+              documentType: this.alertShow.docuType,
+              caseDocumentDataJson: JSON.stringify([_o])
+            }).then(res => {
+              window.open(res.data.data, '_blank')
+            }).catch(e => {
+              this.$Message.error({
+                content: '错误信息:' + e + ' 稍后再试',
+                duration: 5
+              })
+            })
+          }
+          break
         case 'end':
+          // 单案结案改成选模版次处废掉
           if (this.alertShow.docuType === 1) {
             if (this.alertShow.contractName === '') {
               this.$Message.warning({
@@ -1422,6 +1522,7 @@ export default {
           this.alertShow.docuType = null
           break
         case 'end':
+        case 'endNew':
         case 'docuType':
           this.alertShow.contractName = ''
           this.alertShow.contractualStipulation = ''
@@ -1435,6 +1536,12 @@ export default {
             this.alertShow.end = false
             this.alertShow.userId = null
             this.alertShow.docuType = null
+          }
+          this.alertShow.endNewTempCode = ''
+          if (type === 'endNew') {
+            this.alertShow.end = false
+            this.alertShow.userId = null
+            this.alertShow.endNewTempList = []
           }
           break
         case 'reve':

@@ -94,6 +94,7 @@
                     @alertConfirm="editorSave"
                     @alertCancel="alertCanc('editor')"
                     :alertName="alertShow.editorName"
+                    :alertCode="alertShow.editorCode"
                     :alertToken="alertShow.editorToken"
                     :alertTypeId="alertShow.editorTypeId"
                     :alertContent="alertShow.editorContent"
@@ -181,6 +182,7 @@ export default {
         editor: false,
         editorDest: false,
         editorName: null,
+        editorCode: null,
         editorToken: null,
         editorTypeId: null,
         editorContent: null,
@@ -392,6 +394,7 @@ export default {
     resEdit (index) {
       let obj = this.caseList.bodyList[index]
       this.alertShow.editorName = obj.tempName
+      this.alertShow.editorCode = obj.tempCode
       this.alertShow.editorToken = obj.userToken
       this.alertShow.editorTypeId = obj.caseTypeId
       this.alertShow.editorContent = obj.tempContent
@@ -401,10 +404,12 @@ export default {
       this.alertShow.editorDest = true
       this.alertShow.editor = true
     },
-    editorSave (tempId, type, name, id, cont, docuType, ids) {
+    editorSave (tempId, type, name, token, tokenName, id, cont, docuType, ids) {
       if (type === 'add') {
         axios.post('/batchCaseDocument/saveTemplate', {
           tempName: name,
+          userToken: token,
+          userName: tokenName,
           caseTypeId: id,
           tempContent: cont,
           templateId: this.alertShow.editorTempId === null ? tempId : this.alertShow.editorTempId,
@@ -427,6 +432,8 @@ export default {
         axios.post('/batchCaseDocument/saveTemplate', {
           previewflag: 1,
           tempName: name,
+          userToken: token,
+          userName: tokenName,
           caseTypeId: id,
           tempContent: cont,
           templateId: this.alertShow.editorTempId,
@@ -460,6 +467,7 @@ export default {
           this.alertShow.editorDest = false
           this.alertShow.editorContent = null
           this.alertShow.editorName = null
+          this.alertShow.editorCode = null
           this.alertShow.editorToken = null
           this.alertShow.editorTypeId = null
           this.alertShow.editorTempId = null

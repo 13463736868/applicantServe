@@ -367,7 +367,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 export default {
   name: 'ceshi_editor',
   components: { alertBtnInfo },
-  props: ['alertShow', 'alertTitle', 'alertContent', 'alertName', 'alertToken', 'alertTypeId', 'alertDocument', 'alertDisType'],
+  props: ['alertShow', 'alertTitle', 'alertContent', 'alertName', 'alertCode', 'alertToken', 'alertTypeId', 'alertDocument', 'alertDisType'],
   data () {
     return {
       editId: null, // 修改元素的id
@@ -405,7 +405,9 @@ export default {
       editor: null,
       value: '',
       oldLen: 0,
+      tempCode: '',
       requestName: '',
+      userNameList: [],
       caseTypeId: '',
       caseTypeList: {},
       requestNameList: [],
@@ -419,6 +421,7 @@ export default {
       this.tempName = this.alertName
       this.requestName = this.alertToken
       this.caseTypeId = this.alertTypeId
+      this.tempCode = this.alertCode
       this.batchDocumentType = this.alertDocument
     }
     this.dictionary()
@@ -449,7 +452,8 @@ export default {
     },
     getCaseFieldList () {
       axios.post('/caseField/list', {
-        caseTypeId: this.caseTypeId,
+        caseTypeId: this.caseTypeId === '' ? null : this.caseTypeId,
+        tempCode: this.tempCode,
         documentType: this.batchDocumentType
       }).then(res => {
         this.fieldBtnList = res.data.data
@@ -466,7 +470,6 @@ export default {
         // })
       })
     },
-    // 取消添加
     alertCanc (type) {
       switch (type) {
         case 'add':
@@ -670,6 +673,7 @@ export default {
         this.requestNameList = _obj
         this.requestNameList.map((a) => {
           this.caseTypeList[a.userToken] = a.caseTypeList
+          this.userNameList[a.userToken] = a.userName
         })
       }).catch(e => {
         this.$Message.error({
@@ -729,14 +733,19 @@ export default {
           content: '模版名称不能为空',
           duration: 5
         })
-      } else if (this.caseTypeId === '') {
+      } else if (this.requestName === '') {
         this.$Message.error({
-          content: '请选择注册名称和案件类型',
+          content: '请选择注册名称',
           duration: 5
         })
       } else if (this.batchDocumentType === null) {
         this.$Message.error({
           content: '请选择文书类型',
+          duration: 5
+        })
+      } else if (this.batchDocumentType === 3 && this.caseTypeId === '') {
+        this.$Message.error({
+          content: '请选择案件类型',
           duration: 5
         })
       } else if (this.editor.getContent().length === 0) {
@@ -751,7 +760,7 @@ export default {
         var allIdArr = mustId.concat(orHaveId, specificId)
         this.editor.execCommand('selectall')
         this.editor.execCommand('fontfamily', 'SimSun')
-        this.$emit('alertConfirm', this.fieldBtnList.tempId, type, this.tempName, this.caseTypeId, this.editor.getContent(), this.batchDocumentType, allIdArr.join(','))
+        this.$emit('alertConfirm', this.fieldBtnList.tempId, type, this.tempName, this.requestName, this.userNameList[this.requestName], this.caseTypeId, this.editor.getContent(), this.batchDocumentType, allIdArr.join(','))
       }
     },
     alertCancel () {
