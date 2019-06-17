@@ -258,7 +258,22 @@ export default {
                 this.resReas(_obj.reason)
               }
             }
-          }, '驳回原因')
+          }, '驳回原因'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: _obj.filePath === '' ? 'none' : '',
+            },
+            on: {
+              click: () => {
+                window.open(_obj.filePath, '_blank')
+              }
+            }
+          }, '下载')
         ])
       } else if (_obj.status === 1 || _obj.status === 3) {
         return h('div', [
@@ -275,7 +290,22 @@ export default {
                 this.seePdf(_obj.tempPath)
               }
             }
-          }, '查看')
+          }, '查看'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: _obj.filePath === '' ? 'none' : '',
+            },
+            on: {
+              click: () => {
+                window.open(_obj.filePath, '_blank')
+              }
+            }
+          }, '下载')
         ])
       } else if (_obj.status === 4) {
         return h('div', [
