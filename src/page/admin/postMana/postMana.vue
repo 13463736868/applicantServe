@@ -51,9 +51,10 @@
       </div>
     </alert-btn-info>
     <alert-btn-info :alertShow="userObj.restShow" @alertConfirm="restSave" @alertCancel="alertCanc('rest')" alertTitle="操作">
-      <div v-for="(item, index) in restList" :key="index">
+      <!-- <div v-for="(item, index) in restList" :key="index">
         <Checkbox class="pb5 ml10" v-model="item.check">{{item.name}}</Checkbox>
-      </div>
+      </div> -->
+      <Tree ref="tree" :data="restList" show-checkbox :check-strictly="true" @on-check-change="resSele"></Tree>
     </alert-btn-info>
   </div>
 </template>
@@ -140,6 +141,30 @@ export default {
     this.resCaseList()
   },
   methods: {
+    resSele (list, t) {
+      if (t.children.length > 0) {
+        this.treeChild(t)
+      }
+      if (t.pid !== 0) {
+        this.treeParent(list, t)
+      }
+    },
+    treeChild (t) {
+      t.children.forEach(a => {
+        a.checked = t.checked
+      })
+    },
+    treeParent (list, t) {
+      if (t.checked) {
+        this.restList.forEach(a => {
+          if (a.id === t.pid) {
+            if (!a.checked) {
+              a.checked = true
+            }
+          }
+        })
+      }
+    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.state === 1) {
@@ -297,17 +322,10 @@ export default {
     resRestPost (index) {
       let _res = this.caseList.bodyList[index]
       this.userId = _res.id
-      axios.get('/auth/function/' + _res.id).then(res => {
-        let _res = res.data.data
-        let _list = []
-        for (let k in _res) {
-          let _o = {}
-          _o.check = _res[k].checked
-          _o.name = _res[k].name
-          _o.id = _res[k].id
-          _list.push(_o)
-        }
-        this.restList = _list
+      axios.post('/auth/functionTree', {
+        roleId: _res.id
+      }).then(res => {
+        this.restList = res.data.data.treeNode.children
         this.userObj.restShow = true
       }).catch(e => {
         this.$Message.error({
@@ -317,10 +335,10 @@ export default {
       })
     },
     restSave () {
-      let list = this.restList
+      let list = this.$refs.tree.getCheckedNodes()
       let arr = []
       for (let k in list) {
-        if (list[k].check) {
+        if (list[k].checked) {
           arr.push({id: list[k].id})
         }
       }
