@@ -898,6 +898,7 @@ export default {
           this.alertShow.endNewTempList = res.data.data
           this.alertShow.userId = _res.id
           this.alertShow.docuType = 1
+          this.alertShow.endNewTempCode = _res.tempCode
           this.alertShow.end = true
         }).catch(e => {
           this.$Message.error({
@@ -928,6 +929,7 @@ export default {
               this.alertShow.endNewTempList = res.data.data
               this.alertShow.userId = _res.id
               this.alertShow.docuType = 1
+              this.alertShow.endNewTempCode = _res.tempCode
               this.alertShow.end = true
             }).catch(e => {
               this.$Message.error({
@@ -946,6 +948,7 @@ export default {
             this.alertShow.endNewTempList = res.data.data
             this.alertShow.userId = _res.id
             this.alertShow.docuType = 1
+            this.alertShow.endNewTempCode = _res.tempCode
             this.alertShow.end = true
           }).catch(e => {
             this.$Message.error({
