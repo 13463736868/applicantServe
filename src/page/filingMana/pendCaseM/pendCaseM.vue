@@ -12,11 +12,14 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
-        <Col span="2" offset="10">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="10">
+          &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch">批量通过</Button>
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -67,6 +70,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -166,7 +170,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASEM_PASS')
                     },
                     on: {
                       click: () => {
@@ -180,7 +185,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASEM_NOPASS')
                     },
                     on: {
                       click: () => {
@@ -218,13 +224,30 @@ export default {
         confCosts: null,
         confType: null
       },
-      caseTypeList: []
+      caseTypeList: [],
+      btnMap: null
     }
   },
   created () {
     this.resCaseList()
+    this.resBtnMap()
+  },
+  computed: {
+    ...mapGetters([
+      'buttonMap'
+    ])
   },
   methods: {
+    resBtnMap () {
+      this.btnMap = this.buttonMap === null ? null : this.buttonMap['pendCaseM']
+    },
+    resBtnDis (type) {
+      if (this.btnMap) {
+        return this.btnMap.buttonMap[type] === false ? 'none' : ''
+      } else {
+        return ''
+      }
+    },
     dictionary () {
       axios.post('/batchCaseDocument/findCaseType').then(res => {
         let _obj = res.data.data

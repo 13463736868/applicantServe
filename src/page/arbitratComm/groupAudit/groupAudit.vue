@@ -6,11 +6,14 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="2" offset="19">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="19">
+          &nbsp;
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch">批量指定仲裁员</Button>
+          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -96,6 +99,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -103,6 +107,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -339,6 +344,9 @@ export default {
               type: 'primary',
               size: 'small'
             },
+            style: {
+              display: this.resBtnDis('GROUPAUDIT_APPARBITRATORS')
+            },
             on: {
               click: () => {
                 this.resAssign(params.index)
@@ -354,6 +362,9 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                display: this.resBtnDis('GROUPAUDIT_PASS')
+              },
               on: {
                 click: () => {
                   this.resPass(params.index)
@@ -367,6 +378,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              style: {
+                display: this.resBtnDis('GROUPAUDIT_REAPPOINTMENT')
               },
               on: {
                 click: () => {

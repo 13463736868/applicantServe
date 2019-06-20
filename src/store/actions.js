@@ -1,5 +1,8 @@
 export default {
   //  小写
+  setButtonMap ({commit, state}, obj) {
+    commit('SET_BUTTONMAP', obj)
+  },
   setMenuArrObj ({commit, state}, obj) {
     commit('SET_MENUARROBJ', obj)
   },

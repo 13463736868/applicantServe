@@ -7,6 +7,7 @@ import mutations from './mutations.js'
 Vue.use(Vuex)
 
 const state = {
+  buttonMap: null,
   menuArrObj: null,
   usersInfo: null,
   menu: null,

@@ -12,11 +12,14 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
-        <Col span="2" offset="10">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="10">
+          &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resEnds">批量结案</Button>
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量结案</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -246,6 +249,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
@@ -256,6 +260,7 @@ import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'group_case',
+  mixins: [resBtn],
   components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor },
   data () {
     return {
@@ -513,7 +518,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_PASSWITHDRAW')
               },
               on: {
                 click: () => {
@@ -530,7 +536,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_REGENWITHDRAW')
               },
               on: {
                 click: () => {
@@ -546,6 +553,9 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                display: this.resBtnDis('GROUPCASE_GENCORRECTIONS')
+              },
               on: {
                 click: () => {
                   this.resAddEvid(params.index)
@@ -559,6 +569,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              style: {
+                display: this.resBtnDis('GROUPCASE_REGENCORRECTIONS')
               },
               on: {
                 click: () => {
@@ -575,7 +588,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_ENDCASE')
               },
               on: {
                 click: () => {
@@ -589,7 +603,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
               },
               on: {
                 click: () => {
@@ -603,7 +618,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_ENTERCOURTROOM')
               },
               on: {
                 click: () => {
@@ -615,6 +631,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              style: {
+                display: this.resBtnDis('GROUPCASE_RECORD')
               },
               on: {
                 click: () => {
@@ -630,6 +649,9 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                display: this.resBtnDis('GROUPCASE_REGEN')
+              },
               on: {
                 click: () => {
                   this.resEndCase(params.index)
@@ -643,6 +665,9 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
+              },
+              style: {
+                display: this.resBtnDis('GROUPCASE_REGENWITHDRAWDOC')
               },
               on: {
                 click: () => {
@@ -659,7 +684,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
               },
               on: {
                 click: () => {
@@ -678,6 +704,9 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
+              style: {
+                display: this.resBtnDis('GROUPCASE_REENDCASE')
+              },
               on: {
                 click: () => {
                   this.resEndCase(params.index)
@@ -693,7 +722,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_ENDCASE')
               },
               on: {
                 click: () => {
@@ -707,7 +737,8 @@ export default {
                 size: 'small'
               },
               style: {
-                marginRight: '5px'
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
               },
               on: {
                 click: () => {

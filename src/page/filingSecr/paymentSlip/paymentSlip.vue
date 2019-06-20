@@ -36,6 +36,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import { mapActions } from 'vuex'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
@@ -43,6 +44,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'paymentSlip',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -117,7 +119,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PAYMENTSLIP_VIEWPAYVOUCHERS')
                     },
                     on: {
                       click: () => {
@@ -131,7 +134,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PAYMENTSLIP_PASS')
                     },
                     on: {
                       click: () => {
@@ -143,6 +147,9 @@ export default {
                     props: {
                       type: 'primary',
                       size: 'small'
+                    },
+                    style: {
+                      display: this.resBtnDis('PAYMENTSLIP_NOPASS')
                     },
                     on: {
                       click: () => {
@@ -159,7 +166,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PAYMENTSLIP_VIEWPAYVOUCHERS')
                     },
                     on: {
                       click: () => {

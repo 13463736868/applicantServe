@@ -6,16 +6,20 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <Col span="2"
-             class="tc"
-             offset="19">
-        <Button type="primary"
-                @click="resFind">条件搜索</Button>
+        <Col span="19">
+          &nbsp;
         </Col>
         <Col span="2"
              class="tc">
         <Button type="primary"
-                @click="resAdd">新建模版</Button>
+                @click="resFind"
+                :style="{display: resBtnDis('STENCILLIST_QUERY')}">条件搜索</Button>
+        </Col>
+        <Col span="2"
+             class="tc">
+        <Button type="primary"
+                @click="resAdd"
+                :style="{display: resBtnDis('STENCILLIST_NEWTEMPLATE')}">新建模版</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -107,6 +111,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -115,6 +120,7 @@ import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
 
 export default {
   name: 'stenci_list',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo, alertEditor },
   data () {
     return {
@@ -223,7 +229,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_VIEW')
             },
             on: {
               click: () => {
@@ -237,7 +244,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_UPDATE')
             },
             on: {
               click: () => {
@@ -283,7 +291,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_VIEW')
             },
             on: {
               click: () => {
@@ -315,7 +324,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_VIEW')
             },
             on: {
               click: () => {
@@ -329,7 +339,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_UPDATE')
             },
             on: {
               click: () => {
@@ -343,7 +354,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('STENCILLIST_SUBMIT')
             },
             on: {
               click: () => {

@@ -6,8 +6,11 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <Col span="2" class="tc" offset="21">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="21">
+          &nbsp;
+        </Col>
+        <Col span="2" class="tc">
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('TEMPAUDIT_QUERY')}">条件搜索</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -57,12 +60,14 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'temp_audit',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -162,7 +167,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('TEMPAUDIT_PASS')
             },
             on: {
               click: () => {
@@ -176,7 +182,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('TEMPAUDIT_NOPASS')
             },
             on: {
               click: () => {
@@ -190,7 +197,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('TEMPAUDIT_VIEW')
             },
             on: {
               click: () => {
@@ -207,7 +215,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('TEMPAUDIT_VIEW')
             },
             on: {
               click: () => {

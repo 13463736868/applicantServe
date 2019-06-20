@@ -70,6 +70,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -78,6 +79,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'poli_protest',
+  mixins: [resBtn],
   components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
@@ -196,7 +198,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('POLIPROTEST_PASS')
             },
             on: {
               click: () => {
@@ -210,7 +213,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('POLIPROTEST_NOPASS')
             },
             on: {
               click: () => {
@@ -227,7 +231,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('POLIPROTEST_REGEN')
             },
             on: {
               click: () => {
@@ -244,7 +249,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('POLIPROTEST_REGEN')
             },
             on: {
               click: () => {

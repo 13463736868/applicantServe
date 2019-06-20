@@ -20,14 +20,17 @@
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
-        <Col span="2" offset="1">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="1">
+          &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(1)">批量受理</Button>
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(2)">批量驳回</Button>
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -104,6 +107,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -112,6 +116,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'acce_case',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -357,7 +362,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('ACCECASE_PASSWITHDRAW')
             },
             on: {
               click: () => {
@@ -376,7 +382,8 @@ export default {
                   size: 'small'
                 },
                 style: {
-                  marginRight: '5px'
+                  marginRight: '5px',
+                  display: this.resBtnDis('ACCECASE_ACCEPT')
                 },
                 on: {
                   click: () => {
@@ -390,7 +397,8 @@ export default {
                   size: 'small'
                 },
                 style: {
-                  marginRight: '5px'
+                  marginRight: '5px',
+                  display: this.resBtnDis('ACCECASE_REJECT')
                 },
                 on: {
                   click: () => {

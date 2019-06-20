@@ -6,17 +6,20 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20 tc">
-        <Col span="2" offset="14">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="14">
+          &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(1)">批量提交</Button>
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch(2)">批量指定开庭时间</Button>
+          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch(3)">批量转书面审理</Button>
+          <Button type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -124,6 +127,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
@@ -133,6 +137,7 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_appl',
+  mixins: [resBtn],
   components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
@@ -358,6 +363,9 @@ export default {
               type: 'primary',
               size: 'small'
             },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_SUBMIT')
+            },
             on: {
               click: () => {
                 this.resSubm(params.index)
@@ -373,7 +381,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_WITHDRAW')
             },
             on: {
               click: () => {
@@ -390,7 +399,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_REASON')
             },
             on: {
               click: () => {
@@ -404,7 +414,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_REGEN')
             },
             on: {
               click: () => {
@@ -421,7 +432,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -433,6 +445,9 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_SUBMIT')
             },
             on: {
               click: () => {
@@ -447,6 +462,9 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
             },
             on: {
               click: () => {
@@ -463,7 +481,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -475,6 +494,9 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
             },
             on: {
               click: () => {
@@ -491,7 +513,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_APPOINTDATE')
             },
             on: {
               click: () => {
@@ -503,6 +526,9 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_TRANSTOHEARING')
             },
             on: {
               click: () => {
@@ -520,7 +546,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -532,6 +559,9 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAPPL_APPOINTDATE')
             },
             on: {
               click: () => {
@@ -548,7 +578,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -565,7 +596,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -594,7 +626,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -606,6 +639,10 @@ export default {
             props: {
               type: 'primary',
               size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
             },
             on: {
               click: () => {
@@ -619,7 +656,7 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              display: this.resBtnDis('GROUPAPPL_ARRIVE')
             },
             on: {
               click: () => {
@@ -636,7 +673,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {
@@ -650,7 +688,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_ARRIVE')
             },
             on: {
               click: () => {
@@ -667,7 +706,8 @@ export default {
               size: 'small'
             },
             style: {
-              marginRight: '5px'
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
             },
             on: {
               click: () => {

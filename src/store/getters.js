@@ -1,4 +1,5 @@
 export default {
+  buttonMap: state => state.buttonMap,
   menuArrObj: state => state.menuArrObj,
   usersInfo: state => state.usersInfo,
   menu: state => state.menu,

@@ -10,6 +10,9 @@ const beforeEach = (to, from, next) => {
   }
   if (to.path !== '/login') {
     if (cookies.getToken() && loc !== null && loc.getItem('usersInfo') !== null) {
+      if (store.state.buttonMap === null) {
+        store.commit('SET_BUTTONMAP', JSON.parse(loc.getItem('buttonMap')))
+      }
       if (store.state.menuArrObj === null) {
         store.commit('SET_MENUARROBJ', JSON.parse(loc.getItem('menuArrObj')))
       }

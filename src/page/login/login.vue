@@ -103,6 +103,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'setButtonMap',
       'setMenuArrObj',
       'setUsersInfo',
       'setMenu',
@@ -179,17 +180,30 @@ export default {
     },
     resGetMeun () {
       axios.get('/auth/function/route').then(res => {
-        let _res = res.data.data
-        if (_res.menu !== [] && _res.menuName !== []) {
+        // let _res = res.data.data
+        // let _oldRes = {}
+        // _oldRes.menu = []
+        // _oldRes.menuName = []
+        // for (let k in _res) {
+        //   _oldRes.menu.push(_res[k].route)
+        //   _oldRes.menuName.push(_res[k].menuName)
+        // }
+        // if (window.localStorage) {
+        //   let loc = window.localStorage
+        //   loc.setItem('buttonMap', JSON.stringify(_res))
+        // }
+        // this.setButtonMap(_res)
+        let _oldRes = res.data.data
+        if (_oldRes.menu !== [] && _oldRes.menuName !== []) {
           if (window.localStorage) {
             let loc = window.localStorage
             loc.setItem('usersInfo', JSON.stringify(this.loginInfo))
-            loc.setItem('menuArrObj', JSON.stringify(_res))
+            loc.setItem('menuArrObj', JSON.stringify(_oldRes))
           }
           this.setUsersInfo(this.loginInfo)
-          this.setMenuArrObj(_res)
-          let _gMenu = getMenu(_res)
-          let _gRouter = getRouter(_res)
+          this.setMenuArrObj(_oldRes)
+          let _gMenu = getMenu(_oldRes)
+          let _gRouter = getRouter(_oldRes)
           this.setMenu(_gMenu)
           this.setRouter(_gRouter)
           this.$router.addRoutes(_gRouter)

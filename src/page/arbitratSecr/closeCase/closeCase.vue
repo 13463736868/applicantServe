@@ -58,6 +58,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -66,6 +67,7 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'end_case_a',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -167,7 +169,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
                     },
                     on: {
                       click: () => {
@@ -181,7 +184,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginTop: '5px'
+                      marginTop: '5px',
+                      display: this.resBtnDis('CLOSECASE_OFFLINEARR')
                     },
                     on: {
                       click: () => {
@@ -198,7 +202,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
                     },
                     on: {
                       click: () => {

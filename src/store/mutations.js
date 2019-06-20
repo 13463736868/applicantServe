@@ -2,6 +2,9 @@ import * as types from './mutations-types.js'
 
 export default {
   // 大写
+  [types.SET_BUTTONMAP] (state, obj) {
+    state.buttonMap = obj
+  },
   [types.SET_MENUARROBJ] (state, obj) {
     state.menuArrObj = obj
   },

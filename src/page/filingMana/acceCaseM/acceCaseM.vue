@@ -12,14 +12,17 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
-        <Col span="2" offset="8">
-          <Button type="primary" @click="resFind">条件搜索</Button>
+        <Col span="8">
+          &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(1)">批量通过</Button>
+          <Button type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASEM_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(2)">批量驳回</Button>
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASEM_BATCHPASS')}">批量通过</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASEM_BATCHREJECTION')}">批量驳回</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -75,6 +78,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -83,6 +87,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'acce_case_m',
+  mixins: [resBtn],
   components: { headTop, spinComp, alertBtnInfo },
   data () {
     return {
@@ -321,7 +326,8 @@ export default {
                   size: 'small'
                 },
                 style: {
-                  marginRight: '5px'
+                  marginRight: '5px',
+                  display: this.resBtnDis('ACCECASEM_PASS')
                 },
                 on: {
                   click: () => {
@@ -335,7 +341,8 @@ export default {
                   size: 'small'
                 },
                 style: {
-                  marginRight: '5px'
+                  marginRight: '5px',
+                  display: this.resBtnDis('ACCECASEM_NOPASS')
                 },
                 on: {
                   click: () => {
