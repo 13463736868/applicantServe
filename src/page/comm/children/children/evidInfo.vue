@@ -17,7 +17,7 @@
               <span class="mr10">证据项描述 :</span>
               <span v-text="infoData.remarks"></span>
             </p>
-            <p style="word-break: break-all;">
+            <p>
               <span class="mr10">附件名称 :</span>
               <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
             </p>
@@ -61,6 +61,7 @@ export default {
     background: #fff;
     padding: 10px 0;
     p {
+      word-break: break-all;
       padding: 5px 0;
     }
     ._file {
