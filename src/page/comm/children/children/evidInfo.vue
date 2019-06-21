@@ -17,9 +17,9 @@
               <span class="mr10">证据项描述 :</span>
               <span v-text="infoData.remarks"></span>
             </p>
-            <p>
+            <p style="word-break: break-all;">
               <span class="mr10">附件名称 :</span>
-              <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" v-text="item.fileName" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)"></span>
+              <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
             </p>
             <p>
               <span class="mr10">固化状态 :</span>
