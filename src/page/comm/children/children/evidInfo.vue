@@ -18,12 +18,8 @@
               <span v-text="infoData.remarks"></span>
             </p>
             <p>
-              <Row>
-                <Col span="3"><span class="mr10">附件名称 :</span></Col>
-                <Col span="20">
-                  <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" v-text="item.fileName" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)"></span>
-                </Col>
-              </Row>
+              <span class="mr10">附件名称 :</span>
+              <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" v-text="item.fileName" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)"></span>
             </p>
             <p>
               <span class="mr10">固化状态 :</span>
