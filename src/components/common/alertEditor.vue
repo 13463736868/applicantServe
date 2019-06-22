@@ -132,7 +132,10 @@ export default {
 </script>
 
 <style lang="scss">
-._alertEditor .ivu-modal-mask {
-  z-index: 10;
+.not_s .ivu-modal-mask{
+  z-index: 10!important;
+}
+.not_s .ivu-modal-wrap{
+  z-index: 10!important;
 }
 </style>
