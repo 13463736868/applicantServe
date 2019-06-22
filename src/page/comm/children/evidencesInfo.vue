@@ -52,7 +52,7 @@ export default {
         evidenceType: 1
       }).then(res => {
         this.evidData = res.data.data
-        if (this.revEvidData !== null) {
+        if (this.evidData !== null) {
           if (this.evidData.length === 0) {
             this.evidObj.list = false
           } else {
