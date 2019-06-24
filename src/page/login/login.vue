@@ -180,6 +180,7 @@ export default {
     },
     resGetMeun () {
       axios.get('/auth/function/route').then(res => {
+        // /auth/function/menuAndButton
         // let _res = res.data.data
         // let _oldRes = {}
         // _oldRes.menu = []
