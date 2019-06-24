@@ -331,7 +331,7 @@ export default {
         pageSize: this.pageObj.pageSize,
         keyword: this.search.text,
         state: 3,
-        caseListType: 3
+        caseListType: 7
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList

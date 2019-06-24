@@ -271,7 +271,7 @@ export default {
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
         state: 12,
-        caseListType: 2
+        caseListType: 9
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
