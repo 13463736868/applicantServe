@@ -1041,7 +1041,7 @@ export default {
           }
           break
         case 'endNew':
-          if (this.alertShow.endNewTempCode === '') {
+          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
             this.$Message.warning({
               content: '请选择结案模版',
               duration: 5
@@ -1250,7 +1250,7 @@ export default {
           }
           break
         case 'endNew':
-          if (this.alertShow.endNewTempCode === '') {
+          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
             this.$Message.warning({
               content: '请选择结案模版',
               duration: 5
@@ -1571,12 +1571,12 @@ export default {
             this.alertShow.userId = null
             this.alertShow.docuType = null
           }
-          this.alertShow.endNewTempCode = ''
           if (type === 'endNew') {
             this.alertShow.end = false
             this.alertShow.userId = null
             this.alertShow.endNewTempList = []
           }
+          this.alertShow.endNewTempCode = ''
           break
         case 'reve':
           this.alertShow.contractName = ''
