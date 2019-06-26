@@ -19,7 +19,7 @@
             </p>
             <p>
               <span class="mr10">附件名称 :</span>
-              <span class="_file" v-text="infoData.fileName" :title="'点击查看: '+infoData.fileName" @click="seeFile(infoData.filePath)"></span>
+              <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
             </p>
             <p>
               <span class="mr10">固化状态 :</span>
@@ -61,6 +61,7 @@ export default {
     background: #fff;
     padding: 10px 0;
     p {
+      word-break: break-all;
       padding: 5px 0;
     }
     ._file {

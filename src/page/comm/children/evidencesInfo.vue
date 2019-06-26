@@ -52,10 +52,14 @@ export default {
         evidenceType: 1
       }).then(res => {
         this.evidData = res.data.data
-        if (this.evidData.length === 0) {
-          this.evidObj.list = false
+        if (this.evidData !== null) {
+          if (this.evidData.length === 0) {
+            this.evidObj.list = false
+          } else {
+            this.evidObj.list = true
+          }
         } else {
-          this.evidObj.list = true
+          this.evidObj.list = false
         }
       }).catch(e => {
         this.$Message.error({
