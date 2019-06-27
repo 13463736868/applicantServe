@@ -370,7 +370,7 @@ export default {
         state: this.reviewStatus,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        caseListType: 8
+        caseListType: 1
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
