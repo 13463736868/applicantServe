@@ -274,7 +274,7 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.filePath === '' ? 'none' : ''
+              display: _obj.filePath === '' || _obj.filePath === null ? 'none' : ''
             },
             on: {
               click: () => {

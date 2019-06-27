@@ -758,8 +758,8 @@ export default {
         var orHaveId = this.getSelected(this.fieldBtnList.orHave)
         var specificId = this.getSelected(this.fieldBtnList.specific)
         var allIdArr = mustId.concat(orHaveId, specificId)
-        this.editor.execCommand('selectall')
-        this.editor.execCommand('fontfamily', 'SimSun')
+        // this.editor.execCommand('selectall')
+        // this.editor.execCommand('fontfamily', 'SimSun')
         this.$emit('alertConfirm', this.fieldBtnList.tempId, type, this.tempName, this.requestName, this.userNameList[this.requestName], this.caseTypeId, this.editor.getContent(), this.batchDocumentType, allIdArr.join(','))
       }
     },
