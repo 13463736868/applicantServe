@@ -6,8 +6,14 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20 tc">
-        <Col span="14">
+        <Col span="10">
           &nbsp;
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatchUp">上传数据</Button>
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatchEdit">批量修改</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
@@ -25,7 +31,21 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resPassReve(index)">同意撤回</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resPassReve(index)">重新生成撤回书</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_UPDATEDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '5' || row.logicState === '6' || row.logicState === '12'"  @click="resBeginTime('edit', index)">修改开庭时间</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_TRANSTOHEARING')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7'" @click="resTranBook(index)">转书面审理</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_ARRIVE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '12' || row.logicState === '13'" @click="resSendDoc(index)">送达</Button>
+                <Button class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
+                <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.logicState === '11'">{{row.logicContent}}</span>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -122,6 +142,22 @@
     <alert-btn-info :alertShow="alertShow.noBegin" @alertConfirm="noTimesSave('begin')" @alertCancel="alertCanc('noBegin')" alertTitle="操作">
       <p>确定要转书面审理吗？</p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batchEdit" alertSaveText="下载" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">批次号：</p>
+        </Col>
+        <Col span="12">
+          <Select v-model="alertShow.batchNo" filterable>
+            <Option v-for="item in alertShow.batchNoList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
+    <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="alertShow.batchUp" alertTitle="操作">
+      <upload-book childName="批量导入修改" :fileType="['xlsx']" :uploadUrl="resUploadUrl" @saveClick="batchUpSave" @cancClick="alertCanc('batchUp')"></upload-book>
+    </alert-btn-info>
+    <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
   </div>
 </template>
 
@@ -132,13 +168,15 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import uploadBook from '@/components/common/uploadBook'
+import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_appl',
   mixins: [resBtn],
-  components: { headTop, spinComp, createDocu, alertBtnInfo },
+  components: { headTop, spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal },
   data () {
     return {
       spinShow: false,
@@ -189,6 +227,11 @@ export default {
             align: 'center'
           },
           {
+            title: '批次号',
+            key: 'batchNo',
+            align: 'center'
+          },
+          {
             title: '案件类型',
             key: 'caseTypeName',
             tooltip: 'true',
@@ -236,9 +279,7 @@ export default {
             key: 'id',
             align: 'center',
             minWidth: 100,
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -332,12 +373,23 @@ export default {
         fileIdArr: [],
         find: false,
         noTime: false,
-        noBegin: false
+        noBegin: false,
+        batchEdit: false,
+        batchNo: null,
+        batchNoList: [],
+        batchUp: false,
+        editDataModal: false,
+        editDataId: null
       }
     }
   },
   created () {
     this.resCaseList()
+  },
+  computed: {
+    resUploadUrl () {
+      return regi.api + '/caseImport/importCaseExt'
+    }
   },
   methods: {
     dictionary () {
@@ -353,373 +405,6 @@ export default {
           duration: 5
         })
       })
-    },
-    renderBtn (h, params) {
-      let _info = params.row
-      if (_info.logicState === '1') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_SUBMIT')
-            },
-            on: {
-              click: () => {
-                this.resSubm(params.index)
-              }
-            }
-          }, '提交')
-        ])
-      } else if (_info.logicState === '2') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_WITHDRAW')
-            },
-            on: {
-              click: () => {
-                this.resPassReve(params.index)
-              }
-            }
-          }, '同意撤回')
-        ])
-      } else if (_info.logicState === '3') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_REASON')
-            },
-            on: {
-              click: () => {
-                this.resSeeReas(params.index)
-              }
-            }
-          }, '查看原因'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_REGEN')
-            },
-            on: {
-              click: () => {
-                this.resPassReve(params.index)
-              }
-            }
-          }, '重新生成撤回书')
-        ])
-      } else if (_info.logicState === '4') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_SUBMIT')
-            },
-            on: {
-              click: () => {
-                this.resSubm(params.index)
-              }
-            }
-          }, '提交')
-        ])
-      } else if (_info.logicState === '5') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
-            },
-            on: {
-              click: () => {
-                this.resBeginTime('edit', params.index)
-              }
-            }
-          }, '修改开庭时间')
-        ])
-      } else if (_info.logicState === '6') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
-            },
-            on: {
-              click: () => {
-                this.resBeginTime('edit', params.index)
-              }
-            }
-          }, '修改开庭时间')
-        ])
-      } else if (_info.logicState === '7') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_APPOINTDATE')
-            },
-            on: {
-              click: () => {
-                this.resBeginTime('once', params.index)
-              }
-            }
-          }, '指定开庭时间'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_TRANSTOHEARING')
-            },
-            on: {
-              click: () => {
-                this.alertObj.caseId = params.row.id
-                this.alertShow.noBegin = true
-              }
-            }
-          }, '转书面审理')
-        ])
-      } else if (_info.logicState === '8') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_APPOINTDATE')
-            },
-            on: {
-              click: () => {
-                this.resBeginTime('once', params.index)
-              }
-            }
-          }, '指定开庭时间')
-        ])
-      } else if (_info.logicState === '9') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件')
-        ])
-      } else if (_info.logicState === '10') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件')
-        ])
-      } else if (_info.logicState === '11') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, _info.logicContent)
-        ])
-      } else if (_info.logicState === '12') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_UPDATEDATE')
-            },
-            on: {
-              click: () => {
-                this.resBeginTime('edit', params.index)
-              }
-            }
-          }, '修改开庭时间'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAPPL_ARRIVE')
-            },
-            on: {
-              click: () => {
-                this.resSendDoc(params.index)
-              }
-            }
-          }, '送达')
-        ])
-      } else if (_info.logicState === '13') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_ARRIVE')
-            },
-            on: {
-              click: () => {
-                this.resSendDoc(params.index)
-              }
-            }
-          }, '送达')
-        ])
-      } else if (_info.logicState === '14') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAPPL_VIEWFILE')
-            },
-            on: {
-              click: () => {
-                this.resFileList(params.index)
-              }
-            }
-          }, '查看文件')
-        ])
-      } else {
-        return h('div', [
-        ])
-      }
     },
     resCaseList () {
       this.spinShow = true
@@ -757,6 +442,10 @@ export default {
       obj.caseId = this.caseList.bodyList[index].id
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
+    },
+    resTranBook (index) {
+      this.alertObj.caseId = this.caseList.bodyList[index].id
+      this.alertShow.noBegin = true
     },
     resFileList (index) {
       this.fileList.caseId = this.caseList.bodyList[index].id
@@ -1295,6 +984,67 @@ export default {
         })
       })
     },
+    resEditData (index) {
+      let _res = this.caseList.bodyList[index]
+      this.alertShow.editDataId = _res.id
+      this.alertShow.editDataModal = true
+    },
+    resBatchEdit () {
+      axios.get('/case/findAllBatchNo').then(res => {
+        let _res = res.data.data
+        _res.forEach(a => {
+          let _o = {}
+          _o.id = a
+          _o.name = a
+          this.alertShow.batchNoList.push(_o)
+        })
+        this.alertShow.batchEdit = true
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    resBatchUp () {
+      this.alertShow.batchUp = true
+    },
+    batchUpSave (obj) {
+      this.resSearch()
+      this.alertShow.batchUp = false
+      this.$Message.success({
+        content: obj,
+        duration: 10
+      })
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'batchEdit':
+          if (this.alertShow.batchNo === null) {
+            this.$Message.error({
+              content: '请先选择一个批次号',
+              duration: 5
+            })
+            return false
+          }
+          axios.post('/file/addJudgeTemplate', {
+            batchNo: this.alertShow.batchNo
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+            this.alertCanc('batchEdit')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+        case 'editData':
+          this.alertCanc(type)
+          this.resSearch()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -1341,6 +1091,15 @@ export default {
         this.alertShow.noTime = false
       } else if (type === 'noBegin') {
         this.alertShow.noBegin = false
+      } else if (type === 'batchEdit') {
+        this.alertShow.batchEdit = false
+        this.alertShow.batchNo = null
+        this.alertShow.batchNoList = []
+      } else if (type === 'batchUp') {
+        this.alertShow.batchUp = false
+      } else if (type === 'editData') {
+        this.alertShow.editDataId = null
+        this.alertShow.editDataModal = false
       }
     },
     seeDoc (path) {

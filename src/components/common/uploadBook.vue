@@ -145,9 +145,8 @@ export default {
 @import '@/style/mixin';
 ._uploadApplBook {
   @include borderRadius(3px);
-  @include boxShadow(0 1px 6px -1px #bbb);
+  // @include boxShadow(0 1px 6px -1px #bbb);
   margin-top: 10px;
-  padding: 15px;
   background: #fff;
   font-size: 12px;
   ._labelFor {

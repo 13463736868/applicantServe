@@ -12,8 +12,11 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
-        <Col span="10">
+        <Col span="8">
           &nbsp;
+        </Col>
+        <Col span="2">
+          <Button type="primary" @click="resBatchEdit">批量修改</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
@@ -25,7 +28,28 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <div v-if="!resSetRegExp(row.endCasePatten, 'groupCase')">
+                  <Button :style="{display: resBtnDis('GROUPCASE_PASSWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resPassReve(index)">同意撤回</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resPassReve(index)">重新生成撤回书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAddEvid(index)">生成补正书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAddEvid(index)">重新生成补正书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase(index)">结案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase(index)">撤案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_ENTERCOURTROOM')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="goCourtRoom(index)">进入庭室</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_RECORD')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="resRecord(index)">记录</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase(index)">重新生成文书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resCancCase(index)">重新生成撤案书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase(index)">重新结案</Button>
+                  <Button class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
+                  <Button class="mr5" type="primary" size="small" v-if="row.isconfirm === 0" @click="resConfData(index)">确认</Button>
+                </div>
+                <div v-else="">
+                  <span style="color: #2d8cf0" type="text" size="small">{{row.endCasePatten}}</span>
+                </div>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -70,95 +94,6 @@
         </Col>
       </Row>
     </create-docu>
-    <!-- <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('end')" @alertSee="seeDocu('end')" @alertCancel="alertCanc('end')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>文书类型：</b></p>
-        </Col>
-        <Col span="16">
-          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
-            <Radio :label="1">裁决书</Radio>
-            <Radio :label="2">调解书</Radio>
-          </RadioGroup>
-        </Col>
-      </Row>
-      <div v-if="alertShow.docuType === 1">
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同名称：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractName"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同约定情况：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractualStipulation"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同履行情况：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractPerformance"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>需要还款本金：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.repaymentPrincipal"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>还款基数：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.repaymentBase"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>年利率：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.annualRate"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b title="关于利息及逾期利息的计算">利息计算：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.interestCalculation"></Input>
-          </Col>
-        </Row>
-      </div>
-      <div v-else-if="alertShow.docuType === 2">
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同名称：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractName"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b title="自愿达成协议内容">协议内容：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.agreementContent" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
-          </Col>
-        </Row>
-      </div>
-    </create-docu> -->
     <create-docu :alertShow="alertShow.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -244,6 +179,22 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.batchEdit" alertSaveText="下载" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')" alertTitle="操作">
+      <Row>
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">批次号：</p>
+        </Col>
+        <Col span="12">
+          <Select v-model="alertShow.batchNo" filterable>
+            <Option v-for="item in alertShow.batchNoList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </Col>
+      </Row>
+    </alert-btn-info>
+    <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
+    <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
+      <p class="t2">确定要确认此条数据吗？</p>
+    </alert-btn-info>
   </div>
 </template>
 
@@ -254,6 +205,7 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -261,7 +213,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor },
+  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal },
   data () {
     return {
       spinShow: false,
@@ -314,6 +266,11 @@ export default {
             align: 'center'
           },
           {
+            title: '批次号',
+            key: 'batchNo',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'partyName',
             tooltip: 'true',
@@ -359,9 +316,7 @@ export default {
             key: 'id',
             align: 'center',
             minWidth: 120,
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -399,7 +354,15 @@ export default {
         ids: [],
         idsList: [],
         batch: false,
-        find: false
+        find: false,
+        editDataModal: false,
+        editDataId: null,
+        confDataAlert: false,
+        confDataId: null,
+        confDataBatchNo: null,
+        batchEdit: false,
+        batchNo: null,
+        batchNoList: []
       }
     }
   },
@@ -407,6 +370,9 @@ export default {
     this.resCaseList()
   },
   methods: {
+    resSetRegExp (val, type) {
+      return setRegExp(val, type)
+    },
     dictionary () {
       axios.post('/dictionary/findDictionaryList', {
         type: 'batchDocumentType'
@@ -505,264 +471,6 @@ export default {
             }, '文书驳回原因')
           ])
         }
-      }
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (!setRegExp(_obj.endCasePatten, 'groupCase')) {
-        if (_obj.endCasePatten === '1') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_PASSWITHDRAW')
-              },
-              on: {
-                click: () => {
-                  this.resPassReve(params.index)
-                }
-              }
-            }, '同意撤回')
-          ])
-        } else if (_obj.endCasePatten === '2') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_REGENWITHDRAW')
-              },
-              on: {
-                click: () => {
-                  this.resPassReve(params.index)
-                }
-              }
-            }, '重新生成撤回书')
-          ])
-        } else if (_obj.endCasePatten === '3') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_GENCORRECTIONS')
-              },
-              on: {
-                click: () => {
-                  this.resAddEvid(params.index)
-                }
-              }
-            }, '生成补正书')
-          ])
-        } else if (_obj.endCasePatten === '4') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_REGENCORRECTIONS')
-              },
-              on: {
-                click: () => {
-                  this.resAddEvid(params.index)
-                }
-              }
-            }, '重新生成补正书')
-          ])
-        } else if (_obj.endCasePatten === '5') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_ENDCASE')
-              },
-              on: {
-                click: () => {
-                  this.resEndCase(params.index)
-                }
-              }
-            }, '结案'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
-              },
-              on: {
-                click: () => {
-                  this.resCancCase(params.index)
-                }
-              }
-            }, '撤案'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_ENTERCOURTROOM')
-              },
-              on: {
-                click: () => {
-                  this.goCourtRoom(params.index)
-                }
-              }
-            }, '进入庭室'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_RECORD')
-              },
-              on: {
-                click: () => {
-                  this.resRecord(params.index)
-                }
-              }
-            }, '记录')
-          ])
-        } else if (_obj.endCasePatten === '6') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_REGEN')
-              },
-              on: {
-                click: () => {
-                  this.resEndCase(params.index)
-                }
-              }
-            }, '重新生成文书')
-          ])
-        } else if (_obj.endCasePatten === '7') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_REGENWITHDRAWDOC')
-              },
-              on: {
-                click: () => {
-                  this.resCancCase(params.index)
-                }
-              }
-            }, '重新生成撤案书')
-          ])
-        } else if (_obj.endCasePatten === '8') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
-              },
-              on: {
-                click: () => {
-                  this.resCancCase(params.index)
-                }
-              }
-            }, '撤案')
-          ])
-        } else if (_obj.endCasePatten === '9') {
-          return h('div', [
-          ])
-        } else if (_obj.endCasePatten === '10') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPCASE_REENDCASE')
-              },
-              on: {
-                click: () => {
-                  this.resEndCase(params.index)
-                }
-              }
-            }, '重新结案')
-          ])
-        } else if (_obj.endCasePatten === '11') {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_ENDCASE')
-              },
-              on: {
-                click: () => {
-                  this.resEndCase(params.index)
-                }
-              }
-            }, '结案'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPCASE_WITHDRAWCASE')
-              },
-              on: {
-                click: () => {
-                  this.resCancCase(params.index)
-                }
-              }
-            }, '撤案')
-          ])
-        } else {
-          return h('div', [
-          ])
-        }
-      } else {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, _obj.endCasePatten)
-        ])
       }
     },
     resCaseList () {
@@ -1547,6 +1255,81 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resBatchEdit () {
+      axios.get('/case/findAllBatchNo').then(res => {
+        let _res = res.data.data
+        _res.forEach(a => {
+          let _o = {}
+          _o.id = a
+          _o.name = a
+          this.alertShow.batchNoList.push(_o)
+        })
+        this.alertShow.batchEdit = true
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
+          duration: 5
+        })
+      })
+    },
+    resEditData (index) {
+      let _res = this.caseList.bodyList[index]
+      this.alertShow.editDataId = _res.id
+      this.alertShow.editDataModal = true
+    },
+    resConfData (index) {
+      let _res = this.caseList.bodyList[index]
+      this.alertShow.confDataBatchNo = _res.batchNo
+      this.alertShow.confDataId = _res.id
+      this.alertShow.confDataAlert = true
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'batchEdit':
+          if (this.alertShow.batchNo === null) {
+            this.$Message.error({
+              content: '请先选择一个批次号',
+              duration: 5
+            })
+            return false
+          }
+          axios.post('/file/addJudgeTemplate', {
+            batchNo: this.alertShow.batchNo
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+            this.alertCanc('batchEdit')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+        case 'editData':
+          this.alertCanc(type)
+          this.resSearch()
+          break
+        case 'confData':
+          axios.post('/case/updateConfirmTemplate', {
+            batchNo: this.alertShow.confDataBatchNo,
+            caseId: this.alertShow.confDataId,
+            isconfirm: 1
+          }).then(res => {
+            this.$Message.success({
+              content: res.data.data,
+              duration: 2
+            })
+            this.alertCanc(type)
+            this.resSearch()
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+      }
+    },
     alertCanc (type) {
       switch (type) {
         case 'canc':
@@ -1615,6 +1398,20 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          break
+        case 'editData':
+          this.alertShow.editDataId = null
+          this.alertShow.editDataModal = false
+          break
+        case 'batchEdit':
+          this.alertShow.batchEdit = false
+          this.alertShow.batchNo = null
+          this.alertShow.batchNoList = []
+          break
+        case 'confData':
+          this.alertShow.confDataBatchNo = null
+          this.alertShow.confDataId = null
+          this.alertShow.confDataAlert = false
           break
         default:
           break
