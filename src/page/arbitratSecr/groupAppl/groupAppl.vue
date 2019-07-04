@@ -1030,7 +1030,9 @@ export default {
           axios.post('/file/addJudgeTemplate', {
             batchNo: this.alertShow.batchNo
           }).then(res => {
-            window.open(res.data.data, '_blank')
+            res.data.data.split(',').forEach(b => {
+              window.open(b, '_blank')
+            })
             this.alertCanc('batchEdit')
           }).catch(e => {
             this.$Message.error({

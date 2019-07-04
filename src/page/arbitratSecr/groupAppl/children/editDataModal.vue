@@ -36,7 +36,7 @@
               <p><span class="_span"></span><b>{{name}}</b></p>
             </Col>
             <Col span="16">
-              <Input v-model="editData['裁决书数据'][name]"></Input>
+              <Input v-model="editData['裁决书数据'][name]" :disabled="name === '案号' || name === '申请人' || name === '被申请人'"></Input>
             </Col>
           </Row>
         </div>
