@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import seeAgenApplBook from '@/page/caseInfo/children/children/seeAgenApplBook'
+import seeAgenApplBook from '@/page/comm/children/children/seeAgenApplBook'
 
 export default {
   name: 'see_agen_info',
