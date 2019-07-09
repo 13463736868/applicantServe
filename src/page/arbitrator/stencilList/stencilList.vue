@@ -274,7 +274,7 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.filePath === '' || _obj.filePath === null ? 'none' : ''
+              display: _obj.filePath === '' || _obj.filePath === null ? 'none' : this.resBtnDis('STENCILLIST_LIST_DOWNLOAD')
             },
             on: {
               click: () => {
@@ -307,7 +307,7 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.filePath === '' ? 'none' : ''
+              display: _obj.filePath === '' || _obj.filePath === null ? 'none' : this.resBtnDis('STENCILLIST_LIST_DOWNLOAD')
             },
             on: {
               click: () => {

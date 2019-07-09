@@ -10,10 +10,10 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatchUp">上传数据</Button>
+          <Button type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatchEdit">批量修改</Button>
+          <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
@@ -42,7 +42,7 @@
                 <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_TRANSTOHEARING')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7'" @click="resTranBook(index)">转书面审理</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_ARRIVE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '12' || row.logicState === '13'" @click="resSendDoc(index)">送达</Button>
-                <Button class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
                 <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.logicState === '11'">{{row.logicContent}}</span>
               </template>
             </Table>
