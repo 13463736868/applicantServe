@@ -16,7 +16,7 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatchEdit">批量修改</Button>
+          <Button type="primary" @click="resBatchEdit">批量下载</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
