@@ -1295,7 +1295,7 @@ export default {
           }
           axios.post('/file/addJudgeTemplate', {
             batchNo: this.alertShow.batchNo,
-            dataType: 1
+            dataType: 2
           }).then(res => {
             res.data.data.split(',').forEach(b => {
               window.open(b, '_blank')
