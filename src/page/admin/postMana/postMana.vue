@@ -1,8 +1,5 @@
 <template>
   <div class="postMana">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">角色管理</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -61,14 +58,13 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'post_mana',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

@@ -1,8 +1,5 @@
 <template>
   <div class="groupCase">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">组庭案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -201,7 +198,6 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -213,7 +209,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal },
+  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal },
   data () {
     return {
       spinShow: false,

@@ -1,8 +1,5 @@
 <template>
   <div class="endCaseA">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">已结束案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -33,13 +30,12 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'end_case_a',
-  components: { headTop, spinComp },
+  components: { spinComp },
   data () {
     return {
       spinShow: true,

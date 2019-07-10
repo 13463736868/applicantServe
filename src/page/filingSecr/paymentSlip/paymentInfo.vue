@@ -1,8 +1,5 @@
 <template>
   <div class="paymentInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">缴费单查询</span>
-    </head-top>
     <div class="_center pr">
       <Row v-if="publicData !== null">
         <Col span="14" offset="5">
@@ -65,13 +62,11 @@
 <script>
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
-import headTop from '@/components/header/head'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'payment_info',
-  components: { headTop },
   props: [],
   data () {
     return {

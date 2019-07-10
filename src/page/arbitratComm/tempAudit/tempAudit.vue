@@ -1,8 +1,5 @@
 <template>
   <div class="tempAudit">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">模版审核</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
@@ -61,14 +58,13 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'temp_audit',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

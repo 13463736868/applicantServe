@@ -1,8 +1,5 @@
 <template>
   <div class="onesInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">个人信息</span>
-    </head-top>
     <div class="_center pr">
       <Row>
         <Col span="14" offset="5">
@@ -117,14 +114,13 @@
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import headTop from '@/components/header/head'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'ones_info',
-  components: { headTop, alertBtnInfo },
+  components: { alertBtnInfo },
   data () {
     return {
       addInfoBtn: false,

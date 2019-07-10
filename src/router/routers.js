@@ -5,7 +5,8 @@ const routerMap = [
     path: '/userMana',
     name: 'userMana',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '用户管理'
     },
     component: r => require.ensure([], () => r(require('@/page/admin/userMana/userMana.vue')))
   },
@@ -13,7 +14,8 @@ const routerMap = [
     path: '/depaMana',
     name: 'depaMana',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '部门管理'
     },
     component: r => require.ensure([], () => r(require('@/page/admin/depaMana/depaMana.vue')))
   },
@@ -21,7 +23,8 @@ const routerMap = [
     path: '/postMana',
     name: 'postMana',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '角色管理'
     },
     component: r => require.ensure([], () => r(require('@/page/admin/postMana/postMana.vue')))
   },
@@ -29,7 +32,8 @@ const routerMap = [
     path: '/ruleMana',
     name: 'ruleMana',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '仲裁规则管理'
     },
     component: r => require.ensure([], () => r(require('@/page/admin/ruleMana/ruleMana.vue')))
   },
@@ -37,7 +41,8 @@ const routerMap = [
     path: '/arbiEvas',
     name: 'arbiEvas',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '仲裁员回避'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/arbiEvas/arbiEvas.vue')))
   },
@@ -45,7 +50,8 @@ const routerMap = [
     path: '/groupAudit',
     name: 'groupAudit',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '组庭审核'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/groupAudit/groupAudit.vue')))
   },
@@ -53,7 +59,8 @@ const routerMap = [
     path: '/applReissue',
     name: 'applReissue',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '申请补正'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/applReissue/applReissue.vue')))
   },
@@ -61,7 +68,8 @@ const routerMap = [
     path: '/poliProtest',
     name: 'poliProtest',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '管辖权异议'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/poliProtest/poliProtest.vue')))
   },
@@ -69,7 +77,8 @@ const routerMap = [
     path: '/tranRecoD',
     name: 'tranRecoD',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '案件查询'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranReco/tranReco.vue')))
   },
@@ -77,7 +86,8 @@ const routerMap = [
     path: '/docuAudit',
     name: 'docuAudit',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '文书审核'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/docuAudit/docuAudit.vue')))
   },
@@ -85,7 +95,8 @@ const routerMap = [
     path: '/tempAudit',
     name: 'tempAudit',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '模版审核'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tempAudit/tempAudit.vue')))
   },
@@ -93,7 +104,8 @@ const routerMap = [
     path: '/groupCase',
     name: 'groupCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '组庭案件'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/groupCase/groupCase.vue')))
   },
@@ -101,7 +113,8 @@ const routerMap = [
     path: '/trialList',
     name: 'trialList',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '审核中列表'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/trialList/trialList.vue')))
   },
@@ -109,7 +122,8 @@ const routerMap = [
     path: '/stencilList',
     name: 'stencilList',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '模版列表'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/stencilList/stencilList.vue')))
   },
@@ -117,7 +131,8 @@ const routerMap = [
     path: '/filingCase',
     name: 'filingCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '已立案案件'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/filingCase/filingCase.vue')))
   },
@@ -125,7 +140,8 @@ const routerMap = [
     path: '/endCaseA',
     name: 'endCaseA',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '已结束案件'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCase/endCase.vue')))
   },
@@ -133,7 +149,8 @@ const routerMap = [
     path: '/closeCase',
     name: 'closeCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '已结案案件'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/closeCase/closeCase.vue')))
   },
@@ -141,7 +158,8 @@ const routerMap = [
     path: '/sealCase',
     name: 'sealCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '已归档案件'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/sealCase/sealCase.vue')))
   },
@@ -149,7 +167,8 @@ const routerMap = [
     path: '/groupAppl',
     name: 'groupAppl',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '组庭申请'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/groupAppl/groupAppl.vue')))
   },
@@ -157,7 +176,8 @@ const routerMap = [
     path: '/acceCase',
     name: 'acceCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '待受理案件'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/acceCase/acceCase.vue')))
   },
@@ -165,7 +185,8 @@ const routerMap = [
     path: '/pendCase',
     name: 'pendCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '待立案案件'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/pendCase/pendCase.vue')))
   },
@@ -173,7 +194,8 @@ const routerMap = [
     path: '/acceCaseM',
     name: 'acceCaseM',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '受理审核案件'
     },
     component: r => require.ensure([], () => r(require('@/page/filingMana/acceCaseM/acceCaseM.vue')))
   },
@@ -181,7 +203,8 @@ const routerMap = [
     path: '/pendCaseM',
     name: 'pendCaseM',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '立案审核案件'
     },
     component: r => require.ensure([], () => r(require('@/page/filingMana/pendCaseM/pendCaseM.vue')))
   },
@@ -189,7 +212,8 @@ const routerMap = [
     path: '/succCase',
     name: 'succCase',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '立案成功案件'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/succCase/succCase.vue')))
   },
@@ -197,7 +221,8 @@ const routerMap = [
     path: '/tranRecoE',
     name: 'tranRecoE',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '案件记录'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/tranReco/tranReco.vue')))
   },
@@ -205,7 +230,8 @@ const routerMap = [
     path: '/idenCheck',
     name: 'idenCheck',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '身份审核'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenCheck.vue')))
   },
@@ -213,7 +239,8 @@ const routerMap = [
     path: '/idenInfo',
     name: 'idenInfo',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '身份信息详情'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenInfo.vue')))
   },
@@ -221,7 +248,8 @@ const routerMap = [
     path: '/paymentSlip',
     name: 'paymentSlip',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '缴费单审核'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentSlip.vue')))
   },
@@ -229,7 +257,8 @@ const routerMap = [
     path: '/paymentInfo',
     name: 'paymentInfo',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '缴费单查询'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentInfo.vue')))
   },
@@ -237,7 +266,8 @@ const routerMap = [
     path: '/onesInfo',
     name: 'onesInfo',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '个人信息'
     },
     component: r => require.ensure([], () => r(require('@/page/comm/onesInfo.vue')))
   },
@@ -245,7 +275,8 @@ const routerMap = [
     path: '/meetList',
     name: 'meetList',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      title: '视频会议'
     },
     component: r => require.ensure([], () => r(require('@/page/meetList/meetList.vue')))
   },
@@ -264,7 +295,8 @@ const routerMap = [
         path: 'basicInfo',
         name: 'basicInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/basicInfo.vue')), 'basicInfo')
       },
@@ -272,7 +304,8 @@ const routerMap = [
         path: 'proposerInfo',
         name: 'proposerInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/proposerInfo.vue')), 'proposerInfo')
       },
@@ -280,7 +313,8 @@ const routerMap = [
         path: 'respondentInfo',
         name: 'respondentInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/respondentInfo.vue')), 'respondentInfo')
       },
@@ -288,7 +322,8 @@ const routerMap = [
         path: 'claimItem',
         name: 'claimItem',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/claimItem.vue')), 'claimItem')
       },
@@ -296,7 +331,8 @@ const routerMap = [
         path: 'revClaimItem',
         name: 'revClaimItem',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/revClaimItem.vue')), 'revClaimItem')
       },
@@ -304,7 +340,8 @@ const routerMap = [
         path: 'evidencesInfo',
         name: 'evidencesInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/evidencesInfo.vue')), 'evidencesInfo')
       },
@@ -312,7 +349,8 @@ const routerMap = [
         path: 'sendInfo',
         name: 'sendInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/sendInfo.vue')), 'sendInfo')
       },
@@ -320,7 +358,8 @@ const routerMap = [
         path: 'endCaseInfo',
         name: 'endCaseInfo',
         meta: {
-          requireAuth: true
+          requireAuth: true,
+          title: '案件详情'
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/endCaseInfo.vue')), 'endCaseInfo')
       }
@@ -335,15 +374,21 @@ export const getRouter = (obj) => {
   _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
-    redirect: _a[0]
+    component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
+    children: [
+      {
+        path: '/',
+        redirect: _a[0]
+      }
+    ]
   })
   for (let k in routerMap) {
     if (_a.indexOf(routerMap[k].path) !== -1) {
       _l++
-      _r.push(routerMap[k])
+      _r[0].children.push(routerMap[k])
     }
     if (_a.length === _l) {
-      _r.push({
+      _r[0].children.push({
         path: '*',
         redirect: _a[0]
       })

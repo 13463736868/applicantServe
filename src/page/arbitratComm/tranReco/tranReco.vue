@@ -1,8 +1,5 @@
 <template>
   <div class="tranRecoD">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">案件查询</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -50,14 +47,13 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'tran_reco_d',
-  components: { headTop, spinComp },
+  components: { spinComp },
   data () {
     return {
       spinShow: false,

@@ -1,8 +1,5 @@
 <template>
   <div class="stenciList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">模版列表</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
@@ -112,7 +109,6 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
@@ -121,7 +117,7 @@ import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
 export default {
   name: 'stenci_list',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo, alertEditor },
+  components: { spinComp, alertBtnInfo, alertEditor },
   data () {
     return {
       spinShow: false,

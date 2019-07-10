@@ -1,8 +1,5 @@
 <template>
   <div class="meetList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">视频会议</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
@@ -93,13 +90,12 @@
 <script>
 import axios from 'axios'
 import { mapGetters } from 'vuex'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'meet_list',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

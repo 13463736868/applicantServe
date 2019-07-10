@@ -1,8 +1,5 @@
 <template>
-  <div class="endCaseA">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">已结案案件</span>
-    </head-top>
+  <div class="closeCase">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -59,16 +56,15 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
-  name: 'end_case_a',
+  name: 'close_case',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       dateDisa: {

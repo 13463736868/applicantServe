@@ -1,8 +1,5 @@
 <template>
   <div class="caseInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">案件详情</span>
-    </head-top>
     <div class="_center pr">
       <Row>
         <Col span="4" offset="1" class="_center_left not_s">
@@ -21,12 +18,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import headTop from '@/components/header/head'
 import rightArbi from '@/page/comm/children/rightArbi'
 
 export default {
   name: 'case_info',
-  components: { headTop, rightArbi },
+  components: { rightArbi },
   data () {
     return {
       menuClaim: [],

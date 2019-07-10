@@ -1,8 +1,5 @@
 <template>
   <div class="trialList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">审核中列表</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <div class="_caseList clearfix">
@@ -25,14 +22,13 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'trial_list',
-  components: { headTop, spinComp },
+  components: { spinComp },
   data () {
     return {
       spinShow: false,

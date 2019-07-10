@@ -1,8 +1,5 @@
 <template>
   <div class="idenCheck">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">身份审核</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -62,14 +59,13 @@
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import { mapActions } from 'vuex'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'iden_check',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

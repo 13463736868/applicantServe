@@ -1,8 +1,5 @@
 <template>
   <div class="ruleMana">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">仲裁规则管理</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
@@ -371,13 +368,12 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'rule_mana',
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

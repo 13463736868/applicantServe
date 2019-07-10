@@ -1,8 +1,5 @@
 <template>
   <div class="userMana">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">用户管理</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -123,7 +120,6 @@
 
 <script>
 import axios from 'axios'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadBook from '@/components/common/uploadBook'
@@ -132,7 +128,7 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'user_mana',
-  components: { headTop, spinComp, alertBtnInfo, uploadBook },
+  components: { spinComp, alertBtnInfo, uploadBook },
   data () {
     return {
       spinShow: false,

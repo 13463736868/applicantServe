@@ -1,8 +1,5 @@
 <template>
   <div class="acceCase">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">受理审核案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -79,7 +76,6 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
@@ -88,7 +84,7 @@ import { caseInfo } from '@/config/common.js'
 export default {
   name: 'acce_case_m',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo },
   data () {
     return {
       spinShow: false,

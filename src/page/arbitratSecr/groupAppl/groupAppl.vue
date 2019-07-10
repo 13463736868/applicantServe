@@ -1,8 +1,5 @@
 <template>
   <div class="groupAppl">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">组庭申请</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20 tc">
@@ -164,7 +161,6 @@
 <script>
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
-import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -176,7 +172,7 @@ import regi from '@/config/regiType.js'
 export default {
   name: 'group_appl',
   mixins: [resBtn],
-  components: { headTop, spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal },
+  components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal },
   data () {
     return {
       spinShow: false,
