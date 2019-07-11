@@ -16,7 +16,13 @@ export const resBtn = {
   },
   methods: {
     resBtnMap (type) {
-      this.btnMap = this.buttonMap === null ? null : this.buttonMap[type]
+      let _type = '/' + type
+      // this.btnMap = this.buttonMap === null ? null : this.buttonMap[type]
+      for (let k in this.buttonMap) {
+        if (this.buttonMap[k].route === _type) {
+          this.btnMap = this.buttonMap[k]
+        }
+      }
     },
     resBtnDis (type) {
       if (this.btnMap) {
