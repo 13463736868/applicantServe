@@ -3,20 +3,23 @@
     <div class="_arbiInfo">
       <div class="_top">仲裁委信息</div>
       <div class="_mid">
-        <Row>
+        <Row v-if="dataArbShow">
           <Col span="22" offset="1">
             <div class="_logo">
-              <img :src="logo.url" alt="">
-              <div class="f14 pt5"><b v-text="dataMap.name"></b></div>
-              <div><b v-text="dataMap.excName"></b></div>
+              <img :src="dataArb.loginLogoUrl" alt="">
+              <div class="f14 pt5"><b v-text="dataArb.name"></b></div>
+              <div><b v-text="dataArb.enName"></b></div>
             </div>
             <p>
               <span class="mr10"><b>电话 :</b></span>
-              <span class="mr10" v-text="dataMap.tel"></span>
+              <!-- <span class="mr10" v-text="dataArb.phone"></span> -->
+              <ul class="tc" :style="{marginTop: index === 0 ? '-18px' : ''}" v-for="(item, index) in dataArb.phone.split(',')" :key="index">
+                <li class="mr10" v-text="item"></li>
+              </ul>
             </p>
             <p>
               <span class="mr10"><b>地址 :</b></span>
-              <span class="mr10" v-text="dataMap.address"></span>
+              <span class="mr10" v-text="dataArb.address"></span>
             </p>
           </Col>
         </Row>
@@ -64,7 +67,7 @@
 
 <script>
 import axios from 'axios'
-import regi from '@/config/regiType.js'
+// import regi from '@/config/regiType.js'
 
 export default {
   name: 'right_arbi',
@@ -78,7 +81,9 @@ export default {
         url: require('../../static/images/logoR.png')
       },
       dataInfoShow: false,
-      dataInfo: null
+      dataInfo: null,
+      dataArbShow: false,
+      dataArb: null
     }
   },
   created () {
@@ -86,13 +91,23 @@ export default {
       this.resCaseItem()
     }
   },
-  computed: {
-    dataMap () {
-      return regi.dataMap
-    }
-  },
+  // computed: {
+  //   dataMap () {
+  //     return regi.dataMap
+  //   }
+  // },
   methods: {
     resCaseItem () {
+      axios.post('arbitration/findArbitration').then(res => {
+        this.dataArb = res.data.data
+        this.dataArbShow = true
+      }).catch(e => {
+        this.dataArbShow = false
+        this.$Message.error({
+          content: '错误信息:' + e,
+          duration: 5
+        })
+      })
       axios.post('/case/findBaseCaseMessage', {
         caseId: this.caseId
       }).then(res => {
