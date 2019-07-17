@@ -98,7 +98,7 @@ export default {
   // },
   methods: {
     resCaseItem () {
-      axios.post('arbitration/findArbitration').then(res => {
+      axios.post('/arbitration/findArbitration').then(res => {
         this.dataArb = res.data.data
         this.dataArbShow = true
       }).catch(e => {
