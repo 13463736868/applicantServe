@@ -197,7 +197,7 @@ export default {
                     }, '查看文件')
                   ])
                 }
-              } else if (_obj.state === 12) {
+              } else if (_obj.state === 12 || _obj.state === 31) {
                 return h('div', [
                   h('Button', {
                     props: {
