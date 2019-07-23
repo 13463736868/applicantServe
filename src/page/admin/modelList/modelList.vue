@@ -164,7 +164,7 @@ export default {
     resCaseList () {
       this.spinShow = true
       axios.post('/activiti/selectAll', {
-        startIndex: this.pageObj.pageNum,
+        startIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize
       }).then(res => {
         let _data = res.data.data
