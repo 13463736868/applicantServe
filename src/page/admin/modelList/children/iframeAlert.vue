@@ -14,21 +14,35 @@
   </div>
 </template>
 <script>
+import axios from 'axios'
 
 export default {
   name: 'iframe_alert',
   props: ['modelId'],
   data () {
     return {
-      iframeShow: true
+      iframeShow: false,
+      resSrc: null
     }
   },
-  computed: {
-    resSrc () {
-      return 'http://192.168.1.25:8091/modeler.html?modelId=' + this.modelId
-    }
+  created () {
+    this.resUrl('MODEL_EDIT_URL')
   },
   methods: {
+    resMessage (type, text) {
+      this.$Message[type]({
+        content: text,
+        duration: type === 'success' ? 2 : 5
+      })
+    },
+    resUrl (type) {
+      axios.post('/arbitration/constant').then(res => {
+        this.resSrc = res.data.data[type] + this.modelId
+        this.iframeShow = true
+      }).catch(e => {
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+      })
+    },
     rescancel () {
       this.$emit('alertCancel')
     }
