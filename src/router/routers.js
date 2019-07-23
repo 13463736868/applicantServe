@@ -38,6 +38,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/admin/ruleMana/ruleMana.vue')))
   },
   {
+    path: '/modelList',
+    name: 'modelList',
+    meta: {
+      requireAuth: true,
+      title: '模型列表'
+    },
+    component: r => require.ensure([], () => r(require('@/page/admin/modelList/modelList.vue')))
+  },
+  {
     path: '/arbiEvas',
     name: 'arbiEvas',
     meta: {
@@ -369,9 +378,12 @@ const routerMap = [
 
 export const getRouter = (obj) => {
   let _a = obj.menu
+  let _b = obj.menuName
+  let _c = []
   let _r = []
   let _l = 0
   _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
+  _c.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
@@ -384,6 +396,9 @@ export const getRouter = (obj) => {
   })
   for (let k in routerMap) {
     if (_a.indexOf(routerMap[k].path) !== -1) {
+      if (_c.indexOf(routerMap[k].path) === -1) {
+        routerMap[k].meta.title = _b[_l]
+      }
       _l++
       _r[0].children.push(routerMap[k])
     }
