@@ -366,7 +366,7 @@ export default {
         state: this.reviewStatus,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        caseListType: 1
+        caseListType: 8
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -402,7 +402,7 @@ export default {
     acceSave (type) {
       if (type === 'acceA') {
         this.alertShow.acceA = false
-        axios.post('/case/updateCaseState', {
+        axios.post('/case/updateCaseSta', {
           caseId: this.dataObj.acceCaseId,
           state: 1
         }).then(res => {
@@ -431,7 +431,7 @@ export default {
           })
         } else {
           this.alertShow.acceB = false
-          axios.post('/case/updateCaseState', {
+          axios.post('/case/updateCaseSta', {
             caseId: this.dataObj.acceCaseId,
             state: 2,
             reason: this.dataObj.acceB
@@ -550,7 +550,7 @@ export default {
           })
         } else {
           this.alertShow.batch = false
-          axios.put('/caseBatch/updateCaseState_batch', {
+          axios.put('/caseBatch/updateCaseStateLeader', {
             reason: this.alertShow.rejeReason,
             items: JSON.stringify(this.alertShow.idsList),
             state: this.alertShow.state + ''
@@ -574,7 +574,7 @@ export default {
           })
         }
       } else {
-        axios.put('/caseBatch/updateCaseState_batch', {
+        axios.put('/caseBatch/updateCaseStateLeader', {
           items: JSON.stringify(this.alertShow.idsList),
           state: this.alertShow.state + ''
         }, {

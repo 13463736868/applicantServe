@@ -267,7 +267,7 @@ export default {
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
         state: 12,
-        caseListType: 2
+        caseListType: 9
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -317,7 +317,7 @@ export default {
     },
     confSave () {
       this.alertShow.conf = false
-      axios.post('/case/updateCaseStateAndType', {
+      axios.post('/case/updateCaseStateAnd', {
         caseId: this.dataObj.confCaseId,
         costs: this.dataObj.confCosts
       }).then(res => {
@@ -436,7 +436,7 @@ export default {
     },
     batchSave () {
       this.alertShow.batch = false
-      axios.put('/caseBatch/updateCaseStateAndType_batch', {
+      axios.put('/caseBatch/updateCaseStateAnd_batch', {
         items: JSON.stringify(this.alertShow.idsList),
         state: '1'
       }, {

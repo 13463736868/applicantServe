@@ -179,22 +179,22 @@ export default {
       }
     },
     resGetMeun () {
-      axios.get('/auth/function/route').then(res => {
+      axios.get('/auth/function/menuAndButton').then(res => {
         // /auth/function/menuAndButton
-        // let _res = res.data.data
-        // let _oldRes = {}
-        // _oldRes.menu = []
-        // _oldRes.menuName = []
-        // for (let k in _res) {
-        //   _oldRes.menu.push(_res[k].route)
-        //   _oldRes.menuName.push(_res[k].menuName)
-        // }
-        // if (window.localStorage) {
-        //   let loc = window.localStorage
-        //   loc.setItem('buttonMap', JSON.stringify(_res))
-        // }
-        // this.setButtonMap(_res)
-        let _oldRes = res.data.data
+        let _res = res.data.data
+        let _oldRes = {}
+        _oldRes.menu = []
+        _oldRes.menuName = []
+        for (let k in _res) {
+          _oldRes.menu.push(_res[k].route)
+          _oldRes.menuName.push(_res[k].menuName)
+        }
+        if (window.localStorage) {
+          let loc = window.localStorage
+          loc.setItem('buttonMap', JSON.stringify(_res))
+        }
+        this.setButtonMap(_res)
+        // let _oldRes = res.data.data
         if (_oldRes.menu !== [] && _oldRes.menuName !== []) {
           if (window.localStorage) {
             let loc = window.localStorage
