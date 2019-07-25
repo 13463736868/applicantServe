@@ -397,7 +397,8 @@ export default {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
-        caseTypeCode: this.search.caseType
+        caseTypeCode: this.search.caseType,
+        groupApproveType: 'arbitrationCommission'
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
