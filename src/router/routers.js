@@ -378,12 +378,9 @@ const routerMap = [
 
 export const getRouter = (obj) => {
   let _a = obj.menu
-  let _b = obj.menuName
-  let _c = []
   let _r = []
   let _l = 0
   _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
-  _c.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
@@ -396,8 +393,8 @@ export const getRouter = (obj) => {
   })
   for (let k in routerMap) {
     if (_a.indexOf(routerMap[k].path) !== -1) {
-      if (_c.indexOf(routerMap[k].path) === -1) {
-        routerMap[k].meta.title = _b[_l]
+      if (obj.menuName[_a.indexOf(routerMap[k].path)]) {
+        routerMap[k].meta.title = obj.menuName[_a.indexOf(routerMap[k].path)]
       }
       _l++
       _r[0].children.push(routerMap[k])
