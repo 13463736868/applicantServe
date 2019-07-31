@@ -2,7 +2,7 @@
   <div class="_mains">
     <div class="mainHeader">
       <head-top :isRegister="true">
-        <span class="f36 fcf">{{routerTitle}}</span>
+        <span class="f36 fcf _centerTitle">{{routerTitle}}</span>
       </head-top>
     </div>
     <div class="mainCont">
@@ -41,6 +41,9 @@ export default {
 <style lang="scss" scoped>
 @import '@/style/mixin';
 ._mains {
-  @include mw(1180px)
+  @include mw(1180px);
+  ._centerTitle {
+    font-size: 32px;
+  }
 }
 </style>

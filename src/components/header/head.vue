@@ -181,7 +181,7 @@ export default {
   @include wh(100%, 13rem);
   @include mw(1180px);
   .header_top {
-    @include wh(90%, 6rem);
+    @include wh(90%, 4rem);
     @include mw(1180px);
     @include bc;
     .nav {
@@ -190,7 +190,7 @@ export default {
       li {
         padding: 0 15px;
         height: 100%;
-        line-height: 6rem;
+        line-height: 4rem;
         text-align: center;
         color: #fff;
       }
@@ -207,15 +207,15 @@ export default {
       left: 50%;
       -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
-      height: 80px;
-      top: -140px;
+      height: 65px;
+      top: -85px;
     }
     z-index: -1;
     @include wh(100%, 7rem);
     @include mw(1180px);
     @include bc;
     border-top:1px solid #fff;
-    padding-top:40px;
+    padding-top:110px;
   }
 }
 </style>
