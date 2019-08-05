@@ -1,5 +1,5 @@
 <template>
-  <div class="acceCase">
+  <div class="casePool">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
@@ -9,25 +9,14 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
-        <Col span="2" offset="1">
-          <label class="lh32 f16 fc6 fr mr15">状态</label>
-        </Col>
-        <Col span="4">
-          <Select v-model="reviewStatus" @on-change="resChangeStatus()">
-            <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
-        </Col>
-        <Col span="1">
+        <Col span="10">
           &nbsp;
         </Col>
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
+          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量拉取</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -45,37 +34,8 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.acceA" @alertConfirm="acceSave('acceA')" @alertCancel="alertCanc('acceA')" alertTitle="受理案件">
-      <Row class="_labelFor mb10">
-        <Col span="6">
-          <div class="_label">请输入纠纷金额 (元)：</div>
-        </Col>
-        <Col span="16" offset="1">
-          <Input v-model="dataObj.acceAA" @on-change="applMoney"/>
-        </Col>
-        <Col span="16" offset="7">
-          <div class="_em" v-if="emObj.status === 1"><span v-text="emObj.text"></span></div>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6">
-          <div class="_label">仲裁金额：</div>
-        </Col>
-        <Col span="16" offset="1">
-          <Input readonly v-model="dataObj.acceAB"/>
-        </Col>
-      </Row>
-    </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.acceB" @alertConfirm="acceSave('acceB')" @alertCancel="alertCanc('acceB')" alertTitle="驳回案件">
-      <Input v-model="dataObj.acceB" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.retr" @alertConfirm="retrSave" @alertCancel="alertCanc('retr')" alertTitle="操作">
       <p>确定同意撤回案件？</p>
-    </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
-      <p v-if="alertShow.state === 1">确定要受理吗？</p>
-      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
-      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
       <Row class="_labelFor">
@@ -99,6 +59,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <get-case-alert v-if="alertShow.getCase" :getCaseId="alertShow.ids" @saveClick="alertSave('getCase')" @cancClick="alertCanc('getCase')"></get-case-alert>
   </div>
 </template>
 
@@ -107,13 +68,13 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
-import setRegExp from '@/config/regExp.js'
+import getCaseAlert from '@/page/filingSecr/casePool/children/getCaseAlert'
 import { caseInfo } from '@/config/common.js'
 
 export default {
-  name: 'acce_case',
+  name: 'case_pool',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, getCaseAlert },
   data () {
     return {
       spinShow: false,
@@ -132,6 +93,9 @@ export default {
             key: 'caseId',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -222,7 +186,8 @@ export default {
             }
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -234,34 +199,17 @@ export default {
         text: ''
       },
       alertShow: {
-        acceA: false,
-        acceB: false,
         retr: false,
         idsList: [],
         ids: [],
         state: null,
-        batch: false,
-        rejeReason: '',
-        find: false
+        find: false,
+        getCase: false
       },
       dataObj: {
-        acceAA: null,
-        acceAB: null,
-        acceB: null,
-        acceCaseId: null,
         retrCaseId: null
       },
-      reviewStatus: 1,
-      reviewList: [
-        {
-          value: 1,
-          label: '待受理'
-        },
-        {
-          value: 2,
-          label: '待缴费'
-        }
-      ]
+      reviewStatus: 1
     }
   },
   created () {
@@ -280,6 +228,34 @@ export default {
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
+      })
+    },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.cancelFlag !== '1' && _obj.acceptBtnStatus === '1') {
+          this.seleArrChange(index, this.caseList.seleMap[this.pageObj.pageNum])
+        }
       })
     },
     renderHashFlag (h, params) {
@@ -383,37 +359,10 @@ export default {
                 },
                 on: {
                   click: () => {
-                    this.resAcceptCase(1, params.index)
+                    this.resGetCase(params.index)
                   }
                 }
-              }, '受理'),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px',
-                  display: this.resBtnDis('ACCECASE_REJECT')
-                },
-                on: {
-                  click: () => {
-                    this.resAcceptCase(0, params.index)
-                  }
-                }
-              }, '驳回')
-            ])
-          } else if (params.row.acceptBtnStatus === '2') {
-            return h('div', [
-              h('span', {
-                props: {
-                  type: 'text',
-                  size: 'small'
-                },
-                style: {
-                  color: '#2d8cf0'
-                }
-              }, '受理审核中')
+              }, '拉取')
             ])
           } else {
             return h('div', [
@@ -434,7 +383,7 @@ export default {
         state: this.reviewStatus,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        caseListType: 11
+        caseListType: 1
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -451,6 +400,7 @@ export default {
     resSearch () {
       this.search.requestName = ''
       this.search.caseType = ''
+      this.caseList.seleMap = {}
       this.alertCanc('clearIds')
       this.pageObj.pageNum = 1
       this.resCaseList()
@@ -459,119 +409,22 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
-    resChangeStatus () {
-      this.resSearch()
-    },
     resRecallCase (index) {
       this.dataObj.retrCaseId = this.caseList.bodyList[index].caseId
       this.alertShow.retr = true
     },
-    resAcceptCase (status, index) {
-      this.dataObj.acceCaseId = this.caseList.bodyList[index].caseId
-      if (status) {
-        this.alertShow.acceA = true
-        this.dataObj.acceAA = this.caseList.bodyList[index].money
-        this.applMoney()
-      } else {
-        this.alertShow.acceB = true
-      }
+    resGetCase (index) {
+      this.seleArrChange(index, true)
+      this.alertShow.getCase = true
     },
-    applMoney () {
-      if (this.dataObj.acceAA === null || this.dataObj.acceAA === '') {
-        this.emObj.status = 1
-        this.emObj.text = '请填写纠纷金额！'
-        this.dataObj.acceAB = null
-      } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
-        this.emObj.status = 1
-        this.emObj.text = '请输入正确金额格式 例: 10.00 或 10;范围(0~9999999999)'
-        this.dataObj.acceAB = null
-      } else if (this.dataObj.acceAA === '0' || this.dataObj.acceAA === '0.0' || this.dataObj.acceAA === '0.00') {
-        this.emObj.status = 1
-        this.emObj.text = '纠纷金额不能为零！'
-        this.dataObj.acceAB = null
-      } else {
-        this.emObj.status = 0
-        this.emObj.text = ''
-        this.countCost(this.dataObj.acceAA)
-      }
-    },
-    countCost (num) {
-      let _num = +num
-      axios.post('/payMentRequest/findArbitrationFee', {
-        money: _num
-      }).then(res => {
-        this.dataObj.acceAB = res.data.data
-      }).catch(e => {
+    resBatch () {
+      if (this.alertShow.ids.length === 0) {
         this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
+          content: '请先选择一个案件',
           duration: 5
         })
-      })
-    },
-    acceSave (type) {
-      if (type === 'acceA') {
-        if (this.dataObj.acceAA === null || this.dataObj.acceAA === '') {
-          this.$Message.warning({
-            content: '请填写纠纷金额！',
-            duration: 5
-          })
-        } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
-          this.$Message.warning({
-            content: '请正确填写金额格式！',
-            duration: 5
-          })
-        } else {
-          this.alertShow.acceA = false
-          axios.post('/case/updateCaseState', {
-            caseId: this.dataObj.acceCaseId,
-            state: 1,
-            money: this.dataObj.acceAA,
-            cost: this.dataObj.acceAB
-          }).then(res => {
-            this.alertCanc(type)
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
-            this.resSearch()
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      } else if (type === 'acceB') {
-        if (this.dataObj.acceB === null || this.dataObj.acceB === '') {
-          this.$Message.warning({
-            content: '请填写驳回原因！',
-            duration: 5
-          })
-        } else if (!setRegExp(this.dataObj.acceB, 'reject')) {
-          this.$Message.warning({
-            content: '请正确填写驳回原因格式！',
-            duration: 5
-          })
-        } else {
-          this.alertShow.acceB = false
-          axios.post('/case/updateCaseState', {
-            caseId: this.dataObj.acceCaseId,
-            state: 2,
-            reason: this.dataObj.acceB
-          }).then(res => {
-            this.alertCanc(type)
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
-            this.resSearch()
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
+      } else {
+        this.alertShow.getCase = true
       }
     },
     retrSave () {
@@ -671,74 +524,6 @@ export default {
         }
       }
     },
-    resBatch (type) {
-      if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
-      } else {
-        this.alertShow.state = type
-        this.alertShow.batch = true
-      }
-    },
-    batchSave () {
-      if (this.alertShow.state === 2) {
-        if (this.alertShow.rejeReason === '') {
-          this.$Message.warning({
-            content: '请填写驳回原因',
-            duration: 5
-          })
-        } else {
-          this.alertShow.batch = false
-          axios.put('/caseBatch/updateCaseState_batch', {
-            reason: this.alertShow.rejeReason,
-            items: JSON.stringify(this.alertShow.idsList),
-            state: this.alertShow.state + ''
-          }, {
-            headers: {
-              'content-Type': 'application/json;charset=UTF-8'
-            }
-          }).then(res => {
-            this.alertCanc('batch')
-            this.$Message.success({
-              content: res.data.data,
-              duration: 2
-            })
-            this.resSearch()
-          }).catch(e => {
-            this.alertCanc('batch')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      } else {
-        this.alertShow.batch = false
-        axios.put('/caseBatch/updateCaseState_batch', {
-          items: JSON.stringify(this.alertShow.idsList),
-          state: this.alertShow.state + ''
-        }, {
-          headers: {
-            'content-Type': 'application/json;charset=UTF-8'
-          }
-        }).then(res => {
-          this.alertCanc('batch')
-          this.$Message.success({
-            content: res.data.data,
-            duration: 2
-          })
-          this.resSearch()
-        }).catch(e => {
-          this.alertCanc('batch')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
-    },
     resFind () {
       this.alertCanc('find')
       this.alertShow.find = true
@@ -750,25 +535,16 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    alertSave (type) {
+      if (type === 'getCase') {
+        this.alertCanc(type)
+        this.resSearch()
+      }
+    },
     alertCanc (type) {
-      if (type === 'acceA') {
-        this.alertShow.acceA = false
-        this.dataObj.acceAA = null
-        this.dataObj.acceAB = null
-        this.dataObj.acceCaseId = null
-        this.emObj.status = 0
-        this.emObj.text = ''
-      } else if (type === 'acceB') {
-        this.alertShow.acceB = false
-        this.dataObj.acceB = null
-        this.dataObj.acceCaseId = null
-      } else if (type === 'retr') {
+      if (type === 'retr') {
         this.alertShow.retr = false
         this.dataObj.retrCaseId = null
-      } else if (type === 'batch') {
-        this.alertShow.rejeReason = ''
-        this.alertShow.state = null
-        this.alertShow.batch = false
       } else if (type === 'find') {
         this.alertShow.find = false
         this.search.requestName = ''
@@ -777,6 +553,9 @@ export default {
         // this.search.requestNameList = []
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
+        this.alertShow.ids = []
+      } else if (type === 'getCase') {
+        this.alertShow.getCase = false
         this.alertShow.ids = []
       }
     },
