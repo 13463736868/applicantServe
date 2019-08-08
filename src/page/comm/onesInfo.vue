@@ -160,7 +160,7 @@ export default {
         let _data = res.data.data
         this.dataObj = _data
         if (type) {
-          if (_data.role.name === '仲裁员') {
+          if (_data.role.name !== 'admin' && _data.role.name !== 'modelmanger') {
             this.fileObjShow = true
             if (_data.fileId !== null) {
               this.resGetFile(_data.fileId)

@@ -32,7 +32,7 @@
         </Col>
         <Col span="4" class="tc">
           <Button type="primary" class="mr10" @click="resSearch">查询</Button>
-          <Button type="primary" @click="resAction('assignAll', null)">批量分配</Button>
+          <Button type="primary" @click="resAction('assignAll', null)" :style="{display: resBtnDis('TRANRECOD_BATCHASSIGN')}">批量分配</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -40,7 +40,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
-                <Button v-if="row.buttonFlag" class="mr5" type="primary" size="small" @click="resAction('assign', row)">分配</Button>
+                <Button v-if="row.buttonFlag" class="mr5" type="primary" size="small" @click="resAction('assign', row)" :style="{display: resBtnDis('TRANRECOD_ASSIGN')}">分配</Button>
               </template>
             </Table>
           </Col>
@@ -61,12 +61,14 @@
 <script>
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
+import {resBtn} from '@/components/common/mixin.js'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
 import resAssigAlert from '@/page/arbitratComm/tranReco/children/resAssigAlert'
 
 export default {
   name: 'tran_reco_d',
+  mixins: [resBtn],
   components: { spinComp, resAssigAlert },
   data () {
     return {
