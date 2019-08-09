@@ -202,7 +202,7 @@ export default {
       pageObj: {
         total: 0,
         pageNum: 1,
-        pageSize: 3
+        pageSize: 10
       },
       alertShow: {
         assigModel: false,

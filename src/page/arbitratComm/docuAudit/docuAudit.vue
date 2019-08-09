@@ -19,7 +19,16 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resSeeDocu(row.filePath)">预览文书</Button>
+                <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
+                  <Button v-if="row.type === 1 || row.type === 2" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
+                </div>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -63,6 +72,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('editDocu')" @alertCancel="alertCanc('editDocu')"></alert-editor>
   </div>
 </template>
 
@@ -72,11 +82,12 @@ import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
+import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
 
 export default {
   name: 'docu_audit',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, alertEditor },
   data () {
     return {
       spinShow: false,
@@ -178,9 +189,7 @@ export default {
             key: 'id',
             align: 'center',
             minWidth: 98,
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -199,7 +208,10 @@ export default {
         idsList: [],
         ids: [],
         batch: false,
-        find: false
+        find: false,
+        editor: false,
+        caseId: null,
+        docuType: null
       }
     }
   },
@@ -220,76 +232,6 @@ export default {
           duration: 5
         })
       })
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.caseDocuemntApproveState === null || _obj.caseDocuemntApproveState === 3) {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('DOCUAUDIT_PREVIWDOC')
-            },
-            on: {
-              click: () => {
-                this.resSeeDocu(params.row.filePath)
-              }
-            }
-          }, '预览文书'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('DOCUAUDIT_PASS')
-            },
-            on: {
-              click: () => {
-                this.resSaveDocu(params.index)
-              }
-            }
-          }, '通过'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('DOCUAUDIT_NOPASS')
-            },
-            on: {
-              click: () => {
-                this.resCancDocu(params.index)
-              }
-            }
-          }, '驳回')
-        ])
-      } else {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('DOCUAUDIT_PREVIWDOC')
-            },
-            on: {
-              click: () => {
-                this.resSeeDocu(params.row.filePath)
-              }
-            }
-          }, '预览文书')
-        ])
-      }
     },
     resCaseList () {
       this.spinShow = true
@@ -548,6 +490,21 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resEditDocu (index) {
+      let info = this.caseList.bodyList[index]
+      this.alertShow.caseId = info.id
+      this.alertShow.docuType = info.type
+      this.alertShow.editor = true
+    },
+    alertSave (type) {
+      if (type === 'editDocu') {
+        this.alertShow.editor = false
+        this.alertShow.caseId = null
+        this.alertShow.docuType = null
+        this.pageObj.pageNum = 1
+        this.resCaseList()
+      }
+    },
     alertCanc (type) {
       if (type === 'docu') {
         this.alertShow.docu = false
@@ -565,6 +522,10 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+      } else if (type === 'editDocu') {
+        this.alertShow.editor = false
+        this.alertShow.caseId = null
+        this.alertShow.docuType = null
       }
     }
   }
@@ -585,6 +546,15 @@ export default {
   }
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
   }
 }
 </style>
