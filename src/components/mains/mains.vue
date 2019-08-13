@@ -35,6 +35,9 @@ export default {
       this.watermark = JSON.parse(window.localStorage.getItem('usersInfo')).loginname
       watermark.set(this.watermark)
     }
+  },
+  destroyed () {
+    watermark.set('')
   }
 }
 </script>

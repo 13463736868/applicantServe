@@ -91,6 +91,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
   </div>
 </template>
 
@@ -99,12 +100,13 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, groupApprForm },
   data () {
     return {
       spinShow: false,
@@ -254,7 +256,11 @@ export default {
         pageNum: 1,
         pageSize: 5
       },
-      searchText: ''
+      searchText: '',
+      formObj: {
+        caseId: null,
+        filing: false
+      }
     }
   },
   created () {
@@ -348,7 +354,22 @@ export default {
                 this.resAssign(params.index)
               }
             }
-          }, '指定仲裁员')
+          }, '指定仲裁员'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: this.resBtnDis('GROUPAUDIT_APPROVAL')
+            },
+            on: {
+              click: () => {
+                this.resAction('groupForm', params.row)
+              }
+            }
+          }, '组庭审批表')
         ])
       } else {
         if (_obj.passFlag === 2) {
@@ -383,7 +404,22 @@ export default {
                   this.resAssignRest(params.index)
                 }
               }
-            }, '重新指定仲裁员')
+            }, '重新指定仲裁员'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPAUDIT_APPROVAL')
+              },
+              on: {
+                click: () => {
+                  this.resAction('groupForm', params.row)
+                }
+              }
+            }, '组庭审批表')
           ])
         } else {
           return h('div', [
@@ -785,6 +821,24 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'groupForm':
+          this.formObj.caseId = data.id
+          this.formObj.filing = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'groupForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'agre') {
         this.alertShow.agre = false
@@ -811,6 +865,9 @@ export default {
         this.alertShow.idsList = []
         this.alertShow.ids = []
         this.alertShow.state = []
+      } else if (type === 'groupForm') {
+        this.formObj.filing = false
+        this.formObj.caseId = null
       }
     }
   }

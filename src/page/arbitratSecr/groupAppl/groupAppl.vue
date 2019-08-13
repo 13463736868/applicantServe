@@ -31,6 +31,7 @@
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resAction('succForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resPassReve(index)">同意撤回</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resPassReve(index)">重新生成撤回书</Button>
@@ -155,6 +156,7 @@
       <upload-book childName="批量导入修改" :fileType="['xlsx']" :uploadUrl="resUploadUrl" @saveClick="batchUpSave" @cancClick="alertCanc('batchUp')"></upload-book>
     </alert-btn-info>
     <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
+    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSava('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
   </div>
 </template>
 
@@ -166,13 +168,14 @@ import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadBook from '@/components/common/uploadBook'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
+import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_appl',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal },
+  components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal, groupApprForm },
   data () {
     return {
       spinShow: false,
@@ -376,6 +379,10 @@ export default {
         batchUp: false,
         editDataModal: false,
         editDataId: null
+      },
+      formObj: {
+        caseId: null,
+        filing: false
       }
     }
   },
@@ -1045,6 +1052,24 @@ export default {
           break
       }
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'succForm':
+          this.formObj.caseId = data.id
+          this.formObj.filing = true
+          break
+      }
+    },
+    alertSava (type) {
+      switch (type) {
+        case 'succForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -1100,6 +1125,9 @@ export default {
       } else if (type === 'editData') {
         this.alertShow.editDataId = null
         this.alertShow.editDataModal = false
+      } else if (type === 'succForm') {
+        this.formObj.filing = false
+        this.formObj.caseId = null
       }
     },
     seeDoc (path) {

@@ -182,6 +182,24 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/groupAppl/groupAppl.vue')))
   },
   {
+    path: '/remuneAudit',
+    name: 'remuneAudit',
+    meta: {
+      requireAuth: true,
+      title: '组庭申请'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/remuneAudit/remuneAudit.vue')))
+  },
+  {
+    path: '/endCaseAudit',
+    name: 'endCaseAudit',
+    meta: {
+      requireAuth: true,
+      title: '组庭申请'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCaseAudit/endCaseAudit.vue')))
+  },
+  {
     path: '/acceCase',
     name: 'acceCase',
     meta: {

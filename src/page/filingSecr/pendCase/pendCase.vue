@@ -80,6 +80,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
   </div>
 </template>
 
@@ -88,12 +89,13 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, filingCaseForm },
   data () {
     return {
       spinShow: false,
@@ -193,7 +195,22 @@ export default {
                         this.resConfCase(params.index)
                       }
                     }
-                  }, '确认立案')
+                  }, '确认立案'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASE_APPROVAL')
+                    },
+                    on: {
+                      click: () => {
+                        this.resAction('pendForm', params.row)
+                      }
+                    }
+                  }, '立案审批表')
                 ])
               } else if (params.row.pendBtnStatus === '2') {
                 return h('div', [
@@ -233,7 +250,11 @@ export default {
         confCosts: null,
         confType: null
       },
-      caseTypeList: []
+      caseTypeList: [],
+      formObj: {
+        caseId: null,
+        filing: false
+      }
     }
   },
   created () {
@@ -480,6 +501,24 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'pendForm':
+          this.formObj.caseId = data.caseId
+          this.formObj.filing = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'pendForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'conf') {
         this.alertShow.conf = false
@@ -498,6 +537,9 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+      } else if (type === 'pendForm') {
+        this.formObj.filing = false
+        this.formObj.caseId = null
       }
     },
     goCaseInfo (index) {

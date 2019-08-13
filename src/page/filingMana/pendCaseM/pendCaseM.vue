@@ -62,6 +62,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
   </div>
 </template>
 
@@ -70,11 +71,12 @@ import axios from 'axios'
 import { mapGetters } from 'vuex'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, filingCaseForm },
   data () {
     return {
       spinShow: false,
@@ -192,7 +194,22 @@ export default {
                         })
                       }
                     }
-                  }, '驳回')
+                  }, '驳回'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASEM_APPROVAL')
+                    },
+                    on: {
+                      click: () => {
+                        this.resAction('pendForm', params.row)
+                      }
+                    }
+                  }, '立案审批表')
                 ])
               } else {
                 return h('div', [
@@ -221,7 +238,11 @@ export default {
         confType: null
       },
       caseTypeList: [],
-      btnMap: null
+      btnMap: null,
+      formObj: {
+        caseId: null,
+        filing: false
+      }
     }
   },
   created () {
@@ -469,6 +490,24 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'pendForm':
+          this.formObj.caseId = data.caseId
+          this.formObj.filing = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'pendForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'conf') {
         this.alertShow.conf = false
@@ -485,6 +524,9 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+      } else if (type === 'pendForm') {
+        this.formObj.filing = false
+        this.formObj.caseId = null
       }
     },
     goCaseInfo (index) {

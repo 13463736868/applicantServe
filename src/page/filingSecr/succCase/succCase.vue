@@ -53,6 +53,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
   </div>
 </template>
 
@@ -61,13 +62,14 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'succ_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, groupApprForm },
   data () {
     return {
       dateDisa: {
@@ -176,7 +178,22 @@ export default {
                           this.resSendDo(params.index)
                         }
                       }
-                    }, '线下送达')
+                    }, '线下送达'),
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px',
+                        display: this.resBtnDis('SUCCCASE_APPROVAL')
+                      },
+                      on: {
+                        click: () => {
+                          this.resAction('succForm', params.row)
+                        }
+                      }
+                    }, '组庭审批表')
                   ])
                 } else if (_state === '6') {
                   return h('div', [
@@ -313,6 +330,10 @@ export default {
         id: null,
         show: false,
         servDate: ''
+      },
+      formObj: {
+        caseId: null,
+        filing: false
       }
     }
   },
@@ -456,6 +477,24 @@ export default {
         })
       })
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'succForm':
+          this.formObj.caseId = data.caseId
+          this.formObj.filing = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'succForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'file') {
         this.alertObj.file = false
@@ -471,6 +510,9 @@ export default {
         this.sendDocObj.show = false
         this.sendDocObj.servDate = ''
         this.sendDocObj.id = null
+      } else if (type === 'succForm') {
+        this.formObj.filing = false
+        this.formObj.caseId = null
       }
     },
     seeDoc (path) {
