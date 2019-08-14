@@ -61,7 +61,7 @@
                   <b>元</b>
                 </Col>
                 <Col span="4" offset="4">
-                  <b>应收受理费:</b>
+                  <b>实收受理费:</b>
                 </Col>
                 <Col span="4">
                   <Input v-model="form.accFee" :disabled="form.editableText.split(',').indexOf('accFee') < 0" placeholder="请输入实收受理费..."/>
@@ -316,11 +316,10 @@ export default {
       if (type === 3) {
         axios.post('/approvalForm/saveData', {
           caseId: this.caseId,
-          type: '23',
+          type: '24',
           jsonData: JSON.stringify(this.form)
         }).then(res => {
           this.alertShow = false
-          this.$emit('alertConfirm')
           this.$Message.success({
             content: '操作成功',
             duration: 2
@@ -407,7 +406,7 @@ export default {
     }
     .oneRightBor,.threeRightBor{
       border-right: 1px solid black;
-      line-height: 50px;
+      line-height: 46px;
     }
     .threeRightBor{
       border-left: 1px solid black;
@@ -449,8 +448,8 @@ table span {
   height: 50px;
   /* margin-bottom: 10px; */
   // line-height: 70px;
-  .ivu-col-span-2,.ivu-col-span-8{
-    line-height: 50px;
+  .ivu-col-span-2,.ivu-col-span-8 {
+    line-height: 48px;
     padding-top: 2px
   }
   img{

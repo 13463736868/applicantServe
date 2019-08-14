@@ -17,6 +17,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('ENDCASEAUDIT_AUDIT')}" class="mr5" type="primary" size="small" v-if="row.auditButtonFlag" @click="resAction('endForm', row)">审核</Button>
                 <Button :style="{display: resBtnDis('ENDCASEAUDIT_STARTPROCESS')}" class="mr5" type="primary" size="small" v-if="row.startButtonFlag" @click="resAction('startEndForm', row)">发起审批</Button>
+                <Button :style="{display: resBtnDis('ENDCASEAUDIT_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看</Button>
               </template>
             </Table>
           </Col>
@@ -181,6 +182,19 @@ export default {
         case 'startEndForm':
           this.formObj.caseId = data.id
           this.formObj.start = true
+          break
+        case 'seeForm':
+          axios.post('/approvalForm/queryUrl', {
+            caseId: data.id,
+            type: '23'
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
           break
       }
     },

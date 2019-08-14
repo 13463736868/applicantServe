@@ -87,9 +87,18 @@ const routerMap = [
     name: 'tranRecoD',
     meta: {
       requireAuth: true,
-      title: '案件查询'
+      title: '案件分配'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranReco/tranReco.vue')))
+  },
+  {
+    path: '/tranForm',
+    name: 'tranForm',
+    meta: {
+      requireAuth: true,
+      title: '案件查询'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranForm/tranForm.vue')))
   },
   {
     path: '/docuAudit',

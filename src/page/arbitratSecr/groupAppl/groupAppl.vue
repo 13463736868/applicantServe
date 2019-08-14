@@ -650,7 +650,7 @@ export default {
         }
       }
     },
-    seeSave (type) {
+    seeDocu (type) {
       if (type === 'reve') {
         if (this.alertObj.contractName === '') {
           this.$Message.warning({

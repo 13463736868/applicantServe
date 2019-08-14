@@ -195,7 +195,6 @@ export default {
           jsonData: JSON.stringify(this.form)
         }).then(res => {
           this.alertShow = false
-          this.$emit('alertConfirm')
           this.$Message.success({
             content: '操作成功',
             duration: 2
