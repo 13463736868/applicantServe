@@ -159,7 +159,7 @@ export default {
             align: 'center'
           },
           {
-            title: '第一秘书',
+            title: '秘书',
             key: 'firstSecretary',
             tooltip: 'true',
             align: 'center'

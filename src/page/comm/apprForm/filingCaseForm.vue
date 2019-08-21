@@ -2,130 +2,138 @@
   <div class="filingForm">
     <Modal v-model="alertShow" :mask-closable="false" :closable="false" width="1000">
       <div class="tableBox" v-if="form !== null">
-        <table border="1" width="100%">
-          <caption class="title">
+        <table border="0" width="100%" cellSpacing="0">
+          <caption class="f35 h60 lh60">
             <p>立 案 审 批 表</p>
           </caption>
-          <caption class="rightDe">青仲立字({{form.codeYear}})第{{form.codeNum}}号</caption>
+          <caption class="tr f16 h60 lh60">青仲立字({{form.codeYear}})第{{form.codeNum}}号</caption>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tc w120">
               <span>申请人</span>
             </td>
-            <td class="h70" colspan="6">
-              <Input v-model="form.propName" :disabled="form.editableText.split(',').indexOf('propName') < 0" placeholder="请输入申请人..." />
+            <td class="tdb tdl" colspan="6">
+              <Input class="_input" v-model="form.propName" :disabled="form.editableText.split(',').indexOf('propName') < 0" placeholder="请输入申请人..." />
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tc" >
               <span>被申请人</span>
             </td>
-            <td class="h70" colspan="6">
-              <Input v-model="form.repoName" :disabled="form.editableText.split(',').indexOf('repoName') < 0" placeholder="请输入被申请人..." />
+            <td class="tdb tdl" colspan="6">
+              <Input class="_input" v-model="form.repoName" :disabled="form.editableText.split(',').indexOf('repoName') < 0" placeholder="请输入被申请人..." />
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tc" >
               <span>案由</span>
             </td>
-            <td class="h70" colspan="6">
-              <Input v-model="form.disputeType" :disabled="form.editableText.split(',').indexOf('disputeType') < 0" placeholder="请输入案由..." />
+            <td class="tdb tdl" colspan="6">
+              <Input class="_input" v-model="form.disputeType" :disabled="form.editableText.split(',').indexOf('disputeType') < 0" placeholder="请输入案由..." />
             </td>
           </tr>
           <tr>
-            <td class="h180 w120" >
+            <td class="tdb tc" >
               <span>请求事项</span>
             </td>
-            <td class="h180" colspan="6">
-              <Input v-model="form.requestContent" type="textarea" :disabled="form.editableText.split(',').indexOf('requestContent') < 0" placeholder="请输入请求事项..." />
+            <td class="tdb tdl" colspan="6">
+              <Input :autosize="{minRows: 4,maxRows: 5}" v-model="form.requestContent" type="textarea" :disabled="form.editableText.split(',').indexOf('requestContent') < 0" placeholder="请输入请求事项..." />
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tc" >
               <span>争议标的额</span>
             </td>
-            <td class="h70" colspan="6">
-              <Input v-model="form.money" :disabled="form.editableText.split(',').indexOf('money') < 0" placeholder="请输入争议标的额..." />
+            <td class="tdb tdl" colspan="6">
+              <Input class="_input" v-model="form.money" :disabled="form.editableText.split(',').indexOf('money') < 0" placeholder="请输入争议标的额..." />
             </td>
           </tr>
           <tr>
-            <td class="h70 w120">
+            <td class="tdb tc">
               <span>预收仲裁费</span>
             </td>
-            <td class="h70 w100">
+            <td class="tdb tdl w80 tc">
               <span>受理费</span>
             </td>
-            <td class="h70 w100">
-              <Input v-model="form.accFee" :disabled="form.editableText.split(',').indexOf('accFee') < 0" placeholder="请输入受理费..." />
+            <td class="tdb tdl">
+              <Input class="_input" v-model="form.accFee" :disabled="form.editableText.split(',').indexOf('accFee') < 0" placeholder="请输入受理费..." />
             </td>
-            <td class="h70 w100">
+            <td class="tdb tdl w80 tc">
               <span>处理费</span>
             </td>
-            <td class="h70 w100">
-              <Input v-model="form.procFee" :disabled="form.editableText.split(',').indexOf('procFee') < 0" placeholder="请输入处理费..." />
+            <td class="tdb tdl">
+              <Input class="_input" v-model="form.procFee" :disabled="form.editableText.split(',').indexOf('procFee') < 0" placeholder="请输入处理费..." />
             </td>
-            <td class="h70 w100">
+            <td class="tdb tdl w80 tc">
               <span>合计</span>
             </td>
-            <td class="h70 w100">
-              <Input v-model="form.cost" :disabled="form.editableText.split(',').indexOf('cost') < 0" placeholder="请输入合计费用..." />
+            <td class="tdb tdl">
+              <Input class="_input" v-model="form.cost" :disabled="form.editableText.split(',').indexOf('cost') < 0" placeholder="请输入合计费用..." />
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tc" rowspan="2">
               <span>秘书建议</span>
             </td>
-            <td class="h180" colspan="6">
-              <div style="height:100%">
-                <div style="height:75%">
-                  <Input v-model="form.secApprovalContent" :disabled="form.editableText.split(',').indexOf('secApprovalContent') < 0" type="textarea" placeholder="请输入意见..."/>
-                </div>
-                <div style="height:25%">
-                  <Row class="_labelFor">
-                    <Col span="2">
-                      <b>秘书：</b>
-                    </Col>
-                    <Col span="4">
-                      <img :src="form.secNamePath" class="h30" v-show="form.secNamePath !== ''">
-                    </Col>
-                    <Col span="8" offset="8">
-                      <span>{{form.secApprovalTime}}</span>
-                    </Col>
-                  </Row>
+            <td class="tdb tdl" colspan="6">
+              <div>
+                <div>
+                  <Input :autosize="{minRows: 5,maxRows: 7}" v-model="form.secApprovalContent" :disabled="form.editableText.split(',').indexOf('secApprovalContent') < 0" type="textarea" placeholder="请输入意见..."/>
                 </div>
               </div>
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tdl _h50 lh50" colspan="6">
+              <div>
+                <Row>
+                  <Col span="2">
+                    <b>秘书：</b>
+                  </Col>
+                  <Col span="4">
+                    <img class="_img" :src="form.secNamePath" v-show="form.secNamePath !== ''">
+                  </Col>
+                  <Col span="8" offset="8">
+                    <span>{{form.secApprovalTime}}</span>
+                  </Col>
+                </Row>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tdb tc" rowspan="2">
               <span>受案处意见</span>
             </td>
-            <td class="h150" colspan="6">
-              <div style="height:100%">
-                <div style="height:70%">
-                  <Input v-model="form.dirApprovalContent" :disabled="form.editableText.split(',').indexOf('dirApprovalContent') < 0" type="textarea" placeholder="请输入意见..."/>
-                </div>
-                <div style="height:30%">
-                  <Row class="_labelFor">
-                    <Col span="2">
-                      <b>处长：</b>
-                    </Col>
-                    <Col span="4">
-                      <img :src="form.dirNamePath" v-show="form.dirNamePath !== ''" class="h30">
-                    </Col>
-                    <Col span="8" offset="8">
-                      <span>{{form.dirApprovalTime}}</span>
-                    </Col>
-                  </Row>
+            <td class="tdb tdl" colspan="6">
+              <div>
+                <div>
+                  <Input :autosize="{minRows: 5,maxRows: 7}" v-model="form.dirApprovalContent" :disabled="form.editableText.split(',').indexOf('dirApprovalContent') < 0" type="textarea" placeholder="请输入意见..."/>
                 </div>
               </div>
             </td>
           </tr>
           <tr>
-            <td class="h70 w120" >
+            <td class="tdb tdl _h50 lh50" colspan="6">
+              <div class="">
+                <Row>
+                  <Col span="2">
+                    <b>处长：</b>
+                  </Col>
+                  <Col span="4">
+                    <img class="_img" :src="form.dirNamePath" v-show="form.dirNamePath !== ''">
+                  </Col>
+                  <Col span="8" offset="8">
+                    <span>{{form.dirApprovalTime}}</span>
+                  </Col>
+                </Row>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td class="tc">
               <span>备注</span>
             </td>
-            <td class="h70" colspan="6">
-              <Input v-model="form.remark" type="textarea" :disabled="form.editableText.split(',').indexOf('remark') < 0" placeholder="请输入备注..." />
+            <td class="tdl" colspan="6">
+              <Input :autosize="{minRows: 4,maxRows: 5}" v-model="form.remark" type="textarea" :disabled="form.editableText.split(',').indexOf('remark') < 0" placeholder="请输入备注..." />
             </td>
           </tr>
         </table>
@@ -145,7 +153,8 @@ export default {
   data () {
     return {
       alertShow: true,
-      form: null
+      form: null,
+      switchObj: false
     }
   },
   created () {
@@ -167,80 +176,69 @@ export default {
       })
     },
     alertConfirm () {
+      if (this.switchObj) {
+        return false
+      }
+      this.switchObj = true
       axios.post('/approvalForm/saveData', {
         caseId: this.caseId,
         type: '21',
         jsonData: JSON.stringify(this.form)
       }).then(res => {
-        this.alertShow = false
         this.$emit('alertConfirm')
         this.$Message.success({
           content: '操作成功',
           duration: 2
         })
+        this.switchObj = false
       }).catch(e => {
-        this.alertShow = false
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
+        this.switchObj = false
       })
     },
     alertCancel () {
-      this.alertShow = false
       this.$emit('alertCancel')
     }
   }
 }
 </script>
 <style lang="scss" scoped>
-@import "@/style/mixin.scss";
 .tableBox {
-  width: 800px;
-  margin: 60px auto;
-  font-size: 14px;
-  // text-align: center;
-  p {
-    font-size: 35px;
-    height: 60px;
-    line-height: 50px;
+  width: 840px;
+  margin: 50px auto;
+  table {
+    border: 1px solid #666;
+    tr td {
+      height: 50px;
+    }
+    ._h50 {
+      height: 50px;
+    }
+    .tdb {
+      border-bottom: 1px solid #666;
+    }
+    .tdl {
+      border-left: 1px solid #666;
+    }
+    ._img {
+      height: 35px;
+      vertical-align: middle;
+    }
   }
-  .rightDe {
-    text-align: right;
-    height: 60px;
-    line-height: 50px;
-    font-size: 16px;
-  }
-}
-table {
-  border-collapse: collapse;
-  text-align: center;
-  margin: 0 auto;
-}
-table span {
-  display: inline-block;
-  // width: 120px;
 }
 </style>
 <style lang="scss">
-.tableBox .ivu-input {
-  height: 100% !important;
-  border: 0 !important;
-  font-size: 14px;
-}
-.tableBox .ivu-input-wrapper-default {
-  height: 100% !important;
-}
-.tableBox .ivu-input[disabled]{
-  color: black
-}
-
-.tableBox ._labelFor {
-  height: 40px;
-  /* margin-bottom: 10px; */
-  line-height: 30px;
-  .ivu-col-span-2,.ivu-col-span-4,.ivu-col-span-8{
-    padding-top: 2px
+.tableBox {
+  table {
+    ._input .ivu-input.ivu-input-default {
+      box-sizing: border-box;
+      height: 50px;
+      color: #333;
+      font-size: 14px;
+    }
   }
 }
 </style>

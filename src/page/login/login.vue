@@ -46,6 +46,9 @@
         </div>
       </div>
     </div>
+    <div class="tc fc6 _footerFont">
+      <p>CopyRight © 版权所有: 青岛仲裁委员会 技术支持：北京知仲科技有限公司（010-64170741）</p>
+    </div>
   </div>
 </template>
 
@@ -73,7 +76,7 @@ export default {
           width: '210px',
           position: 'absolute',
           top: '20px',
-          right: '20px',
+          left: '20px',
           userSelect: 'none'
         }
       },
@@ -233,7 +236,7 @@ export default {
 ._login {
   width: 100%;
   height: 100%;
-  background: url('/static/images/login_bg.png') no-repeat center center;
+  // background: url('/static/images/login_bg.png') no-repeat center center;
   background-size: cover;
   display: flex;
   flex-direction: column;
@@ -307,6 +310,12 @@ export default {
         }
       }
     }
+  }
+  ._footerFont {
+     position: absolute;
+     bottom: 10%;
+     right: 50%;
+     transform: translate(50%, -50%);
   }
 }
 </style>

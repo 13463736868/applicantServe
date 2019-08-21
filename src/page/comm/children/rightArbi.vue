@@ -11,15 +11,22 @@
               <div><b v-text="dataArb.enName"></b></div>
             </div>
             <p>
-              <span class="mr10"><b>电话 :</b></span>
-              <!-- <span class="mr10" v-text="dataArb.phone"></span> -->
-              <ul class="tc" :style="{marginTop: index === 0 ? '-18px' : ''}" v-for="(item, index) in dataArb.phone.split(',')" :key="index">
-                <li class="mr10" v-text="item"></li>
-              </ul>
+              <Row>
+                <Col class="tr" span="6"><span class="mr10"><b>电话 :</b></span></Col>
+                <Col span="18">
+                  <ul v-for="(item, index) in dataArb.phone.split(',')" :key="index">
+                    <li class="mr10" v-text="item"></li>
+                  </ul>
+                </Col>
+              </Row>
             </p>
             <p>
-              <span class="mr10"><b>地址 :</b></span>
-              <span class="mr10" v-text="dataArb.address"></span>
+              <Row>
+                <Col class="tr" span="6"><span class="mr10"><b>地址 :</b></span></Col>
+                <Col span="18">
+                  <span class="mr10" v-text="dataArb.address"></span>
+                </Col>
+              </Row>
             </p>
           </Col>
         </Row>

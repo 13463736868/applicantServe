@@ -5,61 +5,189 @@
         <Row v-if="infoData.type === 1">
           <Col span="22" offset="1">
             <p>
-              <span class="mr10">姓名 :</span>
-              <span v-text="infoData.name"></span>
-              <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
-              </span>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">姓名 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.name"></span>
+                  <span class="_icon">
+                    <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
+                  </span>
+                </Col>
+              </Row>
             </p>
-            <p><span class="mr10" v-text="infoData.idcardTypeName"></span><span v-text="infoData.idcard"></span></p>
-            <p><span class="mr10">送达手机 :</span><span v-text="infoData.phone"></span></p>
-            <p><span class="mr10">送达邮箱 :</span><span v-text="infoData.email"></span></p>
-            <p><span class="mr10">联系地址 :</span><span v-text="infoData.address"></span></p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10" v-text="infoData.idcardTypeName + ' :'"></span></Col>
+                <Col span="18">
+                  <span v-text="infoData.idcard"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.phone"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.email"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.address"></span>
+                </Col>
+              </Row>
+            </p>
           </Col>
         </Row>
         <Row v-else-if="infoData.type === 2">
           <Col span="22" offset="1">
             <p>
-              <span class="mr10">企业名 :</span>
-              <span v-text="infoData.enterpriseName"></span>
-              <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
-              </span>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">企业名 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseName"></span>
+                  <span class="_icon">
+                    <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
+                  </span>
+                </Col>
+              </Row>
             </p>
-            <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
-            <p><span class="mr10">送达手机 :</span><span v-text="infoData.phone"></span></p>
-            <p><span class="mr10">送达邮箱 :</span><span v-text="infoData.email"></span></p>
-            <p><span class="mr10">联系地址 :</span><span v-text="infoData.address"></span></p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseIdcard"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.phone"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.email"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.address"></span>
+                </Col>
+              </Row>
+            </p>
           </Col>
         </Row>
         <Row v-else-if="infoData.type === 3">
           <Col span="22" offset="1">
             <p>
-              <span class="mr10">名称 :</span>
-              <span v-text="infoData.enterpriseName"></span>
-              <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
-              </span>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">名称 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseName"></span>
+                  <span class="_icon">
+                    <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
+                  </span>
+                </Col>
+              </Row>
             </p>
-            <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
-            <p><span class="mr10">送达手机 :</span><span v-text="infoData.phone"></span></p>
-            <p><span class="mr10">送达邮箱 :</span><span v-text="infoData.email"></span></p>
-            <p><span class="mr10">联系地址 :</span><span v-text="infoData.address"></span></p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseIdcard"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.phone"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.email"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.address"></span>
+                </Col>
+              </Row>
+            </p>
           </Col>
         </Row>
         <Row v-else-if="infoData.type === 4">
           <Col span="22" offset="1">
             <p>
-              <span class="mr10">组织名称 :</span>
-              <span v-text="infoData.enterpriseName"></span>
-              <span class="_icon">
-                <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
-              </span>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">组织名称 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseName"></span>
+                  <span class="_icon">
+                    <Icon @click="seeInfo" class="_see" type="md-eye"></Icon>
+                  </span>
+                </Col>
+              </Row>
             </p>
-            <p><span class="mr10" v-text="infoData.enterpriseTypeName"></span><span v-text="infoData.enterpriseIdcard"></span></p>
-            <p><span class="mr10">送达手机 :</span><span v-text="infoData.phone"></span></p>
-            <p><span class="mr10">送达邮箱 :</span><span v-text="infoData.email"></span></p>
-            <p><span class="mr10">联系地址 :</span><span v-text="infoData.address"></span></p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col span="18">
+                  <span v-text="infoData.enterpriseIdcard"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.phone"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.email"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col span="18">
+                  <span v-text="infoData.address"></span>
+                </Col>
+              </Row>
+            </p>
           </Col>
         </Row>
       </Col>

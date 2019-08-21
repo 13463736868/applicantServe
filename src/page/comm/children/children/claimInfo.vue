@@ -5,16 +5,28 @@
         <Row>
           <Col span="22" offset="1">
             <p>
-              <span class="mr10">申请人 :</span>
-              <span v-text="infoData.name"></span>
+              <Row>
+                <Col class="tr" span="4"><span class="mr10">申请人 :</span></Col>
+                <Col span="20">
+                  <span v-text="infoData.name"></span>
+                </Col>
+              </Row>
             </p>
             <p>
-              <span class="mr10">请求项内容 :</span>
-              <span v-text="infoData.content"></span>
+              <Row>
+                <Col class="tr" span="4"><span class="mr10">请求项内容 :</span></Col>
+                <Col span="20">
+                  <span v-text="infoData.content"></span>
+                </Col>
+              </Row>
             </p>
             <p>
-              <span class="mr10">请求金额(元) :</span>
-              <span v-text="infoData.disputeFee"></span>
+              <Row>
+                <Col class="tr" span="4"><span class="mr10">请求金额(元) :</span></Col>
+                <Col span="20">
+                  <span v-text="infoData.disputeFee"></span>
+                </Col>
+              </Row>
             </p>
           </Col>
         </Row>

@@ -180,6 +180,7 @@ export default {
                       size: 'small'
                     },
                     style: {
+                      marginRight: '5px',
                       marginTop: '5px',
                       display: this.resBtnDis('CLOSECASE_OFFLINEARR')
                     },

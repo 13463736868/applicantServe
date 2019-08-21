@@ -32,7 +32,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
-                <Button class="mr5" type="primary" size="small" @click="resAction('seeFormAcc', row)" :style="{display: resBtnDis('TRANFORM_UPCASEAUDIT')}">查看立案审批表</Button>
+                <Button class="mr5 mb5" type="primary" size="small" @click="resAction('seeFormAcc', row)" :style="{display: resBtnDis('TRANFORM_UPCASEAUDIT')}">查看立案审批表</Button>
                 <Button class="mr5" type="primary" size="small" @click="resAction('seeFormGro', row)" :style="{display: resBtnDis('TRANFORM_GROUPAUDIT')}">查看组庭审批表</Button>
               </template>
             </Table>
@@ -170,6 +170,7 @@ export default {
             title: '操作',
             key: 'id',
             tooltip: 'true',
+            minWidth: 30,
             align: 'center',
             slot: 'action'
           }
@@ -264,7 +265,7 @@ export default {
       switch (type) {
         case 'seeFormAcc':
           axios.post('/approvalForm/queryUrl', {
-            caseId: data.id,
+            caseId: data.caseid,
             type: '21'
           }).then(res => {
             window.open(res.data.data, '_blank')
@@ -277,7 +278,7 @@ export default {
           break
         case 'seeFormGro':
           axios.post('/approvalForm/queryUrl', {
-            caseId: data.id,
+            caseId: data.caseid,
             type: '22'
           }).then(res => {
             window.open(res.data.data, '_blank')
