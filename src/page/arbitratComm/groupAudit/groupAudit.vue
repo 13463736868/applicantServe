@@ -92,6 +92,7 @@
       </Row>
     </alert-btn-info>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
+    <group-pass-alert v-if="alertObj.groupPass" :resCaseId="alertObj.caseId" :resState="alertObj.state" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
   </div>
 </template>
 
@@ -101,12 +102,13 @@ import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
+import groupPassAlert from '@/page/arbitratComm/groupAudit/children/groupPassAlert'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, groupApprForm },
+  components: { spinComp, alertBtnInfo, groupApprForm, groupPassAlert },
   data () {
     return {
       spinShow: false,
@@ -260,6 +262,11 @@ export default {
       formObj: {
         caseId: null,
         filing: false
+      },
+      alertObj: {
+        groupPass: false,
+        caseId: null,
+        state: null
       }
     }
   },
@@ -420,6 +427,38 @@ export default {
                 }
               }
             }, '组庭审批表')
+          ])
+        } else if (_obj.passFlag === 4) {
+          return h('div', [
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                display: this.resBtnDis('GROUPAUDIT_REAPPOINTMENT')
+              },
+              on: {
+                click: () => {
+                  this.resAssignRest(params.index)
+                }
+              }
+            }, '重新指定仲裁员'),
+            h('Button', {
+              props: {
+                type: 'primary',
+                size: 'small'
+              },
+              style: {
+                marginRight: '5px',
+                display: this.resBtnDis('GROUPAUDIT_AGREE')
+              },
+              on: {
+                click: () => {
+                  this.resAction('groupPass', params.row)
+                }
+              }
+            }, '同意')
           ])
         } else {
           return h('div', [
@@ -827,6 +866,11 @@ export default {
           this.formObj.caseId = data.id
           this.formObj.filing = true
           break
+        case 'groupPass':
+          this.alertObj.state = 1
+          this.alertObj.caseId = data.id
+          this.alertObj.groupPass = true
+          break
       }
     },
     alertSave (type) {
@@ -834,6 +878,13 @@ export default {
         case 'groupForm':
           this.formObj.filing = false
           this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'groupPass':
+          this.alertObj.groupPass = false
+          this.alertObj.caseId = null
+          this.alertObj.state = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
@@ -868,6 +919,10 @@ export default {
       } else if (type === 'groupForm') {
         this.formObj.filing = false
         this.formObj.caseId = null
+      } else if (type === 'groupPass') {
+        this.alertObj.groupPass = false
+        this.alertObj.caseId = null
+        this.alertObj.state = null
       }
     }
   }

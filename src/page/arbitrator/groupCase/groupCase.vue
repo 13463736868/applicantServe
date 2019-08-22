@@ -29,6 +29,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPCASE_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
                 <Button :style="{display: resBtnDis('GROUPCASE_CONFIRM')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0" @click="resConfData(index)">确认</Button>
+                <Button class="mr5" type="primary" size="small" v-if="row.btnUploadQuesFlag" @click="resAction('uploadQues', row)">上传问题清单</Button>
                 <div v-if="!resSetRegExp(row.endCasePatten, 'groupCase')">
                   <Button :style="{display: resBtnDis('GROUPCASE_PASSWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resPassReve(index)">同意撤回</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resPassReve(index)">重新生成撤回书</Button>
@@ -192,6 +193,7 @@
     <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
       <p class="t2">确定要确认此条数据吗？</p>
     </alert-btn-info>
+    <upload-ques-alert v-if="alertObj.uploadQues" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('uploadQues')" @alertCancel="alertCanc('uploadQues')"></upload-ques-alert>
   </div>
 </template>
 
@@ -202,6 +204,7 @@ import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
+import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -209,7 +212,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal },
+  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert },
   data () {
     return {
       spinShow: false,
@@ -359,6 +362,10 @@ export default {
         batchEdit: false,
         batchNo: null,
         batchNoList: []
+      },
+      alertObj: {
+        uploadQues: false,
+        caseId: null
       }
     }
   },
@@ -1279,6 +1286,14 @@ export default {
       this.alertShow.confDataId = _res.id
       this.alertShow.confDataAlert = true
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'uploadQues':
+          this.alertObj.caseId = data.id
+          this.alertObj.uploadQues = true
+          break
+      }
+    },
     alertSave (type) {
       switch (type) {
         case 'batchEdit':
@@ -1326,6 +1341,12 @@ export default {
               duration: 5
             })
           })
+          break
+        case 'uploadQues':
+          this.alertObj.uploadQues = false
+          this.alertObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
           break
       }
     },
@@ -1411,6 +1432,10 @@ export default {
           this.alertShow.confDataBatchNo = null
           this.alertShow.confDataId = null
           this.alertShow.confDataAlert = false
+          break
+        case 'uploadQues':
+          this.alertObj.uploadQues = false
+          this.alertObj.caseId = null
           break
         default:
           break
