@@ -26,7 +26,7 @@ export const resBtn = {
     },
     resBtnDis (type) {
       if (this.btnMap) {
-        return this.btnMap.buttonMap[type] === false ? 'none' : ''
+        return this.btnMap.buttonMap[type] === true ? '' : 'none'
       } else {
         return ''
       }
