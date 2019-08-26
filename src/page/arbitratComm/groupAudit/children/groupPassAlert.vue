@@ -32,7 +32,7 @@ export default {
       } else {
         axios.post('/approve/updateCourtAuditState', {
           state: this.resState,
-          id: this.resDocuId
+          caseId: this.resCaseId
         }).then(res => {
           this.resMessage('success', '操作成功')
           this.$emit('alertConfirm')
