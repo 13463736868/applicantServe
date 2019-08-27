@@ -68,6 +68,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import { mapGetters } from 'vuex'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -76,6 +77,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
+  mixins: [resBtn],
   components: { spinComp, alertBtnInfo, filingCaseForm },
   data () {
     return {
@@ -247,7 +249,6 @@ export default {
   },
   created () {
     this.resCaseList()
-    this.resBtnMap()
   },
   computed: {
     ...mapGetters([
@@ -255,16 +256,6 @@ export default {
     ])
   },
   methods: {
-    resBtnMap () {
-      this.btnMap = this.buttonMap === null ? null : this.buttonMap['pendCaseM']
-    },
-    resBtnDis (type) {
-      if (this.btnMap) {
-        return this.btnMap.buttonMap[type] === false ? 'none' : ''
-      } else {
-        return ''
-      }
-    },
     dictionary () {
       axios.post('/batchCaseDocument/findCaseType').then(res => {
         let _obj = res.data.data
