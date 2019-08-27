@@ -200,6 +200,7 @@ export default {
           {
             title: '操作',
             key: 'id',
+            minWidth: 30,
             align: 'center',
             render: (h, params) => {
               return this.renderBtn(h, params)
