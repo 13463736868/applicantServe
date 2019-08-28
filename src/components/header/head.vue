@@ -2,15 +2,15 @@
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
       <ul class="nav fl" v-if="isRegister">
-        <router-link v-if="index < 10" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        <router-link v-if="index < 9" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
       </ul>
-      <Dropdown class="nav_more" v-if="menu.length > 10" @on-click="resToRoute">
+      <Dropdown class="nav_more" v-if="menu.length > 9" @on-click="resToRoute">
         <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
         <DropdownMenu class="tl" slot="list">
-          <DropdownItem v-if="index > 9" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
+          <DropdownItem v-if="index > 8" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
         </DropdownMenu>
       </Dropdown>
-      <div class="user fr w300">
+      <div class="user fr w200">
         <Row type="flex" justify="center" align="middle" class="hmax tc">
           <Col span="18 tr">
             <!-- <span class="fcf f13" v-if="isRegister"><span class="hand" @click="resOnes" v-if="userName !== null" v-text="userName + '，您好！'"></span></span> -->
