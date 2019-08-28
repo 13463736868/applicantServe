@@ -2,8 +2,14 @@
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
       <ul class="nav fl" v-if="isRegister">
-        <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        <router-link v-if="index < 10" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
       </ul>
+      <Dropdown class="nav_more" v-if="menu.length > 10" @on-click="resToRoute">
+        <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
+        <DropdownMenu class="tl" slot="list">
+          <DropdownItem v-if="index > 9" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
       <div class="user fr w300">
         <Row type="flex" justify="center" align="middle" class="hmax tc">
           <Col span="18 tr">
@@ -157,6 +163,11 @@ export default {
         this.userName = _usersInfo === null ? null : JSON.parse(_usersInfo).loginname
       }
     },
+    resToRoute (name) {
+      this.$router.replace({
+        path: name
+      })
+    },
     changeDown (name) {
       switch (name) {
         case 'resOnes':
@@ -197,6 +208,11 @@ export default {
       li.router-link-exact-active {
         color: #fff;
       }
+    }
+    .nav_more {
+      padding: 0 15px;
+      height: 100%;
+      line-height: 4rem;
     }
     .user {
       height: 100%;
