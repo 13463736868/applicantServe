@@ -306,6 +306,7 @@ export default {
             title: '原因',
             key: 'id',
             align: 'center',
+            minWidth: 10,
             render: (h, params) => {
               return this.reasonBtn(h, params)
             }
@@ -314,7 +315,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            minWidth: 120,
+            minWidth: 90,
             slot: 'action'
           }
         ],
@@ -413,9 +414,6 @@ export default {
                 type: 'primary',
                 size: 'small'
               },
-              style: {
-                marginRight: '5px'
-              },
               on: {
                 click: () => {
                   this.seeReasonD(params.index)
@@ -431,9 +429,6 @@ export default {
               props: {
                 type: 'primary',
                 size: 'small'
-              },
-              style: {
-                marginRight: '5px'
               },
               on: {
                 click: () => {

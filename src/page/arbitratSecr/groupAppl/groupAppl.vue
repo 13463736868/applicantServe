@@ -2,29 +2,14 @@
   <div class="groupAppl">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row class="pb20 tc">
-        <Col span="10">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
-        </Col>
-        <Col span="3">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
-        </Col>
-        <Col span="3">
-          <Button type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
-        </Col>
-      </Row>
+      <div class="tr pb20 pr20">
+        <Button class="ml10" type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
+        <Button class="ml10" type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
+        <Button class="ml10" type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
+        <Button class="ml10" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
+        <Button class="ml10" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
+        <Button class="ml10" type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
+      </div>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">

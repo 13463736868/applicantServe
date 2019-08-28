@@ -171,6 +171,7 @@ export default {
                         size: 'small'
                       },
                       style: {
+                        marginRight: '5px',
                         display: this.resBtnDis('SUCCCASE_OFFLINEARR')
                       },
                       on: {

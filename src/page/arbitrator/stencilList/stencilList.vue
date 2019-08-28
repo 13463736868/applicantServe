@@ -3,17 +3,17 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <Col span="19">
+        <Col span="20">
           &nbsp;
         </Col>
         <Col span="2"
-             class="tc">
+             class="">
         <Button type="primary"
                 @click="resFind"
                 :style="{display: resBtnDis('STENCILLIST_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2"
-             class="tc">
+             class="">
         <Button type="primary"
                 @click="resAdd"
                 :style="{display: resBtnDis('STENCILLIST_NEWTEMPLATE')}">新建模版</Button>
