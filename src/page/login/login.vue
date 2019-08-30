@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="tc fc6 _footerFont">
+    <div class="tc fcf _footerFont">
       <p>CopyRight © 版权所有: 中卫仲裁委员会 技术支持：北京知仲科技有限公司（010-64170741）</p>
     </div>
   </div>
