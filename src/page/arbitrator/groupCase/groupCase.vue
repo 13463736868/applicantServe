@@ -747,7 +747,7 @@ export default {
           }
           break
         case 'endNew':
-          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
+          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined || this.alertShow.endNewTempCode === null) {
             this.$Message.warning({
               content: '请选择结案模版',
               duration: 5
