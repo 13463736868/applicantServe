@@ -67,7 +67,7 @@
             <p class="p5 tr"><b>附件：</b></p>
           </Col>
           <Col span="16">
-            <p v-for="item in alertObj.fileList" :key="item.id" class="p5 alert_file"><span class="hand" style="color:#126eaf" title="点击查看" v-text="item.filename" @click="resSeeFile(item.filepath)"></span></p>
+            <p v-for="item in alertObj.fileList" :key="item.id" class="p5 alert_file"><span class="hand" style="color:#126eaf;word-break:break-all;" title="点击查看" v-text="item.filename" @click="resSeeFile(item.filepath)"></span></p>
           </Col>
         </Row>
       </div>
