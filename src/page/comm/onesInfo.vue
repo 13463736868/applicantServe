@@ -45,6 +45,12 @@
                     <img class="_imgA" :src="imgUrl" ref="fileA">
                     <input type="file" class="_fileA" @change="fileAChange" accept="image/*">
                   </Col>
+                  <Col span="10" class="tl fc6" offset="2">
+                    <p class="mb5 f14"><b>签名信息注意事项：</b></p>
+                    <p class="mb5">1.图片最佳尺寸 110 * 60</p>
+                    <p class="mb5">2.图片最佳大小不超过 20KB</p>
+                    <p>3.图片只支持PNG格式，透明底色</p>
+                  </Col>
                 </form>
               </Row>
               <div class="_mask pr">
@@ -128,7 +134,7 @@ export default {
       dataObj: null,
       fileObjShow: false,
       fileObj: null,
-      fileType: ['jpg', 'jpeg', 'png'],
+      fileType: ['png'],
       imgUrl: require('../../../static/images/sign.png'),
       alertObj: {
         info: false,
