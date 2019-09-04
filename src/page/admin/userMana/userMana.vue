@@ -67,6 +67,14 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>送达手机号：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="addData.mobile"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
             <p><span class="_span">*</span><b>邮箱：</b></p>
           </Col>
           <Col span="16">
@@ -163,6 +171,11 @@ export default {
             align: 'center'
           },
           {
+            title: '送达手机号',
+            key: 'mobile',
+            align: 'center'
+          },
+          {
             title: '邮箱',
             key: 'email',
             align: 'center'
@@ -210,6 +223,7 @@ export default {
         password: '',
         phone: '',
         email: '',
+        mobile: '',
         state: 1,
         department: '',
         role: ''
@@ -398,6 +412,7 @@ export default {
       this.addData.password = _res.password
       this.addData.phone = _res.phone
       this.addData.email = _res.email
+      this.addData.mobile = _res.mobile
       this.addData.state = _res.state
       this.addData.department = _res.department.id
       this.addData.role = _res.role.id
@@ -505,6 +520,16 @@ export default {
           content: '固话/手机号格式不正确',
           duration: 5
         })
+      } else if (this.addData.mobile === '') {
+        this.$Message.warning({
+          content: '送达手机号不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.mobile, 'phone')) {
+        this.$Message.warning({
+          content: '送达手机号格式不正确',
+          duration: 5
+        })
       } else if (this.addData.email === '') {
         this.$Message.warning({
           content: '邮箱地址不能为空',
@@ -544,6 +569,7 @@ export default {
           password: this.addData.password,
           phone: this.addData.phone,
           email: this.addData.email,
+          mobile: this.addData.mobile,
           state: this.addData.state,
           departmentId: this.addData.department,
           roleId: this.addData.role
@@ -570,6 +596,7 @@ export default {
           password: this.addData.password,
           phone: this.addData.phone,
           email: this.addData.email,
+          mobile: this.addData.mobile,
           state: this.addData.state,
           department: {id: this.addData.department},
           role: {id: this.addData.role}
@@ -616,6 +643,7 @@ export default {
           password: '',
           phone: '',
           email: '',
+          mobile: '',
           state: 1,
           department: '',
           role: ''
