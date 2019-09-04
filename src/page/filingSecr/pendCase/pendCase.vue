@@ -45,6 +45,17 @@
           </Select>
         </Col>
       </Row>
+      <Row class="_labelFor">
+        <Col span="4" offset="2">
+          <div class="_label">有无答辩期：</div>
+        </Col>
+        <Col span="16">
+          <Select v-model="dataObj.pleadingPeriod">
+            <Option value="1">有</Option>
+            <Option value="2">无</Option>
+          </Select>
+        </Col>
+      </Row>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
       <Row class="_labelFor">
@@ -54,6 +65,17 @@
         <Col span="16">
           <Select v-model="dataObj.confType">
             <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
+          </Select>
+        </Col>
+      </Row>
+      <Row class="_labelFor">
+        <Col span="4" offset="2">
+          <div class="_label">有无答辩期：</div>
+        </Col>
+        <Col span="16">
+          <Select v-model="dataObj.pleadingPeriod">
+            <Option value="1">有</Option>
+            <Option value="2">无</Option>
           </Select>
         </Col>
       </Row>
@@ -246,6 +268,7 @@ export default {
         find: false
       },
       dataObj: {
+        pleadingPeriod: '1',
         confCaseId: null,
         confCosts: null,
         confType: null
@@ -343,7 +366,8 @@ export default {
         axios.post('/case/updateCaseStateAndType', {
           caseId: this.dataObj.confCaseId,
           caseType: this.dataObj.confType,
-          costs: this.dataObj.confCosts
+          costs: this.dataObj.confCosts,
+          pleadingPeriod: this.dataObj.pleadingPeriod
         }).then(res => {
           this.alertCanc('conf')
           this.$Message.success({
@@ -469,7 +493,8 @@ export default {
         this.alertShow.batch = false
         axios.put('/caseBatch/updateCaseStateAndType_batch', {
           caseType: this.dataObj.confType,
-          items: JSON.stringify(this.alertShow.idsList)
+          items: JSON.stringify(this.alertShow.idsList),
+          pleadingPeriod: this.dataObj.pleadingPeriod
         }, {
           headers: {
             'content-Type': 'application/json;charset=UTF-8'
