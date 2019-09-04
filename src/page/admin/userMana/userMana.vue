@@ -59,7 +59,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>固定号码：</b></p>
+            <p><span class="_span">*</span><b>固话/手机号：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="addData.phone"></Input>
@@ -149,7 +149,16 @@ export default {
             align: 'center'
           },
           {
-            title: '固定号码',
+            title: '角色',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return h('span', {
+              }, params.row.role.name)
+            }
+          },
+          {
+            title: '固话/手机号',
             key: 'phone',
             align: 'center'
           },
@@ -488,12 +497,12 @@ export default {
         })
       } else if (this.addData.phone === '') {
         this.$Message.warning({
-          content: '固定号码不能为空',
+          content: '固话/手机号不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.addData.phone, 'landline')) {
+      } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'landline'))) {
         this.$Message.warning({
-          content: '固定号码格式不正确',
+          content: '固话/手机号格式不正确',
           duration: 5
         })
       } else if (this.addData.email === '') {
