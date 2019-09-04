@@ -135,6 +135,8 @@ export default {
       if (window.localStorage) {
         let loc = window.localStorage
         loc.removeItem('usersInfo')
+        loc.removeItem('menuArrObj')
+        loc.removeItem('buttonMap')
       }
     },
     showPass () {
