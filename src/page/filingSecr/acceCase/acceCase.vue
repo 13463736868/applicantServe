@@ -130,7 +130,7 @@ export default {
           {
             title: '选择',
             key: 'caseId',
-            width: 60,
+            width: 70,
             align: 'center',
             render: (h, params) => {
               return this.renderCheck(h, params)
