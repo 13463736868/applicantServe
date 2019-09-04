@@ -44,10 +44,11 @@
         <div class="_footer bc w350 tc">
           <button class="_loginBtn" v-bind:disabled="user.loginBtn" :class="{'_active':user.loginBtn}" @click="resLogin">确 认</button>
         </div>
+        <p :style="{'display':!isChrome ? 'none' : ''}" style="color:#D37575">推荐使用chrome浏览器</p>
       </div>
     </div>
     <div class="tc fcf _footerFont">
-      <p>CopyRight © 版权所有: 中卫仲裁委员会 技术支持：北京知仲科技有限公司（010-64170741）</p>
+      <p>CopyRight © 版权所有: 中卫仲裁委员会 技术支持: 北京知仲科技有限公司（010-64170741）</p>
     </div>
   </div>
 </template>
@@ -90,12 +91,18 @@ export default {
         emStatus: false
       },
       loginInfo: null,
-      codeSrc: ''
+      codeSrc: '',
+      isChrome: true
     }
   },
   created () {
     this.clearTokenLoc()
     this.resGetCode()
+    if (this.getweb() !== 'Chrome') {
+      alert('推荐使用chrome浏览器')
+    } else {
+      this.isChrome = false
+    }
   },
   mounted () {
   },
@@ -112,6 +119,17 @@ export default {
       'setMenu',
       'setRouter'
     ]),
+    getweb () {
+      if (!!window.ActiveXObject || 'ActiveXObject' in window) {
+        return 'IE'
+      } else if (navigator.userAgent.indexOf('Firefox') !== -1) {
+        return 'Firefox'
+      } else if (navigator.userAgent.indexOf('Chrome') !== -1) {
+        return 'Chrome'
+      } else if (navigator.userAgent.indexOf('Safari') !== -1) {
+        return 'Safari'
+      }
+    },
     clearTokenLoc () {
       removeToken()
       if (window.localStorage) {
