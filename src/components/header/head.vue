@@ -85,6 +85,7 @@ export default {
             let loc = window.localStorage
             loc.removeItem('usersInfo')
             loc.removeItem('menuArrObj')
+            loc.removeItem('buttonMap')
           }
           this.setMenuArrObj(null)
           this.setMenu(null)
@@ -104,6 +105,7 @@ export default {
             let loc = window.localStorage
             loc.removeItem('usersInfo')
             loc.removeItem('menuArrObj')
+            loc.removeItem('buttonMap')
           }
           this.setMenuArrObj(null)
           this.setMenu(null)
@@ -128,6 +130,7 @@ export default {
           let loc = window.localStorage
           loc.removeItem('usersInfo')
           loc.removeItem('menuArrObj')
+          loc.removeItem('buttonMap')
         }
         this.setMenuArrObj(null)
         this.setMenu(null)
