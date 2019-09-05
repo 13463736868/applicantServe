@@ -25,7 +25,8 @@
                 <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
-                  <Button v-if="row.type === 1 || row.type === 2" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_RELOAD')}" @click="resAction('updateBook', row)">更新文书</Button>
+                  <Button v-if="(row.type === 1 || row.type === 2) && row.source === 1" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
                 </div>
               </template>
             </Table>
@@ -73,6 +74,7 @@
       </Row>
     </alert-btn-info>
     <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('editDocu')" @alertCancel="alertCanc('editDocu')"></alert-editor>
+    <res-update-book v-if="alertObj.caseDocu" :resDocuId="alertObj.caseDocuemntId" @alertConfirm="alertSave('updateBook')" @alertCancel="alertCanc('updateBook')"></res-update-book>
   </div>
 </template>
 
@@ -83,11 +85,12 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
+import resUpdateBook from '@/page/arbitratComm/docuAudit/children/resUpdateBook'
 
 export default {
   name: 'docu_audit',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor },
+  components: { spinComp, alertBtnInfo, alertEditor, resUpdateBook },
   data () {
     return {
       spinShow: false,
@@ -212,6 +215,10 @@ export default {
         editor: false,
         caseId: null,
         docuType: null
+      },
+      alertObj: {
+        caseDocu: false,
+        caseDocuemntId: null
       }
     }
   },
@@ -496,36 +503,61 @@ export default {
       this.alertShow.docuType = info.type
       this.alertShow.editor = true
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'updateBook':
+          this.alertObj.caseDocuemntId = data.caseDocuemntId
+          this.alertObj.caseDocu = true
+          break
+      }
+    },
     alertSave (type) {
-      if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
-        this.pageObj.pageNum = 1
-        this.resCaseList()
+      switch (type) {
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'updateBook':
+          this.alertObj.caseDocu = false
+          this.alertObj.caseDocuemntId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
-      if (type === 'docu') {
-        this.alertShow.docu = false
-        this.alertShow.id = null
-        this.alertShow.state = null
-        this.alertShow.caseDocuId = null
-        this.alertShow.rejeReason = ''
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
-      } else if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
+      switch (type) {
+        case 'docu':
+          this.alertShow.docu = false
+          this.alertShow.id = null
+          this.alertShow.state = null
+          this.alertShow.caseDocuId = null
+          this.alertShow.rejeReason = ''
+          this.alertShow.batch = false
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.search.requestName = ''
+          this.search.caseType = ''
+          // this.search.caseTypeList = {}
+          // this.search.requestNameList = []
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          break
+        case 'updateBook':
+          this.alertObj.caseDocu = false
+          this.alertObj.caseDocuemntId = null
+          break
       }
     }
   }
