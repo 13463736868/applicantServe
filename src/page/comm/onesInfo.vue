@@ -24,8 +24,14 @@
                       <p v-text="dataObj.name"></p>
                     </Col>
                     <Col class="_label" span="11" offset="2">
-                      <p>固定号码：</p>
+                      <p>固话/手机号：</p>
                       <p v-text="dataObj.phone"></p>
+                    </Col>
+                  </Row>
+                  <Row class="pt10">
+                    <Col class="_label" span="11">
+                      <p>送达手机号：</p>
+                      <p v-text="dataObj.mobile"></p>
                     </Col>
                   </Row>
                 </Col>
@@ -89,10 +95,18 @@
       </Row>
       <Row class="pt10">
         <Col span="6" offset="1">
-          <p class="pt7 pb7">固定号码：</p>
+          <p class="pt7 pb7">固话/手机号：</p>
         </Col>
         <Col span="12">
-           <Input v-model="alertData.phone" placeholder="请输入固定号码..."/>
+           <Input v-model="alertData.phone" placeholder="请输入固话/手机号..."/>
+        </Col>
+      </Row>
+      <Row class="pt10">
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">送达手机号：</p>
+        </Col>
+        <Col span="12">
+           <Input v-model="alertData.mobile" placeholder="请输入送达手机号..."/>
         </Col>
       </Row>
     </alert-btn-info>
@@ -143,6 +157,7 @@ export default {
       alertData: {
         email: null,
         phone: null,
+        mobile: null,
         pass: null,
         passT: null
       }
@@ -284,6 +299,7 @@ export default {
     resEditInfo () {
       this.alertData.email = this.dataObj.email
       this.alertData.phone = this.dataObj.phone
+      this.alertData.mobile = this.dataObj.mobile
       this.alertObj.info = true
     },
     resEditPass () {
@@ -302,12 +318,22 @@ export default {
         })
       } else if (this.alertData.phone === null || this.alertData.phone === '') {
         this.$Message.warning({
-          content: '固定号码不能为空',
+          content: '固话/手机号不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.alertData.phone, 'landline')) {
+      } else if (!(setRegExp(this.alertData.phone, 'landline') || setRegExp(this.alertData.phone, 'phone'))) {
         this.$Message.warning({
-          content: '请填写正确固定号码格式',
+          content: '请填写正确固话/手机号格式',
+          duration: 5
+        })
+      } else if (this.alertData.mobile === '') {
+        this.$Message.warning({
+          content: '送达手机号不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.alertData.mobile, 'phone')) {
+        this.$Message.warning({
+          content: '送达手机号格式不正确',
           duration: 5
         })
       } else {
@@ -317,7 +343,8 @@ export default {
           },
           id: this.dataObj.id,
           phone: this.alertData.phone,
-          email: this.alertData.email
+          email: this.alertData.email,
+          mobile: this.alertData.mobile
         }).then(res => {
           this.alertCanc('info')
           this.$Message.success({
@@ -381,6 +408,7 @@ export default {
         this.alertObj.info = false
         this.alertData.email = null
         this.alertData.phone = null
+        this.alertData.mobile = null
       } else if (type === 'pass') {
         this.alertObj.pass = false
         this.alertData.pass = null

@@ -18,7 +18,7 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :row-class-name="rowClassName" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
           </Col>
         </Row>
       </div>
@@ -189,6 +189,19 @@ export default {
     this.resCaseList()
   },
   methods: {
+    rowClassName (row, index) {
+      if (row.endType === '裁决') {
+        return 'table-blue'
+      } else if (row.endType === '调解') {
+        return 'table-green'
+      } else if (row.endType === '撤案') {
+        return 'table-red'
+      } else if (row.endType === '中止') {
+        return 'table-pink'
+      } else {
+        return ''
+      }
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/closeCaseForm/caseRegisterList', {
@@ -242,5 +255,19 @@ export default {
   ._caseList {
     margin-bottom: 20px;
   }
+}
+</style>
+<style>
+.ivu-table .table-blue td {
+  background-color: #5B9BD5;
+}
+.ivu-table .table-green td {
+  background-color: #70AC47;
+}
+.ivu-table .table-red td {
+  background-color: #C00000;
+}
+.ivu-table .table-pink td {
+  background-color: #F4B084;
 }
 </style>

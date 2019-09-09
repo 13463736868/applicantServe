@@ -1,6 +1,12 @@
 <template>
   <div class="caseInfo">
     <div class="_center pr">
+      <Row class="pb20" v-if="stepData !== null">
+        <Steps :current="stepData.length">
+          <Step v-for="(item,index) in stepData" :key="index" :title="item.processName" :content="item.processTime + ' ; ' + item.processInfo">
+          </Step>
+        </Steps>
+      </Row>
       <Row>
         <Col span="4" offset="1" class="_center_left not_s">
           <router-link v-for="item in menuClaim" :to='{path: "/caseInfo" + item.url}' :key="item.id" tag="li" v-text="item.text"></router-link>
@@ -17,6 +23,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import { mapGetters } from 'vuex'
 import rightArbi from '@/page/comm/children/rightArbi'
 
@@ -167,7 +174,8 @@ export default {
       stateA: [1, 2, 8, 9, '1', '2', '8', '9'],
       stateB: [3, 4, 99, '3', '4', '99'],
       stateC: [6, 7, 98, '6', '7', '98'],
-      stateD: [5, '5']
+      stateD: [5, '5'],
+      stepData: null
     }
   },
   created () {
@@ -188,11 +196,28 @@ export default {
       this.menuClaim = this.menuClaimA
     }
   },
+  mounted () {
+    this.resStep()
+  },
   computed: {
     ...mapGetters([
       'caseId',
       'caseState'
     ])
+  },
+  methods: {
+    resStep () {
+      axios.post('/case/findProcessByCaseId', {
+        caseId: this.caseId
+      }).then(res => {
+        this.stepData = res.data.data
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e,
+          duration: 5
+        })
+      })
+    }
   }
 }
 </script>
