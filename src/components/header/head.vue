@@ -4,9 +4,9 @@
       <ul class="nav fl" v-if="isRegister">
         <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
       </ul>
-      <div class="user fr w300">
+      <div class="user fr w350">
         <Row type="flex" justify="center" align="middle" class="hmax tc">
-          <Col span="18 tr">
+          <Col span="14 tr">
             <!-- <span class="fcf f13" v-if="isRegister"><span class="hand" @click="resOnes" v-if="userName !== null" v-text="userName + '，您好！'"></span></span> -->
             <Dropdown v-if="isRegister" @on-click="changeDown">
               <span class="hand fcf" v-if="userName !== null" v-text="userName + '，您好！'"></span>
@@ -16,7 +16,16 @@
               </DropdownMenu>
             </Dropdown>
           </Col>
-          <Col span="6">
+          <Col span="5 tr" class="fcf">
+            <Dropdown v-if="isRegister && userName !== 'admin'" @on-click="changeDown">
+              <span class="hand fcf">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
+              <DropdownMenu class="tl" slot="list">
+                <DropdownItem name="oaResInit">发起审批</DropdownItem>
+                <DropdownItem name="oaResProc">审核列表</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </Col>
+          <Col span="4">
             <Icon class="hand" type="md-close" size="26" color="#ffffff" @click="loginOut"></Icon>
           </Col>
         </Row>
@@ -170,6 +179,16 @@ export default {
         case 'resMeet':
           this.$router.replace({
             path: '/meetList'
+          })
+          break
+        case 'oaResInit':
+          this.$router.replace({
+            path: '/oaInitAppr'
+          })
+          break
+        case 'oaResProc':
+          this.$router.replace({
+            path: '/oaProcList'
           })
           break
       }

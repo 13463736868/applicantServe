@@ -317,6 +317,24 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/meetList/meetList.vue')))
   },
   {
+    path: '/oaProcList',
+    name: 'oaProcList',
+    meta: {
+      requireAuth: true,
+      title: '审核列表'
+    },
+    component: r => require.ensure([], () => r(require('@/page/oaList/oaProcList/oaProcList.vue')))
+  },
+  {
+    path: '/oaInitAppr',
+    name: 'oaInitAppr',
+    meta: {
+      requireAuth: true,
+      title: '发起审批'
+    },
+    component: r => require.ensure([], () => r(require('@/page/oaList/oaInitAppr/oaInitAppr.vue')))
+  },
+  {
     path: '/caseInfo',
     meta: {
       requireAuth: true
@@ -407,7 +425,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/oaProcList', '/oaInitAppr')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
