@@ -618,7 +618,7 @@ export default {
     resPassReve (index) {
       let res = this.caseList.bodyList[index]
       this.alertObj.userId = res.id
-      this.alertObj.docuType = 5
+      this.alertObj.docuType = 4
       this.alertObj.reve = true
     },
     docuSave (type) {
