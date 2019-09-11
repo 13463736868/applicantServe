@@ -259,15 +259,27 @@ export default {
 </style>
 <style>
 .ivu-table .table-blue td {
-  background-color: #5B9BD5;
+  background-color: #5B9BD5!important;
 }
 .ivu-table .table-green td {
-  background-color: #70AC47;
+  background-color: #70AC47!important;
 }
 .ivu-table .table-red td {
-  background-color: #C00000;
+  background-color: #C00000!important;
 }
 .ivu-table .table-pink td {
-  background-color: #F4B084;
+  background-color: #F4B084!important;
+}
+.ivu-table .table-blue:hover td {
+  background-color: #ebf7ff!important;
+}
+.ivu-table .table-green:hover td {
+  background-color: #ebf7ff!important;
+}
+.ivu-table .table-red:hover td {
+  background-color: #ebf7ff!important;
+}
+.ivu-table .table-pink:hover td {
+  background-color: #ebf7ff!important;
 }
 </style>
