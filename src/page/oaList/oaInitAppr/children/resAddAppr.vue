@@ -257,16 +257,17 @@ export default {
     changeDate (val) {
       this.resData.startUseTime = val[0]
       this.resData.endUseTime = val[1]
-      this.getHoursNum(val)
+      if (val[0] === '' || val[1] === '') {
+        this.resData.dateNum = ''
+      } else {
+        this.resData.dateNum = this.getHour(this.resData.startUseTime,this.resData.endUseTime)
+      }
     },
-    getHoursNum (val) {
-      let _s = val[0]
-      let _e = val[1]
-      let _sD = _s.substr(0, 10).split('-').join('')
-      let _sT = (_s.substr(11, 2) - 0) * 60 + (_s.substr(14, 2) - 0)
-      let _eD = _e.substr(0, 10).split('-').join('')
-      let _eT = (_e.substr(11, 2) - 0) * 60 + (_e.substr(14, 2) - 0)
-      this.resData.dateNum = (((_eD - _sD) * 24 * 60 + (_eT - _sT)) / 60).toFixed(1)
+    getHour(s1,s2) {
+      s1 = new Date(s1.replace(/-/g, '/'));
+      s2 = new Date(s2.replace(/-/g, '/'));
+      var ms = Math.abs(s1.getTime() - s2.getTime());
+      return (ms / 1000 / 60 / 60).toFixed(1);
     },
     delFile (id) {
       for (let k in this.fileData) {
