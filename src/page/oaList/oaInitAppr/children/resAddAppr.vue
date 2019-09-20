@@ -260,14 +260,14 @@ export default {
       if (val[0] === '' || val[1] === '') {
         this.resData.dateNum = ''
       } else {
-        this.resData.dateNum = this.getHour(this.resData.startUseTime,this.resData.endUseTime)
+        this.resData.dateNum = this.getHour(this.resData.startUseTime, this.resData.endUseTime)
       }
     },
-    getHour(s1,s2) {
-      s1 = new Date(s1.replace(/-/g, '/'));
-      s2 = new Date(s2.replace(/-/g, '/'));
-      var ms = Math.abs(s1.getTime() - s2.getTime());
-      return (ms / 1000 / 60 / 60).toFixed(1);
+    getHour (s1, s2) {
+      s1 = new Date(s1.replace(/-/g, '/'))
+      s2 = new Date(s2.replace(/-/g, '/'))
+      var ms = Math.abs(s1.getTime() - s2.getTime())
+      return (ms / 1000 / 60 / 60).toFixed(1)
     },
     delFile (id) {
       for (let k in this.fileData) {
