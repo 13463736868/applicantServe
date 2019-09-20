@@ -22,6 +22,7 @@
               <DropdownMenu class="tl" slot="list">
                 <DropdownItem name="oaResInit">发起审批</DropdownItem>
                 <DropdownItem name="oaResProc">审核列表</DropdownItem>
+                <DropdownItem name="oaPdfList">内容提取</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </Col>
@@ -189,6 +190,11 @@ export default {
         case 'oaResProc':
           this.$router.replace({
             path: '/oaProcList'
+          })
+          break
+        case 'oaPdfList':
+          this.$router.replace({
+            path: '/pdfList'
           })
           break
       }

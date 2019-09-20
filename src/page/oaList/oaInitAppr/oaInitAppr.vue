@@ -2,7 +2,7 @@
   <div class="oaInitAppr">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row class="mb20">
+      <Row class="mb20 pr20">
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">流程</label>
         </Col>
@@ -19,7 +19,7 @@
             <Option v-for="item in search.statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
-        <Col span="2" offset="10">
+        <Col span="2" offset="10" class="tr">
           <Button type="primary" @click="resAction('addAppr', null)">添加</Button>
         </Col>
       </Row>
