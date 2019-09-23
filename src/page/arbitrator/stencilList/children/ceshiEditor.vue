@@ -59,7 +59,7 @@
               <Row class="_labelFor"
                    v-if="requestName !== ''">
                 <Col span="8">
-                <p><span class="_span">*</span><b>案件类型：</b></p>
+                <p><span class="_span"></span><b>案件类型：</b></p>
                 </Col>
                 <Col span="16">
                 <Select v-model="caseTypeId"

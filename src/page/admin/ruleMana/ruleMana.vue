@@ -103,7 +103,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>管辖权异议期间（自送达仲裁通知之日起）：</b></p>
+            <p><b>仲裁协议异议期间（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.jurisdictionLimitTime"></InputNumber>
@@ -275,7 +275,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>管辖权异议期间（自送达仲裁通知之日起）：</b></p>
+            <p><b>仲裁协议异议期间（自送达仲裁通知之日起）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.jurisdictionLimitTime"></InputNumber>

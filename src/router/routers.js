@@ -78,7 +78,7 @@ const routerMap = [
     name: 'poliProtest',
     meta: {
       requireAuth: true,
-      title: '管辖权异议'
+      title: '仲裁协议异议'
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/poliProtest/poliProtest.vue')))
   },

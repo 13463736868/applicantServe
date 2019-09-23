@@ -87,7 +87,7 @@
               </div>
             </td>
             <td class="tdb tdl w100 tc">
-              <span>结案时间</span>
+              <span>结案文书发送时间</span>
             </td>
             <td class="tdb tdl">
               <div>

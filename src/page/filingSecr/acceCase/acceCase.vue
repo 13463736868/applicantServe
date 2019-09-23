@@ -23,8 +23,8 @@
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
         </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
+        <Col span="3">
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量通知缴费</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
@@ -45,7 +45,7 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.acceA" @alertConfirm="acceSave('acceA')" @alertCancel="alertCanc('acceA')" alertTitle="受理案件">
+    <alert-btn-info :alertShow="alertShow.acceA" @alertConfirm="acceSave('acceA')" @alertCancel="alertCanc('acceA')" alertTitle="通知缴费">
       <Row class="_labelFor mb10">
         <Col span="6">
           <div class="_label">请输入纠纷金额 (元)：</div>
@@ -73,7 +73,7 @@
       <p>确定同意撤回案件？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
-      <p v-if="alertShow.state === 1">确定要受理吗？</p>
+      <p v-if="alertShow.state === 1">确定要通知缴费吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
@@ -386,7 +386,7 @@ export default {
                     this.resAcceptCase(1, params.index)
                   }
                 }
-              }, '受理'),
+              }, '通知缴费'),
               h('Button', {
                 props: {
                   type: 'primary',
@@ -413,7 +413,7 @@ export default {
                 style: {
                   color: '#2d8cf0'
                 }
-              }, '受理审核中')
+              }, '通知缴费审核中')
             ])
           } else {
             return h('div', [

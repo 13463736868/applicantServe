@@ -9,7 +9,7 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
-        <Col span="8">
+        <Col span="7">
           &nbsp;
         </Col>
         <Col span="2">
@@ -18,8 +18,8 @@
         <Col span="2">
           <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
         </Col>
-        <Col span="2">
-          <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量结案</Button>
+        <Col span="3">
+          <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -34,13 +34,13 @@
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resPassReve(index)">重新生成撤回书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAddEvid(index)">生成补正书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAddEvid(index)">重新生成补正书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase(index)">结案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase(index)">起草文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase(index)">撤案</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_ENTERCOURTROOM')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="goCourtRoom(index)">进入庭室</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_RECORD')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="resRecord(index)">记录</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase(index)">重新生成文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase(index)">重新生成撤案书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase(index)">重新结案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase(index)">重新起草文书</Button>
                 </div>
                 <div v-else="">
                   <span style="color: #2d8cf0" type="text" size="small">{{row.endCasePatten}}</span>
@@ -261,11 +261,11 @@ export default {
             key: 'id',
             align: 'center'
           },
-          {
-            title: '批次号',
-            key: 'batchNo',
-            align: 'center'
-          },
+          // {
+          //   title: '批次号',
+          //   key: 'batchNo',
+          //   align: 'center'
+          // },
           {
             title: '申请人',
             key: 'partyName',

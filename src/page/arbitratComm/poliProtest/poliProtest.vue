@@ -59,7 +59,7 @@
         </Col>
       </Row>
     </create-docu>
-    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="管辖权异议原因">
+    <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="仲裁协议异议原因">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
   </div>
