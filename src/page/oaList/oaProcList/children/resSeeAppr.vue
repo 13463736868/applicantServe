@@ -230,7 +230,7 @@ export default {
         }).then(res => {
           this.resData = res.data.data
           this.resData.fileIds = []
-          this.dateList = [this.resData.startUseTimeStr, this.resData.endUseTimeStr]
+          this.dateList = [this.resData.startUseTime, this.resData.endUseTime]
           this.fileData = this.resData.oaFilesList === null ? [] : this.resData.oaFilesList
           for (let k in this.fileData) {
             this.resData.fileIds.push(this.fileData[k].id)
@@ -246,7 +246,7 @@ export default {
         }).then(res => {
           this.resData = res.data.data
           this.resData.fileIds = []
-          this.dateList = [this.resData.startUseTimeStr, this.resData.endUseTimeStr]
+          this.dateList = [this.resData.startUseTime, this.resData.endUseTime]
           this.fileData = this.resData.oaFilesList === null ? [] : this.resData.oaFilesList
           for (let k in this.fileData) {
             this.resData.fileIds.push(this.fileData[k].id)

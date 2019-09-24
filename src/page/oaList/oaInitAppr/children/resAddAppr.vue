@@ -234,7 +234,7 @@ export default {
         this.resData.fileIds = []
         this.resData.startUseTime = this.resData.startUseTimeStr
         this.resData.endUseTime = this.resData.endUseTimeStr
-        this.dateList = [this.resData.startUseTimeStr, this.resData.endUseTimeStr]
+        this.dateList = [this.resData.startUseTime, this.resData.endUseTime]
         this.fileData = this.resData.oaFilesList === null ? [] : this.resData.oaFilesList
         for (let k in this.fileData) {
           this.resData.fileIds.push(this.fileData[k].id)
