@@ -6,16 +6,24 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">证据项名称 :</span></Col>
-                <Col span="20">
+                <Col class="tr" span="6"><span class="mr10">证据项名称 :</span></Col>
+                <Col span="17">
                   <span v-text="infoData.name"></span>
                 </Col>
               </Row>
             </p>
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">是否有原件 :</span></Col>
-                <Col span="20">
+                <Col class="tr" span="6"><span class="mr10">证明事项 :</span></Col>
+                <Col span="17">
+                  <span v-text="infoData.remarks"></span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="6"><span class="mr10">该证据是否为证据原件 :</span></Col>
+                <Col span="17">
                   <span v-if="infoData.state === 1">是</span>
                   <span v-else-if="infoData.state === 2">否</span>
                 </Col>
@@ -23,24 +31,16 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">证据项描述 :</span></Col>
-                <Col span="20">
-                  <span v-text="infoData.remarks"></span>
-                </Col>
-              </Row>
-            </p>
-            <p>
-              <Row>
-                <Col class="tr" span="3"><span class="mr10">附件名称 :</span></Col>
-                <Col span="20">
+                <Col class="tr" span="6"><span class="mr10">附件名称 :</span></Col>
+                <Col span="17">
                   <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
                 </Col>
               </Row>
             </p>
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">固化状态 :</span></Col>
-                <Col span="20">
+                <Col class="tr" span="6"><span class="mr10">固化状态 :</span></Col>
+                <Col span="17">
                   <span v-if="infoData.solidifyHashStatus === '1'" style="color:#19be6b;">证据固化一致</span>
                   <span v-else-if="infoData.solidifyHashStatus === '2'" style="color:#ed3f14;">证据固化不一致</span>
                   <span v-else-if="infoData.solidifyHashStatus === '3'" style="color:#ff9900;">证据未固化</span>
