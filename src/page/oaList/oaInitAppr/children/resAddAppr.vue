@@ -114,6 +114,38 @@
         </Col>
       </Row>
       <auto-upload-book v-if="resTitle !== '查看'" childName="附件" :fileType="['jpg', 'jpeg', 'png']" :uploadUrl="resUploadUrl" @saveClick="saveDoucId"></auto-upload-book>
+      <Row class="_labelFor" v-if="resData.deptLeaderReason !== null">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>部门领导意见：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="resData.deptLeaderReason" type="textarea" :autosize="{minRows: 3,maxRows: 6}"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="resData.hrLeaderReason !== null && resModuleKey !== '4'">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>HR领导意见：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="resData.hrLeaderReason" type="textarea" :autosize="{minRows: 3,maxRows: 6}"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="resData.reimburseReason !== null && resModuleKey !== '1' && resModuleKey !== '2'">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>财务领导意见：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="resData.reimburseReason" type="textarea" :autosize="{minRows: 3,maxRows: 6}"></Input>
+        </Col>
+      </Row>
+      <Row class="_labelFor" v-if="resData.ceoReason !== null">
+        <Col span="6" offset="1">
+          <p><span class="_span">*</span><b>CEO意见：</b></p>
+        </Col>
+        <Col span="16">
+          <Input v-model="resData.ceoReason" type="textarea" :autosize="{minRows: 3,maxRows: 6}"></Input>
+        </Col>
+      </Row>
     </alert-btn-info>
   </div>
 </template>
