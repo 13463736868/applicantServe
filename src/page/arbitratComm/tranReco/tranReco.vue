@@ -148,6 +148,12 @@ export default {
             align: 'center'
           },
           {
+            title: '案由',
+            key: 'caseReson',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'propName',
             tooltip: 'true',
@@ -401,16 +407,20 @@ export default {
       }
     },
     alertSave (type) {
-      if (type === 'assig') {
-        this.alertShow.caseIdList = []
-        this.alertShow.assigModel = false
-        this.pageObj.pageNum = 1
-        this.resCaseList()
+      switch (type) {
+        case 'assig':
+          this.alertShow.caseIdList = []
+          this.alertShow.assigModel = false
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
-      if (type === 'assig') {
-        this.alertShow.assigModel = false
+      switch (type) {
+        case 'assig':
+          this.alertShow.assigModel = false
+          break
       }
     },
     goCaseInfo (index) {

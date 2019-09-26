@@ -72,6 +72,12 @@ export default {
             align: 'center'
           },
           {
+            title: '案由',
+            key: 'caseReson',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'applicantName',
             tooltip: 'true',

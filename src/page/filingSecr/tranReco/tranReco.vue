@@ -7,13 +7,17 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button class="mr5" type="primary" size="small" @click="resAction('inquire', row)">进度查询</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -25,17 +29,19 @@
         </Row>
       </div>
     </div>
+    <res-inquire-alert v-if="alertObj.inquire" :resCaseId="alertObj.resCaseId" @alertConfirm="alertSave('inquire')" @alertCancel="alertCanc('inquire')"></res-inquire-alert>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import spinComp from '@/components/common/spin'
 import { caseInfo } from '@/config/common.js'
+import spinComp from '@/components/common/spin'
+import resInquireAlert from '@/page/filingSecr/tranReco/children/resInquireAlert'
 
 export default {
   name: 'tran_reco_e',
-  components: { spinComp },
+  components: { spinComp, resInquireAlert },
   data () {
     return {
       spinShow: false,
@@ -72,6 +78,12 @@ export default {
             align: 'center'
           },
           {
+            title: '案由',
+            key: 'caseReson',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'propName',
             tooltip: 'true',
@@ -105,6 +117,12 @@ export default {
             key: 'acctime',
             tooltip: 'true',
             align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'id',
+            align: 'center',
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -113,6 +131,10 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertObj: {
+        inquire: false,
+        resCaseId: null
       }
     }
   },
@@ -146,6 +168,31 @@ export default {
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resCaseList()
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.resCaseId = data.caseid
+          this.alertObj.inquire = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.inquire = false
+          this.alertObj.resCaseId = null
+          this.resSearch()
+          break
+      }
+    },
+    alertCanc (type) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.inquire = false
+          this.alertObj.resCaseId = null
+          break
+      }
     },
     goCaseInfo (index) {
       let obj = {}

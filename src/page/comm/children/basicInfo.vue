@@ -120,7 +120,7 @@ export default {
                   type: 'text',
                   size: 'small'
                 }
-              }, '0' + (params.index + 1))
+              }, params.index > 8 ? params.index + 1 : '0' + (params.index + 1))
             }
           },
           {
@@ -141,6 +141,11 @@ export default {
           {
             title: '存在问题',
             key: 'memo',
+            align: 'center'
+          },
+          {
+            title: '操作人',
+            key: 'operatorName',
             align: 'center'
           }
         ],

@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
         <Col span="10">
           &nbsp;
@@ -63,6 +63,7 @@
       </Row>
     </alert-btn-info>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
+    <res-reson-alert v-if="alertShow.resonModel" :resCaseId="alertShow.resCaseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('reson')" @alertCancel="alertCanc('reson')"></res-reson-alert>
   </div>
 </template>
 
@@ -73,12 +74,13 @@ import { mapGetters } from 'vuex'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
+import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm },
+  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert },
   data () {
     return {
       spinShow: false,
@@ -125,6 +127,12 @@ export default {
           {
             title: '案件类型',
             key: 'caseTypeName',
+            align: 'center'
+          },
+          {
+            title: '案由',
+            key: 'caseReson',
+            tooltip: 'true',
             align: 'center'
           },
           {
@@ -211,10 +219,38 @@ export default {
                         this.resAction('pendForm', params.row)
                       }
                     }
-                  }, '立案审批表')
+                  }, '立案审批表'),
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resAction('reson', params.row)
+                      }
+                    }
+                  }, '修订')
                 ])
               } else {
                 return h('div', [
+                  h('Button', {
+                    props: {
+                      type: 'primary',
+                      size: 'small'
+                    },
+                    style: {
+                      marginRight: '5px'
+                    },
+                    on: {
+                      click: () => {
+                        this.resAction('reson', params.row)
+                      }
+                    }
+                  }, '修订')
                 ])
               }
             }
@@ -232,7 +268,10 @@ export default {
         idsList: [],
         ids: [],
         batch: false,
-        find: false
+        find: false,
+        resonModel: false,
+        resCaseId: null,
+        resCaseType: null
       },
       dataObj: {
         confCaseId: null,
@@ -487,6 +526,11 @@ export default {
           this.formObj.caseId = data.caseId
           this.formObj.filing = true
           break
+        case 'reson':
+          this.alertShow.resCaseType = data.resCaseType
+          this.alertShow.resCaseId = data.caseId
+          this.alertShow.resonModel = true
+          break
       }
     },
     alertSave (type) {
@@ -494,6 +538,13 @@ export default {
         case 'pendForm':
           this.formObj.filing = false
           this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'reson':
+          this.alertShow.resonModel = false
+          this.alertShow.resCaseId = null
+          this.alertShow.resCaseType = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
@@ -518,6 +569,10 @@ export default {
       } else if (type === 'pendForm') {
         this.formObj.filing = false
         this.formObj.caseId = null
+      } else if (type === 'reson') {
+        this.alertShow.resonModel = false
+        this.alertShow.resCaseId = null
+        this.alertShow.resCaseType = null
       }
     },
     goCaseInfo (index) {
