@@ -175,7 +175,7 @@ export default {
       axios.post('/OAReq/notDealTask', {
         userId: this.usersInfo.id,
         userName: this.usersInfo.name,
-        pageIndex: (this.pageObj.notDeal.pageNum - 1) * this.pageObj.notDeal.pageSize,
+        pageIndex: this.pageObj.notDeal.pageNum,
         pageSize: this.pageObj.notDeal.pageSize
       }).then(res => {
         let _data = res.data.data
@@ -192,7 +192,7 @@ export default {
       axios.post('/OAReq/findHistoryTaskList', {
         userId: this.usersInfo.id,
         userName: this.usersInfo.name,
-        pageIndex: (this.pageObj.task.pageNum - 1) * this.pageObj.task.pageSize,
+        pageIndex: this.pageObj.task.pageNum,
         pageSize: this.pageObj.task.pageSize
       }).then(res => {
         let _data = res.data.data

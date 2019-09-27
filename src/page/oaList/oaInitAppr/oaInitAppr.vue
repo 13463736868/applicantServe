@@ -191,7 +191,7 @@ export default {
       axios.post('/OAReq/oaList', {
         userId: this.usersInfo.id,
         userName: this.usersInfo.name,
-        pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
+        pageIndex: this.pageObj.pageNum,
         pageSize: this.pageObj.pageSize,
         state: this.search.status === 'all' ? '' : this.search.status,
         moduleKey: this.search.processKey

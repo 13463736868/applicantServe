@@ -4,6 +4,22 @@
       <div v-if="resData !== null">
         <Row class="_labelFor">
           <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>发起人部门：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="resData.deptName" disabled class="disableBox"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span">*</span><b>发起人：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="resData.userName" disabled class="disableBox"></Input>
+          </Col>
+        </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
             <p><span class="_span">*</span><b>流程类别：</b></p>
           </Col>
           <Col span="16">
