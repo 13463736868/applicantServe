@@ -106,7 +106,7 @@ export default {
       axios.post('/grapWordList', {
         userId: this.usersInfo.id,
         userName: this.usersInfo.name,
-        pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
+        pageIndex: this.pageObj.pageNum,
         pageSize: this.pageObj.pageSize
       }).then(res => {
         let _data = res.data.data
