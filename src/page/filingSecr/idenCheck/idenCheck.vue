@@ -5,6 +5,7 @@
       <Row>
         <Col span="4" offset="19">
           <Select v-model="reviewStatus" @on-change="resChangeStatus()">
+            <Option value="all">全部</Option>
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
@@ -70,7 +71,7 @@ export default {
     return {
       spinShow: false,
       tabStatus: 'comp',
-      reviewStatus: 3,
+      reviewStatus: 'all',
       reviewList: [],
       compList: {
         loading: false,
@@ -348,7 +349,7 @@ export default {
         axios.post('/enterprise/list', {
           pageIndex: (this.compPage.pageNum - 1) * this.compPage.pageSize,
           pageSize: this.compPage.pageSize,
-          state: this.reviewStatus
+          state: this.reviewStatus === 'all' ? '' : this.reviewStatus
         }).then(res => {
           let _data = res.data.data
           this.compList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -364,7 +365,7 @@ export default {
         axios.post('/clientRequest/findRegisterData', {
           pageIndex: (this.indiPage.pageNum - 1) * this.indiPage.pageSize,
           pageSize: this.indiPage.pageSize,
-          state: this.reviewStatus
+          state: this.reviewStatus === 'all' ? '' : this.reviewStatus
         }).then(res => {
           let _data = res.data.data
           this.indiList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -382,7 +383,7 @@ export default {
         axios.post('/enterprise/list', {
           pageIndex: (this.compPage.pageNum - 1) * this.compPage.pageSize,
           pageSize: this.compPage.pageSize,
-          state: this.reviewStatus
+          state: this.reviewStatus === 'all' ? '' : this.reviewStatus
         }).then(res => {
           let _data = res.data.data
           this.compList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -399,7 +400,7 @@ export default {
         axios.post('/clientRequest/findRegisterData', {
           pageIndex: (this.indiPage.pageNum - 1) * this.indiPage.pageSize,
           pageSize: this.indiPage.pageSize,
-          state: this.reviewStatus
+          state: this.reviewStatus === 'all' ? '' : this.reviewStatus
         }).then(res => {
           let _data = res.data.data
           this.indiList.bodyList = _data.dataList === null ? [] : _data.dataList
