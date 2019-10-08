@@ -379,7 +379,7 @@ export default {
           }, '同意撤回')
         ])
       } else {
-        if (this.reviewStatus === 1) {
+        if (params.row.state === 1) {
           if (params.row.acceptBtnStatus === '1') {
             return h('div', [
               h('Button', {
@@ -607,7 +607,7 @@ export default {
       if (_obj.cancelFlag === '1') {
         return h('div', [
         ])
-      } else if (this.reviewStatus === 1) {
+      } else if (params.row.state === 1) {
         if (params.row.acceptBtnStatus === '1') {
           if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
             return h('div', [
