@@ -47,8 +47,8 @@
         <p :style="{'display':!isChrome ? 'none' : ''}" style="color:#D37575">推荐使用chrome浏览器</p>
       </div>
     </div>
-    <div class="tc fcf _footerFont">
-      <p>CopyRight © 版权所有: 中卫仲裁委员会 技术支持: 北京知仲科技有限公司（010-64170741）</p>
+    <div class="tc fc6 _footerFont">
+      <p>CopyRight © 版权所有: 赤峰仲裁委员会 技术支持: 北京知仲科技有限公司（010-64170741）</p>
     </div>
   </div>
 </template>
@@ -77,7 +77,7 @@ export default {
           width: '210px',
           position: 'absolute',
           top: '20px',
-          left: '20px',
+          right: '20px',
           userSelect: 'none'
         }
       },
