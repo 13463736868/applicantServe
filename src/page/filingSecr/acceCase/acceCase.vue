@@ -251,8 +251,12 @@ export default {
         acceCaseId: null,
         retrCaseId: null
       },
-      reviewStatus: 1,
+      reviewStatus: 0,
       reviewList: [
+        {
+          value: 0,
+          label: '全部'
+        },
         {
           value: 1,
           label: '待受理'
@@ -366,10 +370,25 @@ export default {
                 this.resRecallCase(params.index)
               }
             }
-          }, '同意撤回')
+          }, '同意撤回'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: this.resBtnDis('ACCECASE_WITHDRAW_BOOK')
+            },
+            on: {
+              click: () => {
+                this.resAction('resSeeBackBook', params.row)
+              }
+            }
+          }, '撤案申请书')
         ])
       } else {
-        if (this.reviewStatus === 1) {
+        if (params.row.state === 1) {
           if (params.row.acceptBtnStatus === '1') {
             return h('div', [
               h('Button', {
@@ -597,7 +616,7 @@ export default {
       if (_obj.cancelFlag === '1') {
         return h('div', [
         ])
-      } else if (this.reviewStatus === 1) {
+      } else if (params.row.state === 1) {
         if (params.row.acceptBtnStatus === '1') {
           if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
             return h('div', [
@@ -749,6 +768,24 @@ export default {
       this.alertCanc('clearIds')
       this.pageObj.pageNum = 1
       this.resCaseList()
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'resSeeBackBook':
+          axios.post('/case/queryWithdrawal', {
+            caseId: data.caseId
+          }).then(res => {
+            if (res.data.data !== null) {
+              window.open(res.data.data.filepath, '_blank')
+            }
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+      }
     },
     alertCanc (type) {
       if (type === 'acceA') {

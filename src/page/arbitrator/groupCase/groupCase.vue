@@ -32,6 +32,7 @@
                 <Button :style="{display: resBtnDis('GROUPCASE_UPLOADQUESTION')}" class="mr5" type="primary" size="small" v-if="row.btnUploadQuesFlag" @click="resAction('uploadQues', row)">上传问题清单</Button>
                 <div v-if="!resSetRegExp(row.endCasePatten, 'groupCase')">
                   <Button :style="{display: resBtnDis('GROUPCASE_PASSWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resPassReve(index)">同意撤回</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAW_BOOK')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resAction('resSeeBackBook', row)">撤案申请书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resPassReve(index)">重新生成撤回书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAddEvid(index)">生成补正书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAddEvid(index)">重新生成补正书</Button>
@@ -1286,6 +1287,20 @@ export default {
         case 'uploadQues':
           this.alertObj.caseId = data.id
           this.alertObj.uploadQues = true
+          break
+        case 'resSeeBackBook':
+          axios.post('/case/queryWithdrawal', {
+            caseId: data.caseId
+          }).then(res => {
+            if (res.data.data !== null) {
+              window.open(res.data.data.filepath, '_blank')
+            }
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
           break
       }
     },

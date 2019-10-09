@@ -18,6 +18,7 @@
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resAction('succForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resPassReve(index)">同意撤回</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW_BOOK')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resAction('resSeeBackBook', row)">撤案申请书</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resPassReve(index)">重新生成撤回书</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
@@ -1042,6 +1043,20 @@ export default {
         case 'succForm':
           this.formObj.caseId = data.id
           this.formObj.filing = true
+          break
+        case 'resSeeBackBook':
+          axios.post('/case/queryWithdrawal', {
+            caseId: data.caseId
+          }).then(res => {
+            if (res.data.data !== null) {
+              window.open(res.data.data.filepath, '_blank')
+            }
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
           break
       }
     },
