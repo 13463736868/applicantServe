@@ -17,7 +17,7 @@
           <Input v-model="addData.description" type="textarea" :autosize="{minRows: 3,maxRows: 7}"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor">
+      <!-- <Row class="_labelFor">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>模型类型：</b></p>
         </Col>
@@ -26,7 +26,7 @@
             <Option v-for="item in modelList" :disabled="item.state === 2" :value="item.itemValue" :key="item.id">{{ item.item }}</Option>
           </Select>
         </Col>
-      </Row>
+      </Row> -->
     </alert-btn-info>
   </div>
 </template>
@@ -44,7 +44,7 @@ export default {
         show: true,
         name: '',
         description: '',
-        key: null
+        key: 1
       },
       modelList: []
     }
