@@ -21,7 +21,7 @@
               <span class="hand fcf">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
               <DropdownMenu class="tl" slot="list">
                 <DropdownItem name="oaResInit">发起审批</DropdownItem>
-                <DropdownItem name="oaResProc">审核列表</DropdownItem>
+                <DropdownItem v-if="userName" name="oaResProc">审核列表</DropdownItem>
                 <DropdownItem name="oaPdfList">内容提取</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -58,6 +58,7 @@ export default {
     return {
       alertShowOut: false,
       userName: null,
+      isLeader: null,
       style: {
         bg: {
           backgroundImage: 'url(' + require('../../static/images/header_bg.png') + ')',
@@ -168,6 +169,7 @@ export default {
         let loc = window.localStorage
         let _usersInfo = loc.getItem('usersInfo')
         this.userName = _usersInfo === null ? null : JSON.parse(_usersInfo).loginname
+        this.isLeader = _usersInfo === null ? null : JSON.parse(_usersInfo).flag
       }
     },
     changeDown (name) {

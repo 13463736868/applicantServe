@@ -20,7 +20,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>流程类别：</b></p>
+            <p><span class="_span">*</span><b>流程名称：</b></p>
           </Col>
           <Col span="16">
             <Select disabled v-model="resData.moduleKey" class="disableBox">
@@ -78,7 +78,7 @@
         </Row>
         <Row class="_labelFor" v-if="resModuleKey === '3'">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>用印文件名称：</b></p>
+            <p><span class="_span">*</span><b>文件名称：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="resData.fileName" disabled class="disableBox"></Input>
@@ -86,7 +86,7 @@
         </Row>
         <Row class="_labelFor" v-if="resModuleKey === '3'">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>用印公司名称：</b></p>
+            <p><span class="_span">*</span><b>公司名称：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="resData.companyName" disabled class="disableBox"></Input>

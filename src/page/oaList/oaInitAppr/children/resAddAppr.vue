@@ -3,7 +3,7 @@
     <alert-btn-info :isSaveBtn="resTitle === '查看'" :alertShow="alertShow" @alertConfirm="alertExp" @alertCancel="alertCanc" :alertTitle="resTitle">
       <Row class="_labelFor">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>流程类别：</b></p>
+          <p><span class="_span">*</span><b>流程名称：</b></p>
         </Col>
         <Col span="16">
           <Select v-bind:disabled="resTitle === '查看' || resTitle === '修改'" v-model="resData.moduleKey" @on-change="clearResData">
@@ -11,7 +11,7 @@
           </Select>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="['1', '2', '3'].indexOf(resModuleKey) !== -1">
+      <Row class="_labelFor" v-if="['0', '1', '2', '3'].indexOf(resModuleKey) !== -1">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>时间：</b></p>
         </Col>
@@ -19,7 +19,7 @@
           <DatePicker class="wmax" :value="dateList" format="yyyy-MM-dd HH:mm" @on-change="changeDate" :options="dateDisa" type="datetimerange" placeholder="请指定时间"></DatePicker>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="['1', '2'].indexOf(resModuleKey) !== -1">
+      <Row class="_labelFor" v-if="['0', '1', '2'].indexOf(resModuleKey) !== -1">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>时长：</b></p>
         </Col>
@@ -27,7 +27,7 @@
           <Input v-model="resData.dateNum"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '4'">
+      <Row class="_labelFor" v-if="resModuleKey === '4' || resModuleKey === '0'">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>报销类别：</b></p>
         </Col>
@@ -35,7 +35,7 @@
           <Input v-model="resData.costObj" placeholder="如: 采购经费、活动经费"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '4'">
+      <Row class="_labelFor" v-if="resModuleKey === '4' || resModuleKey === '0'">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>费用明细：</b></p>
         </Col>
@@ -43,7 +43,7 @@
           <Input v-model="resData.detailed" placeholder="请输入费用明细描述"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '4'">
+      <Row class="_labelFor" v-if="resModuleKey === '4' || resModuleKey === '0'">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>小写金额：</b></p>
         </Col>
@@ -51,7 +51,7 @@
           <Input v-model="resData.lowercaseAmount" @on-blur="digitUppercase()"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '4'">
+      <Row class="_labelFor" v-if="resModuleKey === '4' || resModuleKey === '0'">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>大写金额：</b></p>
         </Col>
@@ -59,23 +59,23 @@
           <Input v-model="resData.capitalAmount" disabled></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '3'">
+      <Row class="_labelFor" v-if="resModuleKey === '3' || resModuleKey === '0'">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>用印文件名称：</b></p>
+          <p><span class="_span">*</span><b>文件名称：</b></p>
         </Col>
         <Col span="16">
           <Input v-model="resData.fileName"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '3'">
+      <Row class="_labelFor" v-if="resModuleKey === '3' || resModuleKey === '0'">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>用印公司名称：</b></p>
+          <p><span class="_span">*</span><b>公司名称：</b></p>
         </Col>
         <Col span="16">
           <Input v-model="resData.companyName"></Input>
         </Col>
       </Row>
-      <Row class="_labelFor" v-if="resModuleKey === '3'">
+      <Row class="_labelFor" v-if="resModuleKey === '3' || resModuleKey === '0'">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>印章类型：</b></p>
         </Col>
@@ -383,15 +383,23 @@ export default {
         } else if (this.resData.endUseTime === null) {
           this.resMessage('warning', '请选择结束时间')
         } else if (this.resData.fileName === null) {
-          this.resMessage('warning', '请输入用印文件名称')
+          this.resMessage('warning', '请输入文件名称')
         } else if (this.resData.companyName === null) {
-          this.resMessage('warning', '请输入用印公司名称')
+          this.resMessage('warning', '请输入公司名称')
         } else if (this.resData.sealType === null) {
           this.resMessage('warning', '请选择印章类型')
         } else if (this.resData.reason === null) {
           this.resMessage('warning', '请填写请假理由')
         } else if (this.resData.remarks === null) {
           this.resMessage('warning', '请填写请假备注说明')
+        } else {
+          this.alertSave()
+        }
+      } else {
+        if (this.resData.reason === null) {
+          this.resMessage('warning', '请填写理由')
+        } else if (this.resData.remarks === null) {
+          this.resMessage('warning', '请填写备注说明')
         } else {
           this.alertSave()
         }

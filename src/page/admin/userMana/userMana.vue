@@ -9,7 +9,10 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="姓名"></Input>
         </Col>
-        <Col span="2" offset="10">
+        <Col span="2" offset="8">
+          <Button type="primary" @click="resAction('oa', null)">OA设置</Button>
+        </Col>
+        <Col span="2">
           <Button type="primary" @click="resAddUpload">批量导入</Button>
         </Col>
         <Col span="2">
@@ -115,6 +118,7 @@
     <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="userObj.addU" alertTitle="操作">
       <upload-book childName="批量导入用户" :dowShow="true" :fileType="['xls','xlsx']" :uploadUrl="resUploadUrl" @dowDoc="dowDocBook" @saveClick="addUSave" @cancClick="alertCanc('addU')"></upload-book>
     </alert-btn-info>
+    <res-set-oa v-if="alertObj.oa" @alertConfirm="alertSave('oa')" @alertCancel="alertSave('oa')"></res-set-oa>
   </div>
 </template>
 
@@ -123,12 +127,13 @@ import axios from 'axios'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadBook from '@/components/common/uploadBook'
+import resSetOa from '@/page/admin/userMana/children/resSetOa'
 import setRegExp from '@/config/regExp.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'user_mana',
-  components: { spinComp, alertBtnInfo, uploadBook },
+  components: { spinComp, alertBtnInfo, uploadBook, resSetOa },
   data () {
     return {
       spinShow: false,
@@ -232,6 +237,9 @@ export default {
         stateCode: null,
         resetShow: false,
         addU: false
+      },
+      alertObj: {
+        oa: false
       }
     }
   },
@@ -606,6 +614,20 @@ export default {
     },
     dowDocBook () {
       window.open(regi.api + '/file/templet/dowload/3', '_blank')
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'oa':
+          this.alertObj.oa = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'oa':
+          this.alertObj.oa = false
+          break
+      }
     },
     alertCanc (type) {
       if (type === 'addUser') {
