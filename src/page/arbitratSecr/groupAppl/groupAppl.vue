@@ -1046,7 +1046,7 @@ export default {
           break
         case 'resSeeBackBook':
           axios.post('/case/queryWithdrawal', {
-            caseId: data.caseId
+            caseId: data.id
           }).then(res => {
             if (res.data.data !== null) {
               window.open(res.data.data.filepath, '_blank')
