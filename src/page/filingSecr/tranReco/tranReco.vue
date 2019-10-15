@@ -15,7 +15,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
-                <Button class="mr5" type="primary" size="small" @click="resAction('inquire', row)">进度查询</Button>
+                <Button class="mr5" type="primary" size="small" @click="resAction('inquire', row)" :style="{display: resBtnDis('TRANRECOE_PROCESS')}">进度查询</Button>
               </template>
             </Table>
           </Col>

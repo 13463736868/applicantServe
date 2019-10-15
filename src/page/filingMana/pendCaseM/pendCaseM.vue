@@ -226,7 +226,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASEM_REVISE')
                     },
                     on: {
                       click: () => {
@@ -243,7 +244,8 @@ export default {
                       size: 'small'
                     },
                     style: {
-                      marginRight: '5px'
+                      marginRight: '5px',
+                      display: this.resBtnDis('PENDCASEM_REVISE')
                     },
                     on: {
                       click: () => {
