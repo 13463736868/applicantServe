@@ -1,36 +1,53 @@
 <template>
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
-      <ul class="nav fl" v-if="isRegister">
-        <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
-      </ul>
-      <div class="user fr w350">
-        <Row type="flex" justify="center" align="middle" class="hmax tc">
-          <Col span="14 tr">
-            <!-- <span class="fcf f13" v-if="isRegister"><span class="hand" @click="resOnes" v-if="userName !== null" v-text="userName + '，您好！'"></span></span> -->
-            <Dropdown v-if="isRegister" @on-click="changeDown">
-              <span class="hand fcf" v-if="userName !== null" v-text="userName + '，您好！'"></span>
-              <DropdownMenu class="tl" slot="list">
-                <DropdownItem name="resOnes">个人信息</DropdownItem>
-                <DropdownItem name="resMeet" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </Col>
-          <Col span="5 tr" class="fcf">
-            <Dropdown v-if="isRegister && userName !== 'admin'" @on-click="changeDown">
-              <span class="hand fcf">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
+      <Row>
+        <Col span="12">
+          <ul class="nav fl" v-if="isRegister">
+            <router-link v-if="index < 4" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+            <!-- <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link> -->
+          </ul>
+          <Dropdown class="nav_more" v-if="menu.length > 4" @on-click="resToRoute">
+            <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
+            <DropdownMenu class="tl" slot="list">
+              <DropdownItem v-if="index > 4" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </Col>
+        <Col span="8" class="fl">
+          <div class="user fcf ml10" v-if="isRegister && userName !== 'admin' && oaFlag">
+            <Dropdown @on-click="changeDown" class="fl">
+              <span class="hand fcf f14">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
               <DropdownMenu class="tl" slot="list">
                 <DropdownItem name="oaResInit">发起审批</DropdownItem>
-                <DropdownItem v-if="userName" name="oaResProc">审核列表</DropdownItem>
+                <DropdownItem v-if="isLeader" name="oaResProc">审核列表</DropdownItem>
                 <DropdownItem name="oaPdfList">内容提取</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-          </Col>
-          <Col span="4">
-            <Icon class="hand" type="md-close" size="26" color="#ffffff" @click="loginOut"></Icon>
-          </Col>
-        </Row>
-      </div>
+            <ul class="nav fl">
+              <router-link :to="'/meetList'" tag="li" class="hand" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</router-link>
+            </ul>
+          </div>
+        </Col>
+        <Col span="4" class="userBox">
+          <div class="user">
+            <Row type="flex" justify="center" align="middle" class="hmax tc">
+              <Col span="20 tr">
+                <!-- <span class="fcf f13" v-if="isRegister"><span class="hand" @click="resOnes" v-if="userName !== null" v-text="userName + '，您好！'"></span></span> -->
+                <Dropdown v-if="isRegister" @on-click="changeDown">
+                  <span class="hand fcf" v-if="userName !== null" v-text="userName + '，您好！'"></span>
+                  <DropdownMenu class="tl" slot="list">
+                    <DropdownItem name="resOnes">个人信息</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </Col>
+              <Col span="4">
+                <Icon class="hand" type="md-close" size="26" color="#ffffff" @click="loginOut"></Icon>
+              </Col>
+            </Row>
+          </div>
+        </Col>
+      </Row>
     </div>
     <div class="header_bot">
       <Row type="flex" justify="center" align="middle">
@@ -59,6 +76,7 @@ export default {
       alertShowOut: false,
       userName: null,
       isLeader: null,
+      oaFlag: null,
       style: {
         bg: {
           backgroundImage: 'url(' + require('../../static/images/header_bg.png') + ')',
@@ -87,6 +105,11 @@ export default {
     ]),
     loginOut () {
       this.alertShowOut = true
+    },
+    resToRoute (name) {
+      this.$router.replace({
+        path: name
+      })
     },
     userOutSave () {
       try {
@@ -170,6 +193,7 @@ export default {
         let _usersInfo = loc.getItem('usersInfo')
         this.userName = _usersInfo === null ? null : JSON.parse(_usersInfo).loginname
         this.isLeader = _usersInfo === null ? null : JSON.parse(_usersInfo).flag
+        this.oaFlag = _usersInfo === null ? null : JSON.parse(_usersInfo).oaFlag
       }
     },
     changeDown (name) {
@@ -228,8 +252,14 @@ export default {
         color: #fff;
       }
     }
+    .nav_more {
+      padding: 0 15px;
+      height: 100%;
+      line-height: 4rem;
+    }
     .user {
       height: 100%;
+      line-height: 4rem
     }
   }
   .header_bot {
@@ -246,6 +276,9 @@ export default {
     @include bc;
     border-top:1px solid #fff;
     padding-top:110px;
+  }
+  .userBox{
+    float: right !important
   }
 }
 </style>

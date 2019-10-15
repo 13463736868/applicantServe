@@ -16,7 +16,7 @@
           <p><span class="_span">*</span><b>时间：</b></p>
         </Col>
         <Col span="16">
-          <DatePicker class="wmax" :value="dateList" format="yyyy-MM-dd HH:mm" @on-change="changeDate" :options="dateDisa" type="datetimerange" placeholder="请指定时间"></DatePicker>
+          <DatePicker class="wmax" :value="dateList" format="yyyy-MM-dd HH:mm" :editable="false" @on-change="changeDate" :options="dateDisa" type="datetimerange" placeholder="请指定时间"></DatePicker>
         </Col>
       </Row>
       <Row class="_labelFor" v-if="['0', '1', '2'].indexOf(resModuleKey) !== -1">
@@ -24,7 +24,7 @@
           <p><span class="_span">*</span><b>时长：</b></p>
         </Col>
         <Col span="16">
-          <Input v-model="resData.dateNum"></Input>
+          <Input v-model="resData.dateNum" @on-blur="regExpTime"></Input>
         </Col>
       </Row>
       <Row class="_labelFor" v-if="resModuleKey === '4' || resModuleKey === '0'">
@@ -258,6 +258,11 @@ export default {
       this.resData.companyName = null
       this.resData.sealType = null
     },
+    regExpTime () {
+      if (!setRegExp(this.resData.dateNum, 'money')) {
+        this.resMessage('warning', '请输入正确的时长')
+      }
+    },
     resDataReq () {
       axios.post('/OAReq/detailsOa', {
         id: this.resId,
@@ -358,6 +363,8 @@ export default {
           this.resMessage('warning', '请填写请假理由')
         } else if (this.resData.remarks === null) {
           this.resMessage('warning', '请填写请假备注说明')
+        } else if (!setRegExp(this.resData.dateNum, 'money')) {
+          this.resMessage('warning', '请输入正确的时长')
         } else {
           this.alertSave()
         }
@@ -384,6 +391,8 @@ export default {
           this.resMessage('warning', '请选择结束时间')
         } else if (this.resData.fileName === null) {
           this.resMessage('warning', '请输入文件名称')
+        } else if (!setRegExp(this.resData.dateNum, 'money')) {
+          this.resMessage('warning', '请输入正确的时长')
         } else if (this.resData.companyName === null) {
           this.resMessage('warning', '请输入公司名称')
         } else if (this.resData.sealType === null) {
