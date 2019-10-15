@@ -102,7 +102,7 @@ export default {
             align: 'center'
           },
           {
-            title: '结案时间',
+            title: '结案文书发送时间',
             key: 'closing_time',
             tooltip: 'true',
             align: 'center'
