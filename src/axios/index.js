@@ -36,8 +36,7 @@ axios.interceptors.response.use((res) => {
         // 如何跳转到登录页面
         if (router.currentRoute.path !== 'login') {
           router.replace({
-            path: '/login',
-            query: {redirect: router.currentRoute.fullpath}
+            path: '/login'
           })
         }
         break
@@ -51,8 +50,7 @@ axios.interceptors.response.use((res) => {
       removeToken()
       // 清除token store localStorage 等等
       router.replace({
-        path: '/login',
-        query: {redirect: router.currentRoute.fullpath}
+        path: '/login'
       })
       break
   }
