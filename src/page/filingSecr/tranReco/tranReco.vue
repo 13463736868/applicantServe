@@ -35,6 +35,7 @@
 
 <script>
 import axios from 'axios'
+import {resBtn} from '@/components/common/mixin.js'
 import { caseInfo } from '@/config/common.js'
 import spinComp from '@/components/common/spin'
 import resInquireAlert from '@/page/filingSecr/tranReco/children/resInquireAlert'
