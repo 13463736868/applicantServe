@@ -107,18 +107,6 @@ export default {
             align: 'center'
           },
           {
-            title: '提交时间',
-            key: 'subtime',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
-            title: '受理时间',
-            key: 'acctime',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
             title: '操作',
             key: 'id',
             align: 'center',
