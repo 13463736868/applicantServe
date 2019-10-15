@@ -42,6 +42,7 @@ import resInquireAlert from '@/page/filingSecr/tranReco/children/resInquireAlert
 
 export default {
   name: 'tran_reco_e',
+  mixins: [resBtn],
   components: { spinComp, resInquireAlert },
   data () {
     return {
