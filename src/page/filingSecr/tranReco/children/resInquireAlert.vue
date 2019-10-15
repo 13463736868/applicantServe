@@ -51,7 +51,7 @@ export default {
             align: 'center'
           },
           {
-            title: '存在问题',
+            title: '进度详情',
             key: 'memo',
             tooltip: 'true',
             align: 'center'
