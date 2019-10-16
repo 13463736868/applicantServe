@@ -8,12 +8,12 @@ let setWatermark = (str) => {
   }
 
   let can = document.createElement('canvas')
-  can.width = 150
-  can.height = 120
+  can.width = 450
+  can.height = 220
 
   let cans = can.getContext('2d')
   // 旋转角度
-  cans.rotate(-15 * Math.PI / 180)
+  cans.rotate(-15 * Math.PI / 240)
   cans.font = '18px Vedana'
   // 设置填充绘画的颜色、渐变或者模式
   cans.fillStyle = 'rgba(200, 200, 200, 0.30)'

@@ -32,8 +32,9 @@ export default {
   },
   mounted () {
     if (JSON.parse(window.localStorage.getItem('usersInfo')) !== null) {
-      this.watermark = JSON.parse(window.localStorage.getItem('usersInfo')).loginname
-      watermark.set(this.watermark)
+      let watermarks = JSON.parse(window.localStorage.getItem('usersInfo')).sysWatermark
+      watermarks = watermarks === null ? '' : watermarks
+      watermark.set(watermarks)
     }
   },
   destroyed () {
