@@ -38,6 +38,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/admin/ruleMana/ruleMana.vue')))
   },
   {
+    path: '/systMana',
+    name: 'systMana',
+    meta: {
+      requireAuth: true,
+      title: '系统设置'
+    },
+    component: r => require.ensure([], () => r(require('@/page/admin/systMana/systMana.vue')))
+  },
+  {
     path: '/modelList',
     name: 'modelList',
     meta: {
@@ -434,7 +443,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/oaProcList', '/oaInitAppr', '/pdfList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/oaProcList', '/oaInitAppr', '/pdfList', '/systMana')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
