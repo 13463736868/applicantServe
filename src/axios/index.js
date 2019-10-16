@@ -33,11 +33,11 @@ axios.interceptors.response.use((res) => {
       case '000121':
         // 没有登录
         removeToken()
+        location.reload()
         // 如何跳转到登录页面
         if (router.currentRoute.path !== 'login') {
           router.replace({
-            path: '/login',
-            query: {redirect: router.currentRoute.fullpath}
+            path: '/login'
           })
         }
         break
@@ -49,10 +49,10 @@ axios.interceptors.response.use((res) => {
     case 401:
     case 403:
       removeToken()
+      location.reload()
       // 清除token store localStorage 等等
       router.replace({
-        path: '/login',
-        query: {redirect: router.currentRoute.fullpath}
+        path: '/login'
       })
       break
   }
