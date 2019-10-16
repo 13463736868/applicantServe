@@ -39,9 +39,8 @@
               <Input class="_input" v-model="form.money" :disabled="form.editableText.split(',').indexOf('money') < 0" placeholder="请输入争议的额..." />
             </td>
           </tr>
-          </tr>
           <tr>
-            <td class="tdb tc" rowspan="2">
+            <td class="tdb tc">
               <span>当事人组庭选定情况</span>
             </td>
             <td class="tdb tdl" colspan="6">
@@ -53,25 +52,8 @@
             </td>
           </tr>
           <tr>
-            <td class="tdb tdl _h50 lh50" colspan="6">
-              <div>
-                <Row class="">
-                  <Col span="3">
-                    <b>秘书：</b>
-                  </Col>
-                  <Col span="4" class="">
-                    <img class="_img" :src="form.secNamePath" v-show="form.secNamePath !== ''">
-                  </Col>
-                  <Col span="8" offset="8">
-                    <span>{{form.secApprovalTime }}</span>
-                  </Col>
-                </Row>
-              </div>
-            </td>
-          </tr>
-          <tr>
             <td class="tdb tc" rowspan="2">
-              <span>组庭专员意见</span>
+              <span>副处长意见人选</span>
             </td>
             <td class="tdb tdl" colspan="6">
               <div>
@@ -86,7 +68,7 @@
               <div>
                 <Row class="">
                   <Col span="3">
-                    <b>组庭专员：</b>
+                    <b>副处长：</b>
                   </Col>
                   <Col span="4" class="">
                     <img class="_img" :src="form.groupNamePath" v-show="form.groupNamePath !== ''">
