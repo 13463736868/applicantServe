@@ -30,7 +30,7 @@
         </Col>
       </Row>
     </div>
-    <res-add-appr v-if="alertObj.add" :resId="alertObj.resId" :resTitle="alertObj.resTitle" @alertConfirm="alertSave('addAppr')" @alertCancel="alertCanc('addAppr')"></res-add-appr>
+    <res-syst-mark v-if="alertObj.add" :resId="alertObj.resId" :resTitle="alertObj.resTitle" @alertConfirm="alertSave('addAppr')" @alertCancel="alertCanc('addAppr')"></res-syst-mark>
   </div>
 </template>
 
@@ -38,12 +38,12 @@
 import axios from 'axios'
 import { resMess } from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
-import resAddAppr from '@/page/oaList/oaInitAppr/children/resAddAppr'
+import resSystMark from '@/page/admin/systMana/systMark/children/resSystMark'
 
 export default {
   name: 'syst_mark',
   mixins: [resMess],
-  components: { spinComp, resAddAppr },
+  components: { spinComp, resSystMark },
   data () {
     return {
       spinShow: false,
