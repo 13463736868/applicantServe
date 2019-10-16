@@ -9,7 +9,7 @@
         <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="规则名称"></Input>
       </Col>
       <Col span="2" offset="12" class="tr">
-        <Button type="primary" @click="resAction('addAppr', null)">添加</Button>
+        <Button type="primary" @click="resAction('add', null)">添加</Button>
       </Col>
     </Row>
     <div class="_caseList clearfix">
@@ -17,7 +17,10 @@
         <Col span="24" class="pl20 pr20">
           <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
             <template slot-scope="{ row, index }" slot="action">
-              <!-- <Button class="mr5" type="primary" size="small" @click="resAction('seeAppr', row)">查看</Button> -->
+              <Button class="mr5" type="primary" size="small" @click="resAction('edit', row)">修改</Button>
+              <Button class="mr5" type="primary" size="small" @click="resAction('see', row)">查看</Button>
+              <Button class="mr5" type="primary" size="small" @click="resAction('del', row)">删除</Button>
+              <Button class="mr5" type="primary" size="small" @click="resAction('start', row)">{{row.useFlag === 1 ? '启用' :  '禁用'}}</Button>
             </template>
           </Table>
         </Col>
@@ -30,7 +33,14 @@
         </Col>
       </Row>
     </div>
-    <res-syst-mark v-if="alertObj.add" :resId="alertObj.resId" :resTitle="alertObj.resTitle" @alertConfirm="alertSave('addAppr')" @alertCancel="alertCanc('addAppr')"></res-syst-mark>
+    <alert-btn-info :alertShow="alertShow.delModel" @alertConfirm="alertSave('del')" @alertCancel="alertCanc('del')" alertTitle="操作">
+      <p>确定要删除吗？</p>
+    </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.startModel" @alertConfirm="alertSave('start')" @alertCancel="alertCanc('start')" alertTitle="操作">
+      <p v-if="alertShow.startRow === 1">确定要启用吗？</p>
+      <p v-if="alertShow.startRow === 0">确定要禁用吗？</p>
+    </alert-btn-info>
+    <res-syst-mark v-if="alertShow.addModel" :resId="alertShow.resId" :resTitle="alertShow.resTitle" @alertConfirm="alertSave('add')" @alertCancel="alertCanc('add')"></res-syst-mark>
   </div>
 </template>
 
@@ -39,11 +49,12 @@ import axios from 'axios'
 import { resMess } from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import resSystMark from '@/page/admin/systMana/systMark/children/resSystMark'
+import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'syst_mark',
   mixins: [resMess],
-  components: { spinComp, resSystMark },
+  components: { spinComp, alertBtnInfo, resSystMark },
   data () {
     return {
       spinShow: false,
@@ -97,10 +108,13 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
-      alertObj: {
-        add: false,
+      alertShow: {
         resId: null,
-        resTitle: ''
+        resTitle: '添加',
+        addModel: false,
+        delModel: false,
+        startModel: false,
+        startRow: null
       }
     }
   },
@@ -134,27 +148,78 @@ export default {
     },
     resAction (type, data) {
       switch (type) {
-        case 'addAppr':
-          this.alertObj.resTitle = '添加'
-          this.alertObj.resId = null
-          this.alertObj.add = true
+        case 'edit':
+          this.alertShow.addModel = true
+          this.alertShow.resTitle = '修改'
+          this.alertShow.resId = data.id
           break
+        case 'add':
+          this.alertShow.addModel = true
+          this.alertShow.resTitle = '添加'
+          this.alertShow.resId = ''
+          break
+        case 'del':
+          this.alertShow.delModel = true
+          this.alertShow.resId = data.id
+          break
+        case 'start':
+          this.alertShow.startModel = true
+          this.alertShow.resId = data.id
+          this.alertShow.startRow = data.useFlag
+          break
+        case 'see':
+          this.alertShow.addModel = true
+          this.alertShow.resTitle = '查看'
+          this.alertShow.resId = data.id
       }
     },
     alertSave (type) {
       switch (type) {
-        case 'addAppr':
-          this.alertObj.add = false
-          this.alertObj.resId = null
-          this.resSearch()
+        case 'add':
+          this.alertShow.addModel = false
+          this.resCaseList()
+          break
+        case 'del':
+          this.alertShow.delModel = false
+          axios.post('/watermarkReq/delSysWatermark', {
+            id: this.alertShow.resId
+          }).then(res => {
+            this.resMessage('success', res.data.data)
+            this.alertCanc('del')
+            this.resCaseList()
+          }).catch(e => {
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+          })
+          break
+        case 'start':
+          this.alertShow.delModel = false
+          axios.post('/watermarkReq/setUseFlag', {
+            id: this.alertShow.resId,
+            useFlag: this.alertShow.startRow === 1 ? 0 : 1
+          }).then(res => {
+            this.resMessage('success', res.data.data)
+            this.alertCanc('start')
+            this.resCaseList()
+          }).catch(e => {
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+          })
           break
       }
     },
     alertCanc (type) {
       switch (type) {
-        case 'addAppr':
-          this.alertObj.add = false
-          this.alertObj.resId = null
+        case 'add':
+          this.alertShow.addModel = false
+          this.alertShow.resId = null
+          break
+        case 'del':
+          this.alertShow.delModel = false
+          this.alertShow.resId = null
+          break
+        case 'start':
+          this.alertShow.startModel = false
+          this.alertShow.resId = null
+          this.alertShow.startRow = null
           break
       }
     }
@@ -172,6 +237,15 @@ export default {
   padding-top: 40px;
   ._caseList {
     margin-bottom: 20px;
+  }
+}
+._labelFor {
+  margin-bottom: 10px;
+  p {
+    padding: 7px 0;
+  }
+  ._span {
+    color: #ff7a7a;
   }
 }
 </style>
