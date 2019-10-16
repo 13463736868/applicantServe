@@ -47,9 +47,8 @@
                   </div>
                 </Col>
                 <Col span="6">
-                <div class="tdl">
-                  <Input class="_input"/>
-                </div>
+                  <div class="tdl">
+                  </div>
                 </Col>
               </Row>
             </td>
