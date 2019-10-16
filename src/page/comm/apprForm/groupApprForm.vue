@@ -53,7 +53,7 @@
           </tr>
           <tr>
             <td class="tdb tc" rowspan="2">
-              <span>副处长建议人选</span>
+              <span>办案处意见</span>
             </td>
             <td class="tdb tdl" colspan="6">
               <div>
@@ -68,7 +68,7 @@
               <div>
                 <Row class="">
                   <Col span="3">
-                    <b>副处长：</b>
+                    <b>审批人：</b>
                   </Col>
                   <Col span="4" class="">
                     <img class="_img" :src="form.groupNamePath" v-show="form.groupNamePath !== ''">

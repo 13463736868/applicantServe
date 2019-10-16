@@ -22,7 +22,7 @@
           <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
+          <Button type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量书面审理</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -38,7 +38,7 @@
                 <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATEDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '5' || row.logicState === '6' || row.logicState === '12'"  @click="resBeginTime('edit', index)">修改开庭时间</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_TRANSTOHEARING')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7'" @click="resTranBook(index)">转书面审理</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_TRANSTOHEARING')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7'" @click="resTranBook(index)">书面审理</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_ARRIVE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '12' || row.logicState === '13'" @click="resSendDoc(index)">送达</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
                 <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.logicState === '11'">{{row.logicContent}}</span>
@@ -135,10 +135,10 @@
       <p>确定要发送邮件，短信通知吗？（确认内容无误后点击确定）</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.noTime" @alertConfirm="noTimesSave('time')" @alertCancel="alertCanc('noTime')" alertTitle="操作">
-      <p>确定要批量转书面审理吗？</p>
+      <p>确定要批量书面审理吗？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.noBegin" @alertConfirm="noTimesSave('begin')" @alertCancel="alertCanc('noBegin')" alertTitle="操作">
-      <p>确定要转书面审理吗？</p>
+      <p>确定要书面审理吗？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batchEdit" alertSaveText="下载" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')" alertTitle="操作">
       <Row>
@@ -835,7 +835,7 @@ export default {
             this.alertShow.batch = true
           } else {
             this.$Message.error({
-              content: '当前选择的案件只能批量指定开庭时间或者转书面审理',
+              content: '当前选择的案件只能批量指定开庭时间或者书面审理',
               duration: 5
             })
           }
