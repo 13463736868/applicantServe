@@ -48,7 +48,7 @@
     <alert-btn-info :alertShow="alertShow.acceA" @alertConfirm="acceSave('acceA')" @alertCancel="alertCanc('acceA')" alertTitle="通知缴费">
       <Row class="_labelFor mb10">
         <Col span="6">
-          <div class="_label">请输入纠纷金额 (元)：</div>
+          <div class="_label">请输入争议标的额 (元)：</div>
         </Col>
         <Col span="16" offset="1">
           <Input v-model="dataObj.acceAA" @on-change="applMoney"/>
@@ -59,7 +59,7 @@
       </Row>
       <Row class="_labelFor">
         <Col span="6">
-          <div class="_label">仲裁金额：</div>
+          <div class="_label">仲裁费金额：</div>
         </Col>
         <Col span="16" offset="1">
           <Input readonly v-model="dataObj.acceAB"/>

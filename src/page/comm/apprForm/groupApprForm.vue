@@ -53,7 +53,7 @@
           </tr>
           <tr>
             <td class="tdb tc" rowspan="2">
-              <span>副处长意见人选</span>
+              <span>副处长建议人选</span>
             </td>
             <td class="tdb tdl" colspan="6">
               <div>
