@@ -1,6 +1,9 @@
 <template>
   <div class="pdfDetials">
     <Modal v-model="alertShow" width="800" title="操作" :mask-closable="false" :closable="false">
+    <spin-comp :spinShow="spinShow">
+      <div v-if="progressText !== null" v-text="progressText"></div>
+    </spin-comp>
       <Row class="pl20">
         <Col span="2" offset="20" class="pb10">
           <Button type="primary" @click="addRow">添加</Button>
@@ -73,10 +76,14 @@
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import spinComp from '@/components/common/spin'
 export default {
   name: 'pdf_detials',
+  components: { spinComp },
   data () {
     return {
+      progressText: null,
+      spinShow: false,
       alertShow: true,
       inputList: [
         {
