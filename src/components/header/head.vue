@@ -3,16 +3,21 @@
     <div class="header_top clearfix">
       <Row>
         <Col span="12">
-          <ul class="nav fl" v-if="isRegister">
-            <router-link v-if="index < 4" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
-            <!-- <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link> -->
-          </ul>
-          <Dropdown class="nav_more" v-if="menu.length > 4" @on-click="resToRoute">
-            <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
-            <DropdownMenu class="tl" slot="list">
-              <DropdownItem v-if="index > 4" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <template v-if="userName !== 'admin'">
+            <ul class="nav fl" v-if="isRegister">
+              <router-link v-if="index < 4" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+              <!-- <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link> -->
+            </ul>
+            <Dropdown class="nav_more" v-if="menu.length > 4" @on-click="resToRoute">
+              <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
+              <DropdownMenu class="tl" slot="list">
+                <DropdownItem v-if="index > 3" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </template>
+          <template v-if="userName === 'admin'">
+            <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+          </template>
         </Col>
         <Col span="8" class="fl">
           <div class="user fcf ml10" v-if="isRegister && userName !== 'admin' && oaFlag">
