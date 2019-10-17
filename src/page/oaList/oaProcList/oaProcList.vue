@@ -8,6 +8,7 @@
             <Table stripe border align="center" :loading="notDealList.loading" :columns="notDealList.header" :data="notDealList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button class="mr5" type="primary" size="small" @click="resAction('seeAppr', row)">详情</Button>
+                <Button type="primary" size="small" @click="resAction('setProc', row)">审批</Button>
               </template>
             </Table>
           </div>
@@ -38,6 +39,7 @@
       </Tabs>
     </div>
     <res-see-appr v-if="alertObj.see" :resId="alertObj.resId" :resTabState="tabState" @alertConfirm="alertSave('seeAppr')" @alertCancel="alertCanc('seeAppr')"></res-see-appr>
+    <res-set-proc v-if="alertObj.setProc" :resTaskId="alertObj.resTaskId" @alertConfirm="alertSave('setProc')" @alertCancel="alertCanc('setProc')"></res-set-proc>
   </div>
 </template>
 
@@ -47,11 +49,12 @@ import { mapGetters } from 'vuex'
 import { resMess } from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import resSeeAppr from '@/page/oaList/oaProcList/children/resSeeAppr'
+import resSetProc from '@/page/oaList/oaProcList/children/resSetProc'
 
 export default {
   name: 'oa_proc_list',
   mixins: [resMess],
-  components: { spinComp, resSeeAppr },
+  components: { spinComp, resSeeAppr, resSetProc },
   data () {
     return {
       spinShow: false,
@@ -156,7 +159,9 @@ export default {
       },
       alertObj: {
         see: false,
-        resId: null
+        resId: null,
+        setProc: false,
+        resTaskId: null
       }
     }
   },
@@ -230,6 +235,10 @@ export default {
           }
           this.alertObj.see = true
           break
+        case 'setProc':
+          this.alertObj.resTaskId = data.taskId
+          this.alertObj.setProc = true
+          break
       }
     },
     alertSave (type) {
@@ -239,6 +248,12 @@ export default {
           this.alertObj.resId = null
           this.resSearch()
           break
+        case 'setProc':
+          this.alertObj.setProc = false
+          this.alertObj.resTaskId = null
+          this.resNotDealList()
+          this.resTaskList()
+          break
       }
     },
     alertCanc (type) {
@@ -246,6 +261,10 @@ export default {
         case 'seeAppr':
           this.alertObj.see = false
           this.alertObj.resId = null
+          break
+        case 'setProc':
+          this.alertObj.setProc = false
+          this.alertObj.resTaskId = null
           break
       }
     }

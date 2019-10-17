@@ -5,31 +5,12 @@
       :title="alertTitle"
       :mask-closable="false"
       @on-cancel="alertCancel"
-      class="not_s">
+      class="not_s"
+      width="800">
       <div>
       <spin-comp :spinShow="spinShow"></spin-comp>
-        <Row class="pl20">
-          <Col span="24" class="pr20 pb10" v-for="item in pdfDteailsList" :value="item.id" :key="item.id">
-            <Row class="_labelFor">
-              <Col span="6" class="pb10">
-                <p>
-                  <b>抓取文字标识：</b>
-                </p>
-              </Col>
-              <Col span="18" class="pr20 pb10">
-                <p>{{item.fieldName}}</p>
-              </Col>
-              <Col span="6">
-                <p>
-                  <b>抓取结果：</b>
-                </p>
-              </Col>
-              <Col span="18" class="pr20">
-                <p>{{item.fieldValue}}</p>
-              </Col>
-            </Row>
-          </Col>
-        </Row>
+        <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+        </Table>
       </div>
       <div slot="footer">
         <Button v-if="isSaveBtn === true" size="large" @click="alertCancel">取消</Button>
@@ -52,7 +33,32 @@ export default {
       spinShow: false,
       isSaveBtn: false,
       alertShow: true,
-      pdfDteailsList: []
+      caseList: {
+        loading: false,
+        header: [
+          {
+            title: '抓取内容',
+            key: 'interceptName',
+            align: 'center'
+          },
+          {
+            title: '起始位置',
+            key: 'interceptStart',
+            align: 'center'
+          },
+          {
+            title: '结束为止',
+            key: 'interceptEnd',
+            align: 'center'
+          },
+          {
+            title: '抓取结果',
+            key: 'interceptValue',
+            width: 300
+          }
+        ],
+        bodyList: []
+      }
     }
   },
   created () {
@@ -72,7 +78,7 @@ export default {
         pdfId: this.alertId
       }).then(res => {
         let _data = res.data.data
-        this.pdfDteailsList = _data
+        this.caseList.bodyList = _data
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
