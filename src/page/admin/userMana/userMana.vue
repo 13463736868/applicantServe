@@ -500,7 +500,7 @@ export default {
           content: '固话/手机号不能为空',
           duration: 5
         })
-      } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'landline'))) {
+      } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'phone'))) {
         this.$Message.warning({
           content: '固话/手机号格式不正确',
           duration: 5
