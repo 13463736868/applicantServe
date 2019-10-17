@@ -42,7 +42,7 @@ export default {
         loading: false,
         header: [
           {
-            title: 'ID',
+            title: '序号',
             key: 'id',
             align: 'center'
           },
@@ -60,7 +60,23 @@ export default {
             title: '文件链接',
             key: 'filePath',
             tooltip: 'true',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                },
+                on: {
+                  click: () => {
+                    window.open(params.row.filePath, '_blank')
+                  }
+                }
+              }, params.row.filePath)
+            }
           },
           {
             title: '添加时间',

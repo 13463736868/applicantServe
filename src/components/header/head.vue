@@ -16,21 +16,24 @@
             </Dropdown>
           </template>
           <template v-if="userName === 'admin'">
-            <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+            <ul class="nav fl" v-if="isRegister">
+              <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+            </ul>
           </template>
         </Col>
         <Col span="8" class="fl">
           <div class="user fcf ml10" v-if="isRegister && userName !== 'admin' && oaFlag">
-            <Dropdown @on-click="changeDown" class="fl">
+            <Dropdown @on-click="changeDown" class="fl pl15 pr15">
               <span class="hand fcf f14">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
               <DropdownMenu class="tl" slot="list">
                 <DropdownItem name="oaResInit">发起审批</DropdownItem>
                 <DropdownItem v-if="isLeader" name="oaResProc">审核列表</DropdownItem>
-                <DropdownItem name="oaPdfList">内容提取</DropdownItem>
               </DropdownMenu>
             </Dropdown>
             <ul class="nav fl">
-              <router-link :to="'/meetList'" tag="li" class="hand" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</router-link>
+              <router-link :to="'/oaModelList'" tag="li" class="hand fl" v-if="userName !== 'admin' && userName !== 'modelmanger'">流程创建</router-link>
+              <router-link :to="'/pdfList'" tag="li" class="hand fl" v-if="userName !== 'admin' && userName !== 'modelmanger'">内容提取</router-link>
+              <router-link :to="'/meetList'" tag="li" class="hand fl" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</router-link>
             </ul>
           </div>
         </Col>

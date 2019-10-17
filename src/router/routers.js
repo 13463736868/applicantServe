@@ -56,6 +56,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/admin/modelList/modelList.vue')))
   },
   {
+    path: '/oaModelList',
+    name: 'oaModelList',
+    meta: {
+      requireAuth: true,
+      title: '流程创建'
+    },
+    component: r => require.ensure([], () => r(require('@/page/admin/modelList/modelList.vue')))
+  },
+  {
     path: '/arbiEvas',
     name: 'arbiEvas',
     meta: {
@@ -443,7 +452,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/oaProcList', '/oaInitAppr', '/pdfList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/oaProcList', '/oaInitAppr', '/pdfList', '/oaModelList')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),

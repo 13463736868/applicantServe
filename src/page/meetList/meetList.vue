@@ -2,7 +2,7 @@
   <div class="meetList">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row class="pb20">
+      <Row class="pb20 pr20">
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">状态</label>
         </Col>
@@ -11,7 +11,7 @@
             <Option v-for="item in meetStatusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
-        <Col span="2" offset="16">
+        <Col span="2 tr" offset="16">
           <Button type="primary" @click="sendAjax('addBefore')">创建</Button>
         </Col>
       </Row>
