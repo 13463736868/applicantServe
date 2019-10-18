@@ -26,7 +26,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('PENDCASE_CONFIRMFILING')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resConfCase(index)">确认立案</Button>
                 <Button :style="{display: resBtnDis('PENDCASE_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resAction('pendForm', row)">立案审批表</Button>
-                <Button class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
                 <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.pendBtnStatus  === '2'">立案审核中</span>
               </template>
             </Table>
