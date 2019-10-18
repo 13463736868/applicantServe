@@ -222,6 +222,7 @@ export default {
         pass: false,
         passId: null,
         assignRest: false,
+        editArbi: false,
         idsList: [],
         ids: [],
         state: [],
@@ -437,14 +438,14 @@ export default {
                 size: 'small'
               },
               style: {
-                display: this.resBtnDis('GROUPAUDIT_REAPPOINTMENT')
+                display: this.resBtnDis('GROUPAUDIT_EDITARBITRATOR')
               },
               on: {
                 click: () => {
-                  this.resAssignRest(params.index)
+                  this.resEditArbi(params.index)
                 }
               }
-            }, '重新指定仲裁员'),
+            }, '修改仲裁员'),
             h('Button', {
               props: {
                 type: 'primary',
@@ -516,6 +517,10 @@ export default {
     resSearch () {
       this.selePageObj.pageNum = 1
       this.resUserList()
+    },
+    resEditArbi (index) {
+      this.alertShow.editArbi = true
+      this.resAssign(index)
     },
     resAssignRest (index) {
       this.alertShow.assignRest = true
@@ -606,6 +611,26 @@ export default {
       if (this.alertShow.assignRest) {
         this.alertShow.agre = false
         axios.post('/approve/updateArbitrator', {
+          caseId: this.alertShow.caseId,
+          arbitratorIds: this.seleArr.join(',')
+        }).then(res => {
+          this.selePageObj.pageNum = 1
+          this.alertCanc('agre')
+          this.$Message.success({
+            content: '操作成功',
+            duration: 2
+          })
+          this.resSearchList()
+        }).catch(e => {
+          this.alertCanc('agre')
+          this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      } else if (this.alertShow.editArbi) {
+        this.alertShow.agre = false
+        axios.post('/approve/confirmArbitrator', {
           caseId: this.alertShow.caseId,
           arbitratorIds: this.seleArr.join(',')
         }).then(res => {
@@ -901,6 +926,7 @@ export default {
         this.seleArrName = []
         this.searchText = ''
         this.alertShow.assignRest = false
+        this.alertShow.editArbi = false
         this.alertShow.idsType = ''
       } else if (type === 'pass') {
         this.alertShow.pass = false
