@@ -35,8 +35,7 @@
                 <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resPassReve(index)">同意撤回</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resPassReve(index)">重新生成撤回书</Button>
-                <!-- <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '17'" @click="resAction('proPosal', row)">建议仲裁员</Button> -->
-                <Button class="mr5" type="primary" size="small" @click="resAction('proPosal', row)">建议仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '17'" @click="resAction('proPosal', row)">建议仲裁员</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATEDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '5' || row.logicState === '6' || row.logicState === '12'"  @click="resBeginTime('edit', index)">修改开庭时间</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
