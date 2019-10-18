@@ -22,7 +22,14 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('PENDCASE_CONFIRMFILING')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resConfCase(index)">确认立案</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resAction('pendForm', row)">立案审批表</Button>
+                <Button class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
+                <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.pendBtnStatus  === '2'">立案审核中</span>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -81,6 +88,7 @@
       </Row>
     </alert-btn-info>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
+    <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
   </div>
 </template>
 
@@ -90,12 +98,13 @@ import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
+import resSeeFile from '@/page/filingSecr/pendCase/children/resSeeFile'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm },
+  components: { spinComp, alertBtnInfo, filingCaseForm, resSeeFile },
   data () {
     return {
       spinShow: false,
@@ -184,57 +193,7 @@ export default {
             title: '操作',
             key: 'caseId',
             align: 'center',
-            render: (h, params) => {
-              if (params.row.pendBtnStatus === '1') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASE_CONFIRMFILING')
-                    },
-                    on: {
-                      click: () => {
-                        this.resConfCase(params.index)
-                      }
-                    }
-                  }, '确认立案'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASE_APPROVAL')
-                    },
-                    on: {
-                      click: () => {
-                        this.resAction('pendForm', params.row)
-                      }
-                    }
-                  }, '立案审批表')
-                ])
-              } else if (params.row.pendBtnStatus === '2') {
-                return h('div', [
-                  h('span', {
-                    props: {
-                      type: 'text',
-                      size: 'small'
-                    },
-                    style: {
-                      color: '#2d8cf0'
-                    }
-                  }, '立案审核中')
-                ])
-              } else {
-                return h('div', [
-                ])
-              }
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -260,6 +219,10 @@ export default {
       formObj: {
         caseId: null,
         filing: false
+      },
+      alertObj: {
+        seeFile: false,
+        caseId: null
       }
     }
   },
@@ -513,6 +476,10 @@ export default {
           this.formObj.caseId = data.caseId
           this.formObj.filing = true
           break
+        case 'seeFile':
+          this.alertObj.caseId = data.caseId
+          this.alertObj.seeFile = true
+          break
       }
     },
     alertSave (type) {
@@ -522,6 +489,10 @@ export default {
           this.formObj.caseId = null
           this.pageObj.pageNum = 1
           this.resCaseList()
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.caseId = null
           break
       }
     },
@@ -546,6 +517,9 @@ export default {
       } else if (type === 'pendForm') {
         this.formObj.filing = false
         this.formObj.caseId = null
+      } else if (type === 'seeFile') {
+        this.alertObj.seeFile = false
+        this.alertObj.caseId = null
       }
     },
     goCaseInfo (index) {
