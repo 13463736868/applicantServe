@@ -28761,7 +28761,7 @@ UE.ui = baidu.editor.ui = {};
             function setCount(editor,ui) {
                 editor.setOpt({
                     wordCount:true,
-                    maximumWords:10000,
+                    maximumWords:20000,
                     wordCountMsg:editor.options.wordCountMsg || editor.getLang("wordCountMsg"),
                     wordOverFlowMsg:editor.options.wordOverFlowMsg || editor.getLang("wordOverFlowMsg")
                 });
