@@ -563,34 +563,44 @@ export default {
     },
     goCourtRoom (index) {
       let _info = this.caseList.bodyList[index]
-      let newTime = this.getFormatDate()
-      let newD = newTime.substr(0, 10).split('-').join('')
-      let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-      let beginTime = _info.beginTime
-      let beginD = beginTime.substr(0, 10).split('-').join('')
-      let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-      if (newD !== beginD) {
-        this.$Message.warning({
-          content: '只能在开庭前十分钟及开庭后半小时内进入',
+      axios.post('/encryption', {
+        params: _info.id + '$' + 1
+      }).then(res => {
+        window.open('' + res.data.data, '_blank')
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
-      } else if (beginT - newT > 10 || newT - beginT > 30) {
-        this.$Message.warning({
-          content: '只能在开庭前十分钟及开庭后半小时内进入',
-          duration: 5
-        })
-      } else {
-        axios.post('/encryption', {
-          params: _info.id + '$' + 1
-        }).then(res => {
-          window.open('' + res.data.data, '_blank')
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
+      })
+      // let newTime = this.getFormatDate()
+      // let newD = newTime.substr(0, 10).split('-').join('')
+      // let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
+      // let beginTime = _info.beginTime
+      // let beginD = beginTime.substr(0, 10).split('-').join('')
+      // let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
+      // if (newD !== beginD) {
+      //   this.$Message.warning({
+      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
+      //     duration: 5
+      //   })
+      // } else if (beginT - newT > 10 || newT - beginT > 30) {
+      //   this.$Message.warning({
+      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
+      //     duration: 5
+      //   })
+      // } else {
+      //   axios.post('/encryption', {
+      //     params: _info.id + '$' + 1
+      //   }).then(res => {
+      //     window.open('' + res.data.data, '_blank')
+      //   }).catch(e => {
+      //     this.$Message.error({
+      //       content: '错误信息:' + e + ' 稍后再试',
+      //       duration: 5
+      //     })
+      //   })
+      // }
     },
     resCancCase (index) {
       let _res = this.caseList.bodyList[index]
