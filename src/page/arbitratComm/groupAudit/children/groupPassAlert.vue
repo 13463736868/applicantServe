@@ -37,7 +37,7 @@ export default {
           this.resMessage('success', '操作成功')
           this.$emit('alertConfirm')
         }).catch(e => {
-          this.resMessage('succeerrorss', '错误信息:' + e + ' 稍后再试')
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
