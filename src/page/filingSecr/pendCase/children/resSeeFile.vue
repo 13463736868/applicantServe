@@ -133,6 +133,12 @@ export default {
         this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
+    seeDoc (path) {
+      window.open(path, '_blank')
+    },
+    dowDoc (index) {
+      window.open(regi.api + '/file/download/?fileName=' + this.fileList.bodyList[index].filename + '&filePath=' + this.fileList.bodyList[index].filepath, '_blank')
+    },
     dowZip () {
       let _fileIds = this.resData.fileIdArr.join(',')
       if (_fileIds === '') {
