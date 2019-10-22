@@ -438,6 +438,7 @@ export default {
                 size: 'small'
               },
               style: {
+                marginRight: '5px',
                 display: this.resBtnDis('GROUPAUDIT_EDITARBITRATOR')
               },
               on: {
