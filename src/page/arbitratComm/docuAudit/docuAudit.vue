@@ -13,7 +13,7 @@
           <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量驳回</Button>
+          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量退回</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -24,7 +24,7 @@
                 <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resSeeDocu(row.filePath)">预览文书</Button>
                 <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
-                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">退回</Button>
                   <Button v-if="row.type === 1 || row.type === 2" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
                 </div>
               </template>
@@ -42,13 +42,13 @@
     </div>
     <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
-      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+      <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
-      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+      <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
       <Row class="_labelFor">
@@ -181,7 +181,7 @@ export default {
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.caseDocuemntApproveState === 1 ? '通过' : (params.row.caseDocuemntApproveState === 2 ? '驳回' : (params.row.caseDocuemntApproveState === 3 ? '未审核' : '')))
+              }, params.row.caseDocuemntApproveState === 1 ? '通过' : (params.row.caseDocuemntApproveState === 2 ? '退回' : (params.row.caseDocuemntApproveState === 3 ? '未审核' : '')))
             }
           },
           {
@@ -296,7 +296,7 @@ export default {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
           this.$Message.warning({
-            content: '请填写驳回原因',
+            content: '请填写退回原因',
             duration: 5
           })
         } else {
@@ -430,7 +430,7 @@ export default {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
           this.$Message.warning({
-            content: '请填写驳回原因',
+            content: '请填写退回原因',
             duration: 5
           })
         } else {

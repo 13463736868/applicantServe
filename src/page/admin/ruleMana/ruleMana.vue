@@ -63,7 +63,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>缴费后受理时限（天）：</b></p>
+            <p><b>交费后受理时限（天）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="addData.acceptLimitTime"></InputNumber>
@@ -235,7 +235,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="16" offset="1">
-            <p><b>缴费后受理时限（天）：</b></p>
+            <p><b>交费后受理时限（天）：</b></p>
           </Col>
           <Col span="6">
             <InputNumber :min="-1" v-model="editData.acceptLimitTime"></InputNumber>

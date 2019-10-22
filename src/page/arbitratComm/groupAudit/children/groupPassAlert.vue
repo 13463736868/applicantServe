@@ -2,7 +2,7 @@
   <div class="_groupPassAlert">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <p v-if="resState === 1">确定要同意吗？</p>
-      <Input v-if="resState === 2" :autosize="{minRows: 5,maxRows: 7}" type="textarea" v-model="resData.caseDocumentReason" placeholder="输入驳回原因..." />
+      <Input v-if="resState === 2" :autosize="{minRows: 5,maxRows: 7}" type="textarea" v-model="resData.caseDocumentReason" placeholder="输入退回原因..." />
     </alert-btn-info>
   </div>
 </template>
@@ -27,7 +27,7 @@ export default {
   methods: {
     alertSave () {
       if (this.resState === 2 && this.resData.caseDocumentReason.length === 0) {
-        this.resMessage('warning', '驳回原因不能为空')
+        this.resMessage('warning', '退回原因不能为空')
         return false
       } else {
         axios.post('/approve/updateCourtAuditState', {

@@ -419,7 +419,7 @@ export default {
                   this.seeReasonD(params.index)
                 }
               }
-            }, '文书驳回原因')
+            }, '文书退回原因')
           ])
         }
       } else {
@@ -466,7 +466,7 @@ export default {
                   this.seeReasonD(params.index)
                 }
               }
-            }, '文书驳回原因')
+            }, '文书退回原因')
           ])
         }
       }
