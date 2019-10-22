@@ -108,7 +108,7 @@ export default {
           pageIndex: 0,
           pageSize: 999,
           caseId: this.resCaseId,
-          caseState: 7
+          caseState: 1
         }).then(res => {
           let _data = res.data.data
           for (let k in _data.dataList) {
@@ -124,7 +124,7 @@ export default {
         pageIndex: (this.fileList.page.pageNum - 1) * this.fileList.page.pageSize,
         pageSize: this.fileList.page.pageSize,
         caseId: this.resCaseId,
-        caseState: 7
+        caseState: 1
       }).then(res => {
         let _data = res.data.data
         this.fileList.bodyList = _data.dataList === null ? [] : _data.dataList
