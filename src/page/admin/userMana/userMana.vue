@@ -103,6 +103,14 @@
             </Select>
           </Col>
         </Row>
+        <Row class="_labelFor">
+          <Col span="6" offset="1">
+            <p><span class="_span"></span><b>擅长领域：</b></p>
+          </Col>
+          <Col span="16">
+            <Input v-model="addData.sign"></Input>
+          </Col>
+        </Row>
       </div>
     </alert-btn-info>
     <alert-btn-info :alertShow="userObj.stateShow" @alertConfirm="stateSave" @alertCancel="alertCanc('state')" alertTitle="操作">
@@ -212,7 +220,8 @@ export default {
         email: '',
         state: 1,
         department: '',
-        role: ''
+        role: '',
+        sign: ''
       },
       stateList: [
         {
@@ -401,6 +410,7 @@ export default {
       this.addData.state = _res.state
       this.addData.department = _res.department.id
       this.addData.role = _res.role.id
+      this.addData.sign = _res.sign
       this.resAddUser('edit')
     },
     resStatusUser (type, index) {
@@ -546,7 +556,8 @@ export default {
           email: this.addData.email,
           state: this.addData.state,
           departmentId: this.addData.department,
-          roleId: this.addData.role
+          roleId: this.addData.role,
+          sign: this.addData.sign
         }).then(res => {
           this.alertCanc('addUser')
           this.$Message.success({
@@ -572,7 +583,8 @@ export default {
           email: this.addData.email,
           state: this.addData.state,
           department: {id: this.addData.department},
-          role: {id: this.addData.role}
+          role: {id: this.addData.role},
+          sign: this.addData.sign
         }, {
           headers: {
             'content-Type': 'application/json;charset=UTF-8'
@@ -618,7 +630,8 @@ export default {
           email: '',
           state: 1,
           department: '',
-          role: ''
+          role: '',
+          sign: ''
         }
         this.depaList = []
         this.roleList = []
