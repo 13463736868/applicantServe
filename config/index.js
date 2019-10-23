@@ -59,16 +59,16 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    // assetsPublicPath: '/judge/',
-    // proxyTable: {
-    //   '/trial': {
-    //     target: 'https://wlzc.anyang.gov.cn',
-    //     changeOrigin: true,
-    //     pathRewrite: {
-    //       '^/trial': '/trial'
-    //     }
-    //   }
-    // },
+    assetsPublicPath: '/judge/',
+    proxyTable: {
+      '/trial': {
+        target: 'http://192.168.1.91:8081',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '/api'
+        }
+      }
+    },
     /**
      * Source Maps
      */
