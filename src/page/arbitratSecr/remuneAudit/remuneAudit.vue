@@ -16,7 +16,7 @@
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('REMUNEAUDIT_AUDIT')}" class="mr5" type="primary" size="small" v-if="row.auditButtonFlag" @click="resAction('payForm', row)">审核</Button>
-                <Button :style="{display: resBtnDis('REMUNEAUDIT_STARTPROCESS')}" class="mr5" type="primary" size="small" v-if="row.startButtonFlag" @click="resAction('startPayForm', row)">发起审批</Button>
+                <Button :style="{display: resBtnDis('REMUNEAUDIT_STARTPROCESS')}" class="mr5" type="primary" size="small" v-if="row.startButtonFlag" @click="resAction('startPayForm', row)">发起申请</Button>
                 <Button :style="{display: resBtnDis('REMUNEAUDIT_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看</Button>
               </template>
             </Table>

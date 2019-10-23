@@ -26,7 +26,7 @@
             <Dropdown @on-click="changeDown" class="fl pl15 pr15">
               <span class="hand fcf f14">OA管理 <Icon type="ios-arrow-down" class="f14"/></span>
               <DropdownMenu class="tl" slot="list">
-                <DropdownItem name="oaResInit">发起审批</DropdownItem>
+                <DropdownItem name="oaResInit">发起申请</DropdownItem>
                 <DropdownItem v-if="isLeader" name="oaResProc">审核列表</DropdownItem>
               </DropdownMenu>
             </Dropdown>

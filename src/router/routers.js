@@ -348,7 +348,7 @@ const routerMap = [
     name: 'oaInitAppr',
     meta: {
       requireAuth: true,
-      title: '发起审批'
+      title: '发起申请'
     },
     component: r => require.ensure([], () => r(require('@/page/oaList/oaInitAppr/oaInitAppr.vue')))
   },
