@@ -59,7 +59,7 @@ module.exports = {
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    assetsPublicPath: '/judge/',
+    // assetsPublicPath: '/judge/',
     proxyTable: {
       '/trial': {
         target: 'http://192.168.1.91:8081',
