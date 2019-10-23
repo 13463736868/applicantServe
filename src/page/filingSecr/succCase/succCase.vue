@@ -147,7 +147,7 @@ export default {
             align: 'center'
           },
           {
-            title: '操作',
+            title: '待送达材料',
             key: 'caseId',
             align: 'center',
             render: (h, params) => {
@@ -170,36 +170,7 @@ export default {
                           this.resFileList(params.index)
                         }
                       }
-                    }, '查看文件'),
-                    h('Button', {
-                      props: {
-                        type: 'primary',
-                        size: 'small'
-                      },
-                      style: {
-                        display: this.resBtnDis('SUCCCASE_OFFLINEARR')
-                      },
-                      on: {
-                        click: () => {
-                          this.resSendDo(params.index)
-                        }
-                      }
-                    }, '线下送达'),
-                    h('Button', {
-                      props: {
-                        type: 'primary',
-                        size: 'small'
-                      },
-                      style: {
-                        marginRight: '5px',
-                        display: this.resBtnDis('SUCCCASE_APPROVAL')
-                      },
-                      on: {
-                        click: () => {
-                          this.resAction('succForm', params.row)
-                        }
-                      }
-                    }, '组庭审批表')
+                    }, '查看文件')
                   ])
                 } else if (_state === '6') {
                   return h('div', [
@@ -236,7 +207,60 @@ export default {
                         this.resFileList(params.index)
                       }
                     }
-                  }, '查看文件'),
+                  }, '查看文件')
+                ])
+              } else {
+                return h('div', [
+                ])
+              }
+            }
+          },
+          {
+            title: '操作',
+            key: 'caseId',
+            align: 'center',
+            render: (h, params) => {
+              let _state = params.row.requestState
+              let _obj = params.row
+              if (_obj.state === 3) {
+                if (_state === '5') {
+                  return h('div', [
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        display: this.resBtnDis('SUCCCASE_OFFLINEARR')
+                      },
+                      on: {
+                        click: () => {
+                          this.resSendDo(params.index)
+                        }
+                      }
+                    }, '线下送达'),
+                    h('Button', {
+                      props: {
+                        type: 'primary',
+                        size: 'small'
+                      },
+                      style: {
+                        marginRight: '5px',
+                        display: this.resBtnDis('SUCCCASE_APPROVAL')
+                      },
+                      on: {
+                        click: () => {
+                          this.resAction('succForm', params.row)
+                        }
+                      }
+                    }, '组庭审批表')
+                  ])
+                } else if (_state === '6') {
+                  return h('div', [
+                  ])
+                }
+              } else if (_obj.state === 12 || _obj.state === 31) {
+                return h('div', [
                   h('Button', {
                     props: {
                       type: 'primary',
