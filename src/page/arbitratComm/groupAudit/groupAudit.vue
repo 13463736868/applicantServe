@@ -190,6 +190,12 @@ export default {
             align: 'center'
           },
           {
+            title: '建议仲裁员',
+            key: 'recommArbitrators',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
             title: '最终仲裁员',
             key: 'approver',
             tooltip: 'true',

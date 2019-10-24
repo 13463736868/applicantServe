@@ -28,6 +28,12 @@
                       <p v-text="dataObj.phone"></p>
                     </Col>
                   </Row>
+                  <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
+                    <Col class="_label" span="11">
+                      <p>擅长领域：</p>
+                      <p v-text="dataObj.sign"></p>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
               <Row class="pt20">
@@ -95,6 +101,14 @@
            <Input v-model="alertData.phone" placeholder="请输入固定号码..."/>
         </Col>
       </Row>
+      <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
+        <Col span="6" offset="1">
+          <p class="pt7 pb7">擅长领域：</p>
+        </Col>
+        <Col span="12">
+           <Input v-model="alertData.sign"/>
+        </Col>
+      </Row>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertObj.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
       <Row>
@@ -144,7 +158,8 @@ export default {
         email: null,
         phone: null,
         pass: null,
-        passT: null
+        passT: null,
+        sign: null
       }
     }
   },
@@ -284,6 +299,7 @@ export default {
     resEditInfo () {
       this.alertData.email = this.dataObj.email
       this.alertData.phone = this.dataObj.phone
+      this.alertData.sign = this.dataObj.sign
       this.alertObj.info = true
     },
     resEditPass () {
@@ -317,7 +333,8 @@ export default {
           },
           id: this.dataObj.id,
           phone: this.alertData.phone,
-          email: this.alertData.email
+          email: this.alertData.email,
+          sign: this.alertData.sign
         }).then(res => {
           this.alertCanc('info')
           this.$Message.success({
@@ -381,6 +398,7 @@ export default {
         this.alertObj.info = false
         this.alertData.email = null
         this.alertData.phone = null
+        this.alertData.sign = null
       } else if (type === 'pass') {
         this.alertObj.pass = false
         this.alertData.pass = null
