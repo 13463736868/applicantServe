@@ -204,7 +204,7 @@ export default {
                         })
                       }
                     }
-                  }, '驳回'),
+                  }, '退回'),
                   h('Button', {
                     props: {
                       type: 'primary',

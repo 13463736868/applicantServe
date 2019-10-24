@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search-strong" class="_search" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="缴费单号"></Input>
+          <Input v-model="search.text" icon="ios-search-strong" class="_search" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="交费单号"></Input>
         </Col>
       </Row>
       <div class="_payList clearfix">
@@ -52,7 +52,7 @@ export default {
         loading: false,
         header: [
           {
-            title: '缴费单号',
+            title: '交费单号',
             key: 'paymentNumber',
             align: 'center',
             render: (h, params) => {
@@ -123,7 +123,7 @@ export default {
                         this.seeFile(params.row.filepath)
                       }
                     }
-                  }, '查看缴费凭证'),
+                  }, '查看交费凭证'),
                   h('Button', {
                     props: {
                       type: 'primary',
@@ -152,7 +152,7 @@ export default {
                         this.resCanc(params.index, 4)
                       }
                     }
-                  }, '驳回')
+                  }, '退回')
                 ])
               } else {
                 return h('div', [
@@ -170,7 +170,7 @@ export default {
                         this.seeFile(params.row.filepath)
                       }
                     }
-                  }, '查看缴费凭证')
+                  }, '查看交费凭证')
                 ])
               }
             }
@@ -244,9 +244,9 @@ export default {
       this.alertShow.id = this.payList.bodyList[index].id
       this.alertShow.cancType = type
       if (type === 2) {
-        this.alertShow.cancText = '确定要同意这个缴费批次吗？'
+        this.alertShow.cancText = '确定要同意这个交费批次吗？'
       } else if (type === 4) {
-        this.alertShow.cancText = '确定要驳回这个缴费批次吗？'
+        this.alertShow.cancText = '确定要退回这个交费批次吗？'
       }
       this.alertShow.canc = true
     },

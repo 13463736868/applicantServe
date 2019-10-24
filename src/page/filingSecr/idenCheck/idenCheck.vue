@@ -47,11 +47,11 @@
     </div>
     <alert-btn-info :alertShow="compObj.alert" @alertConfirm="compSave" @alertCancel="alertCanc('comp')" alertTitle="操作">
       <p v-if="compObj.state === 1">确定通过审核吗？</p>
-      <Input v-else-if="compObj.state === 2" v-model="compObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+      <Input v-else-if="compObj.state === 2" v-model="compObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="indiObj.alert" @alertConfirm="indiSave" @alertCancel="alertCanc('indi')" alertTitle="操作">
       <p v-if="indiObj.state === 1">确定通过审核吗？</p>
-      <Input v-else-if="indiObj.state === 2" v-model="indiObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
+      <Input v-else-if="indiObj.state === 2" v-model="indiObj.reason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
   </div>
 </template>
@@ -275,7 +275,7 @@ export default {
                 this.resComp(2, params.index)
               }
             }
-          }, '驳回')
+          }, '退回')
         ])
       } else {
         return h('div', [
@@ -315,7 +315,7 @@ export default {
                 this.resIndi(2, params.index)
               }
             }
-          }, '驳回')
+          }, '退回')
         ])
       } else {
         return h('div', [
