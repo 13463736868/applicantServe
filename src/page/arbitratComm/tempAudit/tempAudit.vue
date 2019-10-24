@@ -49,8 +49,8 @@
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.temp" @alertConfirm="tempSave" @alertCancel="alertCanc('temp')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
-      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.tempReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.tempReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
   </div>
 </template>
@@ -186,7 +186,7 @@ export default {
                 this.resCancTemp(params.index)
               }
             }
-          }, '退回'),
+          }, '驳回'),
           h('Button', {
             props: {
               type: 'primary',
@@ -278,7 +278,7 @@ export default {
       if (this.alertShow.state === 2) {
         if (this.alertShow.tempReason === '') {
           this.$Message.warning({
-            content: '请填写退回原因',
+            content: '请填写驳回原因',
             duration: 5
           })
         } else {

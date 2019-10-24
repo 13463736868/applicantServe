@@ -285,7 +285,7 @@ const routerMap = [
     name: 'paymentSlip',
     meta: {
       requireAuth: true,
-      title: '交费单审核'
+      title: '缴费单审核'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentSlip.vue')))
   },
@@ -294,7 +294,7 @@ const routerMap = [
     name: 'paymentInfo',
     meta: {
       requireAuth: true,
-      title: '交费单查询'
+      title: '缴费单查询'
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentInfo.vue')))
   },

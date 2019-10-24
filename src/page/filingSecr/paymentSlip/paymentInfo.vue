@@ -4,11 +4,11 @@
       <Row v-if="publicData !== null">
         <Col span="14" offset="5">
           <div class="_payment">
-            <div class="_top">交费单详情</div>
+            <div class="_top">缴费单详情</div>
             <div class="_mid">
               <p><b>支付方式：</b><span v-text="publicData.paymentStyleName"></span></p>
               <p><b>金额：</b><span v-text="publicData.costTotal"></span> 元</p>
-              <p><b>交费状态：</b></p>
+              <p><b>缴费状态：</b></p>
               <Row class="_line">
                 <Col class="_record" span="1">
                   <Icon color="#126eaf" type="ios-radio-button-on"></Icon>
@@ -35,7 +35,7 @@
                   <p>进行中</p>
                 </Col>
                 <Col class="tr" span="9">
-                  <p>完成交费</p>
+                  <p>完成缴费</p>
                   <span v-text="publicData.createTime"></span>
                 </Col>
               </Row>

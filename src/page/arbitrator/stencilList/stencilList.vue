@@ -83,7 +83,7 @@
     <alert-btn-info :alertShow="alertShow.reas"
                     :isSaveBtn="true"
                     @alertCancel="alertCanc('reas')"
-                    alertTitle="退回原因">
+                    alertTitle="驳回原因">
       <p class="t2"
          v-text="alertShow.reasText"></p>
     </alert-btn-info>
@@ -262,7 +262,7 @@ export default {
                 this.resReas(_obj.reason)
               }
             }
-          }, '退回原因'),
+          }, '驳回原因'),
           h('Button', {
             props: {
               type: 'primary',

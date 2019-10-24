@@ -120,7 +120,7 @@ export default {
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.jrState === 1 ? '通过' : (params.row.jrState === 2 ? '退回' : (params.row.jrState === 3 ? '未审核' : '')))
+              }, params.row.jrState === 1 ? '通过' : (params.row.jrState === 2 ? '驳回' : (params.row.jrState === 3 ? '未审核' : '')))
             }
           },
           {
@@ -217,7 +217,7 @@ export default {
                 this.resCancPoli(params.index)
               }
             }
-          }, '退回')
+          }, '驳回')
         ])
       } else if (_obj.jrCaseDocumentState === '8') {
         return h('div', [

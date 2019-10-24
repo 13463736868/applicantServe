@@ -196,7 +196,7 @@ export default {
                         })
                       }
                     }
-                  }, '退回'),
+                  }, '驳回'),
                   h('Button', {
                     props: {
                       type: 'primary',

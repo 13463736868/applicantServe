@@ -19,7 +19,7 @@
     </div>
     <alert-btn-info :alertShow="alertShow.appl" @alertConfirm="applSave" @alertCancel="alertCanc('appl')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确认要通过吗？</p>
-      <p v-else-if="alertShow.state === 2">确认要退回吗？</p>
+      <p v-else-if="alertShow.state === 2">确认要驳回吗？</p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="补正原因">
       <p class="t2" v-text="alertShow.reasText"></p>
@@ -182,7 +182,7 @@ export default {
                 this.resCancReis(params.index)
               }
             }
-          }, '退回')
+          }, '驳回')
         ])
       } else {
         return h('div', [

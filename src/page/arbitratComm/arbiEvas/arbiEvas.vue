@@ -39,7 +39,7 @@
           <p><span class="_span">*</span><b>审批意见：</b></p>
         </Col>
         <Col span="16">
-          <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..."/>
+          <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..."/>
         </Col>
       </Row>
     </create-docu>
@@ -159,7 +159,7 @@ export default {
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.avoidState === 1 ? '通过' : (params.row.avoidState === 2 ? '退回' : (params.row.avoidState === 3 ? '未审核' : '')))
+              }, params.row.avoidState === 1 ? '通过' : (params.row.avoidState === 2 ? '驳回' : (params.row.avoidState === 3 ? '未审核' : '')))
             }
           },
           {
@@ -374,7 +374,7 @@ export default {
                 this.resCancEvas(params.index)
               }
             }
-          }, '退回')
+          }, '驳回')
         ])
       } else if (_obj.showButtonState === '2') {
         return h('div', [

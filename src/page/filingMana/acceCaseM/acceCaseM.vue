@@ -19,7 +19,7 @@
           <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASEM_BATCHPASS')}">批量通过</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASEM_BATCHREJECTION')}">批量退回</Button>
+          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASEM_BATCHREJECTION')}">批量驳回</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -40,13 +40,13 @@
     <alert-btn-info :alertShow="alertShow.acceA" @alertConfirm="acceSave('acceA')" @alertCancel="alertCanc('acceA')" alertTitle="通过案件">
       <p>确定要通过吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.acceB" @alertConfirm="acceSave('acceB')" @alertCancel="alertCanc('acceB')" alertTitle="退回案件">
-      <Input v-model="dataObj.acceB" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
+    <alert-btn-info :alertShow="alertShow.acceB" @alertConfirm="acceSave('acceB')" @alertCancel="alertCanc('acceB')" alertTitle="驳回案件">
+      <Input v-model="dataObj.acceB" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
-      <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
-      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
+      <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
+      <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
       <Row class="_labelFor">
@@ -345,7 +345,7 @@ export default {
                     this.resAcceptCase(0, params.index)
                   }
                 }
-              }, '退回')
+              }, '驳回')
             ])
           } else {
             return h('div', [
@@ -421,12 +421,12 @@ export default {
       } else if (type === 'acceB') {
         if (this.dataObj.acceB === null || this.dataObj.acceB === '') {
           this.$Message.warning({
-            content: '请填写退回原因！',
+            content: '请填写驳回原因！',
             duration: 5
           })
         } else if (!setRegExp(this.dataObj.acceB, 'reject')) {
           this.$Message.warning({
-            content: '请正确填写退回原因格式！',
+            content: '请正确填写驳回原因格式！',
             duration: 5
           })
         } else {
@@ -545,7 +545,7 @@ export default {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
           this.$Message.warning({
-            content: '请填写退回原因',
+            content: '请填写驳回原因',
             duration: 5
           })
         } else {

@@ -294,7 +294,7 @@
       <div slot="footer">
         <Button size="large" @click="alertCancel">返回</Button>
         <Button type="primary" size="large" @click="alertConfirm(3)">保存</Button>
-        <Button type="primary" size="large" @click="alertConfirm(2)">退回</Button>
+        <Button type="primary" size="large" @click="alertConfirm(2)">驳回</Button>
         <Button type="primary" size="large" @click="alertConfirm(1)">通过</Button>
       </div>
     </Modal>
