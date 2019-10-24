@@ -28,7 +28,7 @@
                       <p v-text="dataObj.phone"></p>
                     </Col>
                   </Row>
-                  <Row class="pt10">
+                  <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
                     <Col class="_label" span="11">
                       <p>擅长领域：</p>
                       <p v-text="dataObj.sign"></p>
@@ -101,7 +101,7 @@
            <Input v-model="alertData.phone" placeholder="请输入固定号码..."/>
         </Col>
       </Row>
-      <Row class="pt10">
+      <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
         <Col span="6" offset="1">
           <p class="pt7 pb7">擅长领域：</p>
         </Col>
@@ -158,7 +158,8 @@ export default {
         email: null,
         phone: null,
         pass: null,
-        passT: null
+        passT: null,
+        sign: null
       }
     }
   },

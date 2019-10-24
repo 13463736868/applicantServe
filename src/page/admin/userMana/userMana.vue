@@ -103,7 +103,7 @@
             </Select>
           </Col>
         </Row>
-        <Row class="_labelFor">
+        <Row class="_labelFor" v-if="roleListMap[addData.role] === 'ROLE_ZCY'">
           <Col span="6" offset="1">
             <p><span class="_span"></span><b>擅长领域：</b></p>
           </Col>
@@ -223,6 +223,7 @@ export default {
         role: '',
         sign: ''
       },
+      roleListMap: {},
       stateList: [
         {
           value: 1,
@@ -467,6 +468,7 @@ export default {
           _t.value = listT[k].id
           _t.label = listT[k].name
           _t.state = listT[k].state
+          this.roleListMap[listT[k].id] = listT[k].roleCode
           selectT.push(_t)
         }
         this.depaList = selectO
