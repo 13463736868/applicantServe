@@ -22,7 +22,11 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="seeFileL">
+                <Button :style="{display: resBtnDis('PENDCASEM_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -64,6 +68,7 @@
     </alert-btn-info>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-reson-alert v-if="alertShow.resonModel" :resCaseId="alertShow.resCaseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('reson')" @alertCancel="alertCanc('reson')"></res-reson-alert>
+    <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
   </div>
 </template>
 
@@ -75,12 +80,13 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
+import resSeeFile from '@/page/filingMana/pendCaseM/children/resSeeFile'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert },
+  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert, resSeeFile },
   data () {
     return {
       spinShow: false,
@@ -164,6 +170,12 @@ export default {
             key: 'acceptTime',
             tooltip: 'true',
             align: 'center'
+          },
+          {
+            title: '待送达材料',
+            key: 'caseId',
+            align: 'center',
+            slot: 'seeFileL'
           },
           {
             title: '操作',
@@ -285,6 +297,10 @@ export default {
       formObj: {
         caseId: null,
         filing: false
+      },
+      alertObj: {
+        seeFile: false,
+        caseId: null
       }
     }
   },
@@ -533,6 +549,10 @@ export default {
           this.alertShow.resCaseId = data.caseId
           this.alertShow.resonModel = true
           break
+        case 'seeFile':
+          this.alertObj.caseId = data.caseId
+          this.alertObj.seeFile = true
+          break
       }
     },
     alertSave (type) {
@@ -549,6 +569,10 @@ export default {
           this.alertShow.resCaseType = null
           this.pageObj.pageNum = 1
           this.resCaseList()
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.caseId = null
           break
       }
     },
@@ -575,6 +599,9 @@ export default {
         this.alertShow.resonModel = false
         this.alertShow.resCaseId = null
         this.alertShow.resCaseType = null
+      } else if (type === 'seeFile') {
+        this.alertObj.seeFile = false
+        this.alertObj.caseId = null
       }
     },
     goCaseInfo (index) {

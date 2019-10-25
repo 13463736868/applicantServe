@@ -13,10 +13,14 @@
                       <p>登录名：</p>
                       <p v-text="dataObj.loginname"></p>
                     </Col>
-                    <Col class="_label" span="11" offset="2">
+                    <Col class="_label" span="11" offset="2"  v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
+                      <p>擅长领域：</p>
+                      <p v-text="dataObj.sign"></p>
+                    </Col>
+                    <!-- <Col class="_label" span="11" offset="2">
                       <p>邮箱：</p>
                       <p v-text="dataObj.email"></p>
-                    </Col>
+                    </Col> -->
                   </Row>
                   <Row class="pt10">
                     <Col class="_label" span="11">
@@ -26,12 +30,6 @@
                     <Col class="_label" span="11" offset="2">
                       <p>固定号码：</p>
                       <p v-text="dataObj.phone"></p>
-                    </Col>
-                  </Row>
-                  <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
-                    <Col class="_label" span="11">
-                      <p>擅长领域：</p>
-                      <p v-text="dataObj.sign"></p>
                     </Col>
                   </Row>
                 </Col>
@@ -85,14 +83,14 @@
       </Row>
     </div>
     <alert-btn-info :alertShow="alertObj.info" @alertConfirm="infoSave" @alertCancel="alertCanc('info')" alertTitle="操作">
-      <Row>
+      <!-- <Row>
         <Col span="6" offset="1">
           <p class="pt7 pb7">邮箱：</p>
         </Col>
         <Col span="12">
            <Input v-model="alertData.email" placeholder="请输入邮箱..."/>
         </Col>
-      </Row>
+      </Row> -->
       <Row class="pt10">
         <Col span="6" offset="1">
           <p class="pt7 pb7">固定号码：</p>
@@ -306,17 +304,18 @@ export default {
       this.alertObj.pass = true
     },
     infoSave () {
-      if (this.alertData.email === null || this.alertData.email === '') {
-        this.$Message.warning({
-          content: '邮箱地址不能为空',
-          duration: 5
-        })
-      } else if (!setRegExp(this.alertData.email, 'email')) {
-        this.$Message.warning({
-          content: '请填写正确邮箱地址格式',
-          duration: 5
-        })
-      } else if (this.alertData.phone === null || this.alertData.phone === '') {
+      // if (this.alertData.email === null || this.alertData.email === '') {
+      //   this.$Message.warning({
+      //     content: '邮箱地址不能为空',
+      //     duration: 5
+      //   })
+      // } else if (!setRegExp(this.alertData.email, 'email')) {
+      //   this.$Message.warning({
+      //     content: '请填写正确邮箱地址格式',
+      //     duration: 5
+      //   })
+      // } else
+      if (this.alertData.phone === null || this.alertData.phone === '') {
         this.$Message.warning({
           content: '固定号码不能为空',
           duration: 5
