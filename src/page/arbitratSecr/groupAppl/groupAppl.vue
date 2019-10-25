@@ -30,7 +30,8 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="proPosal">
-                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '17'" @click="resAction('proPosal', row)">选择仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' && row.recommArbitrators === ''" @click="resAction('proPosal', row)">选择仲裁员</Button>
+                <span v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
@@ -274,9 +275,10 @@ export default {
           },
           {
             title: '建议仲裁庭人选',
-            key: 'id',
+            key: 'recommArbitrators',
             tooltip: 'true',
             align: 'center',
+            minWidth: 30,
             slot: 'proPosal'
           },
           {
@@ -295,7 +297,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            minWidth: 100,
+            minWidth: 90,
             slot: 'action'
           }
         ],
