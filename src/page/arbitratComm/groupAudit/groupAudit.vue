@@ -92,6 +92,7 @@
       </Row>
     </alert-btn-info>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
+    <group-pass-alert v-if="alertObj.groupPass" :resCaseId="alertObj.caseId" :resArbiId="alertObj.arbiId" :resTribId="alertObj.tribId" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
   </div>
 </template>
 
@@ -101,12 +102,13 @@ import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
+import groupPassAlert from '@/page/arbitratComm/groupAudit/children/groupPassAlert'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, groupApprForm },
+  components: { spinComp, alertBtnInfo, groupApprForm, groupPassAlert },
   data () {
     return {
       spinShow: false,
@@ -172,7 +174,7 @@ export default {
             align: 'center'
           },
           {
-            title: '申请人仲裁员',
+            title: '申请人选定仲裁员情况',
             key: 'applicantApprove',
             tooltip: 'true',
             align: 'center'
@@ -184,31 +186,28 @@ export default {
             align: 'center'
           },
           {
-            title: '被申请人仲裁员',
+            title: '被申请人选定仲裁员情况',
             key: 'respondentApprove',
             tooltip: 'true',
             align: 'center'
           },
           {
-            title: '建议仲裁员',
+            title: '办案处室建议人选',
             key: 'recommArbitrators',
             tooltip: 'true',
             align: 'center'
           },
           {
-            title: '最终仲裁员',
+            title: '主任审核',
             key: 'approver',
             tooltip: 'true',
-            align: 'center'
+            align: 'center',
+            render: (h, params) => {
+              return this.renderBtnA(h, params)
+            }
           },
           {
-            title: '开庭时间',
-            key: 'beginTime',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
-            title: '操作',
+            title: '组庭文书',
             key: 'id',
             minWidth: 30,
             align: 'center',
@@ -273,6 +272,12 @@ export default {
       formObj: {
         caseId: null,
         filing: false
+      },
+      alertObj: {
+        groupPass: false,
+        caseId: null,
+        tribId: null,
+        arbiId: null
       }
     }
   },
@@ -350,7 +355,7 @@ export default {
         ])
       }
     },
-    renderBtn (h, params) {
+    renderBtnA (h, params) {
       let _obj = params.row
       if (_obj.approverId === null || _obj.approverId === '') {
         return h('div', [
@@ -360,14 +365,45 @@ export default {
               size: 'small'
             },
             style: {
+              marginRight: '5px',
               display: this.resBtnDis('GROUPAUDIT_APPARBITRATORS')
+            },
+            on: {
+              click: () => {
+                this.resAction('groupPass', params.row)
+              }
+            }
+          }, '同意'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              display: this.resBtnDis('GROUPAUDIT_REVISE')
             },
             on: {
               click: () => {
                 this.resAssign(params.index)
               }
             }
-          }, '指定仲裁员'),
+          }, '修订')
+        ])
+      } else {
+        return h('div', [
+          h('span', {
+            props: {
+              type: 'text',
+              size: 'small'
+            }
+          }, params.row.approver)
+        ])
+      }
+    },
+    renderBtn (h, params) {
+      let _obj = params.row
+      if (_obj.approverId === null || _obj.approverId === '') {
+        return h('div', [
           h('Button', {
             props: {
               type: 'primary',
@@ -840,6 +876,12 @@ export default {
           this.formObj.caseId = data.id
           this.formObj.filing = true
           break
+        case 'groupPass':
+          this.alertObj.tribId = data.tribunalRequestId
+          this.alertObj.arbiId = data.recommArbitratorIds
+          this.alertObj.caseId = data.id
+          this.alertObj.groupPass = true
+          break
       }
     },
     alertSave (type) {
@@ -847,6 +889,14 @@ export default {
         case 'groupForm':
           this.formObj.filing = false
           this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'groupPass':
+          this.alertObj.groupPass = false
+          this.alertObj.caseId = null
+          this.alertObj.arbiId = null
+          this.alertObj.tribId = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
@@ -881,6 +931,11 @@ export default {
       } else if (type === 'groupForm') {
         this.formObj.filing = false
         this.formObj.caseId = null
+      } else if (type === 'groupPass') {
+        this.alertObj.groupPass = false
+        this.alertObj.caseId = null
+        this.alertObj.arbiId = null
+        this.alertObj.tribId = null
       }
     }
   }
