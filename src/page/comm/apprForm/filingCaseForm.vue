@@ -113,7 +113,7 @@
           </tr>
           <tr>
             <td class="tdb tdl _h50 lh50" colspan="6">
-              <div class="">
+              <div>
                 <Row>
                   <Col span="2">
                     <b>处长：</b>

@@ -200,6 +200,24 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/remuneAudit/remuneAudit.vue')))
   },
   {
+    path: '/assigned',
+    name: 'assigned',
+    meta: {
+      requireAuth: true,
+      title: '已分配案件'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/assignedCase/assignedCase.vue')))
+  },
+  {
+    path: '/backfeeAudit',
+    name: 'backfeeAudit',
+    meta: {
+      requireAuth: true,
+      title: '退还仲裁费审核'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/backfeeAudit/backfeeAudit.vue')))
+  },
+  {
     path: '/endCaseAudit',
     name: 'endCaseAudit',
     meta: {
