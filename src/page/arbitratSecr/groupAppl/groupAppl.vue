@@ -30,7 +30,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="proPosal">
-                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' && row.recommArbitrators === ''" @click="resAction('proPosal', row)">选择仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' && row.logicState === '18'" @click="resAction('proPosal', row)">选择仲裁员</Button>
                 <span v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
@@ -161,7 +161,7 @@
     </alert-btn-info>
     <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSava('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
-    <res-pro-posal v-if="alertObj.proPosal" :resCaseId="alertObj.caseId" @alertConfirm="alertSava('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
+    <res-pro-posal v-if="alertObj.proPosal" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" @alertConfirm="alertSava('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
   </div>
 </template>
 
@@ -324,7 +324,8 @@ export default {
         reas: false,
         send: false,
         sendId: null,
-        proPosal: false
+        proPosal: false,
+        logicState: null
       },
       fileList: {
         header: [
@@ -1081,6 +1082,7 @@ export default {
           break
         case 'proPosal':
           this.alertObj.caseId = data.id
+          this.alertObj.logicState = data.logicState
           this.alertObj.proPosal = true
           break
       }
@@ -1095,6 +1097,7 @@ export default {
           break
         case 'proPosal':
           this.alertObj.proPosal = false
+          this.alertObj.logicState = null
           this.alertObj.caseId = null
           this.pageObj.pageNum = 1
           this.resCaseList()
@@ -1161,6 +1164,7 @@ export default {
         this.formObj.caseId = null
       } else if (type === 'proPosal') {
         this.alertObj.proPosal = false
+        this.alertObj.logicState = null
         this.alertObj.caseId = null
       }
     },

@@ -48,7 +48,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 export default {
   name: 'res_set_proc',
   mixins: [resMess],
-  props: ['resCaseId'],
+  props: ['resCaseId', 'resLogicState'],
   components: { alertBtnInfo },
   data () {
     return {
@@ -93,6 +93,17 @@ export default {
   created () {
     this.resGetData()
     this.$watch('searchText', this.debounce(this.resSearch, 1000))
+  },
+  computed: {
+    resSaveUrl () {
+      if (this.resLogicState === '17') {
+        return '/approve/addGroupApproveToProposalArbitrator'
+      } else if (this.resLogicState === '18') {
+        return '/approve/reGroupApproveToProposalArbitrator'
+      } else {
+        return ''
+      }
+    }
   },
   methods: {
     resGetData () {
@@ -209,7 +220,7 @@ export default {
           return false
         }
       }
-      axios.post('/approve/addGroupApproveToProposalArbitrator', {
+      axios.post(this.resSaveUrl, {
         caseId: this.resCaseId,
         arbitratorIds: this.seleArr.join(',')
       }).then(res => {

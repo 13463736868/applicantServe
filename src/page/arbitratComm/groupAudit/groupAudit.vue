@@ -92,7 +92,7 @@
       </Row>
     </alert-btn-info>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
-    <group-pass-alert v-if="alertObj.groupPass" :resCaseId="alertObj.caseId" :resArbiId="alertObj.arbiId" :resTribId="alertObj.tribId" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
+    <group-pass-alert v-if="alertObj.groupPass" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" :resArbiId="alertObj.arbiId" :resTribId="alertObj.tribId" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
   </div>
 </template>
 
@@ -276,6 +276,7 @@ export default {
       alertObj: {
         groupPass: false,
         caseId: null,
+        logicState: null,
         tribId: null,
         arbiId: null
       }
@@ -880,6 +881,7 @@ export default {
           this.alertObj.tribId = data.tribunalRequestId
           this.alertObj.arbiId = data.recommArbitratorIds
           this.alertObj.caseId = data.id
+          this.alertObj.logicState = data.logicState
           this.alertObj.groupPass = true
           break
       }
@@ -895,6 +897,7 @@ export default {
         case 'groupPass':
           this.alertObj.groupPass = false
           this.alertObj.caseId = null
+          this.alertObj.logicState = null
           this.alertObj.arbiId = null
           this.alertObj.tribId = null
           this.pageObj.pageNum = 1
@@ -934,6 +937,7 @@ export default {
       } else if (type === 'groupPass') {
         this.alertObj.groupPass = false
         this.alertObj.caseId = null
+        this.alertObj.logicState = null
         this.alertObj.arbiId = null
         this.alertObj.tribId = null
       }

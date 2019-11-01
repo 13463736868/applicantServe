@@ -13,7 +13,7 @@ import { resMess } from '@/components/common/mixin.js'
 export default {
   name: 'group_pass_alert',
   mixins: [resMess],
-  props: ['resCaseId', 'resTribId', 'resArbiId'],
+  props: ['resCaseId', 'resTribId', 'resArbiId', 'resLogicState'],
   components: { alertBtnInfo },
   data () {
     return {
@@ -23,9 +23,20 @@ export default {
       }
     }
   },
+  computed: {
+    resSaveUrl () {
+      if (this.resLogicState === '17') {
+        return '/approve/addGroupApproveToProposalArbitrator'
+      } else if (this.resLogicState === '18') {
+        return '/approve/updateArbitrator'
+      } else {
+        return ''
+      }
+    }
+  },
   methods: {
     alertSave () {
-      axios.post('/approve/updateGroupApproveToArbitrator', {
+      axios.post(this.resSaveUrl, {
         caseId: this.resCaseId,
         tribunalRequestId: this.resTribId,
         arbitratorIds: this.resArbiId
