@@ -26,7 +26,7 @@ export default {
   computed: {
     resSaveUrl () {
       if (this.resLogicState === '17') {
-        return '/approve/addGroupApproveToProposalArbitrator'
+        return '/approve/updateGroupApproveToArbitrator'
       } else if (this.resLogicState === '18') {
         return '/approve/updateArbitrator'
       } else {
