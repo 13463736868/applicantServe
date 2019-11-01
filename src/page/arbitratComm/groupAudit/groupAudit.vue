@@ -16,7 +16,20 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="approver">
+                <div v-if="row.logicState === '19' || row.logicState === '20'">
+                  <Button :style="{display: resBtnDis('GROUPAUDIT_APPARBITRATORS')}" type="primary" size="small" @click="resAction('groupPass', row)">同意</Button>
+                  <Button :style="{display: resBtnDis('GROUPAUDIT_REVISE')}" type="primary" size="small" @click="resAssign(row)">修订</Button>
+                </div>
+                <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
+              </template>
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resPass(row)">通过</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAssignRest(row)">重新指定仲裁员</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -202,18 +215,14 @@ export default {
             key: 'approver',
             tooltip: 'true',
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtnA(h, params)
-            }
+            slot: 'approver'
           },
           {
             title: '组庭文书',
             key: 'id',
             minWidth: 30,
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -356,127 +365,6 @@ export default {
         ])
       }
     },
-    renderBtnA (h, params) {
-      let _obj = params.row
-      if (_obj.approverId === null || _obj.approverId === '') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAUDIT_APPARBITRATORS')
-            },
-            on: {
-              click: () => {
-                this.resAction('groupPass', params.row)
-              }
-            }
-          }, '同意'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAUDIT_REVISE')
-            },
-            on: {
-              click: () => {
-                this.resAssign(params.index)
-              }
-            }
-          }, '修订')
-        ])
-      } else {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            }
-          }, params.row.approver)
-        ])
-      }
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.approverId === null || _obj.approverId === '') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAUDIT_APPROVAL')
-            },
-            on: {
-              click: () => {
-                this.resAction('groupForm', params.row)
-              }
-            }
-          }, '组庭审批表')
-        ])
-      } else {
-        if (_obj.passFlag === 2) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPAUDIT_PASS')
-              },
-              on: {
-                click: () => {
-                  this.resPass(params.index)
-                }
-              }
-            }, '通过')
-          ])
-        } else if (_obj.passFlag === 3) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPAUDIT_REAPPOINTMENT')
-              },
-              on: {
-                click: () => {
-                  this.resAssignRest(params.index)
-                }
-              }
-            }, '重新指定仲裁员'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPAUDIT_APPROVAL')
-              },
-              on: {
-                click: () => {
-                  this.resAction('groupForm', params.row)
-                }
-              }
-            }, '组庭审批表')
-          ])
-        } else {
-          return h('div', [
-          ])
-        }
-      }
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
@@ -527,17 +415,17 @@ export default {
       this.selePageObj.pageNum = 1
       this.resUserList()
     },
-    resAssignRest (index) {
+    resAssignRest (data) {
       this.alertShow.assignRest = true
-      this.resAssign(index)
+      this.resAssign(data)
     },
-    resAssign (index) {
+    resAssign (data) {
       this.selePageObj.pageNum = 1
       this.alertShow.agre = true
       if (this.alertShow.idsType === '') {
-        this.alertShow.tribId = this.caseList.bodyList[index].tribunalRequestId
-        this.alertShow.caseId = this.caseList.bodyList[index].id
-        this.alertShow.infoMoney = this.caseList.bodyList[index].arbitratorIdNum
+        this.alertShow.tribId = data.tribunalRequestId
+        this.alertShow.caseId = data.id
+        this.alertShow.infoMoney = data.arbitratorIdNum
         this.seleArr = this.seleShow === true ? ['', '', ''] : ['']
         this.seleArrName = this.seleShow === true ? ['', '', ''] : ['']
       } else {
@@ -678,11 +566,11 @@ export default {
         }
       }
     },
-    resPass (index) {
+    resPass (data) {
       this.alertShow.pass = true
-      this.alertShow.tribId = this.caseList.bodyList[index].tribunalRequestId
-      this.alertShow.caseId = this.caseList.bodyList[index].id
-      this.alertShow.passId = this.caseList.bodyList[index].approverId
+      this.alertShow.tribId = data.tribunalRequestId
+      this.alertShow.caseId = data.id
+      this.alertShow.passId = data.approverId
     },
     passSave () {
       this.alertShow.pass = false
@@ -706,7 +594,7 @@ export default {
     },
     renderCheckS (h, params) {
       let _obj = params.row
-      if (_obj.approverId === null || _obj.approverId === '') {
+      if (_obj.logicState === '19' || _obj.logicState === '20') {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {

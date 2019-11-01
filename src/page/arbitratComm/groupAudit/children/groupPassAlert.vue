@@ -25,9 +25,9 @@ export default {
   },
   computed: {
     resSaveUrl () {
-      if (this.resLogicState === '17') {
+      if (this.resLogicState === '19') {
         return '/approve/updateGroupApproveToArbitrator'
-      } else if (this.resLogicState === '18') {
+      } else if (this.resLogicState === '20') {
         return '/approve/updateArbitrator'
       } else {
         return ''
