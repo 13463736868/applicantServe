@@ -30,7 +30,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="proPosal">
-                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' && row.logicState === '18'" @click="resAction('proPosal', row)">选择仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' || row.logicState === '18'" @click="resAction('proPosal', row)">选择仲裁员</Button>
                 <span v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
