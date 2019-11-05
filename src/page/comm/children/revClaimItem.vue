@@ -1,13 +1,13 @@
 <template>
   <div class="revClaimInfo">
     <div class="_reason">
-      <div class="_top">事实与理由</div>
+      <div class="_top">事实与理由 (反请求)</div>
       <div v-if="dataObjA !== null">
         <reas-info :infoData="dataObjA"></reas-info>
       </div>
     </div>
     <div class="_applicationBook">
-      <div class="_top">仲裁申请书</div>
+      <div class="_top">仲裁申请书 (反请求)</div>
       <div v-if="dataObjB !== null">
         <appl-info :infoData="dataObjB"></appl-info>
       </div>

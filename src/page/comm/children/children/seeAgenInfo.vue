@@ -19,6 +19,10 @@
           <Col span="24" class="_input"><span v-text="agenData.idcard"></span></Col>
         </Row>
         <Row class="_labelFor">
+          <Col span="24" class="_label">代理人类型<b class="_b">*</b></Col>
+          <Col span="24" class="_input"><span v-text="agenData.type"></span></Col>
+        </Row>
+        <Row class="_labelFor">
           <Col span="24" class="_label">工作单位<b class="_b">*</b></Col>
           <Col span="24" class="_input"><span v-text="agenData.organization"></span></Col>
         </Row>

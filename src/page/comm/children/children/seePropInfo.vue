@@ -26,6 +26,10 @@
             <Col span="24" class="_label">证件号码<b class="_b">*</b></Col>
             <Col span="24" class="_input"><span v-text="propData.idcard"></span></Col>
           </Row>
+          <Row class="_labelFor">
+            <Col span="24" class="_label">工作单位<b class="_b">*</b></Col>
+            <Col span="24" class="_input"><p v-text="propData.enterpriseName" :title="propData.enterpriseName"></p></Col>
+          </Row>
         </Col>
         <Col span="10" offset="2">
           <Row class="_labelFor">
@@ -71,6 +75,10 @@
           <Row class="_labelFor">
             <Col span="24" class="_label">送达手机</Col>
             <Col span="24" class="_input"><span v-text="propData.phone"></span></Col>
+          </Row>
+          <Row class="_labelFor">
+            <Col span="24" class="_label">公司职务<b class="_b">*</b></Col>
+            <Col span="24" class="_input"><p v-text="propData.companyPosition" :title="propData.companyPosition"></p></Col>
           </Row>
         </Col>
         <Col span="10" offset="2">

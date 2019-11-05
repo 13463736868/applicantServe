@@ -53,6 +53,30 @@
         </Row>
         <Row>
           <Col span="4">
+            <p class="tr">申请人(仲裁员)：</p>
+          </Col>
+          <Col span="18">
+            <p v-text="dataBasic.propArbitratorName"></p>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="4">
+            <p class="tr">被申请人(仲裁员)：</p>
+          </Col>
+          <Col span="18">
+            <p v-text="dataBasic.respArbitratorName"></p>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="4">
+            <p class="tr">最终仲裁员：</p>
+          </Col>
+          <Col span="18">
+            <p v-text="dataBasic.arbitratorName"></p>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="4">
             <p class="tr">案由：</p>
           </Col>
           <Col span="18">

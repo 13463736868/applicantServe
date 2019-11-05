@@ -14,10 +14,10 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">是否有原件 :</span></Col>
+                <Col class="tr" span="3"><span class="mr10">有无原件 :</span></Col>
                 <Col span="20">
-                  <span v-if="infoData.state === 1">是</span>
-                  <span v-else-if="infoData.state === 2">否</span>
+                  <span v-if="infoData.state === 1">有</span>
+                  <span v-else-if="infoData.state === 2">无</span>
                 </Col>
               </Row>
             </p>
@@ -33,7 +33,7 @@
               <Row>
                 <Col class="tr" span="3"><span class="mr10">附件名称 :</span></Col>
                 <Col span="20">
-                  <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
+                  <p class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 50 ? item.fileName.substr(0, 50) + '...' : item.fileName}}</p>
                 </Col>
               </Row>
             </p>

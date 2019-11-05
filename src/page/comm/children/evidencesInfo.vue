@@ -1,5 +1,13 @@
 <template>
   <div class="evidencesInfo">
+    <div class="_question">
+      <div class="_top">问题清单</div>
+      <div v-if="questionObj.list">
+        <div v-for="(item, index) in questionData" :key="index">
+          <question-info :infoData="item"></question-info>
+        </div>
+      </div>
+    </div>
     <div class="_evidences">
       <div class="_top">申请人证据</div>
       <div v-if="evidObj.list">
@@ -13,14 +21,6 @@
       <div v-if="revEvidObj.list">
         <div v-if="revEvidData !== null" v-for="(item, index) in revEvidData" :key="index">
           <evid-info :infoData="item"></evid-info>
-        </div>
-      </div>
-    </div>
-    <div v-if="questionObj.list" class="_question">
-      <div class="_top">问题清单</div>
-      <div v-if="questionObj.list">
-        <div v-for="(item, index) in questionData" :key="index">
-          <question-info :infoData="item"></question-info>
         </div>
       </div>
     </div>
