@@ -54,7 +54,15 @@
               <span class="mr10" v-text="dataInfo.caseState"></span>
             </p>
             <p>
-              <span class="mr10"><b>仲裁员 :</b></span>
+              <span class="mr10"><b>仲裁员(申) :</b></span>
+              <span class="mr10" v-text="dataInfo.propArbitratorName"></span>
+            </p>
+            <p>
+              <span class="mr10"><b>仲裁员(被) :</b></span>
+              <span class="mr10" v-text="dataInfo.respArbitratorName"></span>
+            </p>
+            <p>
+              <span class="mr10"><b>仲裁员(终) :</b></span>
               <span class="mr10" v-text="dataInfo.arbitratorName"></span>
             </p>
             <p>

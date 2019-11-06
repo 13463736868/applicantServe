@@ -8,6 +8,18 @@
         <Row>
           <Col span="24">
             <Row class="_labelFor">
+              <Col span="24" class="_label"><p>问题清单名称：</p></Col>
+              <Col span="24">
+                <Input v-model="resData.name" placeholder="输入问题清单名称..." />
+              </Col>
+            </Row>
+            <Row class="_labelFor">
+              <Col span="24" class="_label"><p>问题描述：</p></Col>
+              <Col span="24">
+                <Input :autosize="{minRows: 5,maxRows: 7}" v-model="resData.remark" type="textarea" placeholder="输入问题描述..." />
+              </Col>
+            </Row>
+            <Row class="_labelFor">
               <Col span="24" class="_label"><span v-text="childName"></span><b class="_b">*</b></Col>
               <Col span="24">
                 <Upload
@@ -33,12 +45,6 @@
                     <div v-if="fileObj !== null" v-text="fileObj.name"></div>
                   </div>
                 </Upload>
-              </Col>
-            </Row>
-            <Row class="_labelFor">
-              <Col span="24" class="_label"><p>问题描述：</p></Col>
-              <Col span="24">
-                <Input :autosize="{minRows: 5,maxRows: 7}" v-model="resData.remark" type="textarea" placeholder="输入问题描述..." />
               </Col>
             </Row>
           </Col>
@@ -68,8 +74,9 @@ export default {
       spinShow: false,
       progressText: '',
       childName: '上传问题清单',
-      fileType: ['xls', 'xlsx', 'doc', 'docx'],
+      fileType: ['xls', 'xlsx', 'doc', 'docx', 'pdf'],
       resData: {
+        name: '',
         remark: '',
         caseId: this.resCaseId
       },
@@ -81,7 +88,7 @@ export default {
       return regi.api + '/caseImport/uploadQuestionList'
     },
     addFileBtn () {
-      if (this.fileObj === null) {
+      if (this.fileObj === null || this.resData.name === '' || this.resData.remark === '') {
         return true
       } else {
         return false
