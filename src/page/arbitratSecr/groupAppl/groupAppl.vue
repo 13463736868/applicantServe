@@ -226,22 +226,22 @@ export default {
               }, params.row.code)
             }
           },
-          {
-            title: '案件编号',
-            key: 'id',
-            align: 'center'
-          },
-          {
-            title: '批次号',
-            key: 'batchNo',
-            align: 'center'
-          },
-          {
-            title: '案件类型',
-            key: 'caseTypeName',
-            tooltip: 'true',
-            align: 'center'
-          },
+          // {
+          //   title: '案件编号',
+          //   key: 'id',
+          //   align: 'center'
+          // },
+          // {
+          //   title: '批次号',
+          //   key: 'batchNo',
+          //   align: 'center'
+          // },
+          // {
+          //   title: '案件类型',
+          //   key: 'caseTypeName',
+          //   tooltip: 'true',
+          //   align: 'center'
+          // },
           {
             title: '案由',
             key: 'caseReson',
@@ -287,12 +287,12 @@ export default {
             tooltip: 'true',
             align: 'center'
           },
-          {
-            title: '开庭时间',
-            key: 'beginTime',
-            tooltip: 'true',
-            align: 'center'
-          },
+          // {
+          //   title: '开庭时间',
+          //   key: 'beginTime',
+          //   tooltip: 'true',
+          //   align: 'center'
+          // },
           {
             title: '操作',
             key: 'id',

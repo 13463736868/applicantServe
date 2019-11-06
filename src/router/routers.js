@@ -209,6 +209,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/assignedCase/assignedCase.vue')))
   },
   {
+    path: '/withdrawList',
+    name: 'withdrawList',
+    meta: {
+      requireAuth: true,
+      title: '已分配案件'
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitratSecr/withdrawList/withdrawList.vue')))
+  },
+  {
     path: '/backfeeAudit',
     name: 'backfeeAudit',
     meta: {

@@ -68,7 +68,7 @@ export default {
       spinShow: false,
       progressText: '',
       childName: '上传问题清单',
-      fileType: ['xls', 'xlsx', 'doc', 'docx'],
+      fileType: ['pdf'],
       resData: {
         remark: '',
         caseId: this.resCaseId

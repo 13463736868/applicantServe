@@ -164,16 +164,16 @@ export default {
               }, params.row.code)
             }
           },
-          {
-            title: '案件编号',
-            key: 'id',
-            align: 'center'
-          },
-          {
-            title: '案件类型',
-            key: 'caseTypeName',
-            align: 'center'
-          },
+          // {
+          //   title: '案件编号',
+          //   key: 'id',
+          //   align: 'center'
+          // },
+          // {
+          //   title: '案件类型',
+          //   key: 'caseTypeName',
+          //   align: 'center'
+          // },
           {
             title: '案由',
             key: 'caseReson',
@@ -205,7 +205,7 @@ export default {
             align: 'center'
           },
           {
-            title: '办案处室建议人选',
+            title: '办案处建议人选',
             key: 'recommArbitrators',
             tooltip: 'true',
             align: 'center'
