@@ -55,6 +55,7 @@ export default {
   created () {
     if (this.caseId !== null && this.caseState !== null) {
       this.resClaim()
+      this.resResClaim()
     }
   },
   methods: {
