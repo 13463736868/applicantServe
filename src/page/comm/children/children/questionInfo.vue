@@ -6,9 +6,19 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">文件名称 :</span></Col>
+                <Col class="tr" span="3"><span class="mr10">提交人 :</span></Col>
                 <Col span="20">
-                  <span v-text="infoData.fileName"></span>
+                  <span v-if="infoData.partyType === '1'">申请人</span>
+                  <span v-if="infoData.partyType === '2'">被申请人</span>
+                  <span v-if="infoData.partyType === '3'">仲裁委</span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
+                <Col class="tr" span="3"><span class="mr10">问题名称 :</span></Col>
+                <Col span="20">
+                  <span v-text="infoData.name"></span>
                 </Col>
               </Row>
             </p>
