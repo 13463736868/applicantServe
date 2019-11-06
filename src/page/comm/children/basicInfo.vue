@@ -53,7 +53,7 @@
         </Row>
         <Row>
           <Col span="4">
-            <p class="tr">最终仲裁员：</p>
+            <p class="tr">仲裁员：</p>
           </Col>
           <Col span="18">
             <p v-text="dataBasic.arbitratorName"></p>
