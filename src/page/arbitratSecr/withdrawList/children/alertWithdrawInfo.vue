@@ -73,7 +73,7 @@ export default {
           documentType: this.objShow.docuType,
           caseDocumentDataJson: JSON.stringify([_o])
         }).then(res => {
-          this.alertCanc('alertConfirm')
+          this.$emit('alertConfirm')
           this.$Message.success({
             content: '操作成功',
             duration: 2
