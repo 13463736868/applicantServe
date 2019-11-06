@@ -1,18 +1,14 @@
 <template>
-<div v-if="alertShow">
+<div>
   <Modal v-model="alertShow" :mask-closable="false" :closable="false" width="500" title="操作">
-    <div>
-      <Row>
-        <Col span="24" v-for="(item, index) in routeList" :key="index">
-          <ul>
-            <li class="lh32 f16 fc6 mr15 afterIcon">{{item.name}}
-              <Icon type="md-arrow-up" class="fr mt8" @click.native="up(item,index)" v-if="index !== 0"/>
-              <Icon type="md-arrow-down" class="fr mt8" @click.native="down(item,index)" v-if="index !== arrayLength-1"/>
-            </li>
-          </ul>
-        </Col>
-      </Row>
-    </div>
+    <Row>
+      <Col span="24" v-for="(item, index) in routeList" :key="index">
+        <p class="h32 lh32 f14 fc8 mr15 afterIcon">{{item.name}}
+          <Icon type="md-arrow-up" size="16" color="#2d8cf0" class="mt5 fr ml10 hand" @click.native="up(item,index)" v-if="index !== 0"/>
+          <Icon type="md-arrow-down" size="16" color="#2d8cf0" class="mt5 fr hand" @click.native="down(item,index)" v-if="index !== arrayLength-1"/>
+        </p>
+      </Col>
+    </Row>
     <div slot="footer">
       <Button size="large" @click="alertCancel">取消</Button>
       <Button type="primary" size="large" @click="alertConfirm()">保存</Button>
@@ -23,9 +19,10 @@
 <script>
 import axios from 'axios'
 export default {
-  props: ['roleId', 'alertShow'],
+  props: ['roleId'],
   data () {
     return {
+      alertShow: true,
       routeList: [],
       arrayLength: null
     }
@@ -110,6 +107,6 @@ export default {
 </script>
 <style lang="scss" scoped>
 .afterIcon:hover{
-  background-color: #e8eaec
+  background-color: #f8f8f9
 }
 </style>
