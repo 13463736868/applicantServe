@@ -53,6 +53,7 @@
       </div> -->
       <Tree ref="tree" :data="restList" show-checkbox :check-strictly="true" @on-check-change="resSele"></Tree>
     </alert-btn-info>
+    <sort-nav v-if="alertShow.sortNavShow" :roleId="alertShow.roleId" @alertConfirm="alertSave('sort')" @alertCancel="alertCanc('sort')" alertTitle="操作"></sort-nav>
   </div>
 </template>
 
@@ -60,11 +61,12 @@
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import sortNav from '@/page/admin/postMana/children/sortNav'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'post_mana',
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, sortNav },
   data () {
     return {
       spinShow: false,
@@ -108,7 +110,9 @@ export default {
       alertShow: {
         addPost: false,
         type: '',
-        typeName: ''
+        typeName: '',
+        sortNavShow: false,
+        roleId: null
       },
       addData: {
         name: '',
@@ -206,7 +210,21 @@ export default {
                 this.resRestPost(params.index)
               }
             }
-          }, '配置')
+          }, '配置'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resAction('sort', params.row)
+              }
+            }
+          }, '导航排序')
         ])
       } else if (_obj.state === 2) {
         return h('div', [
@@ -251,7 +269,21 @@ export default {
                 this.resRestPost(params.index)
               }
             }
-          }, '配置')
+          }, '配置'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resAction('sort', params.row)
+              }
+            }
+          }, '导航排序')
         ])
       } else {
         return h('div', [
@@ -430,6 +462,23 @@ export default {
         })
       }
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'sort':
+          this.alertShow.roleId = data.id
+          this.alertShow.sortNavShow = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'sort':
+          this.alertShow.roleId = null
+          this.alertShow.sortNavShow = false
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       if (type === 'addPost') {
         this.alertShow.addPost = false
@@ -446,6 +495,9 @@ export default {
         this.userObj.restShow = false
         this.restList = []
         this.userId = null
+      } else if (type === 'sort') {
+        this.alertShow.sortNavShow = false
+        this.alertShow.roleId = null
       }
     }
   }

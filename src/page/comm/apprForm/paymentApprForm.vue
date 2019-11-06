@@ -103,18 +103,19 @@
             </td>
           </tr>
           <tr>
-            <td class="tdb tc w120" rowspan="3">办案情况</td>
+            <td class="tdb tc w120" rowspan="6">办案情况</td>
             <td colspan="5" class="tdl">
               <div>
                  <Row>
-                    <Col span="4" class="lh50">
-                      <b class="ml5">基本酬金:</b>
+                    <Col span="8" class="lh50">
+                      <b class="ml5">基本酬金 10%</b>
+                      <span class="ml15">{{form.remunerationBase}}<b class="ml15">元</b></span>
                     </Col>
-                    <Col span="4" class="lh50">
-                      <Input v-model="form.remunerationBase" class="_inp" :disabled="form.editableText.split(',').indexOf('remunerationBase  ') < 0" placeholder="请输入基本酬金..."/>
-                    </Col>
-                    <Col span="2" class="lh50">
-                      <b class="ml5">元</b>
+                    <Col span="8" offset="2" class="lh50">
+                      <b class="ml5">办案补助</b>
+                      <span class="ml15">0
+                        <b class="ml15">元</b>
+                      </span>
                     </Col>
                   </Row>
               </div>
@@ -124,16 +125,63 @@
             <td colspan="5" class="tdl">
               <div>
                 <Row>
-                    <Col span="4" class="lh50">
-                      <b class="ml5">合计:</b>
-                    </Col>
-                    <Col span="4" class="lh50">
-                      <Input v-model="form.remunerationTotal" class="_inp" :disabled="form.editableText.split(',').indexOf('remunerationTotal') < 0" placeholder="请输入合计..."/>
-                    </Col>
-                    <Col span="2" class="lh50">
-                      <b class="ml5">元</b>
-                    </Col>
-                  </Row>
+                  <Col span="8" class="lh50">
+                    <b class="ml5">调解结案 5%</b>
+                    <span class="ml15 mr15">{{form.remunerationBonuses}}<b class="ml15">元</b></span>
+                  </Col>
+                  <Col span="8" offset="2" class="lh50">
+                    <b class="ml5">10个工作日内结案 5%</b>
+                    <span class="ml15 mr15">
+                      {{form.remunerationBonuses2}}
+                    </span>
+                    <b class="ml5">元</b>
+                  </Col>
+                </Row>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5" class="tdl">
+              <div>
+                <Row>
+                  <Col span="8" class="lh50">
+                    <b class="ml5">小计</b>
+                    <span class="ml15 mr15">
+                      {{form.remunerationSubtotal}}
+                    </span>
+                    <b class="ml5">元</b>
+                  </Col>
+                </Row>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5" class="tdl">
+              <div>
+                <Row>
+                  <Col span="8" class="lh50">
+                    <b class="ml5">超审限扣酬金 10%</b>
+                    <span class="ml15 mr15">
+                      {{form.remunerationPunish}}
+                    </span>
+                    <b class="ml5">元</b>
+                  </Col>
+                </Row>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="5" class="tdl">
+              <div>
+                <Row>
+                  <Col span="8" class="lh50">
+                    <b class="ml5">合计:</b>
+                    <span class="ml15 mr15">
+                      {{form.remunerationTotal}}
+                    </span>
+                    <b class="ml5">元</b>
+                  </Col>
+                </Row>
               </div>
             </td>
           </tr>
@@ -309,7 +357,8 @@ export default {
     return {
       alertShow: true,
       form: null,
-      switchObj: false
+      switchObj: false,
+      passSubmit: false
     }
   },
   created () {
@@ -346,6 +395,7 @@ export default {
             duration: 2
           })
           this.switchObj = false
+          this.passSubmit = true
         }).catch(e => {
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
@@ -354,24 +404,33 @@ export default {
           this.switchObj = false
         })
       } else {
-        axios.post('/closeCaseForm/audit', {
-          caseId: this.caseId,
-          formType: 'remuneration',
-          state: type
-        }).then(res => {
-          this.$emit('alertConfirm')
-          this.$Message.success({
-            content: '操作成功',
+        if (this.passSubmit) {
+          axios.post('/closeCaseForm/audit', {
+            caseId: this.caseId,
+            formType: 'remuneration',
+            state: type
+          }).then(res => {
+            this.$emit('alertConfirm')
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.switchObj = false
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+            this.switchObj = false
+          })
+        } else {
+          this.$Message.warning({
+            content: '请点击保存按钮，进行签名信息的保存',
             duration: 2
           })
           this.switchObj = false
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-          this.switchObj = false
-        })
+          this.passSubmit = false
+        }
       }
     },
     alertCancel () {
@@ -421,6 +480,9 @@ export default {
       box-sizing: border-box;
       color: #333;
       font-size: 14px;
+    }
+    .ivu-input-disabled {
+      background-color: #ffffff
     }
   }
 }
