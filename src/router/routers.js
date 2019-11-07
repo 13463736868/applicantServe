@@ -209,6 +209,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCaseAudit/endCaseAudit.vue')))
   },
   {
+    path: '/casePool',
+    name: 'casePool',
+    meta: {
+      requireAuth: true,
+      title: '预受理案件'
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/casePool/casePool.vue')))
+  },
+  {
     path: '/acceCase',
     name: 'acceCase',
     meta: {
@@ -407,7 +416,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/casePool')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
