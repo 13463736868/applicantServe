@@ -13,10 +13,10 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
+          <Button type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="3">
           <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
@@ -27,14 +27,14 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('GROUPCASE_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>
-                <Button :style="{display: resBtnDis('GROUPCASE_CONFIRM')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0" @click="resConfData(index)">确认</Button>
+                <Button :style="{display: resBtnDis('GROUPCASE_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resAction('resEditData', row)">修改</Button>
+                <Button :style="{display: resBtnDis('GROUPCASE_CONFIRM')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0" @click="resAction('resConfData', row)">确认</Button>
                 <Button :style="{display: resBtnDis('GROUPCASE_UPLOADQUESTION')}" class="mr5" type="primary" size="small" v-if="row.btnUploadQuesFlag" @click="resAction('uploadQues', row)">上传问题清单</Button>
                 <div v-if="!resSetRegExp(row.endCasePatten, 'groupCase')">
-                  <Button :style="{display: resBtnDis('GROUPCASE_PASSWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resPassReve(index)">同意撤回</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resPassReve(index)">重新生成撤回书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAddEvid(index)">生成补正书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAddEvid(index)">重新生成补正书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_PASSWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '1'" @click="resAction('resPassReve', row)">同意撤回</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAction('resAddEvid', row)">生成补正书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAction('resAddEvid', row)">重新生成补正书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase(index)">起草文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase(index)">撤案</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_ENTERCOURTROOM')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="goCourtRoom(index)">进入庭室</Button>
@@ -94,107 +94,23 @@
         </Col>
       </Row>
     </create-docu>
-    <create-docu :alertShow="alertShow.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>合同名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.contractName"></Input>
-        </Col>
-      </Row>
-    </create-docu>
-    <create-docu :alertShow="alertShow.addE" @alertConfirm="docuSave('addE')" @alertSee="seeDocu('addE')" @alertCancel="alertCanc('addE')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>裁决书第几页：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.pageNum"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>裁决书第几行：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.lineNum"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>更改之前内容：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.oldContent"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>更改之后内容：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.newContent"></Input>
-        </Col>
-      </Row>
-    </create-docu>
+    <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
+    <res-adde-docu v-if="alertShow.adde" :resCaseId="alertShow.userId" @alertConfirm="alertSave('adde')" @alertCancel="alertCanc('adde')"></res-adde-docu>
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch"  @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
       <p class="t2">确定要批量结案吗？</p>
     </alert-btn-info>
-    <div v-if="alertShow.editorDest">
-      <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
-    </div>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案方式：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.batchDocuType">
-            <Option v-if="item.item !== '仲裁申请书'" v-for="item in search.batchDocuTypeList" :value="item.itemValue" :key="item.itemValue">{{ item.item }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batchEdit" alertSaveText="下载" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')" alertTitle="操作">
-      <Row>
-        <Col span="6" offset="1">
-          <p class="pt7 pb7">批次号：</p>
-        </Col>
-        <Col span="12">
-          <Select v-model="alertShow.batchNo" filterable>
-            <Option v-for="item in alertShow.batchNoList" :value="item.id" :key="item.id">{{ item.name }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
-    <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
     <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
       <p class="t2">确定要确认此条数据吗？</p>
     </alert-btn-info>
+    <div v-if="alertShow.editorDest">
+      <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
+    </div>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSave('find', ...arguments)" @alertCancel="alertCanc('find')"></res-find>
+    <res-batch-edit v-if="alertShow.batchEdit" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')"></res-batch-edit>
+    <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
     <upload-ques-alert v-if="alertObj.uploadQues" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('uploadQues')" @alertCancel="alertCanc('uploadQues')"></upload-ques-alert>
   </div>
 </template>
@@ -207,6 +123,10 @@ import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
+import resBatchEdit from '@/page/arbitrator/groupCase/children/resBatchEdit'
+import resFind from '@/page/arbitrator/groupCase/children/resFind'
+import resReveDocu from '@/page/arbitrator/groupCase/children/resReveDocu'
+import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -214,7 +134,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert },
+  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resAddeDocu },
   data () {
     return {
       spinShow: false,
@@ -341,19 +261,8 @@ export default {
         docuType: null,
         userId: null,
         end: false,
-        contractualStipulation: '',
-        contractPerformance: '',
-        repaymentPrincipal: '',
-        repaymentBase: '',
-        annualRate: '',
-        interestCalculation: '',
-        agreementContent: '',
         reve: false,
         addE: false,
-        pageNum: '',
-        lineNum: '',
-        oldContent: '',
-        newContent: '',
         reasText: '',
         editor: false,
         editorId: null,
@@ -367,9 +276,7 @@ export default {
         confDataAlert: false,
         confDataId: null,
         confDataBatchNo: null,
-        batchEdit: false,
-        batchNo: null,
-        batchNoList: []
+        batchEdit: false
       },
       alertObj: {
         uploadQues: false,
@@ -383,30 +290,6 @@ export default {
   methods: {
     resSetRegExp (val, type) {
       return setRegExp(val, type)
-    },
-    dictionary () {
-      axios.post('/dictionary/findDictionaryList', {
-        type: 'batchDocumentType'
-      }).then(res => {
-        this.search.batchDocuTypeList = res.data.data
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
     },
     reasonBtn (h, params) {
       let _obj = params.row
@@ -709,18 +592,6 @@ export default {
         }
       }
     },
-    resPassReve (index) {
-      let res = this.caseList.bodyList[index]
-      this.alertShow.userId = res.id
-      this.alertShow.docuType = 5
-      this.alertShow.reve = true
-    },
-    resAddEvid (index) {
-      let res = this.caseList.bodyList[index]
-      this.alertShow.userId = res.id
-      this.alertShow.docuType = 3
-      this.alertShow.addE = true
-    },
     seeReasonD (index) {
       this.alertShow.reasText = this.caseList.bodyList[index].caseDocumentReason
       this.alertShow.reas = true
@@ -733,31 +604,31 @@ export default {
       switch (type) {
         case 'reve':
         case 'canc':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else {
-            this.alertShow[type] = false
-            axios.post('/case/addDocumentFile', {
-              caseId: this.alertShow.userId,
-              documentType: this.alertShow.docuType,
-              jsonData: JSON.stringify({contractName: this.alertShow.contractName})
-            }).then(res => {
-              this.alertCanc(type)
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
+          // if (this.alertShow.contractName === '') {
+          //   this.$Message.warning({
+          //     content: '请填写合同名称',
+          //     duration: 5
+          //   })
+          // } else {
+          //   this.alertShow[type] = false
+          //   axios.post('/case/addDocumentFile', {
+          //     caseId: this.alertShow.userId,
+          //     documentType: this.alertShow.docuType,
+          //     jsonData: JSON.stringify({contractName: this.alertShow.contractName})
+          //   }).then(res => {
+          //     this.alertCanc(type)
+          //     this.$Message.success({
+          //       content: '操作成功',
+          //       duration: 2
+          //     })
+          //     this.resCaseList()
+          //   }).catch(e => {
+          //     this.$Message.error({
+          //       content: '错误信息:' + e + ' 稍后再试',
+          //       duration: 5
+          //     })
+          //   })
+          // }
           break
         case 'endNew':
           if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
@@ -773,160 +644,6 @@ export default {
               caseDocumentDataJson: JSON.stringify([_o])
             }).then(res => {
               this.alertCanc('end')
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        case 'end':
-          // 单案结案改成选模版次处废掉
-          if (this.alertShow.docuType === 1) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.contractualStipulation === '') {
-              this.$Message.warning({
-                content: '请填写合同约定情况',
-                duration: 5
-              })
-            } else if (this.alertShow.contractPerformance === '') {
-              this.$Message.warning({
-                content: '请填写合同履行情况',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentPrincipal === '') {
-              this.$Message.warning({
-                content: '请填写需要还款本金',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentBase === '') {
-              this.$Message.warning({
-                content: '请填写还款基数',
-                duration: 5
-              })
-            } else if (this.alertShow.annualRate === '') {
-              this.$Message.warning({
-                content: '请填写年利率',
-                duration: 5
-              })
-            } else if (this.alertShow.interestCalculation === '') {
-              this.$Message.warning({
-                content: '请填写利息计算',
-                duration: 5
-              })
-            } else {
-              this.alertShow.end = false
-              axios.post('/case/addDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  contractualStipulation: this.alertShow.contractualStipulation,
-                  contractPerformance: this.alertShow.contractPerformance,
-                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
-                  repaymentBase: this.alertShow.repaymentBase,
-                  annualRate: this.alertShow.annualRate,
-                  interestCalculation: this.alertShow.interestCalculation
-                })
-              }).then(res => {
-                this.alertCanc('end')
-                this.$Message.success({
-                  content: '操作成功',
-                  duration: 2
-                })
-                this.resCaseList()
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else if (this.alertShow.docuType === 2) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.agreementContent === '') {
-              this.$Message.warning({
-                content: '请填写协议内容',
-                duration: 5
-              })
-            } else {
-              this.alertShow.end = false
-              axios.post('/case/addDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  agreementContent: this.alertShow.agreementContent
-                })
-              }).then(res => {
-                this.alertCanc('end')
-                this.$Message.success({
-                  content: '操作成功',
-                  duration: 2
-                })
-                this.resCaseList()
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else {
-            this.$Message.error({
-              content: '请稍后再试',
-              duration: 5
-            })
-          }
-          break
-        case 'addE':
-          if (this.alertShow.pageNum === '') {
-            this.$Message.warning({
-              content: '请填写裁决书第几页',
-              duration: 5
-            })
-          } else if (this.alertShow.lineNum === '') {
-            this.$Message.warning({
-              content: '请填写裁决书第几行',
-              duration: 5
-            })
-          } else if (this.alertShow.oldContent === '') {
-            this.$Message.warning({
-              content: '请填写更改之前内容',
-              duration: 5
-            })
-          } else if (this.alertShow.newContent === '') {
-            this.$Message.warning({
-              content: '请填写更改之后内容',
-              duration: 5
-            })
-          } else {
-            this.alertShow.addE = false
-            axios.post('/case/addDocumentFile', {
-              caseId: this.alertShow.userId,
-              documentType: this.alertShow.docuType,
-              jsonData: JSON.stringify({
-                pageNum: this.alertShow.pageNum,
-                lineNum: this.alertShow.lineNum,
-                oldContent: this.alertShow.oldContent,
-                newContent: this.alertShow.newContent
-              })
-            }).then(res => {
-              this.alertCanc('addE')
               this.$Message.success({
                 content: '操作成功',
                 duration: 2
@@ -982,142 +699,6 @@ export default {
               caseDocumentDataJson: JSON.stringify([_o])
             }).then(res => {
               window.open(res.data.data, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        case 'end':
-          // 单案结案改成选模版次处废掉
-          if (this.alertShow.docuType === 1) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.contractualStipulation === '') {
-              this.$Message.warning({
-                content: '请填写合同约定情况',
-                duration: 5
-              })
-            } else if (this.alertShow.contractPerformance === '') {
-              this.$Message.warning({
-                content: '请填写合同履行情况',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentPrincipal === '') {
-              this.$Message.warning({
-                content: '请填写需要还款本金',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentBase === '') {
-              this.$Message.warning({
-                content: '请填写还款基数',
-                duration: 5
-              })
-            } else if (this.alertShow.annualRate === '') {
-              this.$Message.warning({
-                content: '请填写年利率',
-                duration: 5
-              })
-            } else if (this.alertShow.interestCalculation === '') {
-              this.$Message.warning({
-                content: '请填写利息计算',
-                duration: 5
-              })
-            } else {
-              axios.post('/case/previewDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  contractualStipulation: this.alertShow.contractualStipulation,
-                  contractPerformance: this.alertShow.contractPerformance,
-                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
-                  repaymentBase: this.alertShow.repaymentBase,
-                  annualRate: this.alertShow.annualRate,
-                  interestCalculation: this.alertShow.interestCalculation
-                })
-              }).then(res => {
-                window.open(res.data.data.filepath, '_blank')
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else if (this.alertShow.docuType === 2) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.agreementContent === '') {
-              this.$Message.warning({
-                content: '请填写协议内容',
-                duration: 5
-              })
-            } else {
-              axios.post('/case/previewDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  agreementContent: this.alertShow.agreementContent
-                })
-              }).then(res => {
-                window.open(res.data.data.filepath, '_blank')
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else {
-            this.$Message.error({
-              content: '请稍后再试',
-              duration: 5
-            })
-          }
-          break
-        case 'addE':
-          if (this.alertShow.pageNum === '') {
-            this.$Message.warning({
-              content: '请填写裁决书第几页',
-              duration: 5
-            })
-          } else if (this.alertShow.lineNum === '') {
-            this.$Message.warning({
-              content: '请填写裁决书第几行',
-              duration: 5
-            })
-          } else if (this.alertShow.oldContent === '') {
-            this.$Message.warning({
-              content: '请填写更改之前内容',
-              duration: 5
-            })
-          } else if (this.alertShow.newContent === '') {
-            this.$Message.warning({
-              content: '请填写更改之后内容',
-              duration: 5
-            })
-          } else {
-            axios.post('/case/previewDocumentFile', {
-              caseId: this.alertShow.userId,
-              documentType: this.alertShow.docuType,
-              jsonData: JSON.stringify({
-                pageNum: this.alertShow.pageNum,
-                lineNum: this.alertShow.lineNum,
-                oldContent: this.alertShow.oldContent,
-                newContent: this.alertShow.newContent
-              })
-            }).then(res => {
-              window.open(res.data.data.filepath, '_blank')
             }).catch(e => {
               this.$Message.error({
                 content: '错误信息:' + e + ' 稍后再试',
@@ -1255,39 +836,6 @@ export default {
         })
       })
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
-    resBatchEdit () {
-      axios.get('/case/findAllBatchNo').then(res => {
-        let _res = res.data.data
-        _res.forEach(a => {
-          let _o = {}
-          _o.id = a
-          _o.name = a
-          this.alertShow.batchNoList.push(_o)
-        })
-        this.alertShow.batchEdit = true
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
-    resEditData (index) {
-      let _res = this.caseList.bodyList[index]
-      this.alertShow.editDataId = _res.id
-      this.alertShow.editDataModal = true
-    },
     resConfData (index) {
       let _res = this.caseList.bodyList[index]
       this.alertShow.confDataBatchNo = _res.batchNo
@@ -1300,32 +848,44 @@ export default {
           this.alertObj.caseId = data.id
           this.alertObj.uploadQues = true
           break
+        case 'resEditData':
+          this.alertShow.editDataId = data.id
+          this.alertShow.editDataModal = true
+          break
+        case 'resBatchEdit':
+          this.alertShow.batchEdit = true
+          break
+        case 'resFind':
+          this.alertShow.find = true
+          break
+        case 'resConfData':
+          this.alertShow.confDataBatchNo = data.batchNo
+          this.alertShow.confDataId = data.id
+          this.alertShow.confDataAlert = true
+          break
+        case 'resPassReve':
+          this.alertShow.userId = data.id
+          this.alertShow.reve = true
+          break
+        case 'resAddEvid':
+          this.alertShow.userId = data.id
+          this.alertShow.addE = true
+          break
       }
     },
-    alertSave (type) {
+    alertSave (type, data) {
       switch (type) {
         case 'batchEdit':
-          if (this.alertShow.batchNo === null) {
-            this.$Message.error({
-              content: '请先选择一个批次号',
-              duration: 5
-            })
-            return false
-          }
-          axios.post('/file/addJudgeTemplate', {
-            batchNo: this.alertShow.batchNo,
-            dataType: 2
-          }).then(res => {
-            res.data.data.split(',').forEach(b => {
-              window.open(b, '_blank')
-            })
-            this.alertCanc('batchEdit')
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
+          this.alertShow.batchEdit = false
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.alertCanc('clearIds')
+          this.search.requestName = data.requestName
+          this.search.caseType = data.caseType
+          this.search.batchDocuType = data.batchDocuType
+          this.pageObj.pageNum = 1
+          this.resCaseList()
           break
         case 'editData':
           this.alertCanc(type)
@@ -1356,6 +916,16 @@ export default {
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
+        case 'reve':
+          this.alertShow.reve = false
+          this.alertShow.userId = null
+          this.resCaseList()
+          break
+        case 'addE':
+          this.alertShow.addE = false
+          this.alertShow.userId = null
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
@@ -1366,22 +936,8 @@ export default {
           this.alertShow.userId = null
           this.alertShow.docuType = null
           break
-        case 'end':
         case 'endNew':
         case 'docuType':
-          this.alertShow.contractName = ''
-          this.alertShow.contractualStipulation = ''
-          this.alertShow.contractPerformance = ''
-          this.alertShow.repaymentPrincipal = ''
-          this.alertShow.repaymentBase = ''
-          this.alertShow.annualRate = ''
-          this.alertShow.interestCalculation = ''
-          this.alertShow.agreementContent = ''
-          if (type === 'end') {
-            this.alertShow.end = false
-            this.alertShow.userId = null
-            this.alertShow.docuType = null
-          }
           if (type === 'endNew') {
             this.alertShow.end = false
             this.alertShow.userId = null
@@ -1390,18 +946,11 @@ export default {
           this.alertShow.endNewTempCode = ''
           break
         case 'reve':
-          this.alertShow.contractName = ''
-          this.alertShow.userId = null
-          this.alertShow.docuType = null
           this.alertShow.reve = false
+          this.alertShow.userId = null
           break
         case 'addE':
           this.alertShow.userId = null
-          this.alertShow.docuType = null
-          this.alertShow.pageNum = ''
-          this.alertShow.lineNum = ''
-          this.alertShow.oldContent = ''
-          this.alertShow.newContent = ''
           this.alertShow.addE = false
           break
         case 'reas':
@@ -1433,8 +982,6 @@ export default {
           break
         case 'batchEdit':
           this.alertShow.batchEdit = false
-          this.alertShow.batchNo = null
-          this.alertShow.batchNoList = []
           break
         case 'confData':
           this.alertShow.confDataBatchNo = null
