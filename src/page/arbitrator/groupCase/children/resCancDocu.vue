@@ -1,5 +1,5 @@
 <template>
-  <div class="resReveDocu">
+  <div class="resCancDocu">
     <create-docu :alertShow="alertShow" @alertConfirm="alertSave('docuSave')" @alertSee="alertSave('seeSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -18,7 +18,7 @@ import { resMess } from '@/components/common/mixin.js'
 import createDocu from '@/components/common/createDocu'
 
 export default {
-  name: 'resReveDocu',
+  name: 'resCancDocu',
   mixins: [resMess],
   props: ['resCaseId'],
   components: { createDocu },
@@ -26,7 +26,7 @@ export default {
     return {
       alertShow: true,
       resData: {
-        docuType: 5,
+        docuType: 6,
         contractName: ''
       }
     }

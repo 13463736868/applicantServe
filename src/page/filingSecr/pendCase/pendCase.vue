@@ -27,9 +27,12 @@
                 <Button :style="{display: resBtnDis('PENDCASE_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
               </template>
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('PENDCASE_CONFIRMFILING')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resConfCase(index)">确认立案</Button>
-                <Button :style="{display: resBtnDis('PENDCASE_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resAction('pendForm', row)">立案审批表</Button>
-                <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.pendBtnStatus  === '2'">立案审核中</span>
+                <Button :style="{display: resBtnDis('PENDCASE_CONFIRMFILING')}" class="mr5 mt1" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resConfCase(index)">确认立案</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_RESUBMIT')}" class="mr5 mt1" type="primary" size="small" v-if="row.pendBtnStatus === '2'" @click="resConfCase(index)">重新提交</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_APPROVAL')}" class="mr5 mt1" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resAction('pendForm', row)">立案审批表</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_UPDATETYPE')}" class="mr5 mt1" type="primary" size="small" v-if="row.pendBtnStatus === '2'" @click="resAction('caseCause', row)">修订案由</Button>
+                <Button :style="{display: resBtnDis('PENDCASE_REJECT')}" class="mr5 mt1" type="primary" size="small" v-if="row.pendBtnStatus === '1'" @click="resAction('backCase', row)">退回</Button>
+                <!-- <span style="color: #2d8cf0" class="mr5 mt1" type="text" size="small" v-if="row.pendBtnStatus  === '2'">立案审核中</span> -->
               </template>
             </Table>
           </Col>
@@ -91,6 +94,8 @@
     </alert-btn-info>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
+    <res-update-pendcase v-if="alertShow.caseCause" :caseId="alertShow.caseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('caseCause')" @alertCancel="alertCanc('caseCause')"></res-update-pendcase>
+    <res-back-case  v-if="alertShow.backCase" :caseId="alertShow.caseId" @alertConfirm="alertSave('backCase')" @alertCancel="alertCanc('backCase')"></res-back-case>
   </div>
 </template>
 
@@ -101,12 +106,14 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resSeeFile from '@/page/filingSecr/pendCase/children/resSeeFile'
+import resUpdatePendcase from '@/page/filingSecr/pendCase/children/resUpdatePendcase'
+import resBackCase from '@/page/filingSecr/pendCase/children/resBackCase'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm, resSeeFile },
+  components: { spinComp, alertBtnInfo, filingCaseForm, resSeeFile, resUpdatePendcase, resBackCase },
   data () {
     return {
       spinShow: false,
@@ -201,7 +208,8 @@ export default {
             title: '操作',
             key: 'caseId',
             align: 'center',
-            slot: 'action'
+            slot: 'action',
+            width: 200
           }
         ],
         bodyList: []
@@ -216,7 +224,11 @@ export default {
         idsList: [],
         ids: [],
         batch: false,
-        find: false
+        find: false,
+        caseCause: false,
+        caseId: null,
+        backCase: false,
+        resCaseType: null
       },
       dataObj: {
         confCaseId: null,
@@ -488,6 +500,15 @@ export default {
           this.alertObj.caseId = data.caseId
           this.alertObj.seeFile = true
           break
+        case 'caseCause':
+          this.alertShow.resCaseType = data.resCaseType
+          this.alertShow.caseId = data.caseId
+          this.alertShow.caseCause = true
+          break
+        case 'backCase':
+          this.alertShow.caseId = data.caseId
+          this.alertShow.backCase = true
+          break
       }
     },
     alertSave (type) {
@@ -501,6 +522,17 @@ export default {
         case 'seeFile':
           this.alertObj.seeFile = false
           this.alertObj.caseId = null
+          break
+        case 'backCase':
+          this.alertShow.backCase = false
+          this.alertShow.caseId = null
+          this.resCaseList()
+          break
+        case 'caseCause':
+          this.alertShow.resCaseType = null
+          this.alertShow.caseId = null
+          this.alertShow.caseCause = false
+          this.resCaseList()
           break
       }
     },
@@ -528,6 +560,13 @@ export default {
       } else if (type === 'seeFile') {
         this.alertObj.seeFile = false
         this.alertObj.caseId = null
+      } else if (type === 'backCase') {
+        this.alertShow.backCase = false
+        this.alertShow.caseId = null
+      } else if (type === 'caseCause') {
+        this.alertShow.resCaseType = null
+        this.alertShow.caseId = null
+        this.alertShow.caseCause = false
       }
     },
     goCaseInfo (index) {

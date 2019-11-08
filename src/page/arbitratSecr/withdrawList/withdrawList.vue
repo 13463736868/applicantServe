@@ -33,7 +33,7 @@
     <alert-btn-info :alertShow="formObj.withdraw" @alertConfirm="alertSave('withdrawForm')" @alertCancel="alertCanc('withdrawForm')" alertTitle="提示">
       <p>确定要撤回案件吗？</p>
     </alert-btn-info>
-    <alert-withdraw-info v-if="formObj.withdrawInfo" :withdrawType="formObj.withdrawType" :alertShow="formObj.withdrawInfo" :withdrawInfoId="formObj.caseId" @alertConfirm="alertSave('withdrawInfo')" @alertCancel="alertCanc('withdrawInfo')" alertTitle="操作"></alert-withdraw-info>
+    <alert-withdraw-info v-if="formObj.withdrawInfo" :resCaseId="formObj.caseId" :resDocuType="alertShow.withdrawType" @alertConfirm="alertSave('withdrawInfo')" @alertCancel="alertCanc('withdrawInfo')"></alert-withdraw-info>
   </div>
 </template>
 
@@ -175,8 +175,8 @@ export default {
           if (data.withdrawType === '1') {
             this.formObj.withdraw = true
           } else if (data.withdrawType === '5' || data.withdrawType === '4') {
-            this.formObj.withdrawInfo = true
             this.formObj.withdrawType = data.withdrawType
+            this.formObj.withdrawInfo = true
           } else {
             this.formObj.caseId = null
             return false

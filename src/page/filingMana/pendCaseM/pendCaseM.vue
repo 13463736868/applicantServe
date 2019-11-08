@@ -69,6 +69,7 @@
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-reson-alert v-if="alertShow.resonModel" :resCaseId="alertShow.resCaseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('reson')" @alertCancel="alertCanc('reson')"></res-reson-alert>
     <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
+    <res-back-case v-if="alertShow.backCaseModel" :caseId="alertShow.resCaseId" @alertConfirm="alertSave('backCase')" @alertCancel="alertCanc('backCase')"></res-back-case>
   </div>
 </template>
 
@@ -81,12 +82,13 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
 import resSeeFile from '@/page/filingMana/pendCaseM/children/resSeeFile'
+import resBackCase from '@/page/filingMana/pendCaseM/children/resBackCase'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert, resSeeFile },
+  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert, resSeeFile, resBackCase },
   data () {
     return {
       spinShow: false,
@@ -206,14 +208,11 @@ export default {
                     },
                     style: {
                       marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_NOPASS')
+                      display: this.resBtnDis('PENDCASEM_REJECT')
                     },
                     on: {
                       click: () => {
-                        this.$Message.error({
-                          content: '暂不支持此操作',
-                          duration: 5
-                        })
+                        this.resAction('backCase', params.row)
                       }
                     }
                   }, '退回'),
@@ -246,7 +245,7 @@ export default {
                         this.resAction('reson', params.row)
                       }
                     }
-                  }, '修订')
+                  }, '案由修订')
                 ])
               } else {
                 return h('div', [
@@ -264,7 +263,7 @@ export default {
                         this.resAction('reson', params.row)
                       }
                     }
-                  }, '修订')
+                  }, '案由修订')
                 ])
               }
             }
@@ -285,7 +284,8 @@ export default {
         find: false,
         resonModel: false,
         resCaseId: null,
-        resCaseType: null
+        resCaseType: null,
+        backCaseModel: false
       },
       dataObj: {
         confCaseId: null,
@@ -553,6 +553,10 @@ export default {
           this.alertObj.caseId = data.caseId
           this.alertObj.seeFile = true
           break
+        case 'backCase':
+          this.alertShow.caseId = data.caseId
+          this.alertShow.backCaseModel = true
+          break
       }
     },
     alertSave (type) {
@@ -573,6 +577,12 @@ export default {
         case 'seeFile':
           this.alertObj.seeFile = false
           this.alertObj.caseId = null
+          break
+        case 'backCase':
+          this.alertShow.caseId = null
+          this.alertShow.backCaseModel = false
+          this.pageObj.pageNum = 1
+          this.resCaseList()
           break
       }
     },
@@ -602,6 +612,9 @@ export default {
       } else if (type === 'seeFile') {
         this.alertObj.seeFile = false
         this.alertObj.caseId = null
+      } else if (type === 'backCase') {
+        this.alertShow.caseId = null
+        this.alertShow.backCaseModel = false
       }
     },
     goCaseInfo (index) {

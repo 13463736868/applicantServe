@@ -1,5 +1,5 @@
 <template>
-  <div class="_resResonAlert">
+  <div>
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="4" offset="2">
@@ -16,26 +16,31 @@
 </template>
 <script>
 import axios from 'axios'
-import { resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
-
 export default {
-  name: 'res_reson_alert',
-  mixins: [resMess],
-  props: ['resCaseId', 'resCaseType'],
+  name: 'res-update-pendcase',
   components: { alertBtnInfo },
+  props: [ 'caseId', 'resCaseType' ],
   data () {
     return {
       alertShow: true,
-      caseReson: null,
-      caseTypeList: []
+      caseTypeList: [],
+      caseReson: null
     }
   },
   created () {
     this.resTypeList()
-    this.caseReson = this.resCaseType
+    if (this.resCaseType) {
+      this.caseReson = this.resCaseType
+    }
   },
   methods: {
+    resMessage (type, text) {
+      this.$Message[type]({
+        content: text,
+        duration: type === 'success' ? 2 : 5
+      })
+    },
     resTypeList () {
       axios.post('/dictionary/findDictionaryList', {
         type: 'caseType'
@@ -53,12 +58,15 @@ export default {
         this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
+    alertCanc () {
+      this.$emit('alertCancel')
+    },
     alertSave () {
-      if (this.caseReson === null) {
+      if (this.caseReson === null || this.caseReson === 'undefined') {
         this.resMessage('warning', '请先选择案由')
       } else {
         axios.post('/case/updateCasesType', {
-          caseId: this.resCaseId,
+          caseId: this.caseId,
           type: this.caseReson
         }).then(res => {
           this.resMessage('success', '操作成功')
@@ -67,9 +75,6 @@ export default {
           this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
-    },
-    alertCanc () {
-      this.$emit('alertCancel')
     }
   }
 }

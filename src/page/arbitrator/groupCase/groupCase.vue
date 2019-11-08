@@ -35,13 +35,13 @@
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAction('resAddEvid', row)">生成补正书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAction('resAddEvid', row)">重新生成补正书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase(index)">起草文书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase(index)">撤案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase('resEndCase', row)">起草文书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase('resCancCase', row)">撤案</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_ENTERCOURTROOM')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="goCourtRoom(index)">进入庭室</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_RECORD')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="resRecord(index)">记录</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase(index)">重新生成文书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase(index)">重新生成撤案书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase(index)">重新起草文书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase('resEndCase', row)">重新生成文书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase('resCancCase', row)">重新生成撤案书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase('resEndCase', row)">重新起草文书</Button>
                 </div>
                 <div v-else="">
                   <span style="color: #2d8cf0" type="text" size="small">{{row.endCasePatten}}</span>
@@ -59,43 +59,6 @@
         </Row>
       </div>
     </div>
-    <create-docu :alertShow="alertShow.canc" @alertConfirm="docuSave('canc')" @alertSee="seeDocu('canc')" @alertCancel="alertCanc('canc')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>合同名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.contractName"></Input>
-        </Col>
-      </Row>
-    </create-docu>
-    <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('endNew')" @alertSee="seeDocu('endNew')" @alertCancel="alertCanc('endNew')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>文书类型：</b></p>
-        </Col>
-        <Col span="16">
-          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
-            <Radio :label="1">裁决书</Radio>
-            <Radio :label="2">调解书</Radio>
-            <Radio :label="13">和解裁决书</Radio>
-            <Radio :label="14">解裁决书</Radio>
-          </RadioGroup>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案模版：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="alertShow.endNewTempCode">
-            <Option v-if="item.tempDocumentType === alertShow.docuType" v-for="item in alertShow.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </create-docu>
-    <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
-    <res-adde-docu v-if="alertShow.adde" :resCaseId="alertShow.userId" @alertConfirm="alertSave('adde')" @alertCancel="alertCanc('adde')"></res-adde-docu>
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
@@ -108,6 +71,10 @@
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
+    <res-end-docu v-if="alertShow.end" :resCaseId="alertShow.userId" :resTempCode="alertShow.endNewTempCode" @alertConfirm="alertSave('endNew')" @alertCancel="alertCanc('endNew')"></res-end-docu>
+    <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
+    <res-canc-docu v-if="alertShow.canc" :resCaseId="alertShow.userId" @alertConfirm="alertSave('canc')" @alertCancel="alertCanc('canc')"></res-canc-docu>
+    <res-adde-docu v-if="alertShow.adde" :resCaseId="alertShow.userId" @alertConfirm="alertSave('adde')" @alertCancel="alertCanc('adde')"></res-adde-docu>
     <res-find v-if="alertShow.find" @alertConfirm="alertSave('find', ...arguments)" @alertCancel="alertCanc('find')"></res-find>
     <res-batch-edit v-if="alertShow.batchEdit" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')"></res-batch-edit>
     <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
@@ -126,7 +93,9 @@ import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAler
 import resBatchEdit from '@/page/arbitrator/groupCase/children/resBatchEdit'
 import resFind from '@/page/arbitrator/groupCase/children/resFind'
 import resReveDocu from '@/page/arbitrator/groupCase/children/resReveDocu'
+import resCancDocu from '@/page/arbitrator/groupCase/children/resCancDocu'
 import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
+import resEndDocu from '@/page/arbitrator/groupCase/children/resEndDocu'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -134,7 +103,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resAddeDocu },
+  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu },
   data () {
     return {
       spinShow: false,
@@ -254,10 +223,8 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        endNewTempList: [],
         endNewTempCode: '',
         canc: false,
-        contractName: '',
         docuType: null,
         userId: null,
         end: false,
@@ -309,7 +276,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seeReasonD(params.index)
+                  this.resAction('seeReasonD', params.row)
                 }
               }
             }, '文书退回原因')
@@ -328,7 +295,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seeReasonC(params.index)
+                  this.resAction('seeReasonC', params.row)
                 }
               }
             }, '补正原因')
@@ -345,7 +312,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seeReasonC(params.index)
+                  this.resAction('seeReasonC', params.row)
                 }
               }
             }, '补正原因'),
@@ -359,7 +326,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seeReasonD(params.index)
+                  this.resAction('seeReasonD', params.row)
                 }
               }
             }, '文书退回原因')
@@ -488,12 +455,10 @@ export default {
         })
       }
     },
-    resCancCase (index) {
-      let _res = this.caseList.bodyList[index]
+    resCancCase (type, data) {
+      let _res = data
       if (_res.writtenFlag === 1) {
-        this.alertShow.userId = _res.id
-        this.alertShow.docuType = 6
-        this.alertShow.canc = true
+        this.resAction(type, data)
       } else {
         let newTime = this.getFormatDate()
         let newD = newTime.substr(0, 10).split('-').join('')
@@ -508,9 +473,7 @@ export default {
           })
         } else if (newD - beginD === 0) {
           if (newT - beginT > 30) {
-            this.alertShow.userId = _res.id
-            this.alertShow.docuType = 6
-            this.alertShow.canc = true
+            this.resAction(type, data)
           } else {
             this.$Message.warning({
               content: '只能开庭半小时之后点击撤回',
@@ -518,27 +481,14 @@ export default {
             })
           }
         } else if (newD - beginD > 0) {
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 6
-          this.alertShow.canc = true
+          this.resAction(type, data)
         }
       }
     },
-    resEndCase (index) {
-      let _res = this.caseList.bodyList[index]
+    resEndCase (type, data) {
+      let _res = data
       if (_res.writtenFlag === 1) {
-        axios.post('/caseType/findAllTemplate').then(res => {
-          this.alertShow.endNewTempList = res.data.data
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 1
-          this.alertShow.endNewTempCode = _res.tempCode
-          this.alertShow.end = true
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
+        this.resAction(type, data)
       } else {
         let newTime = this.getFormatDate()
         let newD = newTime.substr(0, 10).split('-').join('')
@@ -558,18 +508,7 @@ export default {
           })
         } else if (newD - beginD === 0) {
           if (newT - beginT > 0) {
-            axios.post('/caseType/findAllTemplate').then(res => {
-              this.alertShow.endNewTempList = res.data.data
-              this.alertShow.userId = _res.id
-              this.alertShow.docuType = 1
-              this.alertShow.endNewTempCode = _res.tempCode
-              this.alertShow.end = true
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
+            this.resAction(type, data)
           } else {
             this.$Message.warning({
               content: '开庭时间未到，禁止点击',
@@ -577,138 +516,8 @@ export default {
             })
           }
         } else if (newD - beginD > 0) {
-          axios.post('/caseType/findAllTemplate').then(res => {
-            this.alertShow.endNewTempList = res.data.data
-            this.alertShow.userId = _res.id
-            this.alertShow.docuType = 1
-            this.alertShow.endNewTempCode = _res.tempCode
-            this.alertShow.end = true
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
+          this.resAction(type, data)
         }
-      }
-    },
-    seeReasonD (index) {
-      this.alertShow.reasText = this.caseList.bodyList[index].caseDocumentReason
-      this.alertShow.reas = true
-    },
-    seeReasonC (index) {
-      this.alertShow.reasText = this.caseList.bodyList[index].correctionsReason
-      this.alertShow.reas = true
-    },
-    docuSave (type) {
-      switch (type) {
-        case 'reve':
-        case 'canc':
-          // if (this.alertShow.contractName === '') {
-          //   this.$Message.warning({
-          //     content: '请填写合同名称',
-          //     duration: 5
-          //   })
-          // } else {
-          //   this.alertShow[type] = false
-          //   axios.post('/case/addDocumentFile', {
-          //     caseId: this.alertShow.userId,
-          //     documentType: this.alertShow.docuType,
-          //     jsonData: JSON.stringify({contractName: this.alertShow.contractName})
-          //   }).then(res => {
-          //     this.alertCanc(type)
-          //     this.$Message.success({
-          //       content: '操作成功',
-          //       duration: 2
-          //     })
-          //     this.resCaseList()
-          //   }).catch(e => {
-          //     this.$Message.error({
-          //       content: '错误信息:' + e + ' 稍后再试',
-          //       duration: 5
-          //     })
-          //   })
-          // }
-          break
-        case 'endNew':
-          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
-            this.$Message.warning({
-              content: '请选择结案模版',
-              duration: 5
-            })
-          } else {
-            let _o = {}
-            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
-            axios.post('/batchCaseDocument/addCaseDocument', {
-              documentType: this.alertShow.docuType,
-              caseDocumentDataJson: JSON.stringify([_o])
-            }).then(res => {
-              this.alertCanc('end')
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
-          break
-      }
-    },
-    seeDocu (type) {
-      switch (type) {
-        case 'reve':
-        case 'canc':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else {
-            axios.post('/case/previewDocumentFile', {
-              caseId: this.alertShow.userId,
-              documentType: this.alertShow.docuType,
-              jsonData: JSON.stringify({contractName: this.alertShow.contractName})
-            }).then(res => {
-              window.open(res.data.data.filepath, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        case 'endNew':
-          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
-            this.$Message.warning({
-              content: '请选择结案模版',
-              duration: 5
-            })
-          } else {
-            let _o = {}
-            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
-            axios.post('/batchCaseDocument/findPreviewCaseDocument', {
-              documentType: this.alertShow.docuType,
-              caseDocumentDataJson: JSON.stringify([_o])
-            }).then(res => {
-              window.open(res.data.data, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
-          break
       }
     },
     editorSave (html, cont) {
@@ -836,14 +645,16 @@ export default {
         })
       })
     },
-    resConfData (index) {
-      let _res = this.caseList.bodyList[index]
-      this.alertShow.confDataBatchNo = _res.batchNo
-      this.alertShow.confDataId = _res.id
-      this.alertShow.confDataAlert = true
-    },
     resAction (type, data) {
       switch (type) {
+        case 'seeReasonD':
+          this.alertShow.reasText = data.caseDocumentReason
+          this.alertShow.reas = true
+          break
+        case 'seeReasonC':
+          this.alertShow.reasText = data.correctionsReason
+          this.alertShow.reas = true
+          break
         case 'uploadQues':
           this.alertObj.caseId = data.id
           this.alertObj.uploadQues = true
@@ -870,6 +681,15 @@ export default {
         case 'resAddEvid':
           this.alertShow.userId = data.id
           this.alertShow.addE = true
+          break
+        case 'resCancCase':
+          this.alertShow.userId = data.id
+          this.alertShow.canc = true
+          break
+        case 'resEndCase':
+          this.alertShow.userId = data.id
+          this.alertShow.endNewTempCode = data.tempCode
+          this.alertShow.end = true
           break
       }
     },
@@ -921,38 +741,26 @@ export default {
           this.alertShow.userId = null
           this.resCaseList()
           break
+        case 'canc':
+          this.alertShow.canc = false
+          this.alertShow.userId = null
+          this.resCaseList()
+          break
         case 'addE':
           this.alertShow.addE = false
           this.alertShow.userId = null
+          this.resCaseList()
+          break
+        case 'endNew':
+          this.alertShow.end = false
+          this.alertShow.userId = null
+          this.alertShow.endNewTempCode = null
           this.resCaseList()
           break
       }
     },
     alertCanc (type) {
       switch (type) {
-        case 'canc':
-          this.alertShow.canc = false
-          this.alertShow.contractName = ''
-          this.alertShow.userId = null
-          this.alertShow.docuType = null
-          break
-        case 'endNew':
-        case 'docuType':
-          if (type === 'endNew') {
-            this.alertShow.end = false
-            this.alertShow.userId = null
-            this.alertShow.endNewTempList = []
-          }
-          this.alertShow.endNewTempCode = ''
-          break
-        case 'reve':
-          this.alertShow.reve = false
-          this.alertShow.userId = null
-          break
-        case 'addE':
-          this.alertShow.userId = null
-          this.alertShow.addE = false
-          break
         case 'reas':
           this.alertShow.reas = false
           this.alertShow.reasText = ''
@@ -969,28 +777,43 @@ export default {
           this.alertShow.find = false
           this.search.requestName = ''
           this.search.caseType = ''
-          // this.search.caseTypeList = {}
-          // this.search.requestNameList = []
           break
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
           break
         case 'editData':
-          this.alertShow.editDataId = null
           this.alertShow.editDataModal = false
+          this.alertShow.editDataId = null
           break
         case 'batchEdit':
           this.alertShow.batchEdit = false
           break
         case 'confData':
+          this.alertShow.confDataAlert = false
           this.alertShow.confDataBatchNo = null
           this.alertShow.confDataId = null
-          this.alertShow.confDataAlert = false
           break
         case 'uploadQues':
           this.alertObj.uploadQues = false
           this.alertObj.caseId = null
+          break
+        case 'reve':
+          this.alertShow.reve = false
+          this.alertShow.userId = null
+          break
+        case 'canc':
+          this.alertShow.canc = false
+          this.alertShow.userId = null
+          break
+        case 'addE':
+          this.alertShow.userId = null
+          this.alertShow.addE = false
+          break
+        case 'endNew':
+          this.alertShow.end = false
+          this.alertShow.userId = null
+          this.alertShow.endNewTempCode = null
           break
         default:
           break

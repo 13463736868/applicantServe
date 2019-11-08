@@ -5,10 +5,12 @@
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>文书类型：</b></p>
         </Col>
-        <Col span="16" class="lh32">
-          <RadioGroup v-model="resData.docuType">
-            <Radio :label="4" disabled>撤案决定书（组庭前）</Radio>
-            <Radio :label="5" disabled>撤案决定书（组庭后）</Radio>
+        <Col span="16">
+          <RadioGroup v-model="resData.docuType" @on-change="resChange">
+            <Radio :label="1">裁决书</Radio>
+            <Radio :label="2">调解书</Radio>
+            <Radio :label="13">和解裁决书</Radio>
+            <Radio :label="14">解裁决书</Radio>
           </RadioGroup>
         </Col>
       </Row>
@@ -33,23 +35,26 @@ import createDocu from '@/components/common/createDocu'
 export default {
   name: 'resEndDocu',
   mixins: [resMess],
-  props: ['resCaseId', 'resDocuType'],
+  props: ['resCaseId', 'resTempCode'],
   components: { createDocu },
   data () {
     return {
       alertShow: true,
       resData: {
-        docuType: null,
+        docuType: 1,
         endNewTempList: [],
         endNewTempCode: ''
       }
     }
   },
   created () {
-    this.resData.docuType = parseInt(this.resDocuType)
+    this.resData.endNewTempCode = this.resTempCode
     this.resList()
   },
   methods: {
+    resChange () {
+      this.resData.endNewTempCode = ''
+    },
     resList () {
       axios.post('/caseType/findAllTemplate').then(res => {
         this.resData.endNewTempList = res.data.data
@@ -60,7 +65,7 @@ export default {
     alertSave (type) {
       let _url = ''
       if (type === 'docuSave') {
-        _url = '/batchCaseDocument/decisionDocument'
+        _url = '/batchCaseDocument/addCaseDocument'
       } else if (type === 'seeSave') {
         _url = '/batchCaseDocument/findPreviewCaseDocument'
       }
