@@ -13,7 +13,14 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('CLOSECASE_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11' || row.requestState === '12'" @click="resFileList(row)">查看文件</Button>
+                <Button :style="{display: resBtnDis('CLOSECASE_OFFLINEARR')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11'" @click="resSendDoc(row)">线下送达</Button>
+                <!-- <Button :style="{display: resBtnDis('CLOSECASE_REMUNEAUDIT')}" class="mr5" type="primary" size="small" v-if="row.requestState === '6'" @click="resAction('remune', row)">查看酬金审批表</Button> -->
+                <!-- <Button :style="{display: resBtnDis('CLOSECASE_BACKFEEAUDIT')}" class="mr5" type="primary" size="small" v-if="row.requestState === '5'" @click="resAction('backfee', row)">查看退还仲裁费审批表</Button> -->
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -161,62 +168,7 @@ export default {
             title: '操作',
             key: 'caseId',
             align: 'center',
-            render: (h, params) => {
-              let _state = params.row.requestState
-              if (_state === '11') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resFileList(params.index)
-                      }
-                    }
-                  }, '查看文件'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      marginTop: '5px',
-                      display: this.resBtnDis('CLOSECASE_OFFLINEARR')
-                    },
-                    on: {
-                      click: () => {
-                        this.resSendDoc(params.index)
-                      }
-                    }
-                  }, '线下送达')
-                ])
-              } else if (_state === '12') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resFileList(params.index)
-                      }
-                    }
-                  }, '查看文件')
-                ])
-              }
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -360,8 +312,8 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    resFileList (index) {
-      this.fileList.caseId = this.caseList.bodyList[index].caseId
+    resFileList (data) {
+      this.fileList.caseId = data.caseId
       this.sendFileList('once')
     },
     reschangePageF (page) {
@@ -406,8 +358,8 @@ export default {
         })
       })
     },
-    resSendDoc (index) {
-      this.sendDocObj.id = this.caseList.bodyList[index].caseId
+    resSendDoc (data) {
+      this.sendDocObj.id = data.caseId
       this.sendDocObj.show = true
     },
     sendDocChange (val) {
@@ -462,6 +414,36 @@ export default {
     dowZip () {
       let _fileIds = this.alertObj.fileIdArr.join(',')
       window.open(regi.api + '/file/documentZip/download?fileIds=' + _fileIds, '_blank')
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'backfee':
+          axios.post('/approvalForm/queryUrl', {
+            caseId: data.id,
+            type: '25'
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+        case 'remune':
+          axios.post('/approvalForm/queryUrl', {
+            caseId: data.id,
+            type: '24'
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+      }
     }
   }
 }

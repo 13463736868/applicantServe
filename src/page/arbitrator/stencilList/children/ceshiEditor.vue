@@ -56,8 +56,7 @@
             <Row>
               <Col span="10"
                    offset="1">
-              <Row class="_labelFor"
-                   v-if="requestName !== ''">
+              <Row class="_labelFor">
                 <Col span="8">
                 <p><span class="_span"></span><b>案件类型：</b></p>
                 </Col>
@@ -75,8 +74,7 @@
               </Col>
               <Col span="10"
                    offset="2">
-              <Row class="_labelFor"
-                   v-if="requestName !== ''">
+              <Row class="_labelFor">
                 <Col span="8">
                 <p><span class="_span">*</span><b>文书类型：</b></p>
                 </Col>

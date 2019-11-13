@@ -40,7 +40,7 @@ export default {
           caseId: this.caseId,
           reason: this.rejeReason
         }).then(res => {
-          this.alertConfirm('alertConfirm')
+          this.$emit('alertConfirm')
           this.$Message.success({
             content: '操作成功',
             duration: 2

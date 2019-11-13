@@ -12,53 +12,21 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('POLIPROTEST_PASS')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === ''" @click="resAction('resSavePoli', row)">同意</Button>
+                <Button :style="{display: resBtnDis('POLIPROTEST_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === ''" @click="resAction('resCancPoli', row)">退回</Button>
+                <Button :style="{display: resBtnDis('POLIPROTEST_REGEN')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === '8'" @click="resAction('resSavePoli', row)">重新生成文书</Button>
+                <Button :style="{display: resBtnDis('POLIPROTEST_REGEN')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === '9'" @click="resAction('resCancPoli', row)">重新生成文书</Button>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.jrCaseDocumentState === '6'">文书审核中</span>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.jrCaseDocumentState === '10'">文书审核通过</span>
+              </template>
+            </Page>
           </Col>
         </Row>
       </div>
     </div>
-    <create-docu :alertShow="alertShow.diss" @alertConfirm="docuSave('diss')" @alertSee="seeDocu('diss')" @alertCancel="alertCanc('diss')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>合同名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.contractName"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>本会认为：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.conferenceThink" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b title="《中华人民共和国仲裁法》第几条">仲裁法第几条：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.num1"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b title="《中华人民共和国仲裁法》第几条">仲裁法第几条：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.num2"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b title="《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条">仲裁法第几条：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.num3"></Input>
-        </Col>
-      </Row>
-    </create-docu>
+    <res-poli-docu v-if="alertShow.diss" :resCaseId="alertShow.id" :resRequId="alertShow.byId" :resDocuType="alertShow.docuType" @alertConfirm="alertSave('diss')" @alertCancel="alertCanc('diss')"></res-poli-docu>
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="仲裁协议异议原因">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
@@ -70,13 +38,13 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
-import createDocu from '@/components/common/createDocu'
+import resPoliDocu from '@/page/arbitratComm/poliProtest/children/resPoliDocu'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'poli_protest',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, resPoliDocu },
   data () {
     return {
       spinShow: false,
@@ -141,9 +109,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -158,11 +124,6 @@ export default {
         docuType: null,
         id: null,
         diss: false,
-        contractName: '',
-        conferenceThink: '',
-        num1: '',
-        num2: '',
-        num3: '',
         reas: false,
         reasText: ''
       }
@@ -189,106 +150,6 @@ export default {
           }
         }, '查看')
       ])
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.jrCaseDocumentState === '') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('POLIPROTEST_PASS')
-            },
-            on: {
-              click: () => {
-                this.resSavePoli(params.index)
-              }
-            }
-          }, '通过'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('POLIPROTEST_NOPASS')
-            },
-            on: {
-              click: () => {
-                this.resCancPoli(params.index)
-              }
-            }
-          }, '退回')
-        ])
-      } else if (_obj.jrCaseDocumentState === '8') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('POLIPROTEST_REGEN')
-            },
-            on: {
-              click: () => {
-                this.resSavePoli(params.index)
-              }
-            }
-          }, '重新生成文书')
-        ])
-      } else if (_obj.jrCaseDocumentState === '9') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('POLIPROTEST_REGEN')
-            },
-            on: {
-              click: () => {
-                this.resCancPoli(params.index)
-              }
-            }
-          }, '重新生成文书')
-        ])
-      } else if (_obj.jrCaseDocumentState === '10') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核通过')
-        ])
-      } else if (_obj.jrCaseDocumentState === '6') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核中')
-        ])
-      } else {
-        return h('div', [
-        ])
-      }
     },
     resCaseList () {
       this.spinShow = true
@@ -318,133 +179,28 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    resSavePoli (index) {
-      this.alertShow.id = this.caseList.bodyList[index].id
-      this.alertShow.byId = this.caseList.bodyList[index].jurisdictionRequestById
-      this.alertShow.docuType = 8
-      this.alertShow.diss = true
-    },
-    resCancPoli (index) {
-      this.alertShow.id = this.caseList.bodyList[index].id
-      this.alertShow.byId = this.caseList.bodyList[index].jurisdictionRequestById
-      this.alertShow.docuType = 9
-      this.alertShow.diss = true
-    },
     resPoliReas (index) {
       this.alertShow.reasText = this.caseList.bodyList[index].jurisdictionRequestReason
       this.alertShow.reas = true
     },
-    docuSave (type) {
+    resAction (type, data) {
       switch (type) {
-        case 'diss':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else if (this.alertShow.conferenceThink === '') {
-            this.$Message.warning({
-              content: '请填写本会认为内容',
-              duration: 5
-            })
-          } else if (this.alertShow.num1 === '') {
-            this.$Message.warning({
-              content: '请填写《中华人民共和国仲裁法》第几条',
-              duration: 5
-            })
-          } else if (this.alertShow.num2 === '') {
-            this.$Message.warning({
-              content: '请填写《中华人民共和国仲裁法》第几条',
-              duration: 5
-            })
-          } else if (this.alertShow.num3 === '') {
-            this.$Message.warning({
-              content: '《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条',
-              duration: 5
-            })
-          } else {
-            this.alertShow.diss = false
-            axios.post('/case/addDocumentFile', {
-              caseId: this.alertShow.id,
-              documentType: this.alertShow.docuType,
-              jurisdictionRequestById: this.alertShow.byId,
-              jsonData: JSON.stringify({
-                contractName: this.alertShow.contractName,
-                conferenceThink: this.alertShow.conferenceThink,
-                num1: this.alertShow.num1,
-                num2: this.alertShow.num2,
-                num3: this.alertShow.num3
-              })
-            }).then(res => {
-              this.alertCanc('diss')
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
+        case 'resSavePoli':
+        case 'resCancPoli':
+          this.alertShow.id = data.id
+          this.alertShow.byId = data.jurisdictionRequestById
+          this.alertShow.docuType = type === 'resSavePoli' ? 8 : 9
+          this.alertShow.diss = true
           break
       }
     },
-    seeDocu (type) {
+    alertSave (type, data) {
       switch (type) {
         case 'diss':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else if (this.alertShow.conferenceThink === '') {
-            this.$Message.warning({
-              content: '请填写本会认为内容',
-              duration: 5
-            })
-          } else if (this.alertShow.num1 === '') {
-            this.$Message.warning({
-              content: '请填写《中华人民共和国仲裁法》第几条',
-              duration: 5
-            })
-          } else if (this.alertShow.num2 === '') {
-            this.$Message.warning({
-              content: '请填写《中华人民共和国仲裁法》第几条',
-              duration: 5
-            })
-          } else if (this.alertShow.num3 === '') {
-            this.$Message.warning({
-              content: '《最高人民法院关于适用<中华人民共和国仲裁法>若干问题的解释》第几条',
-              duration: 5
-            })
-          } else {
-            axios.post('/case/previewDocumentFile', {
-              caseId: this.alertShow.id,
-              documentType: this.alertShow.docuType,
-              jurisdictionRequestById: this.alertShow.byId,
-              jsonData: JSON.stringify({
-                contractName: this.alertShow.contractName,
-                conferenceThink: this.alertShow.conferenceThink,
-                num1: this.alertShow.num1,
-                num2: this.alertShow.num2,
-                num3: this.alertShow.num3
-              })
-            }).then(res => {
-              window.open(res.data.data.filepath, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
+          this.alertShow.byId = null
+          this.alertShow.docuType = null
+          this.alertShow.id = null
+          this.alertShow.diss = false
           break
       }
     },
@@ -454,11 +210,6 @@ export default {
         this.alertShow.docuType = null
         this.alertShow.id = null
         this.alertShow.diss = false
-        this.alertShow.contractName = ''
-        this.alertShow.conferenceThink = ''
-        this.alertShow.num1 = ''
-        this.alertShow.num2 = ''
-        this.alertShow.num3 = ''
       } else if (type === 'reas') {
         this.alertShow.reas = false
         this.alertShow.reasText = ''

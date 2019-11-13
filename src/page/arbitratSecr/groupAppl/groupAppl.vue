@@ -13,7 +13,7 @@
           <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
@@ -113,28 +113,6 @@
         </Col>
       </Row>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertObj.send" @alertConfirm="sendDocSave" @alertCancel="alertCanc('sendDoc')" alertTitle="操作">
       <p>确定要发送邮件，短信通知吗？（确认内容无误后点击确定）</p>
     </alert-btn-info>
@@ -160,15 +138,17 @@
       <upload-book childName="批量导入修改" :fileType="['xlsx']" :uploadUrl="resUploadUrl" @saveClick="batchUpSave" @cancClick="alertCanc('batchUp')"></upload-book>
     </alert-btn-info>
     <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
-    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSava('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
-    <res-pro-posal v-if="alertObj.proPosal" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" @alertConfirm="alertSava('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
+    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
+    <res-pro-posal v-if="alertObj.proPosal" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadBook from '@/components/common/uploadBook'
@@ -180,8 +160,8 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_appl',
-  mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal, resProPosal, groupApprForm },
+  mixins: [resBtn, resSearFind],
+  components: { spinComp, createDocu, resFind, alertBtnInfo, uploadBook, editDataModal, resProPosal, groupApprForm },
   data () {
     return {
       spinShow: false,
@@ -417,20 +397,6 @@ export default {
     }
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
@@ -977,17 +943,6 @@ export default {
         })
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resSendDoc (index) {
       this.alertObj.sendId = this.caseList.bodyList[index].id
       this.alertObj.send = true
@@ -1043,6 +998,19 @@ export default {
         duration: 10
       })
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'succForm':
+          this.formObj.caseId = data.id
+          this.formObj.filing = true
+          break
+        case 'proPosal':
+          this.alertObj.caseId = data.id
+          this.alertObj.logicState = data.logicState
+          this.alertObj.proPosal = true
+          break
+      }
+    },
     alertSave (type) {
       switch (type) {
         case 'batchEdit':
@@ -1072,23 +1040,6 @@ export default {
           this.alertCanc(type)
           this.resSearch()
           break
-      }
-    },
-    resAction (type, data) {
-      switch (type) {
-        case 'succForm':
-          this.formObj.caseId = data.id
-          this.formObj.filing = true
-          break
-        case 'proPosal':
-          this.alertObj.caseId = data.id
-          this.alertObj.logicState = data.logicState
-          this.alertObj.proPosal = true
-          break
-      }
-    },
-    alertSava (type) {
-      switch (type) {
         case 'succForm':
           this.formObj.filing = false
           this.formObj.caseId = null
@@ -1134,12 +1085,6 @@ export default {
       } else if (type === 'time') {
         this.alertShow.time = false
         this.alertObj.time = ''
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
       } else if (type === 'clearIds') {
         this.alertShow.ids = []
         this.alertShow.state = []

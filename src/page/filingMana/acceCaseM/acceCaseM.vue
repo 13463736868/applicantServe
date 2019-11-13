@@ -13,7 +13,7 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASEM_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('ACCECASEM_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASEM_BATCHPASS')}">批量通过</Button>
@@ -48,43 +48,23 @@
       <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'acce_case_m',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  mixins: [resBtn, resSearFind],
+  components: { spinComp, alertBtnInfo, resFind },
   data () {
     return {
       spinShow: false,
@@ -233,20 +213,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderHashFlag (h, params) {
       let _status = params.row.solidifyHashStatus
       if (_status === '3') {
@@ -603,40 +569,28 @@ export default {
         })
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     alertCanc (type) {
-      if (type === 'acceA') {
-        this.alertShow.acceA = false
-        this.dataObj.acceCaseId = null
-        this.emObj.status = 0
-        this.emObj.text = ''
-      } else if (type === 'acceB') {
-        this.alertShow.acceB = false
-        this.dataObj.acceB = null
-        this.dataObj.acceCaseId = null
-      } else if (type === 'batch') {
-        this.alertShow.rejeReason = ''
-        this.alertShow.state = null
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
+      switch (type) {
+        case 'acceA':
+          this.alertShow.acceA = false
+          this.dataObj.acceCaseId = null
+          this.emObj.status = 0
+          this.emObj.text = ''
+          break
+        case 'acceB':
+          this.alertShow.acceB = false
+          this.dataObj.acceB = null
+          this.dataObj.acceCaseId = null
+          break
+        case 'batch':
+          this.alertShow.rejeReason = ''
+          this.alertShow.state = null
+          this.alertShow.batch = false
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
       }
     },
     goCaseInfo (index) {

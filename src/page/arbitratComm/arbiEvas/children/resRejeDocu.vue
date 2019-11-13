@@ -7,7 +7,7 @@
         </Col>
         <Col span="16" class="lh32">
           <RadioGroup v-model="resData.docuType">
-            <Radio :label="6" disabled>撤案决定书(申请人庭审未出庭)</Radio>
+            <Radio :label="7" disabled>仲裁员回避(驳回)</Radio>
           </RadioGroup>
         </Col>
       </Row>
@@ -32,13 +32,13 @@ import createDocu from '@/components/common/createDocu'
 export default {
   name: 'resEndDocu',
   mixins: [resMess],
-  props: ['resCaseId'],
+  props: ['resCaseId', 'resRequId'],
   components: { createDocu },
   data () {
     return {
       alertShow: true,
       resData: {
-        docuType: 3,
+        docuType: 7,
         endNewTempList: [],
         endNewTempCode: ''
       }
@@ -68,6 +68,7 @@ export default {
         let _o = {}
         _o[this.resCaseId] = this.resData.endNewTempCode
         axios.post(_url, {
+          businessId: this.resRequId,
           documentType: this.resData.docuType,
           caseDocumentDataJson: JSON.stringify([_o])
         }).then(res => {

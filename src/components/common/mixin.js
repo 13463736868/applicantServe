@@ -44,3 +44,37 @@ export const resMess = {
     }
   }
 }
+
+export const resTimeOut = {
+  methods: {
+    debounce (fn, idle) {
+      let setTm
+      if (!idle || idle <= 0) return fn
+      return () => {
+        clearTimeout(setTm)
+        setTm = setTimeout(fn.bind(this, ...arguments), idle)
+      }
+    }
+  }
+}
+
+export const resSearFind = {
+  methods: {
+    resActionFind (type) {
+      this.alertShow.find = true
+    },
+    alertSaveFind (type, data) {
+      this.alertShow.find = false
+      this.alertCanc('clearIds')
+      this.search.requestName = data.requestName
+      this.search.caseType = data.caseType
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
+    alertCancFind (type) {
+      this.alertShow.find = false
+      this.search.requestName = ''
+      this.search.caseType = ''
+    }
+  }
+}

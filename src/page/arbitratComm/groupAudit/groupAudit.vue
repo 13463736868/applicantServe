@@ -7,7 +7,7 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="3">
           <Button type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
@@ -82,37 +82,17 @@
     <alert-btn-info :alertShow="alertShow.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
       <p>确定要通过吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
     <group-pass-alert v-if="alertObj.groupPass" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" :resArbiId="alertObj.arbiId" :resTribId="alertObj.tribId" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resTimeOut, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import groupPassAlert from '@/page/arbitratComm/groupAudit/children/groupPassAlert'
@@ -120,8 +100,8 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, groupApprForm, groupPassAlert },
+  mixins: [resBtn, resTimeOut, resSearFind],
+  components: { spinComp, resFind, alertBtnInfo, groupApprForm, groupPassAlert },
   data () {
     return {
       spinShow: false,
@@ -309,20 +289,6 @@ export default {
     }
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderCheck (h, params) {
       let _id = params.row.id
       if (this.seleArr.indexOf(_id) === -1) {
@@ -395,14 +361,6 @@ export default {
       obj.caseId = this.caseList.bodyList[index].id
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
-    },
-    debounce (fn, idle) {
-      let setTm
-      if (!idle || idle <= 0) return fn
-      return () => {
-        clearTimeout(setTm)
-        setTm = setTimeout(fn.bind(this, ...arguments), idle)
-      }
     },
     resSearchList () {
       this.search.requestName = ''
@@ -748,17 +706,6 @@ export default {
         this.resAssign('')
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resAction (type, data) {
       switch (type) {
         case 'groupForm':
@@ -809,12 +756,6 @@ export default {
         this.alertShow.tribId = null
         this.alertShow.caseId = null
         this.alertShow.passId = null
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []

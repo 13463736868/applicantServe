@@ -13,7 +13,7 @@
           &nbsp;
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
@@ -44,28 +44,7 @@
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
       <p>确定要通过吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-reson-alert v-if="alertShow.resonModel" :resCaseId="alertShow.resCaseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('reson')" @alertCancel="alertCanc('reson')"></res-reson-alert>
     <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
@@ -75,9 +54,10 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resSearFind} from '@/components/common/mixin.js'
 import { mapGetters } from 'vuex'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
@@ -87,8 +67,8 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, filingCaseForm, resResonAlert, resSeeFile, resBackCase },
+  mixins: [resBtn, resSearFind],
+  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resResonAlert, resSeeFile, resBackCase },
   data () {
     return {
       spinShow: false,
@@ -313,20 +293,6 @@ export default {
     ])
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/case/findRegisterCaseList', {
@@ -527,17 +493,6 @@ export default {
         })
       })
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resAction (type, data) {
       switch (type) {
         case 'pendForm':
@@ -554,7 +509,7 @@ export default {
           this.alertObj.seeFile = true
           break
         case 'backCase':
-          this.alertShow.caseId = data.caseId
+          this.alertShow.resCaseId = data.caseId
           this.alertShow.backCaseModel = true
           break
       }
@@ -579,7 +534,7 @@ export default {
           this.alertObj.caseId = null
           break
         case 'backCase':
-          this.alertShow.caseId = null
+          this.alertShow.resCaseId = null
           this.alertShow.backCaseModel = false
           this.pageObj.pageNum = 1
           this.resCaseList()
@@ -587,34 +542,36 @@ export default {
       }
     },
     alertCanc (type) {
-      if (type === 'conf') {
-        this.alertShow.conf = false
-        this.dataObj.confCaseId = null
-        this.dataObj.confCosts = null
-      } else if (type === 'batch') {
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
-      } else if (type === 'pendForm') {
-        this.formObj.filing = false
-        this.formObj.caseId = null
-      } else if (type === 'reson') {
-        this.alertShow.resonModel = false
-        this.alertShow.resCaseId = null
-        this.alertShow.resCaseType = null
-      } else if (type === 'seeFile') {
-        this.alertObj.seeFile = false
-        this.alertObj.caseId = null
-      } else if (type === 'backCase') {
-        this.alertShow.caseId = null
-        this.alertShow.backCaseModel = false
+      switch (type) {
+        case 'conf':
+          this.alertShow.conf = false
+          this.dataObj.confCaseId = null
+          this.dataObj.confCosts = null
+          break
+        case 'batch':
+          this.alertShow.batch = false
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
+        case 'pendForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          break
+        case 'reson':
+          this.alertShow.resonModel = false
+          this.alertShow.resCaseId = null
+          this.alertShow.resCaseType = null
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.caseId = null
+          break
+        case 'backCase':
+          this.alertShow.resCaseId = null
+          this.alertShow.backCaseModel = false
+          break
       }
     },
     goCaseInfo (index) {

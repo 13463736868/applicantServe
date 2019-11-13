@@ -33,7 +33,7 @@
     <alert-btn-info :alertShow="formObj.withdraw" @alertConfirm="alertSave('withdrawForm')" @alertCancel="alertCanc('withdrawForm')" alertTitle="提示">
       <p>确定要撤回案件吗？</p>
     </alert-btn-info>
-    <alert-withdraw-info v-if="formObj.withdrawInfo" :resCaseId="formObj.caseId" :resDocuType="alertShow.withdrawType" @alertConfirm="alertSave('withdrawInfo')" @alertCancel="alertCanc('withdrawInfo')"></alert-withdraw-info>
+    <alert-withdraw-info v-if="formObj.withdrawInfo" :resCaseId="formObj.caseId" :resDocuType="formObj.withdrawType" @alertConfirm="alertSave('withdrawInfo')" @alertCancel="alertCanc('withdrawInfo')"></alert-withdraw-info>
   </div>
 </template>
 
@@ -59,6 +59,27 @@ export default {
         loading: false,
         header: [
           {
+            title: '案件编号',
+            key: 'id',
+            align: 'center',
+            render: (h, params) => {
+              return h('a', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                },
+                style: {
+                  color: '#2d8cf0'
+                },
+                on: {
+                  click: () => {
+                    this.goCaseInfo(params.index)
+                  }
+                }
+              }, params.row.id)
+            }
+          },
+          {
             title: '案号',
             key: 'code',
             align: 'center',
@@ -78,11 +99,6 @@ export default {
                 }
               }, params.row.code)
             }
-          },
-          {
-            title: '案件编号',
-            key: 'id',
-            align: 'center'
           },
           {
             title: '申请人',
@@ -111,6 +127,12 @@ export default {
           {
             title: '仲裁费',
             key: 'money',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
+            title: '案件状态',
+            key: 'caseState',
             tooltip: 'true',
             align: 'center'
           },

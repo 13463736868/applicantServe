@@ -175,7 +175,8 @@ export default {
     return {
       alertShow: true,
       form: null,
-      switchObj: false
+      switchObj: false,
+      passSubmit: false
     }
   },
   created () {
@@ -212,6 +213,7 @@ export default {
             duration: 2
           })
           this.switchObj = false
+          this.passSubmit = true
         }).catch(e => {
           this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
@@ -220,24 +222,33 @@ export default {
           this.switchObj = false
         })
       } else {
-        axios.post('/closeCaseForm/audit', {
-          caseId: this.caseId,
-          formType: 'closecase',
-          state: type
-        }).then(res => {
-          this.$emit('alertConfirm')
-          this.$Message.success({
-            content: '操作成功',
+        if (this.passSubmit) {
+          axios.post('/closeCaseForm/audit', {
+            caseId: this.caseId,
+            formType: 'closecase',
+            state: type
+          }).then(res => {
+            this.$emit('alertConfirm')
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.switchObj = false
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+            this.switchObj = false
+          })
+        } else {
+          this.$Message.warning({
+            content: '请点击保存按钮，进行签名信息的保存',
             duration: 2
           })
           this.switchObj = false
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-          this.switchObj = false
-        })
+          this.passSubmit = false
+        }
       }
     },
     alertCancel () {

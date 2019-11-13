@@ -5,7 +5,15 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+               <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resNewSaveEvas(params.index)">同意</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resAction('resCancEvas', row)">退回</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '2'" @click="resAction('resCancEvas', row)">重新生成文书</Button>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '3'">文书审核中</span>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '4'">文书审核通过</span>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -17,32 +25,7 @@
         </Row>
       </div>
     </div>
-    <create-docu :alertShow="alertShow.reje" @alertConfirm="docuSave('reje')" @alertSee="seeDocu('reje')" @alertCancel="alertCanc('reje')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>合同名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.contractName"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>本会认为：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.conferenceThink" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>审批意见：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..."/>
-        </Col>
-      </Row>
-    </create-docu>
+    <res-reje-docu v-if="alertShow.reje" :resCaseId="alertShow.id" :resRequId="alertShow.avoidRequestId" @alertConfirm="alertSave('reje')" @alertCancel="alertCanc('reje')"></res-reje-docu>
     <alert-btn-info :alertShow="alertShow.agreNew" @alertConfirm="agreNewSave" @alertCancel="alertCanc('agreNew')" alertTitle="操作">
       <p>确定同意吗？</p>
     </alert-btn-info>
@@ -92,16 +75,16 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resTimeOut} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
-import createDocu from '@/components/common/createDocu'
+import resRejeDocu from '@/page/arbitratComm/arbiEvas/children/resRejeDocu'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'arbi_evas',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, createDocu },
+  mixins: [resBtn, resTimeOut],
+  components: { spinComp, alertBtnInfo, resRejeDocu },
   data () {
     return {
       spinShow: false,
@@ -181,9 +164,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -196,11 +177,8 @@ export default {
       alertShow: {
         reje: false,
         id: null,
-        rejeReason: '',
         arbitratorIds: null,
         avoidState: null,
-        contractName: '',
-        conferenceThink: '',
         agre: false,
         avoidRequestId: null,
         infoUser: null,
@@ -347,88 +325,6 @@ export default {
         ])
       }
     },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.showButtonState === '1') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_PASS')
-            },
-            on: {
-              click: () => {
-                this.resNewSaveEvas(params.index)
-              }
-            }
-          }, '同意'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_NOPASS')
-            },
-            on: {
-              click: () => {
-                this.resCancEvas(params.index)
-              }
-            }
-          }, '退回')
-        ])
-      } else if (_obj.showButtonState === '2') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_REGEN')
-            },
-            on: {
-              click: () => {
-                this.resCancEvas(params.index)
-              }
-            }
-          }, '重新生成文书')
-        ])
-      } else if (_obj.showButtonState === '3') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核中')
-        ])
-      } else if (_obj.showButtonState === '4') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核通过')
-        ])
-      } else if (_obj.showButtonState === '5') {
-        return h('div', [
-        ])
-      }
-    },
     resArbiEvas (index) {
       this.alertShow.reasText = this.caseList.bodyList[index].avoidReason
       this.alertShow.reas = true
@@ -460,14 +356,6 @@ export default {
       obj.caseId = this.caseList.bodyList[index].id
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
-    },
-    debounce (fn, idle) {
-      let setTm
-      if (!idle || idle <= 0) return fn
-      return () => {
-        clearTimeout(setTm)
-        setTm = setTimeout(fn.bind(this, ...arguments), idle)
-      }
     },
     resSearch () {
       this.selePageObj.pageNum = 1
@@ -593,99 +481,21 @@ export default {
         })
       })
     },
-    resCancEvas (index) {
-      this.alertShow.id = this.caseList.bodyList[index].id
-      this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
-      this.alertShow.arbitratorIds = this.caseList.bodyList[index].arbitratorIds
-      this.alertShow.avoidState = 2
-      this.alertShow.docuType = 7
-      this.alertShow.reje = true
-    },
-    docuSave (type) {
+    resAction (type, data) {
       switch (type) {
-        case 'reje':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else if (this.alertShow.conferenceThink === '') {
-            this.$Message.warning({
-              content: '请填写本会认为内容',
-              duration: 5
-            })
-          } else if (this.alertShow.rejeReason === '') {
-            this.$Message.warning({
-              content: '请填写审批意见',
-              duration: 5
-            })
-          } else {
-            this.alertShow.reje = false
-            axios.post('/approve/updateAvoidRequestAppover', {
-              avoidRequestId: this.alertShow.avoidRequestId,
-              content: this.alertShow.rejeReason,
-              avoidState: this.alertShow.avoidState,
-              arbitratorIds: this.alertShow.arbitratorIds,
-              jsonData: JSON.stringify({
-                contractName: this.alertShow.contractName,
-                conferenceThink: this.alertShow.conferenceThink
-              })
-            }).then(res => {
-              this.alertCanc('reje')
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
+        case 'resCancEvas':
+          this.alertShow.id = data.id
+          this.alertShow.avoidRequestId = data.avoidRequestId
+          this.alertShow.reje = true
           break
       }
     },
-    seeDocu (type) {
+    alertSave (type, data) {
       switch (type) {
         case 'reje':
-          if (this.alertShow.contractName === '') {
-            this.$Message.warning({
-              content: '请填写合同名称',
-              duration: 5
-            })
-          } else if (this.alertShow.conferenceThink === '') {
-            this.$Message.warning({
-              content: '请填写本会认为内容',
-              duration: 5
-            })
-          } else if (this.alertShow.rejeReason === '') {
-            this.$Message.warning({
-              content: '请填写审批意见',
-              duration: 5
-            })
-          } else {
-            axios.post('/case/previewDocumentFile', {
-              caseId: this.alertShow.id,
-              documentType: this.alertShow.docuType,
-              jsonData: JSON.stringify({
-                contractName: this.alertShow.contractName,
-                conferenceThink: this.alertShow.conferenceThink
-              })
-            }).then(res => {
-              window.open(res.data.data.filepath, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        default:
+          this.alertShow.reje = false
+          this.alertShow.id = null
+          this.alertShow.avoidRequestId = null
           break
       }
     },
@@ -693,12 +503,7 @@ export default {
       if (type === 'reje') {
         this.alertShow.reje = false
         this.alertShow.id = null
-        this.alertShow.rejeReason = ''
         this.alertShow.avoidRequestId = null
-        this.alertShow.arbitratorIds = null
-        this.alertShow.avoidState = null
-        this.alertShow.contractName = ''
-        this.alertShow.conferenceThink = ''
       } else if (type === 'agre') {
         this.alertShow.agre = false
         this.alertShow.avoidRequestId = null

@@ -36,7 +36,7 @@ export default {
         caseId: this.caseId,
         reason: this.rejeReason
       }).then(res => {
-        this.alertConfirm('alertConfirm')
+        this.$emit('alertConfirm')
         this.resMessage('success', '操作成功')
       }).catch(e => {
         this.resMessage('error', '错误信息:' + e + ' 稍后再试')

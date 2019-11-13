@@ -1,36 +1,24 @@
 <template>
-  <div class="resReveDocu">
+  <div class="resEndDocu">
     <create-docu :alertShow="alertShow" @alertConfirm="alertSave('docuSave')" @alertSee="alertSave('seeSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>裁决书第几页：</b></p>
+          <p><span class="_span">*</span><b>文书类型：</b></p>
         </Col>
-        <Col span="16">
-          <Input v-model="alertShow.pageNum"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>裁决书第几行：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.lineNum"></Input>
+        <Col span="16" class="lh32">
+          <RadioGroup v-model="resData.docuType">
+            <Radio :label="3" disabled>生成补正书</Radio>
+          </RadioGroup>
         </Col>
       </Row>
       <Row class="_labelFor">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>更改之前内容：</b></p>
+          <p><span class="_span">*</span><b>结案模版：</b></p>
         </Col>
         <Col span="16">
-          <Input v-model="alertShow.oldContent"></Input>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>更改之后内容：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertShow.newContent"></Input>
+          <Select v-model="resData.endNewTempCode">
+            <Option v-if="item.tempDocumentType === resData.docuType" v-for="item in resData.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
+          </Select>
         </Col>
       </Row>
     </create-docu>
@@ -42,7 +30,7 @@ import { resMess } from '@/components/common/mixin.js'
 import createDocu from '@/components/common/createDocu'
 
 export default {
-  name: 'resReveDocu',
+  name: 'resEndDocu',
   mixins: [resMess],
   props: ['resCaseId'],
   components: { createDocu },
@@ -51,42 +39,43 @@ export default {
       alertShow: true,
       resData: {
         docuType: 3,
-        contractName: ''
+        endNewTempList: [],
+        endNewTempCode: ''
       }
     }
   },
+  created () {
+    this.resList()
+  },
   methods: {
+    resList () {
+      axios.post('/caseType/findAllTemplate').then(res => {
+        this.resData.endNewTempList = res.data.data
+      }).catch(e => {
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+      })
+    },
     alertSave (type) {
       let _url = ''
       if (type === 'docuSave') {
-        _url = '/case/addDocumentFile'
+        _url = '/batchCaseDocument/decisionDocument'
       } else if (type === 'seeSave') {
-        _url = '/case/previewDocumentFile'
+        _url = '/batchCaseDocument/findPreviewCaseDocument'
       }
-      if (this.resData.pageNum === '') {
-        this.resMessage('warning', '请填写裁决书第几页')
-      } else if (this.resData.lineNum === '') {
-        this.resMessage('warning', '请填写裁决书第几行')
-      } else if (this.resData.oldContent === '') {
-        this.resMessage('warning', '请填写更改之前内容')
-      } else if (this.resData.newContent === '') {
-        this.resMessage('warning', '请填写更改之后内容')
+      if (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined) {
+        this.resMessage('warning', '请选择结案模版')
       } else {
+        let _o = {}
+        _o[this.resCaseId] = this.resData.endNewTempCode
         axios.post(_url, {
-          caseId: this.resCaseId,
           documentType: this.resData.docuType,
-          jsonData: JSON.stringify({
-            pageNum: this.resData.pageNum,
-            lineNum: this.resData.lineNum,
-            oldContent: this.resData.oldContent,
-            newContent: this.resData.newContent
-          })
+          caseDocumentDataJson: JSON.stringify([_o])
         }).then(res => {
           if (type === 'docuSave') {
             this.resMessage('success', '操作成功')
             this.$emit('alertConfirm')
           } else if (type === 'seeSave') {
-            window.open(res.data.data.filepath, '_blank')
+            window.open(res.data.data, '_blank')
           }
         }).catch(e => {
           this.resMessage('error', '错误信息:' + e + ' 稍后再试')

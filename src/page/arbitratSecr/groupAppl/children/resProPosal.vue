@@ -42,12 +42,12 @@
 </template>
 <script>
 import axios from 'axios'
-import { resMess } from '@/components/common/mixin.js'
+import { resMess, resTimeOut } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'res_set_proc',
-  mixins: [resMess],
+  mixins: [resMess, resTimeOut],
   props: ['resCaseId', 'resLogicState'],
   components: { alertBtnInfo },
   data () {
@@ -118,14 +118,6 @@ export default {
       }).catch(e => {
         this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
-    },
-    debounce (fn, idle) {
-      let setTm
-      if (!idle || idle <= 0) return fn
-      return () => {
-        clearTimeout(setTm)
-        setTm = setTimeout(fn.bind(this, ...arguments), idle)
-      }
     },
     resSearch () {
       this.selePageObj.pageNum = 1

@@ -16,9 +16,11 @@
 </template>
 <script>
 import axios from 'axios'
+import { resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 export default {
   name: 'res-update-pendcase',
+  mixins: [resMess],
   components: { alertBtnInfo },
   props: [ 'caseId', 'resCaseType' ],
   data () {
@@ -35,12 +37,6 @@ export default {
     }
   },
   methods: {
-    resMessage (type, text) {
-      this.$Message[type]({
-        content: text,
-        duration: type === 'success' ? 2 : 5
-      })
-    },
     resTypeList () {
       axios.post('/dictionary/findDictionaryList', {
         type: 'caseType'

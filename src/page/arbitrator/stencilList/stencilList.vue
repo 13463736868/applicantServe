@@ -9,7 +9,7 @@
         <Col span="2"
              class="tc">
         <Button type="primary"
-                @click="resFind"
+                @click="resActionFind('resFind', null)"
                 :style="{display: resBtnDis('STENCILLIST_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2"
@@ -47,39 +47,6 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.find"
-                    @alertConfirm="findSave"
-                    @alertCancel="alertCanc('find')"
-                    alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6"
-             offset="1">
-        <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-        <Select v-model="search.requestName"
-                filterable>
-          <Option v-for="item in search.requestNameList"
-                  :value="item.userToken"
-                  :key="item.userToken">{{ item.userName }}</Option>
-        </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor"
-           v-if="search.requestName !== ''">
-        <Col span="6"
-             offset="1">
-        <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-        <Select v-model="search.caseType">
-          <Option v-for="item in search.caseTypeList[search.requestName]"
-                  :value="item.caseTypeCode"
-                  :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-        </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.reas"
                     :isSaveBtn="true"
                     @alertCancel="alertCanc('reas')"
@@ -103,21 +70,23 @@
                     :alertDisType="alertShow.disType"
                     alertTitle="编辑"></alert-editor>
     </div>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
 // import alertEditor from '@/page/arbitrator/stencilList/children/alertEditor'
 
 export default {
   name: 'stenci_list',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor },
+  mixins: [resBtn, resSearFind],
+  components: { spinComp, alertBtnInfo, resFind, alertEditor },
   data () {
     return {
       spinShow: false,
@@ -201,20 +170,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.status === 2) {
@@ -386,16 +341,6 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     seePdf (path) {
       window.open(path, '_blank')
     },
@@ -493,13 +438,6 @@ export default {
     },
     alertCanc (type) {
       switch (type) {
-        case 'find':
-          this.alertShow.find = false
-          this.search.requestName = ''
-          this.search.caseType = ''
-          // this.search.caseTypeList = {}
-          // this.search.requestNameList = []
-          break
         case 'editor':
           this.alertShow.editor = false
           this.alertShow.editorDest = false
