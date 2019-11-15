@@ -12,17 +12,17 @@
         </Row>
         <Row>
           <Col span="20" offset="1">
-            <span><b>主 裁： </b></span>
+            <span><b>首席仲裁员： </b></span>
             <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>
         <Row v-if="seleShow">
           <Col span="20" offset="1">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[1] !== ''"><span class="ml5" v-text="seleArrName[1]"></span><Icon @click="resSeleDel(1)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
           <Col span="20" offset="1">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[2] !== ''"><span class="ml5" v-text="seleArrName[2]"></span><Icon @click="resSeleDel(2)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>
@@ -48,7 +48,7 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 export default {
   name: 'res_set_proc',
   mixins: [resMess, resTimeOut],
-  props: ['resCaseId', 'resLogicState'],
+  props: ['resCaseId', 'resLogicState', 'resArbiNum'],
   components: { alertBtnInfo },
   data () {
     return {
@@ -86,7 +86,6 @@ export default {
         pageNum: 1,
         pageSize: 5
       },
-      seleShow: false,
       searchText: ''
     }
   },
@@ -95,6 +94,17 @@ export default {
     this.$watch('searchText', this.debounce(this.resSearch, 1000))
   },
   computed: {
+    seleShow () {
+      if (this.resArbiNum === null) {
+        return false
+      } else if (this.resArbiNum === 1) {
+        return false
+      } else if (this.resArbiNum === 3) {
+        return true
+      } else {
+        return false
+      }
+    },
     resSaveUrl () {
       if (this.resLogicState === '17') {
         return '/approve/addGroupApproveToProposalArbitrator'

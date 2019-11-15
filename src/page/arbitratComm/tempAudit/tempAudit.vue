@@ -13,7 +13,14 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('TEMPAUDIT_PASS')}" class="mr5" type="primary" size="small" v-if="row.status === 3" @click="resSaveTemp(index)">通过</Button>
+                <Button :style="{display: resBtnDis('TEMPAUDIT_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.status === 3" @click="resCancTemp(index)">退回</Button>
+                <Button :style="{display: resBtnDis('TEMPAUDIT_UPD')}" class="mr5" type="primary" size="small" v-if="row.status === 3" @click="resActionFind(row)">修改</Button>
+                <Button :style="{display: resBtnDis('TEMPAUDIT_VIEW')}" class="mr5" type="primary" size="small" @click="seePdf(row.tempPath)">查看</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -30,21 +37,35 @@
       <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.tempReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
+    <div v-if="editorObj.editorDest">
+      <alert-editor :alertShow="editorObj.editor"
+                    @alertConfirm="alertSaveEditor"
+                    @alertCancel="alertCancEditor('editor')"
+                    :alertName="editorObj.editorName"
+                    :alertCode="editorObj.editorCode"
+                    :alertToken="editorObj.editorToken"
+                    :alertTypeId="editorObj.editorTypeId"
+                    :alertContent="editorObj.editorContent"
+                    :alertDocument="editorObj.documentType"
+                    :alertDisType="editorObj.disType"
+                    alertTitle="编辑"></alert-editor>
+    </div>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn, resSearFind} from '@/components/common/mixin.js'
+import {resBtn, resSearFind, resEditEditor} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
 
 export default {
   name: 'temp_audit',
-  mixins: [resBtn, resSearFind],
-  components: { spinComp, resFind, alertBtnInfo },
+  mixins: [resBtn, resSearFind, resEditEditor],
+  components: { spinComp, resFind, alertBtnInfo, alertEditor },
   data () {
     return {
       spinShow: false,
@@ -94,9 +115,7 @@ export default {
             key: 'id',
             align: 'center',
             minWidth: 120,
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -119,76 +138,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.status === 3) {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('TEMPAUDIT_PASS')
-            },
-            on: {
-              click: () => {
-                this.resSaveTemp(params.index)
-              }
-            }
-          }, '通过'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('TEMPAUDIT_NOPASS')
-            },
-            on: {
-              click: () => {
-                this.resCancTemp(params.index)
-              }
-            }
-          }, '退回'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('TEMPAUDIT_VIEW')
-            },
-            on: {
-              click: () => {
-                this.seePdf(_obj.tempPath)
-              }
-            }
-          }, '查看')
-        ])
-      } else {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('TEMPAUDIT_VIEW')
-            },
-            on: {
-              click: () => {
-                this.seePdf(_obj.tempPath)
-              }
-            }
-          }, '查看')
-        ])
-      }
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/batchCaseDocument/findTemplate', {
@@ -286,8 +235,6 @@ export default {
           this.alertShow.state = null
           this.alertShow.id = null
           this.alertShow.tempReason = ''
-          break
-        default:
           break
       }
     }

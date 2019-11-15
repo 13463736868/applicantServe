@@ -10,7 +10,7 @@
           <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">{{usersInfo.roleCode === 'ROLE_FGZR' ? '批量签发' : '批量通过'}}</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量退回</Button>
@@ -22,10 +22,11 @@
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resSeeDocu(row.filePath)">预览文书</Button>
+                <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDITHISTORY')}" @click="resAction('seeLog', row)">查看修改记录</Button>
                 <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
-                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">{{usersInfo.roleCode === 'ROLE_FGZR' ? '签发' : '通过'}}</Button>
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">退回</Button>
-                  <Button v-if="row.type === 1 || row.type === 2" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
                 </div>
               </template>
             </Table>
@@ -41,33 +42,36 @@
       </div>
     </div>
     <alert-btn-info :alertShow="alertShow.docu" @alertConfirm="docuSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
-      <p v-if="alertShow.state === 1">确定要通过吗？</p>
+      <p v-if="alertShow.state === 1">{{usersInfo.roleCode === 'ROLE_FGZR' ? '确定要签发吗？' : '确定要通过吗？'}}</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
-      <p v-if="alertShow.state === 1">确定要通过吗？</p>
+      <p v-if="alertShow.state === 1">{{usersInfo.roleCode === 'ROLE_FGZR' ? '确定要签发吗？' : '确定要通过吗？'}}</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要退回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入退回原因..." />
     </alert-btn-info>
     <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('editDocu')" @alertCancel="alertCanc('editDocu')"></alert-editor>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
+    <res-see-log v-if="alertShow.seeLog" :documentId="alertShow.documentId" @alertConfirm="alertSave('seeLog')" @alertCancel="alertCanc('seeLog')"></res-see-log>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 import {resBtn, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
+import resSeeLog from '@/page/arbitratComm/docuAudit/children/resSeeLog'
 
 export default {
   name: 'docu_audit',
   mixins: [resBtn, resSearFind],
-  components: { spinComp, resFind, alertBtnInfo, alertEditor },
+  components: { spinComp, resFind, alertBtnInfo, alertEditor, resSeeLog },
   data () {
     return {
       spinShow: false,
@@ -197,12 +201,19 @@ export default {
         find: false,
         editor: false,
         caseId: null,
-        docuType: null
+        docuType: null,
+        seeLog: false,
+        documentId: null
       }
     }
   },
   created () {
     this.resCaseList()
+  },
+  computed: {
+    ...mapGetters([
+      'usersInfo'
+    ])
   },
   methods: {
     dictionary () {
@@ -465,53 +476,58 @@ export default {
         })
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resEditDocu (index) {
       let info = this.caseList.bodyList[index]
       this.alertShow.caseId = info.id
       this.alertShow.docuType = info.type
       this.alertShow.editor = true
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'seeLog':
+          this.alertShow.documentId = data.caseDocuemntId
+          this.alertShow.seeLog = true
+          break
+      }
+    },
     alertSave (type) {
-      if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
-        this.pageObj.pageNum = 1
-        this.resCaseList()
+      switch (type) {
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'seeLog':
+          this.alertShow.seeLog = false
+          this.alertShow.documentId = null
+          break
       }
     },
     alertCanc (type) {
-      if (type === 'docu') {
-        this.alertShow.docu = false
-        this.alertShow.id = null
-        this.alertShow.state = null
-        this.alertShow.caseDocuId = null
-        this.alertShow.rejeReason = ''
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
-      } else if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
+      switch (type) {
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          break
+        case 'seeLog':
+          this.alertShow.seeLog = false
+          this.alertShow.documentId = null
+          break
+        case 'docu':
+          this.alertShow.docu = false
+          this.alertShow.id = null
+          this.alertShow.state = null
+          this.alertShow.caseDocuId = null
+          this.alertShow.rejeReason = ''
+          this.alertShow.batch = false
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
       }
     }
   }

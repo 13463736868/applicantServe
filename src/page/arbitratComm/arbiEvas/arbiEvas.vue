@@ -7,7 +7,7 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
                <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resNewSaveEvas(params.index)">同意</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resNewSaveEvas(index)">同意</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resAction('resCancEvas', row)">退回</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '2'" @click="resAction('resCancEvas', row)">重新生成文书</Button>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '3'">文书审核中</span>
@@ -41,17 +41,17 @@
         </Row>
         <Row v-if="alertShow.infoUser !== null">
           <Col span="20" offset="1" v-if="alertShow.infoUser[0] !== '-1'">
-            <span><b>主 裁： </b></span>
+            <span><b>首席仲裁员： </b></span>
             <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>
         <Row v-if="seleShow">
           <Col span="20" offset="1" v-if="alertShow.infoUser[1] !== '-1'">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[1] !== ''"><span class="ml5" v-text="seleArrName[1]"></span><Icon @click="resSeleDel(1)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
           <Col span="20" offset="1" v-if="alertShow.infoUser[2] !== '-1'">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[2] !== ''"><span class="ml5" v-text="seleArrName[2]"></span><Icon @click="resSeleDel(2)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>

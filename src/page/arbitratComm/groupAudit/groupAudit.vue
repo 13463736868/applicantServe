@@ -25,7 +25,7 @@
                 <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.logicState === '7' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resPass(row)">通过</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAssignRest(row)">重新指定仲裁员</Button>
               </template>
@@ -53,17 +53,17 @@
         </Row>
         <Row>
           <Col span="20" offset="1">
-            <span><b>主 裁： </b></span>
+            <span><b>首席仲裁员： </b></span>
             <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>
         <Row v-if="seleShow">
           <Col span="20" offset="1">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[1] !== ''"><span class="ml5" v-text="seleArrName[1]"></span><Icon @click="resSeleDel(1)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
           <Col span="20" offset="1">
-            <span><b>边 裁：</b></span>
+            <span><b>其他仲裁员：</b></span>
             <span v-if="seleArrName[2] !== ''"><span class="ml5" v-text="seleArrName[2]"></span><Icon @click="resSeleDel(2)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>
@@ -378,6 +378,11 @@ export default {
       this.resAssign(data)
     },
     resAssign (data) {
+      if (data.logicState === '20') {
+        this.alertShow.assignRest = true
+      } else {
+        this.alertShow.assignRest = false
+      }
       this.selePageObj.pageNum = 1
       this.alertShow.agre = true
       if (this.alertShow.idsType === '') {

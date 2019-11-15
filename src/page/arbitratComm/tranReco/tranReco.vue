@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="4">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
         <Col span="3" offset="1">
           <Select v-model="caseStatus" @on-change="resSearch">

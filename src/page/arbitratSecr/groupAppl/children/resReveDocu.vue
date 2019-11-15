@@ -1,24 +1,12 @@
 <template>
-  <div class="resEndDocu">
+  <div class="resReveDocu">
     <create-docu :alertShow="alertShow" @alertConfirm="alertSave('docuSave')" @alertSee="alertSave('seeSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>文书类型：</b></p>
-        </Col>
-        <Col span="16" class="lh32">
-          <RadioGroup v-model="resData.docuType">
-            <Radio :label="6" disabled>撤案决定书(申请人庭审未出庭)</Radio>
-          </RadioGroup>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案模版：</b></p>
+          <p><span class="_span">*</span><b>合同名称：</b></p>
         </Col>
         <Col span="16">
-          <Select v-model="resData.endNewTempCode">
-            <Option v-if="item.tempDocumentType === resData.docuType" v-for="item in resData.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
-          </Select>
+          <Input v-model="resData.contractName"></Input>
         </Col>
       </Row>
     </create-docu>
@@ -30,7 +18,7 @@ import { resMess } from '@/components/common/mixin.js'
 import createDocu from '@/components/common/createDocu'
 
 export default {
-  name: 'resEndDocu',
+  name: 'resReveDocu',
   mixins: [resMess],
   props: ['resCaseId'],
   components: { createDocu },
@@ -38,44 +26,32 @@ export default {
     return {
       alertShow: true,
       resData: {
-        docuType: 6,
-        endNewTempList: [],
-        endNewTempCode: ''
+        docuType: 4,
+        contractName: ''
       }
     }
   },
-  created () {
-    this.resList()
-  },
   methods: {
-    resList () {
-      axios.post('/caseType/findAllTemplate').then(res => {
-        this.resData.endNewTempList = res.data.data
-      }).catch(e => {
-        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-      })
-    },
     alertSave (type) {
       let _url = ''
       if (type === 'docuSave') {
-        _url = '/batchCaseDocument/decisionDocument'
+        _url = '/case/addDocumentFile'
       } else if (type === 'seeSave') {
-        _url = '/batchCaseDocument/findPreviewCaseDocument'
+        _url = '/case/previewDocumentFile'
       }
-      if (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined) {
-        this.resMessage('warning', '请选择结案模版')
+      if (this.resData.contractName === '') {
+        this.resMessage('error', '请填写合同名称')
       } else {
-        let _o = {}
-        _o[this.resCaseId] = this.resData.endNewTempCode
         axios.post(_url, {
+          caseId: this.resCaseId,
           documentType: this.resData.docuType,
-          caseDocumentDataJson: JSON.stringify([_o])
+          jsonData: JSON.stringify({contractName: this.resData.contractName})
         }).then(res => {
           if (type === 'docuSave') {
             this.resMessage('success', '操作成功')
             this.$emit('alertConfirm')
           } else if (type === 'seeSave') {
-            window.open(res.data.data, '_blank')
+            window.open(res.data.data.filepath, '_blank')
           }
         }).catch(e => {
           this.resMessage('error', '错误信息:' + e + ' 稍后再试')

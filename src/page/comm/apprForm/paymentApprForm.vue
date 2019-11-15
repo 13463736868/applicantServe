@@ -410,11 +410,18 @@ export default {
             formType: 'remuneration',
             state: type
           }).then(res => {
-            this.$emit('alertConfirm')
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
+            if (res.data.data === 'fail') {
+              this.$Message.warning({
+                content: '本案有仲裁费退还情况，请先予办理。',
+                duration: 5
+              })
+            } else {
+              this.$emit('alertConfirm')
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2
+              })
+            }
             this.switchObj = false
           }).catch(e => {
             this.$Message.error({

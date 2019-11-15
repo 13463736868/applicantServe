@@ -2,29 +2,32 @@
   <div class="groupAppl">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row class="pb20 tc">
-        <Col span="10">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
-        </Col>
-        <Col span="3">
+      <div class="mb20 clearfix">
+        <div class="vs3 fr">
           <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
-        </Col>
-        <Col span="3">
+        </div>
+        <div class="vs3 fr">
           <Button type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量书面审理</Button>
-        </Col>
-      </Row>
+        </div>
+        <div class="vs2 fr">
+          <Button type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
+        </div>
+        <div class="vs2 fr">
+          <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
+        </div>
+        <div class="vs2 fr">
+          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
+        </div>
+        <div class="vs2 fr">
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
+        </div>
+        <div class="vs2 fl">
+          <label class="lh32 f16 fc6 fr mr15">搜索</label>
+        </div>
+        <div class="vs8 fl">
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
+        </div>
+      </div>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
@@ -35,10 +38,10 @@
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resAction('succForm', row)">组庭审批表</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resPassReve(index)">同意撤回</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4' || row.logicState === '20'" @click="resAction('succForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resAction('resPassReve', row)">同意撤回</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resPassReve(index)">重新生成撤回书</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATEDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '5' || row.logicState === '6' || row.logicState === '12'"  @click="resBeginTime('edit', index)">修改开庭时间</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
@@ -87,16 +90,6 @@
         </Col>
       </Row>
     </alert-btn-info>
-    <create-docu :alertShow="alertObj.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>合同名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="alertObj.contractName"></Input>
-        </Col>
-      </Row>
-    </create-docu>
     <alert-btn-info :alertShow="alertObj.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="撤案退回原因">
       <p class="t2" v-text="alertObj.reasText"></p>
     </alert-btn-info>
@@ -137,9 +130,10 @@
     <alert-btn-info :isCancBtn="true" :isSaveBtn="true" :alertShow="alertShow.batchUp" alertTitle="操作">
       <upload-book childName="批量导入修改" :fileType="['xlsx']" :uploadUrl="resUploadUrl" @saveClick="batchUpSave" @cancClick="alertCanc('batchUp')"></upload-book>
     </alert-btn-info>
+    <res-reve-docu v-if="alertObj.reve" :resCaseId="alertObj.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
     <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
-    <res-pro-posal v-if="alertObj.proPosal" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
+    <res-pro-posal v-if="alertObj.proPosal" :resArbiNum="alertObj.arbiNum" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('proPosal')" @alertCancel="alertCanc('proPosal')"></res-pro-posal>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
@@ -152,6 +146,7 @@ import resFind from '@/page/comm/resFind/resFind'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadBook from '@/components/common/uploadBook'
+import resReveDocu from '@/page/arbitratSecr/groupAppl/children/resReveDocu'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import resProPosal from '@/page/arbitratSecr/groupAppl/children/resProPosal'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
@@ -161,11 +156,12 @@ import regi from '@/config/regiType.js'
 export default {
   name: 'group_appl',
   mixins: [resBtn, resSearFind],
-  components: { spinComp, createDocu, resFind, alertBtnInfo, uploadBook, editDataModal, resProPosal, groupApprForm },
+  components: { spinComp, createDocu, resFind, alertBtnInfo, uploadBook, resReveDocu, editDataModal, resProPosal, groupApprForm },
   data () {
     return {
       spinShow: false,
       search: {
+        text: '',
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -297,14 +293,13 @@ export default {
         time: '',
         type: null,
         userId: null,
-        docuType: null,
         reve: false,
-        contractName: '',
         reasText: '',
         reas: false,
         send: false,
         sendId: null,
         proPosal: false,
+        arbiNum: null,
         logicState: null
       },
       fileList: {
@@ -402,6 +397,7 @@ export default {
       axios.post('/approve/findGroupApproveList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
+        keyword: this.search.text,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
         groupApproveType: 'arbitrationSecretary'
@@ -602,64 +598,6 @@ export default {
           duration: 5
         })
       })
-    },
-    resPassReve (index) {
-      let res = this.caseList.bodyList[index]
-      this.alertObj.userId = res.id
-      this.alertObj.docuType = 4
-      this.alertObj.reve = true
-    },
-    docuSave (type) {
-      if (type === 'reve') {
-        if (this.alertObj.contractName === '') {
-          this.$Message.warning({
-            content: '请填写合同名称',
-            duration: 5
-          })
-        } else {
-          this.alertObj.reve = false
-          axios.post('/case/addDocumentFile', {
-            caseId: this.alertObj.userId,
-            documentType: this.alertObj.docuType,
-            jsonData: JSON.stringify({contractName: this.alertObj.contractName})
-          }).then(res => {
-            this.alertCanc(type)
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
-            this.resCaseList()
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      }
-    },
-    seeDocu (type) {
-      if (type === 'reve') {
-        if (this.alertObj.contractName === '') {
-          this.$Message.warning({
-            content: '请填写合同名称',
-            duration: 5
-          })
-        } else {
-          axios.post('/case/previewDocumentFile', {
-            caseId: this.alertObj.userId,
-            documentType: this.alertObj.docuType,
-            jsonData: JSON.stringify({contractName: this.alertObj.contractName})
-          }).then(res => {
-            window.open(res.data.data.filepath, '_blank')
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      }
     },
     resSeeReas (index) {
       this.alertObj.reasText = this.caseList.bodyList[index].caseDocumentReason === null ? '' : this.caseList.bodyList[index].caseDocumentReason
@@ -1007,7 +945,12 @@ export default {
         case 'proPosal':
           this.alertObj.caseId = data.id
           this.alertObj.logicState = data.logicState
+          this.alertObj.arbiNum = data.arbitratorIdNum
           this.alertObj.proPosal = true
+          break
+        case 'resPassReve':
+          this.alertObj.userId = data.id
+          this.alertObj.reve = true
           break
       }
     },
@@ -1050,7 +993,13 @@ export default {
           this.alertObj.proPosal = false
           this.alertObj.logicState = null
           this.alertObj.caseId = null
+          this.alertObj.arbiNum = null
           this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'reve':
+          this.alertObj.reve = false
+          this.alertObj.userId = null
           this.resCaseList()
           break
       }
@@ -1073,10 +1022,8 @@ export default {
         this.alertObj.time = ''
         this.alertObj.type = null
       } else if (type === 'reve') {
-        this.alertObj.contractName = ''
-        this.alertObj.userId = null
-        this.alertObj.docuType = null
-        this.alertObj.reve = false
+        this.alertShow.reve = false
+        this.alertShow.userId = null
       } else if (type === 'reas') {
         this.alertObj.reasText = ''
         this.alertObj.reas = false
@@ -1111,6 +1058,7 @@ export default {
         this.alertObj.proPosal = false
         this.alertObj.logicState = null
         this.alertObj.caseId = null
+        this.alertObj.arbiNum = null
       }
     },
     seeDoc (path) {
@@ -1137,7 +1085,6 @@ export default {
   padding-top: 40px;
   ._search {
     max-width: 450px;
-    margin-bottom: 20px;
   }
   ._caseList {
     margin-bottom: 20px;

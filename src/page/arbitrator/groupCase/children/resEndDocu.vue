@@ -10,7 +10,7 @@
             <Radio :label="1">裁决书</Radio>
             <Radio :label="2">调解书</Radio>
             <Radio :label="13">和解裁决书</Radio>
-            <Radio :label="14">解裁决书</Radio>
+            <Radio :label="14">调解裁决书</Radio>
           </RadioGroup>
         </Col>
       </Row>

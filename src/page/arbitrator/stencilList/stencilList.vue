@@ -148,8 +148,8 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        disType: false,
         find: false,
+        disType: false,
         editor: false,
         editorDest: false,
         editorName: null,
