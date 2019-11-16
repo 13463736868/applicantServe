@@ -16,7 +16,7 @@
       </Row>
       <Row class="_labelFor">
         <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案模版：</b></p>
+          <p><span class="_span">*</span><b>选择模版：</b></p>
         </Col>
         <Col span="16">
           <Select v-model="resData.endNewTempCode">
@@ -70,7 +70,7 @@ export default {
         _url = '/batchCaseDocument/findPreviewCaseDocument'
       }
       if (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined) {
-        this.resMessage('warning', '请选择结案模版')
+        this.resMessage('warning', '请选择模版')
       } else {
         let _o = {}
         _o[this.resCaseId] = this.resData.endNewTempCode

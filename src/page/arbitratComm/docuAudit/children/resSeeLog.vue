@@ -1,12 +1,12 @@
 <template>
   <div class="resFind">
-    <alert-btn-info :alertShow="alertShow" :resWidth="600" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
+    <alert-btn-info :alertShow="alertShow" :resWidth="700" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <Row>
         <Col span="24">
           <Table stripe align="center" :loading="seleList.loading" :columns="seleList.header" :data="seleList.bodyList">
             <template slot-scope="{ row, index }" slot="action">
-              <Button class="mr5" type="primary" size="small" @click="resAction('editAfter', row)">查看修改前</Button>
-              <Button class="mr5" type="primary" size="small" @click="resAction('editBefore', row)">查看修改后</Button>
+              <Button class="mr5" type="primary" size="small" @click="resAction('editBefore', row)">查看修改前</Button>
+              <Button class="mr5" type="primary" size="small" @click="resAction('editAfter', row)">查看修改后</Button>
             </template>
           </Table>
         </Col>
@@ -42,6 +42,11 @@ export default {
           {
             title: '角色名称',
             key: 'roleName',
+            align: 'center'
+          },
+          {
+            title: '修改时间',
+            key: 'createTime',
             align: 'center'
           },
           {
