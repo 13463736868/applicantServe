@@ -159,7 +159,7 @@
       <div slot="footer">
         <Button size="large" @click="alertCancel">返回</Button>
         <Button type="primary" size="large" @click="alertConfirm(3)">保存</Button>
-        <Button type="primary" size="large" @click="alertConfirm(2)">退回</Button>
+        <Button v-if="usersInfo.roleCode === 'ROLE_BAMS'" type="primary" size="large" @click="alertConfirm(2)">退回</Button>
         <Button type="primary" size="large" @click="alertConfirm(1)">通过</Button>
       </div>
     </Modal>
@@ -167,6 +167,7 @@
 </template>
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 
 export default {
   props: ['caseId'],
@@ -182,6 +183,11 @@ export default {
     if (this.caseId !== null) {
       this.resFormData()
     }
+  },
+  computed: {
+    ...mapGetters([
+      'usersInfo'
+    ])
   },
   methods: {
     resFormData () {
