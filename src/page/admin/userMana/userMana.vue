@@ -162,7 +162,7 @@ export default {
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.role.name)
+              }, params.row.role === null ? '' : params.row.role.name)
             }
           },
           {
