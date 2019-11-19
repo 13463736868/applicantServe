@@ -25,7 +25,7 @@
                 <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.logicState === '7' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.logicState === '9' || row.logicState === '7' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resPass(row)">通过</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAssignRest(row)">重新指定仲裁员</Button>
               </template>

@@ -32,23 +32,15 @@ export default {
       } else {
         return ''
       }
-    },
-    resSaveData () {
-      let _data = {
-        caseId: this.resCaseId,
-        arbitratorIds: this.resArbiId
-      }
-      if (this.resLogicState === '19') {
-        return _data
-      } else if (this.resLogicState === '20') {
-        _data.tribunalRequestId = this.resTribId
-        return _data
-      }
     }
   },
   methods: {
     alertSave () {
-      axios.post(this.resSaveUrl, this.resSaveData).then(res => {
+      axios.post(this.resSaveUrl, {
+        caseId: this.resCaseId,
+        arbitratorIds: this.resArbiId,
+        tribunalRequestId: this.resTribId
+      }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')
       }).catch(e => {

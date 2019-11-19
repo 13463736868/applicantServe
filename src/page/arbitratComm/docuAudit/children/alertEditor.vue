@@ -70,10 +70,11 @@ export default {
     alertConfirm () {
       this.editor.execCommand('selectall')
       this.editor.execCommand('fontfamily', 'SimSun')
+      let content = this.editor.getContent()
       axios.post('/batchCaseDocument/editCaseDocumentContent', {
         caseId: this.caseId,
         documentType: this.docuType,
-        htmlContent: this.editor.getContent()
+        htmlContent: content
       }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')
