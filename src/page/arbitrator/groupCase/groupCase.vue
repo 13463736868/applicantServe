@@ -16,7 +16,7 @@
           <Button type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
           <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量结案</Button>
@@ -142,41 +142,12 @@
     <alert-btn-info :alertShow="alertShow.batch"  @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
       <p class="t2">确定要批量结案吗？</p>
     </alert-btn-info>
+    <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
+      <p class="t2">确定要确认此条数据吗？</p>
+    </alert-btn-info>
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案方式：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.batchDocuType">
-            <Option v-if="item.item !== '仲裁申请书'" v-for="item in search.batchDocuTypeList" :value="item.itemValue" :key="item.itemValue">{{ item.item }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batchEdit" alertSaveText="下载" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')" alertTitle="操作">
       <Row>
         <Col span="6" offset="1">
@@ -189,10 +160,8 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSave('find', ...arguments)" @alertCancel="alertCanc('find')"></res-find>
     <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
-    <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
-      <p class="t2">确定要确认此条数据吗？</p>
-    </alert-btn-info>
     <upload-ques-alert v-if="alertObj.uploadQues" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('uploadQues')" @alertCancel="alertCanc('uploadQues')"></upload-ques-alert>
   </div>
 </template>
@@ -205,6 +174,7 @@ import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
+import resFind from '@/page/arbitrator/groupCase/children/resFind'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -212,18 +182,14 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert },
+  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resFind },
   data () {
     return {
       spinShow: false,
       search: {
         text: '',
         requestName: '',
-        caseType: '',
-        caseTypeList: {},
-        requestNameList: [],
-        batchDocuType: null,
-        batchDocuTypeList: []
+        caseType: ''
       },
       caseList: {
         loading: false,
@@ -376,30 +342,6 @@ export default {
   methods: {
     resSetRegExp (val, type) {
       return setRegExp(val, type)
-    },
-    dictionary () {
-      axios.post('/dictionary/findDictionaryList', {
-        type: 'batchDocumentType'
-      }).then(res => {
-        this.search.batchDocuTypeList = res.data.data
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
     },
     reasonBtn (h, params) {
       let _obj = params.row
@@ -1255,17 +1197,6 @@ export default {
         })
       })
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resBatchEdit () {
       axios.get('/case/findAllBatchNo').then(res => {
         let _res = res.data.data
@@ -1300,9 +1231,12 @@ export default {
           this.alertObj.caseId = data.id
           this.alertObj.uploadQues = true
           break
+        case 'resFind':
+          this.alertShow.find = true
+          break
       }
     },
-    alertSave (type) {
+    alertSave (type, data) {
       switch (type) {
         case 'batchEdit':
           if (this.alertShow.batchNo === null) {
@@ -1349,6 +1283,15 @@ export default {
               duration: 5
             })
           })
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.alertCanc('clearIds')
+          this.search.requestName = data.requestName
+          this.search.caseType = data.caseType
+          this.search.batchDocuType = data.batchDocuType
+          this.pageObj.pageNum = 1
+          this.resCaseList()
           break
         case 'uploadQues':
           this.alertObj.uploadQues = false
@@ -1420,8 +1363,6 @@ export default {
           this.alertShow.find = false
           this.search.requestName = ''
           this.search.caseType = ''
-          // this.search.caseTypeList = {}
-          // this.search.requestNameList = []
           break
         case 'clearIds':
           this.alertShow.idsList = []
