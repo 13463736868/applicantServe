@@ -45,7 +45,7 @@ import startForm from '@/page/comm/apprForm/startForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
-  name: 'remune_audit',
+  name: 'end_case_audit',
   mixins: [resBtn],
   components: { spinComp, endCaseForm, startForm },
   data () {

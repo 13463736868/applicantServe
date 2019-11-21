@@ -36,7 +36,7 @@ import axios from 'axios'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
-  name: 'model_list',
+  name: 'add_model_list',
   components: { alertBtnInfo },
   data () {
     return {

@@ -1,5 +1,5 @@
 <template>
-  <div class="resEndDocu">
+  <div class="alertWithdrawInfo">
     <create-docu :alertShow="alertShow" :isSeeBtn="true" @alertConfirm="alertSave('docuSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -55,14 +55,13 @@ import axios from 'axios'
 import { resMess } from '@/components/common/mixin.js'
 import autoUploadBook from '@/components/common/autoUploadBook'
 import createDocu from '@/components/common/createDocu'
-import autoUploadBook from '@/components/common/autoUploadBook'
 import regi from '@/config/regiType.js'
 
 export default {
-  name: 'resEndDocu',
+  name: 'alert_withdraw_info',
   mixins: [resMess],
   props: ['resCaseId', 'resDocuType'],
-  components: { createDocu },
+  components: { createDocu, autoUploadBook },
   data () {
     return {
       alertShow: true,

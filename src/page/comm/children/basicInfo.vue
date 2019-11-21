@@ -110,7 +110,7 @@
 import axios from 'axios'
 
 export default {
-  name: 'basicInfo',
+  name: 'basic_info',
   props: ['caseId', 'caseState'],
   data () {
     return {

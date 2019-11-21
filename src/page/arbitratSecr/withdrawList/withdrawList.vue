@@ -54,7 +54,7 @@ import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
 
 export default {
-  name: 'withdraw-list',
+  name: 'withdraw_list',
   mixins: [resBtn],
   components: { spinComp, alertBtnInfo, alertWithdrawInfo },
   data () {
