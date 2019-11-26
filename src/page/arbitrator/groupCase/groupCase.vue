@@ -86,7 +86,6 @@
 import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
-import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
@@ -103,7 +102,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, createDocu, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu },
+  components: { spinComp, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu },
   data () {
     return {
       spinShow: false,
