@@ -520,7 +520,6 @@ export default {
         case 'succForm':
           this.formObj.filing = false
           this.formObj.caseId = null
-          this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }

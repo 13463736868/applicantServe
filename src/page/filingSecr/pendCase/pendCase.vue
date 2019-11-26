@@ -444,7 +444,6 @@ export default {
         case 'pendForm':
           this.formObj.filing = false
           this.formObj.caseId = null
-          this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'seeFile':

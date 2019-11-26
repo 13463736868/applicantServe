@@ -209,7 +209,7 @@ export default {
         case 'payForm':
           this.formObj.filing = false
           this.formObj.caseId = null
-          this.resSearch()
+          this.resCaseList()
           break
         case 'start':
           this.formObj.start = false
