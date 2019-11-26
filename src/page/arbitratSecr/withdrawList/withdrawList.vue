@@ -18,8 +18,8 @@
                 <div v-if="!resSetRegExp(row.buttonFlag, 'groupCase')">
                   <Button :style="{display: resBtnDis('WITHDRAW_AGREE')}" class="mr5" type="primary" size="small" v-if="row.buttonFlag === '1'" @click="resAction('withdrawForm', row)">同意撤案</Button>
                   <Button :style="{display: resBtnDis('WITHDRAW_AGREE')}" class="mr5" type="primary" size="small" v-if="row.buttonFlag === '2'" @click="resAction('withdrawForm', row)">重新生成决定书</Button>
-                  <Button :style="{display: resBtnDis('WITHDRAW_AGREE')}" class="mr5" type="primary" size="small" v-if="row.buttonFlag === '3'" @click="resAction('withdrawForm', row)">撤案决定书</Button>
-                  <Button :style="{display: resBtnDis('WITHDRAW_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看撤案申请书</Button>
+                  <Button :style="{display: resBtnDis('WITHDRAW_AGREE')}" class="mr5" type="primary" size="small" v-if="row.buttonFlag === '3'" @click="resAction('seeDocuBook', row)">查看撤案决定书</Button>
+                  <Button :style="{display: resBtnDis('WITHDRAW_FILEDETAIL')}" v-if="row.applicationFilePath !== '' && row.applicationFilePath !== null" class="mr5" type="primary" size="small" @click="resAction('seeApplBook', row)">查看撤案申请书</Button>
                 </div>
                 <div v-else="">
                   <span style="color: #2d8cf0" type="text" size="small">{{row.buttonFlag}}</span>
@@ -217,17 +217,11 @@ export default {
             return false
           }
           break
-        case 'seeForm':
-          axios.post('/case/findWithdrawDocument', {
-            caseId: data.id
-          }).then(res => {
-            window.open(res.data.data, '_blank')
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
+        case 'seeApplBook':
+          window.open(data.applicationFilePath, '_blank')
+          break
+        case 'seeDocuBook':
+          window.open(data.documentFilePath, '_blank')
           break
       }
     },

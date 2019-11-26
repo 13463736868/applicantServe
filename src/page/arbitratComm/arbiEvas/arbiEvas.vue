@@ -5,7 +5,15 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resNewSaveEvas(index)">同意</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resAction('resCancEvas', row)">驳回</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '2'" @click="resAction('resCancEvas', row)">重新生成文书</Button>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '3'">文书审核中</span>
+                <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '4'">文书审核通过</span>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -175,9 +183,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -338,88 +344,6 @@ export default {
               }
             }
           })
-        ])
-      }
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.showButtonState === '1') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_PASS')
-            },
-            on: {
-              click: () => {
-                this.resNewSaveEvas(params.index)
-              }
-            }
-          }, '同意'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_NOPASS')
-            },
-            on: {
-              click: () => {
-                this.resCancEvas(params.index)
-              }
-            }
-          }, '驳回')
-        ])
-      } else if (_obj.showButtonState === '2') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ARBIEVAS_REGEN')
-            },
-            on: {
-              click: () => {
-                this.resCancEvas(params.index)
-              }
-            }
-          }, '重新生成文书')
-        ])
-      } else if (_obj.showButtonState === '3') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核中')
-        ])
-      } else if (_obj.showButtonState === '4') {
-        return h('div', [
-          h('span', {
-            props: {
-              type: 'text',
-              size: 'small'
-            },
-            style: {
-              color: '#2d8cf0'
-            }
-          }, '文书审核通过')
-        ])
-      } else if (_obj.showButtonState === '5') {
-        return h('div', [
         ])
       }
     },
