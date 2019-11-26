@@ -122,7 +122,7 @@ export default {
           },
           {
             title: '争议金额',
-            key: 'cost',
+            key: 'money',
             tooltip: 'true',
             align: 'center'
           },
@@ -134,7 +134,7 @@ export default {
           },
           {
             title: '仲裁费',
-            key: 'money',
+            key: 'cost',
             tooltip: 'true',
             align: 'center'
           },
