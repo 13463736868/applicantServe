@@ -103,7 +103,7 @@ export default {
           },
           {
             title: '标的',
-            key: 'cost',
+            key: 'money',
             tooltip: 'true',
             align: 'center'
           },
@@ -115,7 +115,7 @@ export default {
           },
           {
             title: '仲裁费',
-            key: 'money',
+            key: 'cost',
             tooltip: 'true',
             align: 'center'
           },
