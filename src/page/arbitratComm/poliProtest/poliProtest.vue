@@ -5,14 +5,7 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
-          </Col>
-        </Row>
-      </div>
-      <div class="_page clearfix">
-        <Row>
-          <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage">
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('POLIPROTEST_PASS')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === ''" @click="resAction('resSavePoli', row)">同意</Button>
                 <Button :style="{display: resBtnDis('POLIPROTEST_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.jrCaseDocumentState === ''" @click="resAction('resCancPoli', row)">退回</Button>
@@ -21,7 +14,14 @@
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.jrCaseDocumentState === '6'">文书审核中</span>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.jrCaseDocumentState === '10'">文书审核通过</span>
               </template>
-            </Page>
+            </Table>
+          </Col>
+        </Row>
+      </div>
+      <div class="_page clearfix">
+        <Row>
+          <Col span="12" offset="6" class="tc">
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
           </Col>
         </Row>
       </div>

@@ -125,7 +125,7 @@ export default {
             align: 'center'
           },
           {
-            title: '仲裁费',
+            title: '仲裁费(元)',
             key: 'cost',
             tooltip: 'true',
             align: 'center'

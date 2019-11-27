@@ -108,7 +108,7 @@ export default {
             align: 'center'
           },
           {
-            title: '标的',
+            title: '标的(元)',
             key: 'money',
             tooltip: 'true',
             align: 'center'
@@ -120,7 +120,7 @@ export default {
             align: 'center'
           },
           {
-            title: '仲裁费',
+            title: '仲裁费(元)',
             key: 'cost',
             tooltip: 'true',
             align: 'center'
