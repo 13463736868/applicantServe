@@ -44,7 +44,8 @@
         </Col>
       </Row>
       <Row>
-        <div class="_payList clearfix">
+        <div class="_payList clearfix pr">
+          <spin-comp :spinShow="spinShow"></spin-comp>
           <Row>
             <Col span="24" class="pl20 pr20">
               <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList"></Table>
@@ -54,13 +55,21 @@
             <button class="_exportBtn" @click="exportData">导出数据</button>
           </div> -->
         </div>
+        <div class="_page clearfix">
+          <Row>
+            <Col span="12" offset="6" class="tc">
+              <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            </Col>
       </Row>
     </div>
+      </Row>
+  </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import spinComp from '@/components/common/spin'
 import { mapGetters, mapActions } from 'vuex'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
@@ -68,8 +77,10 @@ import regi from '@/config/regiType.js'
 export default {
   name: 'payment_info',
   props: [],
+  components: { spinComp },
   data () {
     return {
+      spinShow: true,
       publicData: null,
       dataObj: null,
       payList: {
@@ -165,7 +176,12 @@ export default {
     ...mapActions([
       'setPaymentInfoId'
     ]),
+    reschangePage (page) {
+      this.pageObj.pageNum = page
+      this.resPayment()
+    },
     resPayment () {
+      this.spinShow = true
       axios.post('/payMentRequest/findPayOrderDetails', {
         paymentId: this.publicData.id,
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
@@ -174,7 +190,9 @@ export default {
         let _data = res.data.data
         this.payList.bodyList = _data.dataList
         this.pageObj.total = _data.totalCount
+        this.spinShow = false
       }).catch(e => {
+        this.spinShow = false
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
@@ -261,7 +279,7 @@ export default {
     }
   }
   ._payList {
-    padding-bottom: 60px;
+    padding-bottom: 20px;
     ._exportBtn {
       @include btn(#126eaf, 90px, 14px, 32px);
       @include boxShadow(0 1px 6px -1px #bbb);
@@ -270,6 +288,9 @@ export default {
       margin-right: 20px;
       margin-top: 20px;
     }
+  }
+  ._page {
+    padding-bottom: 60px;
   }
 }
 </style>
