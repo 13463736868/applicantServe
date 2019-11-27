@@ -25,7 +25,7 @@
                 <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
-                  <Button v-if="row.type === 1 || row.type === 2" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
+                  <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
                 </div>
               </template>
             </Table>

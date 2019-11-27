@@ -6,7 +6,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="3"><span class="mr10">{{resText}} :</span></Col>
+                <Col class="tr" span="3"><span class="mr10">{{resPartyType}} :</span></Col>
                 <Col span="20">
                   <span v-if="this.seeType === 3" v-text="infoData.finalStatement"></span>
                   <span v-if="this.seeType === 2" v-text="infoData.mediateCompromise"></span>
@@ -29,13 +29,13 @@ export default {
     return {}
   },
   computed: {
-    resText () {
-      if (this.seeType === 1) {
-        return '答辩描述'
-      } else if (this.seeType === 3) {
-        return '最后陈述'
-      } else if (this.seeType === 2) {
-        return '调解与和解'
+    resPartyType () {
+      if (this.infoData.partyType === 1) {
+        return '申请人'
+      } else if (this.infoData.partyType === 2) {
+        return '被申请人'
+      } else {
+        return ''
       }
     }
   }
