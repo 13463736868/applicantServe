@@ -27,7 +27,7 @@
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>选择模版：</b></p>
         </Col>
-        <Col span="16">
+        <Col span="12">
           <Select v-model="resData.endNewTempCode">
             <Option v-if="item.tempDocumentType === resData.docuType" v-for="item in resData.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
           </Select>

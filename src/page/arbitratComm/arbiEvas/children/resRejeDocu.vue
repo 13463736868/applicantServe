@@ -26,7 +26,7 @@
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>选择模版：</b></p>
         </Col>
-        <Col span="16">
+        <Col span="12">
           <Select v-model="resData.endNewTempCode">
             <Option v-if="item.tempDocumentType === resData.docuType" v-for="item in resData.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
           </Select>
@@ -46,6 +46,14 @@
           </p>
         </Col>
       </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">&nbsp;</span><b>审核原因：</b></p>
+        </Col>
+        <Col span="16" class="lh32">
+          <Input v-model.trim="resData.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入审核原因..." />
+        </Col>
+      </Row>
     </create-docu>
   </div>
 </template>
@@ -59,7 +67,7 @@ import regi from '@/config/regiType.js'
 export default {
   name: 'res_reje_docu',
   mixins: [resMess],
-  props: ['resCaseId', 'resRequId'],
+  props: ['resCaseId', 'resRequId', 'partyType'],
   components: { createDocu, autoUploadBook },
   data () {
     return {
@@ -69,7 +77,8 @@ export default {
         fileData: null,
         docuType: 7,
         endNewTempList: [],
-        endNewTempCode: ''
+        endNewTempCode: '',
+        rejeReason: ''
       }
     }
   },
@@ -104,6 +113,8 @@ export default {
         let _o = {}
         _o[this.resCaseId] = this.resData.source === 1 ? this.resData.endNewTempCode : this.resData.fileData.id + ''
         axios.post(_url, {
+          partyType: this.partyType,
+          businessContent: this.resData.rejeReason,
           businessId: this.resRequId,
           documentSource: this.resData.source,
           documentType: this.resData.docuType,

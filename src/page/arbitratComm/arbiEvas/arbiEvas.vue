@@ -31,7 +31,7 @@
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="仲裁员回避原因">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
-    <res-reje-docu v-if="alertShow.reje" :resCaseId="alertShow.id" :resRequId="alertShow.avoidRequestId" @alertConfirm="alertSave('reje')" @alertCancel="alertCanc('reje')"></res-reje-docu>
+    <res-reje-docu v-if="alertShow.reje" :resCaseId="alertShow.id" :resRequId="alertShow.avoidRequestId" :partyType="alertShow.partyType" @alertConfirm="alertSave('reje')" @alertCancel="alertCanc('reje')"></res-reje-docu>
   </div>
 </template>
 
@@ -133,8 +133,8 @@ export default {
       alertShow: {
         reje: false,
         id: null,
-        avoidState: null,
         avoidRequestId: null,
+        partyType: null,
         infoUser: null,
         infoMoney: null,
         agreNew: false,
@@ -226,6 +226,7 @@ export default {
         case 'resCancEvas':
           this.alertShow.id = data.id
           this.alertShow.avoidRequestId = data.avoidRequestId
+          this.alertShow.partyType = data.partyType
           this.alertShow.reje = true
           break
       }
@@ -236,6 +237,7 @@ export default {
           this.alertShow.reje = false
           this.alertShow.id = null
           this.alertShow.avoidRequestId = null
+          this.alertShow.partyType = null
           break
       }
     },
@@ -244,6 +246,7 @@ export default {
         this.alertShow.reje = false
         this.alertShow.id = null
         this.alertShow.avoidRequestId = null
+        this.alertShow.partyType = null
       } else if (type === 'agreNew') {
         this.alertShow.agreNew = false
       } else if (type === 'reas') {

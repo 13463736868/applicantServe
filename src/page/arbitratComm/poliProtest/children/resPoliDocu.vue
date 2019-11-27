@@ -1,5 +1,5 @@
 <template>
-  <div class="resAddeDocu">
+  <div class="resRejeDocu">
     <create-docu :alertShow="alertShow" :isSeeBtn="true" @alertConfirm="alertSave('docuSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -7,7 +7,8 @@
         </Col>
         <Col span="16" class="lh32">
           <RadioGroup v-model="resData.docuType">
-            <Radio :label="3" disabled>生成补正书</Radio>
+            <Radio :label="8" disabled>管辖权异议(通过)</Radio>
+            <Radio :label="9" disabled>管辖权异议(驳回)</Radio>
           </RadioGroup>
         </Col>
       </Row>
@@ -46,6 +47,14 @@
           </p>
         </Col>
       </Row>
+      <Row class="_labelFor">
+        <Col span="6" offset="1">
+          <p><span class="_span">&nbsp;</span><b>审核原因：</b></p>
+        </Col>
+        <Col span="16" class="lh32">
+          <Input v-model.trim="resData.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入审核原因..." />
+        </Col>
+      </Row>
     </create-docu>
   </div>
 </template>
@@ -57,9 +66,9 @@ import createDocu from '@/components/common/createDocu'
 import regi from '@/config/regiType.js'
 
 export default {
-  name: 'res_adde_docu',
+  name: 'res_reje_docu',
   mixins: [resMess],
-  props: ['resCaseId'],
+  props: ['resCaseId', 'resRequId', 'resDocuType'],
   components: { createDocu, autoUploadBook },
   data () {
     return {
@@ -67,13 +76,15 @@ export default {
       resData: {
         source: 1,
         fileData: null,
-        docuType: 3,
+        docuType: null,
         endNewTempList: [],
-        endNewTempCode: ''
+        endNewTempCode: '',
+        rejeReason: ''
       }
     }
   },
   created () {
+    this.resData.docuType = parseInt(this.resDocuType)
     this.resList()
   },
   computed: {
@@ -104,6 +115,8 @@ export default {
         let _o = {}
         _o[this.resCaseId] = this.resData.source === 1 ? this.resData.endNewTempCode : this.resData.fileData.id + ''
         axios.post(_url, {
+          businessContent: this.resData.rejeReason,
+          businessId: this.resRequId,
           documentSource: this.resData.source,
           documentType: this.resData.docuType,
           caseDocumentDataJson: JSON.stringify([_o])
