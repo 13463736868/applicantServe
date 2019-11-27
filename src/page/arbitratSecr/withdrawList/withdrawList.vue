@@ -234,7 +234,7 @@ export default {
               content: '操作成功',
               duration: 2
             })
-            this.resSearch()
+            this.resCaseList()
           }).catch(e => {
             this.$Message.error({
               content: '错误信息:' + e + ' 稍后再试',
@@ -246,7 +246,7 @@ export default {
           this.formObj.withdrawInfo = false
           this.formObj.withdrawType = null
           this.formObj.caseId = null
-          this.resSearch()
+          this.resCaseList()
           break
       }
     },

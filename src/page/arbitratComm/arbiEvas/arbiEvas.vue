@@ -238,6 +238,7 @@ export default {
           this.alertShow.id = null
           this.alertShow.avoidRequestId = null
           this.alertShow.partyType = null
+          this.resCaseList()
           break
       }
     },
