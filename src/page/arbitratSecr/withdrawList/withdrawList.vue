@@ -140,7 +140,7 @@ export default {
           },
           {
             title: '案件状态',
-            key: 'caseState',
+            key: 'caseStateDesc',
             tooltip: 'true',
             align: 'center'
           },
@@ -170,12 +170,10 @@ export default {
   created () {
     this.resCaseList()
   },
-  computed: {
+  methods: {
     resSetRegExp (val, type) {
       return setRegExp(val, type)
-    }
-  },
-  methods: {
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/closeCaseForm/withdrawList', {
@@ -209,7 +207,7 @@ export default {
           this.formObj.caseId = data.id
           if (data.withdrawType === '1') {
             this.formObj.withdraw = true
-          } else if (data.withdrawType === '5' || data.withdrawType === '4') {
+          } else if ([4, 5, '4', '5'].indexOf(data.withdrawType) !== -1) {
             this.formObj.withdrawType = data.withdrawType
             this.formObj.withdrawInfo = true
           } else {

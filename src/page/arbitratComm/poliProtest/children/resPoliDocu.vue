@@ -107,7 +107,7 @@ export default {
       } else if (type === 'seeSave') {
         _url = '/batchCaseDocument/findPreviewCaseDocument'
       }
-      if (type === 'docuSave' && this.resData.source === 1 && (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined)) {
+      if (this.resData.source === 1 && (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined)) {
         this.resMessage('warning', '请选择模版')
       } else if (this.resData.source === 2 && this.resData.fileData === null) {
         this.resMessage('warning', '请先上传文书')
