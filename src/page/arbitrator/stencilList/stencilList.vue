@@ -3,20 +3,17 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <Col span="19">
-          &nbsp;
-        </Col>
-        <Col span="2"
-             class="tc">
-        <Button type="primary"
+        <Col span="24">
+          <div class="tr pr20">
+            <Button type="primary"
+                class="ml20"
                 @click="resActionFind('resFind', null)"
                 :style="{display: resBtnDis('STENCILLIST_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2"
-             class="tc">
-        <Button type="primary"
+            <Button type="primary"
+                class="ml20"
                 @click="resAdd"
                 :style="{display: resBtnDis('STENCILLIST_NEWTEMPLATE')}">新建模版</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
