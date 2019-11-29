@@ -39,7 +39,7 @@
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="['1', '4', '20', '16'].indexOf(row.logicState) !== -1" @click="resAction('succForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="['1', '4', '20', '16', '19', '20'].indexOf(row.logicState) !== -1" @click="resAction('succForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resAction('resPassReve', row)">同意撤回</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
