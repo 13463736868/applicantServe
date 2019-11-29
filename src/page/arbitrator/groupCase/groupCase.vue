@@ -74,7 +74,7 @@
     <res-end-docu v-if="alertShow.end" :resCaseId="alertShow.userId" :resTempCode="alertShow.endNewTempCode" @alertConfirm="alertSave('endNew')" @alertCancel="alertCanc('endNew')"></res-end-docu>
     <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
     <res-canc-docu v-if="alertShow.canc" :resCaseId="alertShow.userId" @alertConfirm="alertSave('canc')" @alertCancel="alertCanc('canc')"></res-canc-docu>
-    <res-adde-docu v-if="alertShow.adde" :resCaseId="alertShow.userId" @alertConfirm="alertSave('adde')" @alertCancel="alertCanc('adde')"></res-adde-docu>
+    <res-adde-docu v-if="alertShow.addE" :resCaseId="alertShow.userId" @alertConfirm="alertSave('addE')" @alertCancel="alertCanc('addE')"></res-adde-docu>
     <res-find v-if="alertShow.find" @alertConfirm="alertSave('find', ...arguments)" @alertCancel="alertCanc('find')"></res-find>
     <res-batch-edit v-if="alertShow.batchEdit" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')"></res-batch-edit>
     <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>

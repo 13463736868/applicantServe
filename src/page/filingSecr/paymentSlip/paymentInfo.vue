@@ -46,9 +46,21 @@
       <Row>
         <div class="_payList clearfix pr">
           <spin-comp :spinShow="spinShow"></spin-comp>
+          <Row class="mb20">
+            <Col span="2">
+              <label class="lh32 f16 fc6 fr mr15">搜索</label>
+            </Col>
+            <Col span="6">
+              <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="票据单号"></Input>
+            </Col>
+          </Row>
           <Row>
             <Col span="24" class="pl20 pr20">
-              <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList"></Table>
+              <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList">
+                <template slot-scope="{ row, index }" slot="action">
+                  <Button class="mr5" type="primary" size="small" @click="resAction('resBillNumber', row)">录入票号</Button>
+                </template>
+              </Table>
             </Col>
           </Row>
           <!-- <div>
@@ -64,6 +76,7 @@
         </div>
       </Row>
     </div>
+    <res-bill-number v-if="alertObj.billNumber" :resPropsData="alertObj.billNumberData" @alertConfirm="alertSave('resBillNumber')" @alertCancel="alertCanc('resBillNumber')"></res-bill-number>
   </div>
 </template>
 
@@ -72,15 +85,19 @@ import axios from 'axios'
 import spinComp from '@/components/common/spin'
 import { mapGetters, mapActions } from 'vuex'
 import { caseInfo } from '@/config/common.js'
+import resBillNumber from '@/page/filingSecr/paymentSlip/children/resBillNumber'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'payment_info',
   props: [],
-  components: { spinComp },
+  components: { spinComp, resBillNumber },
   data () {
     return {
       spinShow: true,
+      search: {
+        text: ''
+      },
       publicData: null,
       dataObj: null,
       payList: {
@@ -145,6 +162,17 @@ export default {
                 }
               }, params.row.cost + ' 元')
             }
+          },
+          {
+            title: '票据号码',
+            key: 'billNumber',
+            align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'id',
+            align: 'center',
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -153,6 +181,10 @@ export default {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertObj: {
+        billNumber: false,
+        billNumberData: null
       }
     }
   },
@@ -176,6 +208,10 @@ export default {
     ...mapActions([
       'setPaymentInfoId'
     ]),
+    resSearch () {
+      this.pageObj.pageNum = 1
+      this.resPayment()
+    },
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resPayment()
@@ -185,7 +221,8 @@ export default {
       axios.post('/payMentRequest/findPayOrderDetails', {
         paymentId: this.publicData.id,
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
-        pageSize: this.pageObj.pageSize
+        pageSize: this.pageObj.pageSize,
+        keyword: this.search.text
       }).then(res => {
         let _data = res.data.data
         this.payList.bodyList = _data.dataList
@@ -222,6 +259,33 @@ export default {
       obj.caseId = this.payList.bodyList[index].id
       obj.state = this.payList.bodyList[index].state
       caseInfo(obj)
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'resBillNumber':
+          this.alertObj.billNumberData = {
+            caseId: data.id
+          }
+          this.alertObj.billNumber = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'resBillNumber':
+          this.alertObj.billNumber = false
+          this.alertObj.billNumberData = null
+          this.resPayment()
+          break
+      }
+    },
+    alertCanc (type) {
+      switch (type) {
+        case 'resBillNumber':
+          this.alertObj.billNumber = false
+          this.alertObj.billNumberData = null
+          break
+      }
     }
   }
 }

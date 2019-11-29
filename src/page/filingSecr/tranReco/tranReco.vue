@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限 / 票据号码"></Input>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -106,6 +106,11 @@ export default {
           {
             title: '仲裁费(元)',
             key: 'cost',
+            align: 'center'
+          },
+          {
+            title: '票据号码',
+            key: 'billNumber',
             align: 'center'
           },
           {

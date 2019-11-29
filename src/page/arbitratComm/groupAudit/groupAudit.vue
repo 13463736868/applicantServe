@@ -3,7 +3,7 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="19">
+        <Col span="16">
           &nbsp;
         </Col>
         <Col span="2">
@@ -11,6 +11,9 @@
         </Col>
         <Col span="3">
           <Button type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
+        </Col>
+        <Col span="3">
+          <Button type="primary" @click="resAction('batchReject', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHREJECT')}">批量退回</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -21,12 +24,13 @@
                 <div v-if="row.logicState === '19' || row.logicState === '20'">
                   <Button :style="{display: resBtnDis('GROUPAUDIT_APPARBITRATORS')}" type="primary" size="small" @click="resAction('groupPass', row)">同意</Button>
                   <Button :style="{display: resBtnDis('GROUPAUDIT_REVISE')}" type="primary" size="small" @click="resAssign(row)">修订</Button>
+                  <Button :style="{display: resBtnDis('GROUPAUDIT_REJECT')}" type="primary" size="small" @click="resAction('resReject', row)">退回</Button>
                 </div>
                 <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="row.logicState === '19' || row.logicState === '20' || row.logicState === '9' || row.logicState === '7' || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
-                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resPass(row)">通过</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="['19', '20', '21', '9', '7'].indexOf(row.logicState) !== -1 || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resAction('resPass', row)">通过</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAssignRest(row)">重新指定仲裁员</Button>
               </template>
             </Table>
@@ -79,11 +83,10 @@
         </Col>
       </Row>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
-      <p>确定要通过吗？</p>
-    </alert-btn-info>
+    <res-reject v-if="alertObj.reject" :resRejectData="alertObj.rejectData" @alertConfirm="alertSave('resReject')" @alertCancel="alertCanc('resReject')"></res-reject>
+    <res-pass v-if="alertObj.pass" :resPassData="alertObj.passData" @alertConfirm="alertSave('resPass')" @alertCancel="alertCanc('resPass')"></res-pass>
+    <res-group-pass v-if="alertObj.groupPass" :resGroupPassData="alertObj.groupPassData" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></res-group-pass>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
-    <group-pass-alert v-if="alertObj.groupPass" :resLogicState="alertObj.logicState" :resCaseId="alertObj.caseId" :resArbiId="alertObj.arbiId" :resTribId="alertObj.tribId" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
@@ -95,13 +98,15 @@ import spinComp from '@/components/common/spin'
 import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
-import groupPassAlert from '@/page/arbitratComm/groupAudit/children/groupPassAlert'
+import resGroupPass from '@/page/arbitratComm/groupAudit/children/resGroupPass'
+import resPass from '@/page/arbitratComm/groupAudit/children/resPass'
+import resReject from '@/page/arbitratComm/groupAudit/children/resReject'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
   mixins: [resBtn, resTimeOut, resSearFind],
-  components: { spinComp, resFind, alertBtnInfo, groupApprForm, groupPassAlert },
+  components: { spinComp, resFind, alertBtnInfo, groupApprForm, resGroupPass, resPass, resReject },
   data () {
     return {
       spinShow: false,
@@ -217,8 +222,6 @@ export default {
         tribId: null,
         caseId: null,
         infoMoney: null,
-        pass: false,
-        passId: null,
         assignRest: false,
         idsList: [],
         ids: [],
@@ -264,10 +267,11 @@ export default {
       },
       alertObj: {
         groupPass: false,
-        caseId: null,
-        logicState: null,
-        tribId: null,
-        arbiId: null
+        groupPassData: null,
+        pass: false,
+        passData: null,
+        reject: false,
+        rejectData: null
       }
     }
   },
@@ -529,32 +533,6 @@ export default {
         }
       }
     },
-    resPass (data) {
-      this.alertShow.pass = true
-      this.alertShow.tribId = data.tribunalRequestId
-      this.alertShow.caseId = data.id
-      this.alertShow.passId = data.approverId
-    },
-    passSave () {
-      this.alertShow.pass = false
-      axios.post('/approve/updateGroupApproveToArbitrator', {
-        caseId: this.alertShow.caseId,
-        tribunalRequestId: this.alertShow.tribId,
-        arbitratorIds: this.alertShow.passId
-      }).then(res => {
-        this.alertCanc('pass')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
-      }).catch(e => {
-        this.alertCanc('pass')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderCheckS (h, params) {
       let _obj = params.row
       if (_obj.logicState === '19' || _obj.logicState === '20') {
@@ -718,11 +696,40 @@ export default {
           this.formObj.filing = true
           break
         case 'groupPass':
-          this.alertObj.tribId = data.tribunalRequestId
-          this.alertObj.arbiId = data.recommArbitratorIds
-          this.alertObj.caseId = data.id
-          this.alertObj.logicState = data.logicState
+          this.alertObj.groupPassData = {
+            resCaseId: data.id,
+            resArbiId: data.recommArbitratorIds,
+            resTribId: data.tribunalRequestId,
+            logicState: data.logicState
+          }
           this.alertObj.groupPass = true
+          break
+        case 'resPass':
+          this.alertObj.passData = {
+            caseId: data.id,
+            tribunalRequestId: data.tribunalRequestId,
+            arbitratorIds: data.approverId
+          }
+          this.alertObj.pass = true
+          break
+        case 'resReject':
+          this.alertObj.rejectData = {
+            caseIds: [data.id]
+          }
+          this.alertObj.reject = true
+          break
+        case 'batchReject':
+          if (this.alertShow.ids.length === 0) {
+            this.$Message.error({
+              content: '请先选择一个案件',
+              duration: 5
+            })
+          } else {
+            this.alertObj.rejectData = {
+              caseIds: this.alertShow.ids
+            }
+            this.alertObj.reject = true
+          }
           break
       }
     },
@@ -735,44 +742,58 @@ export default {
           break
         case 'groupPass':
           this.alertObj.groupPass = false
-          this.alertObj.caseId = null
-          this.alertObj.logicState = null
-          this.alertObj.arbiId = null
-          this.alertObj.tribId = null
+          this.alertObj.groupPassData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resPass':
+          this.alertObj.pass = false
+          this.alertObj.passData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resReject':
+          this.alertObj.reject = false
+          this.alertObj.rejectData = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }
     },
     alertCanc (type) {
-      if (type === 'agre') {
-        this.alertShow.agre = false
-        this.alertShow.tribId = null
-        this.alertShow.caseId = null
-        this.alertShow.infoMoney = null
-        this.seleArr = []
-        this.seleArrName = []
-        this.searchText = ''
-        this.alertShow.assignRest = false
-        this.alertShow.idsType = ''
-      } else if (type === 'pass') {
-        this.alertShow.pass = false
-        this.alertShow.tribId = null
-        this.alertShow.caseId = null
-        this.alertShow.passId = null
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
-        this.alertShow.state = []
-      } else if (type === 'groupForm') {
-        this.formObj.filing = false
-        this.formObj.caseId = null
-      } else if (type === 'groupPass') {
-        this.alertObj.groupPass = false
-        this.alertObj.caseId = null
-        this.alertObj.logicState = null
-        this.alertObj.arbiId = null
-        this.alertObj.tribId = null
+      switch (type) {
+        case 'groupForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          break
+        case 'groupPass':
+          this.alertObj.groupPass = false
+          this.alertObj.groupPassData = null
+          break
+        case 'resPass':
+          this.alertObj.pass = false
+          this.alertObj.passData = null
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          this.alertShow.state = []
+          break
+        case 'agre':
+          this.alertShow.agre = false
+          this.alertShow.tribId = null
+          this.alertShow.caseId = null
+          this.alertShow.infoMoney = null
+          this.seleArr = []
+          this.seleArrName = []
+          this.searchText = ''
+          this.alertShow.assignRest = false
+          this.alertShow.idsType = ''
+          break
+        case 'resReject':
+          this.alertObj.reject = false
+          this.alertObj.rejectData = null
+          break
       }
     }
   }

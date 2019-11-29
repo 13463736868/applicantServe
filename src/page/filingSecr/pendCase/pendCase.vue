@@ -16,7 +16,7 @@
           <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('PENDCASE_QUERY')}">条件搜索</Button>
         </Col>
         <Col span="2">
-          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASE_BATCHFILING')}">批量立案</Button>
+          <Button type="primary" @click="resAction('resBatchFiling', null)" :style="{display: resBtnDis('PENDCASE_BATCHFILING')}">批量立案</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -54,18 +54,7 @@
       <p v-if="dataObj.type === '1'">要确认立案吗？</p>
       <p v-if="dataObj.type === '2'">要确定重新提交立案吗？</p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
-      <Row class="_labelFor">
-        <Col span="4" offset="2">
-          <div class="_label">纠纷类型：</div>
-        </Col>
-        <Col span="16">
-          <Select v-model="dataObj.confType">
-            <Option v-for="item in caseTypeList" :value="item.value" :key="item.value">{{item.label}}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
+    <res-batch-filing v-if="alertObj.batchFiling" :resPropsData="alertObj.batchFilingData" @alertConfirm="alertSave('resBatchFiling')" @alertCancel="alertCanc('resBatchFiling')"></res-batch-filing>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
@@ -84,12 +73,13 @@ import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resSeeFile from '@/page/filingSecr/pendCase/children/resSeeFile'
 import resUpdatePendcase from '@/page/filingSecr/pendCase/children/resUpdatePendcase'
 import resBackCase from '@/page/filingSecr/pendCase/children/resBackCase'
+import resBatchFiling from '@/page/filingSecr/pendCase/children/resBatchFiling'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case',
   mixins: [resBtn, resSearFind],
-  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resSeeFile, resUpdatePendcase, resBackCase },
+  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resSeeFile, resUpdatePendcase, resBackCase, resBatchFiling },
   data () {
     return {
       spinShow: false,
@@ -198,7 +188,6 @@ export default {
         conf: false,
         idsList: [],
         ids: [],
-        batch: false,
         find: false,
         caseCause: false,
         caseId: null,
@@ -211,14 +200,15 @@ export default {
         confType: null,
         type: null
       },
-      caseTypeList: [],
       formObj: {
         caseId: null,
         filing: false
       },
       alertObj: {
         seeFile: false,
-        caseId: null
+        caseId: null,
+        batchFiling: false,
+        batchFilingData: null
       }
     }
   },
@@ -332,65 +322,6 @@ export default {
         }
       }
     },
-    resBatch () {
-      if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
-      } else {
-        axios.post('/dictionary/findDictionaryList', {
-          type: 'caseType'
-        }).then(res => {
-          let _dataList = res.data.data
-          let _select = []
-          for (let k in _dataList) {
-            let _o = {}
-            _o.value = _dataList[k].itemValue
-            _o.label = _dataList[k].item
-            _select.push(_o)
-          }
-          this.caseTypeList = _select
-          this.alertShow.batch = true
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
-    },
-    batchSave () {
-      if (this.dataObj.confType === null) {
-        this.$Message.warning({
-          content: '请先选择案件类型',
-          duration: 5
-        })
-      } else {
-        this.alertShow.batch = false
-        axios.put('/caseBatch/updateCaseStateAndType_batch', {
-          caseType: this.dataObj.confType,
-          items: JSON.stringify(this.alertShow.idsList)
-        }, {
-          headers: {
-            'content-Type': 'application/json;charset=UTF-8'
-          }
-        }).then(res => {
-          this.alertCanc('batch')
-          this.$Message.success({
-            content: res.data.data,
-            duration: 2
-          })
-          this.resSearch()
-        }).catch(e => {
-          this.alertCanc('batch')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      }
-    },
     resAction (type, data) {
       switch (type) {
         case 'pendForm':
@@ -416,6 +347,19 @@ export default {
           this.dataObj.confCosts = data.cost
           this.dataObj.type = data.pendBtnStatus
           this.alertShow.conf = true
+          break
+        case 'resBatchFiling':
+          if (this.alertShow.ids.length === 0) {
+            this.$Message.error({
+              content: '请先选择一个案件',
+              duration: 5
+            })
+          } else {
+            this.alertObj.batchFilingData = {
+              caseIds: this.alertShow.idsList
+            }
+            this.alertObj.batchFiling = true
+          }
           break
       }
     },
@@ -461,6 +405,11 @@ export default {
           this.alertShow.caseCause = false
           this.resCaseList()
           break
+        case 'resBatchFiling':
+          this.alertObj.batchFiling = false
+          this.alertObj.batchFilingData = null
+          this.resSearch()
+          break
       }
     },
     alertCanc (type) {
@@ -472,9 +421,9 @@ export default {
           this.dataObj.confType = null
           this.dataObj.type = null
           break
-        case 'batch':
-          this.alertShow.batch = false
-          this.dataObj.confType = null
+        case 'resBatchFiling':
+          this.alertObj.batchFiling = false
+          this.alertObj.batchFilingData = null
           break
         case 'clearIds':
           this.alertShow.idsList = []
@@ -493,9 +442,9 @@ export default {
           this.alertShow.caseId = null
           break
         case 'caseCause':
+          this.alertShow.caseCause = false
           this.alertShow.resCaseType = null
           this.alertShow.caseId = null
-          this.alertShow.caseCause = false
           break
       }
     },

@@ -34,17 +34,18 @@
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="proPosal">
                 <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' || row.logicState === '18'" @click="resAction('proPosal', row)">选择仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '16'" @click="resAction('proPosal', row)">修改仲裁员</Button>
                 <span v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</span>
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4' || row.logicState === '20'" @click="resAction('succForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPROVAL')}" class="mr5" type="primary" size="small" v-if="['1', '4', '20', '16'].indexOf(row.logicState) !== -1" @click="resAction('succForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_WITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.logicState === '2'" @click="resAction('resPassReve', row)">同意撤回</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REASON')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resSeeReas(index)">查看原因</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_REGEN')}" class="mr5" type="primary" size="small" v-if="row.logicState === '3'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '4' || row.logicState === '6' || row.logicState === '8' || row.logicState === '9' || row.logicState === '10' || row.logicState === '12' || row.logicState === '13' || row.logicState === '14'" @click="resFileList(index)">查看文件</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="['14', '13', '21', '12', '10', '9', '4', '6', '8'].indexOf(row.logicState) !== -1" @click="resFileList(index)">查看文件</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATEDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '5' || row.logicState === '6' || row.logicState === '12'"  @click="resBeginTime('edit', index)">修改开庭时间</Button>
-                <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8'" @click="resBeginTime('once', index)">指定开庭时间</Button>
+                <Button :style="{display: resBtnDis('GROUPAPPL_APPOINTDATE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7' || row.logicState === '8' || row.logicState === '21'" @click="resBeginTime('once', index)">指定开庭时间</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_TRANSTOHEARING')}" class="mr5" type="primary" size="small" v-if="row.logicState === '7'" @click="resTranBook(index)">书面审理</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_ARRIVE')}" class="mr5" type="primary" size="small" v-if="row.logicState === '12' || row.logicState === '13'" @click="resSendDoc(index)">送达</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resEditData(index)">修改</Button>

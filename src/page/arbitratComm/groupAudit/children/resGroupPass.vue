@@ -1,5 +1,5 @@
 <template>
-  <div class="_groupPassAlert">
+  <div class="resGroupPass">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <p>确定要同意吗？</p>
     </alert-btn-info>
@@ -11,23 +11,21 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { resMess } from '@/components/common/mixin.js'
 
 export default {
-  name: 'group_pass_alert',
+  name: 'res_group_pass',
   mixins: [resMess],
-  props: ['resCaseId', 'resTribId', 'resArbiId', 'resLogicState'],
+  props: ['resGroupPassData'],
   components: { alertBtnInfo },
   data () {
     return {
       alertShow: true,
-      resData: {
-        caseDocumentReason: ''
-      }
+      resData: null
     }
   },
   computed: {
     resSaveUrl () {
-      if (this.resLogicState === '19') {
+      if (this.resGroupPassData.logicState === '19') {
         return '/approve/updateGroupApproveToArbitrator'
-      } else if (this.resLogicState === '20') {
+      } else if (this.resGroupPassData.logicState === '20') {
         return '/approve/updateArbitrator'
       } else {
         return ''
@@ -37,9 +35,9 @@ export default {
   methods: {
     alertSave () {
       axios.post(this.resSaveUrl, {
-        caseId: this.resCaseId,
-        arbitratorIds: this.resArbiId,
-        tribunalRequestId: this.resTribId
+        caseId: this.resGroupPassData.resCaseId,
+        arbitratorIds: this.resGroupPassData.resArbiId,
+        tribunalRequestId: this.resGroupPassData.resTribId
       }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')

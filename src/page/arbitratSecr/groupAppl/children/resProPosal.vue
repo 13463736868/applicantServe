@@ -110,6 +110,8 @@ export default {
         return '/approve/addGroupApproveToProposalArbitrator'
       } else if (this.resLogicState === '18') {
         return '/approve/reGroupApproveToProposalArbitrator'
+      } else if (this.resLogicState === '16') {
+        return '/approve/updGroupApproveToProposalArbitrator'
       } else {
         return ''
       }
