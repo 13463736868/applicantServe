@@ -46,7 +46,7 @@
               <template slot-scope="{ row, index }" slot="proPosal">
                 <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '17' || row.logicState === '18'" @click="resAction('proPosal', row)">选择仲裁员</Button>
                 <Button :style="{display: resBtnDis('GROUPAPPL_PROPOSAL')}" type="primary" size="small" v-if="row.logicState === '16'" @click="resAction('proPosal', row)">修改仲裁员</Button>
-                <span v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</span>
+                <p v-if="row.recommArbitrators !== ''" class="mr5" type="text" size="small">{{row.recommArbitrators}}</p>
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAPPL_SUBMIT')}" class="mr5" type="primary" size="small" v-if="row.logicState === '1' || row.logicState === '4'" @click="resSubm(index)">提交</Button>

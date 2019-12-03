@@ -12,7 +12,7 @@
         </Row>
         <Row>
           <Col span="20" offset="1">
-            <span><b>首席仲裁员： </b></span>
+            <span><b>{{seleShow === true ? '首席' : '独任'}}仲裁员： </b></span>
             <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
           </Col>
         </Row>

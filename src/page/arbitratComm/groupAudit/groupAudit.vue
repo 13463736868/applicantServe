@@ -35,7 +35,7 @@
                   <Button :style="{display: resBtnDis('GROUPAUDIT_REVISE')}" type="primary" size="small" @click="resAction('resRevise', row)">修订</Button>
                   <Button :style="{display: resBtnDis('GROUPAUDIT_REJECT')}" type="primary" size="small" @click="resAction('resReject', row)">退回</Button>
                 </div>
-                <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
+                <p v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</p>
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="['19', '20', '21', '9', '7'].indexOf(row.logicState) !== -1 || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
