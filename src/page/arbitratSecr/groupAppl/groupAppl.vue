@@ -15,9 +15,9 @@
         <Col span="3">
           <Select v-model="search.batchCondition" @on-change="resSearch">
             <Option value="1" key="1">全部</Option>
-            <Option :style="{display: resBtnDis('GROUPAPPL_BATCHSUJESTPROPOSAL')}" value="2" key="2">待(批量建议仲裁员(一个))</Option>
-            <Option :style="{display: resBtnDis('GROUPAPPL_BATCHSUJESTPROPOSAL')}" value="3" key="3">待(批量建议仲裁员(三个))</Option>
-            <Option v-if="resBtnDis('GROUPAPPL_BATCHSAVEFORM') !== 'none' || resBtnDis('GROUPAPPL_BATCHSUBMIT') !== 'none'" value="4" key="4">待(批量提交/待批量保存组庭审批表)</Option>
+            <Option :style="{display: resBtnDis('GROUPAPPL_BATCHSUJESTPROPOSAL')}" value="2" key="2">批量建议仲裁员</Option>
+            <!-- <Option :style="{display: resBtnDis('GROUPAPPL_BATCHSUJESTPROPOSAL')}" value="3" key="3">待(批量建议仲裁员(三个))</Option> -->
+            <Option v-if="resBtnDis('GROUPAPPL_BATCHSAVEFORM') !== 'none' || resBtnDis('GROUPAPPL_BATCHSUBMIT') !== 'none'" value="4" key="4">批量提交/批量保存组庭审批表</Option>
           </Select>
         </Col>
         <Col span="12">
@@ -859,7 +859,7 @@ export default {
           break
         case 'resBatchProPosal':
           if (this.search.batchCondition !== '2' && this.search.batchCondition !== '3') {
-            this.resMessage('error', '请先条件选择 \'待(批量建议仲裁员)\'')
+            this.resMessage('error', '请先条件选择 \'批量建议仲裁员\'')
           } else if (this.alertShow.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -869,7 +869,7 @@ export default {
           break
         case 'resBatchSaveForm':
           if (this.search.batchCondition !== '4') {
-            this.resMessage('error', '请先条件选择 \'待(批量提交 / 批量保存组庭审批表)\'')
+            this.resMessage('error', '请先条件选择 \'批量提交 / 批量保存组庭审批表\'')
           } else if (this.alertShow.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -878,7 +878,7 @@ export default {
           break
         case 'resBatchSubmit':
           if (this.search.batchCondition !== '4') {
-            this.resMessage('error', '请先条件选择 \'待(批量提交 / 批量保存组庭审批表)\'')
+            this.resMessage('error', '请先条件选择 \'批量提交 / 批量保存组庭审批表\'')
           } else if (this.alertShow.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {

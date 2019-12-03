@@ -15,7 +15,7 @@
         <Col span="3">
           <Select v-model="search.batchCondition" @on-change="resSearch">
             <Option value="1" key="1">全部</Option>
-            <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="2" key="2">待(起草文书)</Option>
+            <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="2" key="2">起草文书</Option>
           </Select>
         </Col>
         <Col span="12">
@@ -695,7 +695,7 @@ export default {
         case 'resBatchEnd':
           if (this.search.batchCondition !== '2') {
             this.$Message.error({
-              content: '请先条件选择 \'待(起草文书)\'',
+              content: '请先条件选择 \'起草文书\'',
               duration: 5
             })
           } else if (this.alertShow.ids.length === 0) {
