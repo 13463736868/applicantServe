@@ -1,5 +1,5 @@
 <template>
-  <div class="_resSetProc">
+  <div class="resBatchUpdate">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <div class="pb10">
         <Row class="mb5">
@@ -46,14 +46,15 @@ import { resMess, resTimeOut } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
-  name: 'res_set_proc',
+  name: 'resBatchUpdate',
   mixins: [resMess, resTimeOut],
-  props: ['resCaseId', 'resLogicState', 'resArbiNum'],
+  props: ['resIdsList', 'resArbiNum'],
   components: { alertBtnInfo },
   data () {
     return {
       alertShow: true,
       resData: {
+        resIdsList: JSON.parse(JSON.stringify(this.resIdsList))
       },
       seleList: {
         loading: false,
@@ -107,17 +108,6 @@ export default {
         return true
       } else {
         return false
-      }
-    },
-    resSaveUrl () {
-      if (this.resLogicState === '17') {
-        return '/approve/addGroupApproveToProposalArbitrator'
-      } else if (this.resLogicState === '18') {
-        return '/approve/reGroupApproveToProposalArbitrator'
-      } else if (this.resLogicState === '16') {
-        return '/approve/updGroupApproveToProposalArbitrator'
-      } else {
-        return ''
       }
     }
   },
@@ -228,9 +218,15 @@ export default {
           return false
         }
       }
-      axios.post(this.resSaveUrl, {
-        caseId: this.resCaseId,
-        arbitratorIds: this.seleArr.join(',')
+      for (let i = 0; i <= this.resData.resIdsList.length; i++) {
+        for (let k in this.resData.resIdsList[i]) {
+          if (k === 'arbitratorIds') {
+            this.resData.resIdsList[i][k] = this.seleArr.join(',')
+          }
+        }
+      }
+      axios.post('/approve/arbitratorsBatch', {
+        jsonStr: JSON.stringify(this.resData.resIdsList)
       }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')

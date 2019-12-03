@@ -3,17 +3,26 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="16">
-          &nbsp;
-        </Col>
         <Col span="2">
-          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
+          <Select v-model="search.batchCondition" @on-change="resSearchList">
+            <Option value="1" key="1">全部</Option>
+            <Option value="5" key="5">待(批量同意/批量修订(一个)/批量退回)</Option>
+            <Option value="6" key="6">待(批量同意/批量修订(三个)/批量退回)</Option>
+            <Option value="7" key="7" :style="{display: resBtnDis('GROUPAUDIT_BATCHAPPROVAL')}">待(批量保存组庭审批表)</Option>
+          </Select>
         </Col>
-        <Col span="3">
-          <Button type="primary" @click="resAction('batchReject', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHREJECT')}">批量退回</Button>
+        <Col span="19">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchAgree', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHAGREE')}">批量同意</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchUpdate', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHUPDATE')}">批量修订</Button>
+            <!-- <Button class="ml20" type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员)</Button> -->
+            <Button class="ml20" type="primary" @click="resAction('resBatchReject', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHREJECT')}">批量退回</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchSaveForm', null)" :style="{display: resBtnDis('GROUPAUDIT_BATCHAPPROVAL')}">批量保存审批表</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -23,7 +32,7 @@
               <template slot-scope="{ row, index }" slot="approver">
                 <div v-if="row.logicState === '19' || row.logicState === '20'">
                   <Button :style="{display: resBtnDis('GROUPAUDIT_APPARBITRATORS')}" type="primary" size="small" @click="resAction('groupPass', row)">同意</Button>
-                  <Button :style="{display: resBtnDis('GROUPAUDIT_REVISE')}" type="primary" size="small" @click="resAssign(row)">修订</Button>
+                  <Button :style="{display: resBtnDis('GROUPAUDIT_REVISE')}" type="primary" size="small" @click="resAction('resRevise', row)">修订</Button>
                   <Button :style="{display: resBtnDis('GROUPAUDIT_REJECT')}" type="primary" size="small" @click="resAction('resReject', row)">退回</Button>
                 </div>
                 <span v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</span>
@@ -31,7 +40,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="['19', '20', '21', '9', '7'].indexOf(row.logicState) !== -1 || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resAction('resPass', row)">通过</Button>
-                <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAssignRest(row)">重新指定仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAction('resRevise', row)">重新指定仲裁员</Button>
               </template>
             </Table>
           </Col>
@@ -45,44 +54,10 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.agre" @alertConfirm="agreSave" @alertCancel="alertCanc('agre')" alertTitle="操作">
-      <div class="pb10">
-        <Row class="mb5">
-          <Col span="3" offset="1">
-            <label class="lh25 f12 fb fl mr15">搜 索 :</label>
-          </Col>
-          <Col span="8">
-            <Input :maxlength="15" size="small" v-model.trim="searchText" icon="md-search" placeholder=""></Input>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="20" offset="1">
-            <span><b>首席仲裁员： </b></span>
-            <span v-if="seleArrName[0] !== ''"><span class="ml5" v-text="seleArrName[0]"></span><Icon @click="resSeleDel(0)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
-          </Col>
-        </Row>
-        <Row v-if="seleShow">
-          <Col span="20" offset="1">
-            <span><b>其他仲裁员：</b></span>
-            <span v-if="seleArrName[1] !== ''"><span class="ml5" v-text="seleArrName[1]"></span><Icon @click="resSeleDel(1)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
-          </Col>
-          <Col span="20" offset="1">
-            <span><b>其他仲裁员：</b></span>
-            <span v-if="seleArrName[2] !== ''"><span class="ml5" v-text="seleArrName[2]"></span><Icon @click="resSeleDel(2)" class="ml5 hand" color="#ed3f14" type="md-close"></Icon></span>
-          </Col>
-        </Row>
-      </div>
-      <Row>
-        <Col span="24" class="pl20 pr20">
-          <Table stripe align="center" :loading="seleList.loading" :columns="seleList.header" :data="seleList.bodyList"></Table>
-        </Col>
-      </Row>
-      <Row>
-        <Col span="12" offset="6" class="tc pt10">
-          <Page simple :total="selePageObj.total" :current="selePageObj.pageNum" :page-size="selePageObj.pageSize" show-total @on-change="resChanPage"></Page>
-        </Col>
-      </Row>
-    </alert-btn-info>
+    <res-batch-save-form v-if="alertObj.batchSaveForm" :resIdsList="alertShow.idsList" @alertConfirm="alertSave('resBatchSaveForm')" @alertCancel="alertCanc('resBatchSaveForm')"></res-batch-save-form>
+    <res-batch-update v-if="alertObj.batchUpdate" :resIdsList="alertShow.idsList" :resArbiNum="alertShow.arbiNum" @alertConfirm="alertSave('resBatchUpdate')" @alertCancel="alertCanc('resBatchUpdate')"></res-batch-update>
+    <res-batch-agree v-if="alertObj.batchAgree" :resPropsData="alertShow.idsList" @alertConfirm="alertSave('resBatchAgree')" @alertCancel="alertCanc('resBatchAgree')"></res-batch-agree>
+    <res-revise v-if="alertObj.revise" :resPropsData="alertObj.reviseData" @alertConfirm="alertSave('resRevise')" @alertCancel="alertCanc('resRevise')"></res-revise>
     <res-reject v-if="alertObj.reject" :resRejectData="alertObj.rejectData" @alertConfirm="alertSave('resReject')" @alertCancel="alertCanc('resReject')"></res-reject>
     <res-pass v-if="alertObj.pass" :resPassData="alertObj.passData" @alertConfirm="alertSave('resPass')" @alertCancel="alertCanc('resPass')"></res-pass>
     <res-group-pass v-if="alertObj.groupPass" :resGroupPassData="alertObj.groupPassData" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></res-group-pass>
@@ -93,7 +68,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn, resTimeOut, resSearFind} from '@/components/common/mixin.js'
+import {resMess, resBtn, resTimeOut, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -101,16 +76,21 @@ import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import resGroupPass from '@/page/arbitratComm/groupAudit/children/resGroupPass'
 import resPass from '@/page/arbitratComm/groupAudit/children/resPass'
 import resReject from '@/page/arbitratComm/groupAudit/children/resReject'
+import resRevise from '@/page/arbitratComm/groupAudit/children/resRevise'
+import resBatchAgree from '@/page/arbitratComm/groupAudit/children/resBatchAgree'
+import resBatchUpdate from '@/page/arbitratComm/groupAudit/children/resBatchUpdate'
+import resBatchSaveForm from '@/page/arbitratSecr/groupAppl/children/resBatchSaveForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
-  mixins: [resBtn, resTimeOut, resSearFind],
-  components: { spinComp, resFind, alertBtnInfo, groupApprForm, resGroupPass, resPass, resReject },
+  mixins: [resMess, resBtn, resTimeOut, resSearFind],
+  components: { spinComp, resFind, alertBtnInfo, groupApprForm, resGroupPass, resPass, resReject, resRevise, resBatchAgree, resBatchUpdate, resBatchSaveForm },
   data () {
     return {
       spinShow: false,
       search: {
+        batchCondition: '1',
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -124,8 +104,11 @@ export default {
             key: 'id',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
-              return this.renderCheckS(h, params)
+              return this.renderCheck(h, params)
             }
           },
           {
@@ -210,7 +193,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -218,49 +202,11 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        agre: false,
-        tribId: null,
-        caseId: null,
-        infoMoney: null,
-        assignRest: false,
         idsList: [],
         ids: [],
-        state: [],
-        idsType: '',
+        arbiNum: null,
         find: false
       },
-      seleList: {
-        loading: false,
-        header: [
-          {
-            title: '名称',
-            key: 'name',
-            align: 'center'
-          },
-          {
-            title: '擅长领域',
-            key: 'sign',
-            align: 'center'
-          },
-          {
-            title: '操作',
-            key: 'id',
-            align: 'center',
-            render: (h, params) => {
-              return this.renderCheck(h, params)
-            }
-          }
-        ],
-        bodyList: []
-      },
-      seleArr: [],
-      seleArrName: [],
-      selePageObj: {
-        total: 0,
-        pageNum: 1,
-        pageSize: 5
-      },
-      searchText: '',
       formObj: {
         caseId: null,
         filing: false
@@ -271,70 +217,19 @@ export default {
         pass: false,
         passData: null,
         reject: false,
-        rejectData: null
+        rejectData: null,
+        revise: false,
+        reviseData: null,
+        batchAgree: false,
+        batchUpdate: false,
+        batchSaveForm: false
       }
     }
   },
   created () {
     this.resCaseList()
-    this.$watch('searchText', this.debounce(this.resSearch, 1000))
-  },
-  computed: {
-    seleShow () {
-      if (this.alertShow.infoMoney === null) {
-        return false
-      } else if (this.alertShow.infoMoney === 1) {
-        return false
-      } else if (this.alertShow.infoMoney === 3) {
-        return true
-      } else {
-        return false
-      }
-    }
   },
   methods: {
-    renderCheck (h, params) {
-      let _id = params.row.id
-      if (this.seleArr.indexOf(_id) === -1) {
-        return h('div', [
-          h('Icon', {
-            props: {
-              type: 'md-square-outline',
-              size: '16'
-            },
-            style: {
-              color: '#2d8cf0',
-              cursor: 'pointer',
-              verticalAlign: 'text-top'
-            },
-            on: {
-              click: () => {
-                this.seleArrChange(params.index, true)
-              }
-            }
-          })
-        ])
-      } else {
-        return h('div', [
-          h('Icon', {
-            props: {
-              type: 'md-checkbox',
-              size: '16'
-            },
-            style: {
-              color: '#2d8cf0',
-              cursor: 'pointer',
-              verticalAlign: 'text-top'
-            },
-            on: {
-              click: () => {
-                this.seleArrChange(params.index, false)
-              }
-            }
-          })
-        ])
-      }
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/approve/findGroupApproveList', {
@@ -342,7 +237,8 @@ export default {
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        groupApproveType: 'arbitrationCommission'
+        groupApproveType: 'arbitrationCommission',
+        batchCondition: this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -350,10 +246,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     reschangePage (page) {
@@ -373,169 +266,37 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
-    resSearch () {
-      this.selePageObj.pageNum = 1
-      this.resUserList()
-    },
-    resAssignRest (data) {
-      this.alertShow.assignRest = true
-      this.resAssign(data)
-    },
-    resAssign (data) {
-      if (data.logicState === '20') {
-        this.alertShow.assignRest = true
-      } else {
-        this.alertShow.assignRest = false
-      }
-      this.selePageObj.pageNum = 1
-      this.alertShow.agre = true
-      if (this.alertShow.idsType === '') {
-        this.alertShow.tribId = data.tribunalRequestId
-        this.alertShow.caseId = data.id
-        this.alertShow.infoMoney = data.arbitratorIdNum
-        this.seleArr = this.seleShow === true ? ['', '', ''] : ['']
-        this.seleArrName = this.seleShow === true ? ['', '', ''] : ['']
-      } else {
-        this.alertShow.infoMoney = this.alertShow.state[0]
-        this.seleArr = this.seleShow === true ? ['', '', ''] : ['']
-        this.seleArrName = this.seleShow === true ? ['', '', ''] : ['']
-      }
-      this.resUserList()
-    },
-    resUserList () {
-      axios.post('/clientRequest/findUsersList', {
-        pageIndex: (this.selePageObj.pageNum - 1) * this.selePageObj.pageSize,
-        pageSize: this.selePageObj.pageSize,
-        roleName: 'arbitrator',
-        keyword: this.searchText
-      }).then(res => {
-        this.seleList.bodyList = res.data.data.dataList === null ? [] : res.data.data.dataList
-        this.selePageObj.total = res.data.data.totalCount
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
-    resChanPage (page) {
-      this.selePageObj.pageNum = page
-      this.resUserList()
-    },
-    seleArrChange (index, bool) {
-      let _id = this.seleList.bodyList[index].id
-      let _name = this.seleList.bodyList[index].name
-      let _userNum = this.seleShow === true ? '三' : '一'
-      if (bool) {
-        if (this.seleArr.indexOf(_id) === -1) {
-          let _t = false
-          for (let k in this.seleArr) {
-            if (this.seleArr[k] === '') {
-              this.seleArr[k] = _id
-              this.seleArrName[k] = _name
-              this.seleArr.splice(k, 0)
-              this.seleArrName.splice(k, 0)
-              _t = true
-              break
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
             }
           }
-          if (!_t) {
-            this.$Message.error({
-              content: '仲裁员最多只能选择' + _userNum + '位！',
-              duration: 5
-            })
-          }
-        }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
       } else {
-        if (this.seleArr.indexOf(_id) !== -1) {
-          this.seleArrName.splice(this.seleArr.indexOf(_id), 1, '')
-          this.seleArr.splice(this.seleArr.indexOf(_id), 1, '')
-        }
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
       }
-    },
-    resSeleDel (num) {
-      this.seleArr[num] = ''
-      this.seleArrName[num] = ''
-      this.resUserList()
-    },
-    agreSave () {
-      for (let k in this.seleArr) {
-        if (this.seleArr[k] === '') {
-          this.$Message.error({
-            content: '请选择第 ' + (k - 0 + 1) + ' 位仲裁员后再点击确定',
-            duration: 5
-          })
-          return false
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (this.search.batchCondition !== '1' && (['19', '20', '21', '9', '7'].indexOf(_obj.logicState) !== -1 || _obj.passFlag === 3)) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
         }
-      }
-      if (this.alertShow.assignRest) {
-        this.alertShow.agre = false
-        axios.post('/approve/updateArbitrator', {
-          caseId: this.alertShow.caseId,
-          arbitratorIds: this.seleArr.join(',')
-        }).then(res => {
-          this.selePageObj.pageNum = 1
-          this.alertCanc('agre')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
-          this.resSearchList()
-        }).catch(e => {
-          this.alertCanc('agre')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      } else {
-        if (this.alertShow.idsType === '') {
-          this.alertShow.agre = false
-          axios.post('/approve/updateGroupApproveToArbitrator', {
-            caseId: this.alertShow.caseId,
-            tribunalRequestId: this.alertShow.tribId,
-            arbitratorIds: this.seleArr.join(',')
-          }).then(res => {
-            this.selePageObj.pageNum = 1
-            this.alertCanc('agre')
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
-            this.resSearchList()
-          }).catch(e => {
-            this.alertCanc('agre')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        } else {
-          this.alertShow.agre = false
-          axios.post('/batchGroupCourt/updateChooseArbitratorBatch', {
-            caseTribunalRequest: JSON.stringify(this.alertShow.idsList),
-            arbitratorIds: this.seleArr.join(',')
-          }).then(res => {
-            this.selePageObj.pageNum = 1
-            this.alertCanc('agre')
-            this.$Message.success({
-              content: res.data.data,
-              duration: 2
-            })
-            this.resSearchList()
-          }).catch(e => {
-            this.alertCanc('agre')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      }
+      })
     },
-    renderCheckS (h, params) {
+    renderCheck (h, params) {
       let _obj = params.row
-      if (_obj.logicState === '19' || _obj.logicState === '20') {
+      if (this.search.batchCondition !== '1' && (['19', '20', '21', '9', '7'].indexOf(_obj.logicState) !== -1 || _obj.passFlag === 3)) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {
@@ -550,7 +311,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChangeS(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -569,7 +330,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChangeS(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -580,113 +341,33 @@ export default {
         ])
       }
     },
-    seleArrChangeS (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
-        if (this.alertShow.state.length === 0) {
-          if (this.alertShow.ids.indexOf(info.id) === -1) {
-            if (this.alertShow.ids.length >= 10) {
-              this.$Message.error({
-                content: '最多只能选择十个案件',
-                duration: 5
-              })
-              return false
-            } else {
-              if (this.alertShow.state.length === 0) {
-                this.alertShow.state.push(info.arbitratorIdNum)
-              }
-              let _o = {}
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.resMessage('error', '最多只能选择十个案件')
+            return false
+          } else {
+            let _o = {}
+            if (this.search.batchCondition === '5' || this.search.batchCondition === '6') {
               _o.caseId = info.id
               _o.tribunalRequestId = info.tribunalRequestId
-              _o.arbitratorIdNum = info.arbitratorIdNum
-              this.alertShow.idsList.push(_o)
-              this.alertShow.ids.push(info.id)
+              _o.arbitratorIds = info.recommArbitratorIds
+              _o.state = info.logicState
+            } else if (this.search.batchCondition === '7') {
+              _o.caseId = info.id
+              _o.formType = 22
             }
+            this.alertShow.idsList.push(_o)
+            this.alertShow.ids.push(info.id)
           }
-        } else if (this.alertShow.state.length === 1) {
-          if (this.alertShow.state[0] === 1) {
-            if (info.arbitratorIdNum === 1) {
-              if (this.alertShow.ids.indexOf(info.id) === -1) {
-                if (this.alertShow.ids.length >= 10) {
-                  this.$Message.error({
-                    content: '最多只能选择十个案件',
-                    duration: 5
-                  })
-                  return false
-                } else {
-                  if (this.alertShow.state.length === 0) {
-                    this.alertShow.state.push(info.arbitratorIdNum)
-                  }
-                  let _o = {}
-                  _o.caseId = info.id
-                  _o.tribunalRequestId = info.tribunalRequestId
-                  _o.arbitratorIdNum = info.arbitratorIdNum
-                  this.alertShow.idsList.push(_o)
-                  this.alertShow.ids.push(info.id)
-                }
-              }
-            } else {
-              this.$Message.error({
-                content: '不能同时指定仲裁员数不一的致案件',
-                duration: 5
-              })
-              return false
-            }
-          } else if (this.alertShow.state[0] === 3) {
-            if (info.arbitratorIdNum === 3) {
-              if (this.alertShow.ids.indexOf(info.id) === -1) {
-                if (this.alertShow.ids.length >= 10) {
-                  this.$Message.error({
-                    content: '最多只能选择十个案件',
-                    duration: 5
-                  })
-                  return false
-                } else {
-                  if (this.alertShow.state.length === 0) {
-                    this.alertShow.state.push(info.arbitratorIdNum)
-                  }
-                  let _o = {}
-                  _o.caseId = info.id
-                  _o.tribunalRequestId = info.tribunalRequestId
-                  _o.arbitratorIdNum = info.arbitratorIdNum
-                  this.alertShow.idsList.push(_o)
-                  this.alertShow.ids.push(info.id)
-                }
-              }
-            } else {
-              this.$Message.error({
-                content: '不能同时指定仲裁员数不一的致案件',
-                duration: 5
-              })
-              return false
-            }
-          }
-        } else {
-          this.$Message.error({
-            content: '错误信息:请刷新后重试',
-            duration: 5
-          })
-          return false
         }
       } else {
         if (this.alertShow.ids.indexOf(info.id) !== -1) {
           this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.id), 1)
           this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
-          if (this.alertShow.ids.length === 0) {
-            this.alertShow.state = []
-          }
         }
-      }
-    },
-    resBatch (type) {
-      if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
-      } else {
-        this.alertShow.idsType = 'ids'
-        this.resAssign('')
       }
     },
     resAction (type, data) {
@@ -718,17 +399,53 @@ export default {
           }
           this.alertObj.reject = true
           break
-        case 'batchReject':
-          if (this.alertShow.ids.length === 0) {
-            this.$Message.error({
-              content: '请先选择一个案件',
-              duration: 5
-            })
+        case 'resRevise':
+          this.alertObj.reviseData = {
+            caseId: data.id,
+            logicState: data.logicState,
+            arbiNum: data.arbitratorIdNum,
+            resTribId: data.tribunalRequestId
+          }
+          this.alertObj.revise = true
+          break
+        case 'resBatchReject':
+          if (this.search.batchCondition !== '5' && this.search.batchCondition !== '6') {
+            this.resMessage('error', '请先条件选择 \'待(批量同意/批量修订/批量退回)\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
           } else {
             this.alertObj.rejectData = {
               caseIds: this.alertShow.ids
             }
             this.alertObj.reject = true
+          }
+          break
+        case 'resBatchAgree':
+          if (this.search.batchCondition !== '5' && this.search.batchCondition !== '6') {
+            this.resMessage('error', '请先条件选择 \'待(批量同意/批量修订/批量退回)\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.batchAgree = true
+          }
+          break
+        case 'resBatchUpdate':
+          if (this.search.batchCondition !== '5' && this.search.batchCondition !== '6') {
+            this.resMessage('error', '请先条件选择 \'待(批量同意/批量修订/批量退回)\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertShow.arbiNum = this.search.batchCondition === '5' ? 1 : 3
+            this.alertObj.batchUpdate = true
+          }
+          break
+        case 'resBatchSaveForm':
+          if (this.search.batchCondition !== '7') {
+            this.resMessage('error', '请先条件选择 \'待(批量保存组庭审批表)\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.batchSaveForm = true
           }
           break
       }
@@ -756,7 +473,27 @@ export default {
           this.alertObj.reject = false
           this.alertObj.rejectData = null
           this.pageObj.pageNum = 1
+          this.alertCanc('clearIds')
           this.resCaseList()
+          break
+        case 'resRevise':
+          this.alertObj.revise = false
+          this.alertObj.reviseData = null
+          this.alertCanc('clearIds')
+          this.resCaseList()
+          break
+        case 'resBatchAgree':
+          this.alertObj.batchAgree = false
+          this.resSearchList()
+          break
+        case 'resBatchUpdate':
+          this.alertObj.batchUpdate = false
+          this.alertShow.arbiNum = null
+          this.resSearchList()
+          break
+        case 'resBatchSaveForm':
+          this.alertObj.batchSaveForm = false
+          this.resSearchList()
           break
       }
     },
@@ -777,22 +514,30 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
-          this.alertShow.state = []
-          break
-        case 'agre':
-          this.alertShow.agre = false
-          this.alertShow.tribId = null
-          this.alertShow.caseId = null
-          this.alertShow.infoMoney = null
-          this.seleArr = []
-          this.seleArrName = []
-          this.searchText = ''
-          this.alertShow.assignRest = false
-          this.alertShow.idsType = ''
+          this.caseList.seleMap = {}
           break
         case 'resReject':
           this.alertObj.reject = false
           this.alertObj.rejectData = null
+          this.alertCanc('clearIds')
+          break
+        case 'resRevise':
+          this.alertObj.revise = false
+          this.alertObj.reviseData = null
+          this.alertCanc('clearIds')
+          break
+        case 'resBatchAgree':
+          this.alertObj.batchAgree = false
+          this.alertCanc('clearIds')
+          break
+        case 'resBatchUpdate':
+          this.alertObj.batchUpdate = false
+          this.alertShow.arbiNum = null
+          this.alertCanc('clearIds')
+          break
+        case 'resBatchSaveForm':
+          this.alertObj.batchSaveForm = false
+          this.alertCanc('clearIds')
           break
       }
     }

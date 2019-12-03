@@ -58,7 +58,7 @@
             <Col span="24" class="pl20 pr20">
               <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList">
                 <template slot-scope="{ row, index }" slot="action">
-                  <Button class="mr5" type="primary" size="small" @click="resAction('resBillNumber', row)">录入票号</Button>
+                  <Button class="mr5" type="primary" size="small" @click="resAction('resBillNumber', row)">录入票据号</Button>
                 </template>
               </Table>
             </Col>
@@ -132,11 +132,6 @@ export default {
           {
             title: '被申请人',
             key: 'respondentName',
-            align: 'center'
-          },
-          {
-            title: '代理人',
-            key: 'proxyName',
             align: 'center'
           },
           {

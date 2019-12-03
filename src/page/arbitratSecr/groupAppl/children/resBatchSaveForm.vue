@@ -1,14 +1,7 @@
 <template>
-  <div class="resBillNumber">
+  <div class="resBatchSaveForm">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>票据号：</b></p>
-        </Col>
-        <Col span="16">
-          <Input v-model="resData.billNumber"></Input>
-        </Col>
-      </Row>
+      <p>确定要批量保存组庭审批表吗？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -18,27 +11,24 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { resMess } from '@/components/common/mixin.js'
 
 export default {
-  name: 'res_billNumber',
+  name: 'resBatchSaveForm',
   mixins: [resMess],
-  props: ['resPropsData'],
+  props: ['resIdsList'],
   components: { alertBtnInfo },
   data () {
     return {
       alertShow: true,
-      resData: {
-        billNumber: ''
-      }
+      resData: {}
     }
   },
   methods: {
     alertSave () {
-      if (this.resData.billNumber === '') {
-        this.resMessage('error', '请输入票据号')
-        return false
-      }
-      axios.post('/payMentRequest/updateBillNumber', {
-        caseId: this.resPropsData.caseId,
-        billNumber: this.resData.billNumber
+      axios.put('/caseBatch/saveForm_batch', {
+        items: JSON.stringify(this.resIdsList)
+      }, {
+        headers: {
+          'content-Type': 'application/json;charset=UTF-8'
+        }
       }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')

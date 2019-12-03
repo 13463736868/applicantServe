@@ -101,6 +101,12 @@ export default {
             }
           },
           {
+            title: '案由',
+            key: 'disputeType',
+            tooltip: 'true',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'propName',
             tooltip: 'true',
@@ -115,12 +121,6 @@ export default {
           {
             title: '争议金额',
             key: 'money',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
-            title: '纠纷类型',
-            key: 'disputeType',
             tooltip: 'true',
             align: 'center'
           },

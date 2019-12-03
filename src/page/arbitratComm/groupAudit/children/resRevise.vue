@@ -1,5 +1,5 @@
 <template>
-  <div class="_resSetProc">
+  <div class="resRevise">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
       <div class="pb10">
         <Row class="mb5">
@@ -46,9 +46,21 @@ import { resMess, resTimeOut } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
-  name: 'res_set_proc',
+  name: 'resRevise',
   mixins: [resMess, resTimeOut],
-  props: ['resCaseId', 'resLogicState', 'resArbiNum'],
+  props: {
+    resPropsData: {
+      type: Object,
+      default: function () {
+        return {
+          caseId: null,
+          logicState: '',
+          arbiNum: null,
+          resTribId: ''
+        }
+      }
+    }
+  },
   components: { alertBtnInfo },
   data () {
     return {
@@ -99,23 +111,21 @@ export default {
   },
   computed: {
     seleShow () {
-      if (this.resArbiNum === null) {
+      if (this.resPropsData.arbiNum === null) {
         return false
-      } else if (this.resArbiNum === 1) {
+      } else if (this.resPropsData.arbiNum === 1) {
         return false
-      } else if (this.resArbiNum === 3) {
+      } else if (this.resPropsData.arbiNum === 3) {
         return true
       } else {
         return false
       }
     },
     resSaveUrl () {
-      if (this.resLogicState === '17') {
-        return '/approve/addGroupApproveToProposalArbitrator'
-      } else if (this.resLogicState === '18') {
-        return '/approve/reGroupApproveToProposalArbitrator'
-      } else if (this.resLogicState === '16') {
-        return '/approve/updGroupApproveToProposalArbitrator'
+      if (this.resPropsData.logicState === '20') {
+        return '/approve/updateArbitrator'
+      } else if (this.resPropsData.logicState === '19') {
+        return '/approve/updateGroupApproveToArbitrator'
       } else {
         return ''
       }
@@ -229,7 +239,8 @@ export default {
         }
       }
       axios.post(this.resSaveUrl, {
-        caseId: this.resCaseId,
+        caseId: this.resPropsData.caseId,
+        tribunalRequestId: this.resPropsData.resTribId,
         arbitratorIds: this.seleArr.join(',')
       }).then(res => {
         this.resMessage('success', '操作成功')

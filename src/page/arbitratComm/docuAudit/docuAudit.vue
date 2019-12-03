@@ -3,17 +3,12 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="18">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">{{usersInfo.roleCode === 'ROLE_FGZR' ? '批量签发' : '批量通过'}}</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量退回</Button>
+        <Col span="24">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">{{usersInfo.roleCode === 'ROLE_FGZR' ? '批量签发' : '批量通过'}}</Button>
+            <Button class="ml20" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量退回</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -89,6 +84,9 @@ export default {
             key: 'id',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -182,7 +180,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -340,6 +339,34 @@ export default {
         })
       }
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.caseDocuemntApproveState === 3) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
       if (_obj.caseDocuemntApproveState === 3) {
@@ -357,7 +384,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -376,7 +403,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -387,8 +414,8 @@ export default {
         ])
       }
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
@@ -440,6 +467,7 @@ export default {
             this.alertCanc('docu')
             this.alertShow.idsList = []
             this.alertShow.ids = []
+            this.caseList.seleMap = {}
             this.$Message.success({
               content: res.data.message,
               duration: 2
@@ -462,6 +490,7 @@ export default {
           this.alertCanc('docu')
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           this.$Message.success({
             content: res.data.message,
             duration: 2
@@ -527,6 +556,7 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           break
       }
     }

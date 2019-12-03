@@ -6,14 +6,23 @@
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="8">
+        <Col span="5">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
-        <Col span="14">
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
+            <Option value="1" key="1">全部</Option>
+            <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="2" key="2">待(起草文书)</Option>
+          </Select>
+        </Col>
+        <Col span="12">
           <div class="tr pr20">
             <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
-            <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
-            <Button class="ml20" type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
+            <!-- <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button> -->
+            <Button class="ml20" type="primary" @click="resAction('resBatchEnd', null)" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
           </div>
         </Col>
       </Row>
@@ -57,15 +66,13 @@
     <alert-btn-info :alertShow="alertShow.reas" :isSaveBtn="true" @alertCancel="alertCanc('reas')" alertTitle="查看">
       <p class="t2" v-text="alertShow.reasText"></p>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batch"  @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="操作">
-      <p class="t2">确定要批量结案吗？</p>
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.confDataAlert" @alertConfirm="alertSave('confData')" @alertCancel="alertCanc('confData')" alertTitle="操作">
       <p class="t2">确定要确认此条数据吗？</p>
     </alert-btn-info>
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
+    <res-batch-end-docu v-if="alertShow.batchEnd" :resIdsList="alertShow.idsList" @alertConfirm="alertSave('resBatchEnd')" @alertCancel="alertCanc('resBatchEnd')"></res-batch-end-docu>
     <res-end-docu v-if="alertShow.end" :resCaseId="alertShow.userId" :resTempCode="alertShow.endNewTempCode" @alertConfirm="alertSave('endNew')" @alertCancel="alertCanc('endNew')"></res-end-docu>
     <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
     <res-canc-docu v-if="alertShow.canc" :resCaseId="alertShow.userId" @alertConfirm="alertSave('canc')" @alertCancel="alertCanc('canc')"></res-canc-docu>
@@ -90,6 +97,7 @@ import resReveDocu from '@/page/arbitrator/groupCase/children/resReveDocu'
 import resCancDocu from '@/page/arbitrator/groupCase/children/resCancDocu'
 import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
 import resEndDocu from '@/page/arbitrator/groupCase/children/resEndDocu'
+import resBatchEndDocu from '@/page/arbitrator/groupCase/children/resBatchEndDocu'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -97,11 +105,12 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu },
+  components: { spinComp, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu, resBatchEndDocu },
   data () {
     return {
       spinShow: false,
       search: {
+        batchCondition: '1',
         text: '',
         requestName: '',
         caseType: '',
@@ -118,6 +127,9 @@ export default {
             key: 'id',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -209,7 +221,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -230,7 +243,7 @@ export default {
         editorDest: false,
         ids: [],
         idsList: [],
-        batch: false,
+        batchEnd: false,
         find: false,
         editDataModal: false,
         editDataId: null,
@@ -336,7 +349,8 @@ export default {
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
         keyword: this.search.text,
-        caseDocementType: this.search.batchDocuType
+        caseDocementType: this.search.batchDocuType,
+        batchCondition: this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -533,9 +547,37 @@ export default {
         })
       })
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1)) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
-      if ((_obj.endCasePatten === '5' || _obj.endCasePatten === '10' || _obj.endCasePatten === '11') && _obj.tempCode !== null) {
+      if (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1)) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {
@@ -550,7 +592,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -569,7 +611,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -580,8 +622,8 @@ export default {
         ])
       }
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
@@ -603,41 +645,6 @@ export default {
           this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
         }
       }
-    },
-    resEnds () {
-      if (this.search.batchDocuType === null || this.search.batchDocuType === undefined) {
-        this.$Message.error({
-          content: '请先在条件搜索里选择一个结案方式进行搜索',
-          duration: 5
-        })
-      } else if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
-      } else {
-        this.alertShow.batch = true
-      }
-    },
-    batchSave () {
-      this.alertShow.batch = false
-      axios.post('/batchCaseDocument/addCaseDocumentList', {
-        caseDocumentDataJson: JSON.stringify(this.alertShow.idsList),
-        batchDocumentType: this.search.batchDocuType
-      }).then(res => {
-        this.alertCanc('batch')
-        this.$Message.success({
-          content: res.data.message,
-          duration: 2
-        })
-        this.resSearch()
-      }).catch(e => {
-        this.alertCanc('batch')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
     },
     resAction (type, data) {
       switch (type) {
@@ -684,6 +691,21 @@ export default {
           this.alertShow.userId = data.id
           this.alertShow.endNewTempCode = data.tempCode
           this.alertShow.end = true
+          break
+        case 'resBatchEnd':
+          if (this.search.batchCondition !== '2') {
+            this.$Message.error({
+              content: '请先条件选择 \'待(起草文书)\'',
+              duration: 5
+            })
+          } else if (this.alertShow.ids.length === 0) {
+            this.$Message.error({
+              content: '请先选择一个案件',
+              duration: 5
+            })
+          } else {
+            this.alertShow.batchEnd = true
+          }
           break
       }
     },
@@ -751,6 +773,11 @@ export default {
           this.alertShow.endNewTempCode = null
           this.resCaseList()
           break
+        case 'resBatchEnd':
+          this.alertShow.batchEnd = false
+          this.alertCanc('clearIds')
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
@@ -764,9 +791,6 @@ export default {
           this.alertShow.editorId = null
           this.alertShow.editorDest = false
           break
-        case 'batch':
-          this.alertShow.batch = false
-          break
         case 'find':
           this.alertShow.find = false
           this.search.requestName = ''
@@ -775,6 +799,7 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           break
         case 'editData':
           this.alertShow.editDataModal = false
@@ -809,7 +834,10 @@ export default {
           this.alertShow.userId = null
           this.alertShow.endNewTempCode = null
           break
-        default:
+        case 'resBatchEnd':
+          this.alertShow.batchEnd = false
+          this.alertShow.idsList = []
+          this.caseList.seleMap = {}
           break
       }
     }

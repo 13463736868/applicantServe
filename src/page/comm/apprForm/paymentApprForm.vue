@@ -6,7 +6,7 @@
           <caption class="f35 h60 lh60">
             <p>仲 裁 员 酬 金 支 付 审 批 表</p>
           </caption>
-          <caption class="tr f16 h60 lh60">青仲互组酬字({{form.codeYear}})第{{form.codeNum}}号</caption>
+          <caption class="tr f16 h60 lh60">青仲互酬字({{form.codeYear}})第{{form.codeNum}}号</caption>
           <tr>
             <td class="tdb tc w120" >
               <span>案由</span>

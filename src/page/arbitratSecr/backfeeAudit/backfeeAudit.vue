@@ -84,6 +84,11 @@ export default {
             align: 'center'
           },
           {
+            title: '案由',
+            key: 'disputeType',
+            align: 'center'
+          },
+          {
             title: '申请人',
             key: 'propName',
             tooltip: 'true',
@@ -104,12 +109,6 @@ export default {
           {
             title: '标的(元)',
             key: 'money',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
-            title: '纠纷类型',
-            key: 'disputeType',
             tooltip: 'true',
             align: 'center'
           },

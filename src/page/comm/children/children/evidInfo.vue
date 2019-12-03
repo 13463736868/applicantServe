@@ -33,7 +33,7 @@
               <Row>
                 <Col class="tr" span="6"><span class="mr10">附件名称 :</span></Col>
                 <Col span="17">
-                  <p class="_file p0" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 50 ? item.fileName.substr(0, 50) + '...' : item.fileName}}<b v-if="infoData.state === 2" class="ml10" style="color:#ed3f14;">（请注意：该证据非证据原件）</b></p>
+                  <p class="_file p0" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 30 ? item.fileName.substr(0, 30) + '...' : item.fileName}}<b v-if="infoData.state === 2" class="ml10" style="color:#ed3f14;">（请注意：该证据非证据原件）</b></p>
                 </Col>
               </Row>
             </p>
