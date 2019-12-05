@@ -1,7 +1,7 @@
 <template>
   <div class="resBatchSaveForm">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
-      <p>确定要批量保存组庭审批表吗？</p>
+      <p>确定要批量保存{{resIdsList[0]['formType'] === 21 ? '立案' : resIdsList.items[0]['formType'] === 22 ? '组庭' : ''}}审批表吗？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -13,7 +13,18 @@ import { resMess } from '@/components/common/mixin.js'
 export default {
   name: 'resBatchSaveForm',
   mixins: [resMess],
-  props: ['resIdsList'],
+  props: {
+    resIdsList: {
+      type: Array / Object,
+      default: function () {
+        return [
+          {
+            formType: ''
+          }
+        ]
+      }
+    }
+  },
   components: { alertBtnInfo },
   data () {
     return {

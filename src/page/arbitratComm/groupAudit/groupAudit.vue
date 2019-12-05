@@ -79,7 +79,7 @@ import resReject from '@/page/arbitratComm/groupAudit/children/resReject'
 import resRevise from '@/page/arbitratComm/groupAudit/children/resRevise'
 import resBatchAgree from '@/page/arbitratComm/groupAudit/children/resBatchAgree'
 import resBatchUpdate from '@/page/arbitratComm/groupAudit/children/resBatchUpdate'
-import resBatchSaveForm from '@/page/arbitratSecr/groupAppl/children/resBatchSaveForm'
+import resBatchSaveForm from '@/page/comm/apprForm/resBatchSaveForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
@@ -461,6 +461,7 @@ export default {
           this.alertObj.groupPass = false
           this.alertObj.groupPassData = null
           this.pageObj.pageNum = 1
+          this.resMessage('success', '同意后请保存组庭审批表')
           this.resCaseList()
           break
         case 'resPass':
@@ -479,16 +480,19 @@ export default {
         case 'resRevise':
           this.alertObj.revise = false
           this.alertObj.reviseData = null
+          this.resMessage('success', '修订后请保存组庭审批表')
           this.alertCanc('clearIds')
           this.resCaseList()
           break
         case 'resBatchAgree':
           this.alertObj.batchAgree = false
+          this.resMessage('success', '批量同意后请保存组庭审批表')
           this.resSearchList()
           break
         case 'resBatchUpdate':
           this.alertObj.batchUpdate = false
           this.alertShow.arbiNum = null
+          this.resMessage('success', '批量修订后请保存组庭审批表')
           this.resSearchList()
           break
         case 'resBatchSaveForm':

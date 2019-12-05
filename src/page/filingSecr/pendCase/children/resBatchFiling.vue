@@ -1,7 +1,8 @@
 <template>
   <div class="resBatchFiling">
-    <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="确认立案">
-      <p class="mb10">确定要批量立案吗？</p>
+    <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
+      <p v-if="resPropsData.type === 'resBatchFiling'" class="mb10">确定要批量立案吗？</p>
+      <p v-if="resPropsData.type === 'resResubmitBatch'" class="mb10">确定要批量重新提交吗？</p>
     </alert-btn-info>
   </div>
 </template>
@@ -13,7 +14,17 @@ import { resMess } from '@/components/common/mixin.js'
 export default {
   name: 'res_batchFiling',
   mixins: [resMess],
-  props: ['resPropsData'],
+  props: {
+    resPropsData: {
+      type: Object,
+      default: function () {
+        return {
+          caseIds: [],
+          type: ''
+        }
+      }
+    }
+  },
   components: { alertBtnInfo },
   data () {
     return {

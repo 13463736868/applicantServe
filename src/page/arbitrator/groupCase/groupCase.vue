@@ -30,6 +30,10 @@
         <Row>
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="reason">
+                <Button class="mr5" type="primary" size="small" v-if="row.caseDocumentReason !== null && row.caseDocumentReason !== ''" @click="resAction('seeReasonD', row)">文书退回原因</Button>
+                <Button class="mr5" type="primary" size="small" v-if="row.correctionsReason !== null && row.correctionsReason !== ''" @click="resAction('seeReasonC', row)">补正原因</Button>
+              </template>
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPCASE_UPDATE')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0 || row.isconfirm === null" @click="resAction('resEditData', row)">修改</Button>
                 <Button :style="{display: resBtnDis('GROUPCASE_CONFIRM')}" class="mr5" type="primary" size="small" v-if="row.isconfirm === 0" @click="resAction('resConfData', row)">确认</Button>
@@ -209,9 +213,7 @@ export default {
             title: '原因',
             key: 'id',
             align: 'center',
-            render: (h, params) => {
-              return this.reasonBtn(h, params)
-            }
+            slot: 'reason'
           },
           {
             title: '操作',
@@ -264,82 +266,6 @@ export default {
   methods: {
     resSetRegExp (val, type) {
       return setRegExp(val, type)
-    },
-    reasonBtn (h, params) {
-      let _obj = params.row
-      if (_obj.correctionsReason === '' || _obj.correctionsReason === null) {
-        if (_obj.caseDocumentReason === '' || _obj.caseDocumentReason === null) {
-          return h('div', [
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resAction('seeReasonD', params.row)
-                }
-              }
-            }, '文书退回原因')
-          ])
-        }
-      } else {
-        if (_obj.caseDocumentReason === '' || _obj.caseDocumentReason === null) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resAction('seeReasonC', params.row)
-                }
-              }
-            }, '补正原因')
-          ])
-        } else {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resAction('seeReasonC', params.row)
-                }
-              }
-            }, '补正原因'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px'
-              },
-              on: {
-                click: () => {
-                  this.resAction('seeReasonD', params.row)
-                }
-              }
-            }, '文书退回原因')
-          ])
-        }
-      }
     },
     resCaseList () {
       this.spinShow = true

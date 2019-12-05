@@ -162,7 +162,7 @@ import resReveDocu from '@/page/arbitratSecr/groupAppl/children/resReveDocu'
 import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import resProPosal from '@/page/arbitratSecr/groupAppl/children/resProPosal'
 import resBatchProPosal from '@/page/arbitratSecr/groupAppl/children/resBatchProPosal'
-import resBatchSaveForm from '@/page/arbitratSecr/groupAppl/children/resBatchSaveForm'
+import resBatchSaveForm from '@/page/comm/apprForm/resBatchSaveForm'
 import resBatchSubmit from '@/page/arbitratSecr/groupAppl/children/resBatchSubmit'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import { caseInfo } from '@/config/common.js'
@@ -431,10 +431,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -482,10 +479,7 @@ export default {
             }
           }
         }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
       axios.post('/case/findCaseFileList', {
@@ -498,10 +492,7 @@ export default {
         this.fileList.bodyList = _data.dataList === null ? [] : _data.dataList
         this.fileList.page.total = _data.totalCount
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSubm (index) {
@@ -514,17 +505,11 @@ export default {
         caseId: this.alertObj.caseId
       }).then(res => {
         this.alertCanc('subm')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('error', '操作成功')
         this.resSearch()
       }).catch(e => {
         this.alertCanc('subm')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resBeginTime (type, index) {
@@ -545,24 +530,15 @@ export default {
             let _sTime = res.data.data.startDate.split('-').join('')
             let _eTime = res.data.data.endDate.split('-').join('')
             if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
+              this.resMessage('warning', '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间')
             } else {
               this.upTimeSave()
             }
           } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '调取时间范围出错,稍后再试')
           }
         }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '调取时间范围出错,稍后再试')
         })
       } else if (this.alertObj.type === 'edit') {
         axios.post('/getDateSection', {
@@ -574,24 +550,15 @@ export default {
             let _sTime = res.data.data.startDate.split('-').join('')
             let _eTime = res.data.data.endDate.split('-').join('')
             if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
+              this.resMessage('warning', '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间')
             } else {
               this.upTimeSave()
             }
           } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '调取时间范围出错,稍后再试')
           }
         }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '调取时间范围出错,稍后再试')
         })
       }
     },
@@ -609,17 +576,11 @@ export default {
         updateType: _type
       }).then(res => {
         this.alertCanc('begin')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resSearch()
       }).catch(e => {
         this.alertCanc('begin')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSeeReas (index) {
@@ -659,10 +620,7 @@ export default {
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
-            this.$Message.error({
-              content: '最多只能选择十个案件',
-              duration: 5
-            })
+            this.resMessage('error', '最多只能选择十个案件')
             return false
           } else {
             let _o = {}
@@ -687,10 +645,7 @@ export default {
     },
     resBatch (type) {
       if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
+        this.resMessage('error', '请先选择一个案件')
       } else {
         if (type === 2) {
           this.alertShow.time = true
@@ -707,24 +662,15 @@ export default {
           let _sTime = res.data.data.startDate.split('-').join('')
           let _eTime = res.data.data.endDate.split('-').join('')
           if (_time - _sTime < 0 || _time - _eTime > 0) {
-            this.$Message.warning({
-              content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-              duration: 6
-            })
+            this.resMessage('warning', '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间')
           } else {
             this.timesSave()
           }
         } catch (e) {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '调取时间范围出错,稍后再试')
         }
       }).catch(e => {
-        this.$Message.error({
-          content: '调取时间范围出错,稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '调取时间范围出错,稍后再试')
       })
     },
     timesSave () {
@@ -735,17 +681,11 @@ export default {
         updateType: 1
       }).then(res => {
         this.alertCanc('time')
-        this.$Message.success({
-          content: res.data.data,
-          duration: 2
-        })
+        this.resMessage('success', res.data.data)
         this.resSearch()
       }).catch(e => {
         this.alertCanc('time')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     noTimesSave (type) {
@@ -755,16 +695,10 @@ export default {
           caseIds: this.alertShow.ids.join(','),
           updateType: 3
         }).then(res => {
-          this.$Message.success({
-            content: res.data.data,
-            duration: 2
-          })
+          this.resMessage('success', res.data.data)
           this.resSearch()
         }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       } else if (type === 'begin') {
         this.alertCanc('noBegin')
@@ -773,16 +707,10 @@ export default {
           updateType: 3
         }).then(res => {
           this.alertObj.caseId = null
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resSearch()
         }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
@@ -796,16 +724,10 @@ export default {
         caseId: this.alertObj.sendId
       }).then(res => {
         this.alertCanc('sendDoc')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resEditData (index) {
@@ -824,10 +746,7 @@ export default {
         })
         this.alertShow.batchEdit = true
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resBatchUp () {
@@ -891,10 +810,7 @@ export default {
       switch (type) {
         case 'batchEdit':
           if (this.alertShow.batchNo === null) {
-            this.$Message.error({
-              content: '请先选择一个批次号',
-              duration: 5
-            })
+            this.resMessage('error', '请先选择一个批次号')
             return false
           }
           axios.post('/file/addJudgeTemplate', {
@@ -906,10 +822,7 @@ export default {
             })
             this.alertCanc('batchEdit')
           }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
           break
         case 'editData':
@@ -1008,19 +921,13 @@ export default {
       } else if (type === 'resBatchProPosal') {
         this.alertObj.arbiNum = null
         this.alertObj.batchProPosal = false
-        this.alertShow.ids = []
-        this.alertShow.idsList = []
-        this.caseList.seleMap = {}
+        this.alertCanc('clearIds')
       } else if (type === 'resBatchSaveForm') {
         this.alertObj.batchSaveForm = false
-        this.alertShow.ids = []
-        this.alertShow.idsList = []
-        this.caseList.seleMap = {}
+        this.alertCanc('clearIds')
       } else if (type === 'resBatchSubmit') {
         this.alertObj.batchSubmit = false
-        this.alertShow.ids = []
-        this.alertShow.idsList = []
-        this.caseList.seleMap = {}
+        this.alertCanc('clearIds')
       }
     },
     seeDoc (path) {

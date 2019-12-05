@@ -6,25 +6,51 @@
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="8">
+        <Col span="5">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
-        <Col span="10">
-          &nbsp;
-        </Col>
         <Col span="2">
-          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
         </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
+        <Col span="3">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
+            <Option value="1" key="1">全部</Option>
+            <Option :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}" value="2" key="2">批量通过</Option>
+            <Option :style="{display: resBtnDis('PENDCASEM_REVISE_BATCH')}" value="3" key="3">批量案由修订</Option>
+            <Option :style="{display: resBtnDis('PENDCASEM_SAVEAPPRBATCH')}" value="4" key="4">批量保存审批表</Option>
+            <Option :style="{display: resBtnDis('PENDCASEM_REJECT_BATCH')}" value="5" key="5">批量退回</Option>
+          </Select>
+        </Col>
+        <Col span="12">
+          <div class="tr pr20">
+            <Button class="ml5" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
+            <Button class="ml5" type="primary" @click="resAction('resUpdateTypeBatch', null)" :style="{display: resBtnDis('PENDCASEM_REVISE_BATCH')}">批量案由修订</Button>
+            <Button class="ml5" type="primary" @click="resAction('resBatchSaveForm', null)" :style="{display: resBtnDis('PENDCASEM_SAVEAPPRBATCH')}">批量保存审批表</Button>
+            <Button class="ml5" type="primary" @click="resAction('resRejectBatch', null)" :style="{display: resBtnDis('PENDCASEM_REJECT_BATCH')}">批量退回</Button>
+            <Button class="ml5" type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="check">
+                <div v-if="search.batchCondition !== '1' && row.pendBtnStatus === '3'">
+                  <Icon v-if="alertShow.ids.indexOf(row.caseId) === -1" class="hand vtt" type="md-square-outline" size="16" color="#2d8cf0" @click="seleArrChange(row, true)"></Icon>
+                  <Icon v-else class="hand vtt" type="md-checkbox" size="16" color="#2d8cf0" @click="seleArrChange(row, false)"></Icon>
+                </div>
+              </template>
               <template slot-scope="{ row, index }" slot="seeFileL">
                 <Button :style="{display: resBtnDis('PENDCASEM_FILEDETAIL')}" class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
+              </template>
+              <template slot-scope="{ row, index }" slot="action">
+                <div v-if="row.pendBtnStatus === '3'">
+                  <Button :style="{display: resBtnDis('PENDCASEM_PASS')}" class="mr5" type="primary" size="small" @click="resConfCase(index)">通过</Button>
+                  <Button :style="{display: resBtnDis('PENDCASEM_REJECT')}" class="mr5" type="primary" size="small" @click="resAction('backCase', row)">退回</Button>
+                  <Button :style="{display: resBtnDis('PENDCASEM_APPROVAL')}" class="mr5" type="primary" size="small" @click="resAction('pendForm', row)">立案审批表</Button>
+                  <Button :style="{display: resBtnDis('PENDCASEM_REVISE')}" class="mr5" type="primary" size="small" @click="resAction('reson', row)">案由修订</Button>
+                </div>
               </template>
             </Table>
           </Col>
@@ -44,6 +70,9 @@
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
       <p>确定要通过吗？</p>
     </alert-btn-info>
+    <res-reject-batch  v-if="alertObj.rejectBatch" :resPropsData="alertShow.idsList" @alertConfirm="alertSave('resRejectBatch')" @alertCancel="alertCanc('resRejectBatch')"></res-reject-batch>
+    <res-batch-save-form v-if="alertObj.batchSaveForm" :resIdsList="alertShow.idsList" @alertConfirm="alertSave('resBatchSaveForm')" @alertCancel="alertCanc('resBatchSaveForm')"></res-batch-save-form>
+    <res-update-type-batch v-if="alertObj.updateTypeBatch" :resPropsData="alertShow.idsList" @alertConfirm="alertSave('resUpdateTypeBatch')" @alertCancel="alertCanc('resUpdateTypeBatch')"></res-update-type-batch>
     <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
     <filing-case-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('pendForm')" @alertCancel="alertCanc('pendForm')"></filing-case-form>
     <res-reson-alert v-if="alertShow.resonModel" :resCaseId="alertShow.resCaseId" :resCaseType="alertShow.resCaseType" @alertConfirm="alertSave('reson')" @alertCancel="alertCanc('reson')"></res-reson-alert>
@@ -54,7 +83,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn, resSearFind} from '@/components/common/mixin.js'
+import {resMess, resBtn, resSearFind} from '@/components/common/mixin.js'
 import { mapGetters } from 'vuex'
 import spinComp from '@/components/common/spin'
 import resFind from '@/page/comm/resFind/resFind'
@@ -63,16 +92,20 @@ import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
 import resSeeFile from '@/page/filingMana/pendCaseM/children/resSeeFile'
 import resBackCase from '@/page/filingMana/pendCaseM/children/resBackCase'
+import resBatchSaveForm from '@/page/comm/apprForm/resBatchSaveForm'
+import resUpdateTypeBatch from '@/page/filingSecr/pendCase/children/resUpdateTypeBatch'
+import resRejectBatch from '@/page/filingMana/pendCaseM/children/resRejectBatch'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
-  mixins: [resBtn, resSearFind],
-  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resResonAlert, resSeeFile, resBackCase },
+  mixins: [resMess, resBtn, resSearFind],
+  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resResonAlert, resSeeFile, resBackCase, resBatchSaveForm, resUpdateTypeBatch, resRejectBatch },
   data () {
     return {
       spinShow: false,
       search: {
+        batchCondition: '1',
         text: '',
         requestName: '',
         caseType: '',
@@ -87,8 +120,9 @@ export default {
             key: 'caseId',
             width: 60,
             align: 'center',
-            render: (h, params) => {
-              return this.renderCheck(h, params)
+            slot: 'check',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
             }
           },
           {
@@ -112,11 +146,11 @@ export default {
               }, params.row.caseId)
             }
           },
-          {
-            title: '案件类型',
-            key: 'caseTypeName',
-            align: 'center'
-          },
+          // {
+          //   title: '案件类型',
+          //   key: 'caseTypeName',
+          //   align: 'center'
+          // },
           {
             title: '案由',
             key: 'caseReson',
@@ -163,90 +197,8 @@ export default {
             title: '操作',
             key: 'caseId',
             align: 'center',
-            render: (h, params) => {
-              if (params.row.pendBtnStatus === '3') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_PASS')
-                    },
-                    on: {
-                      click: () => {
-                        this.resConfCase(params.index)
-                      }
-                    }
-                  }, '通过'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_REJECT')
-                    },
-                    on: {
-                      click: () => {
-                        this.resAction('backCase', params.row)
-                      }
-                    }
-                  }, '退回'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_APPROVAL')
-                    },
-                    on: {
-                      click: () => {
-                        this.resAction('pendForm', params.row)
-                      }
-                    }
-                  }, '立案审批表'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_REVISE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resAction('reson', params.row)
-                      }
-                    }
-                  }, '案由修订')
-                ])
-              } else {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('PENDCASEM_REVISE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resAction('reson', params.row)
-                      }
-                    }
-                  }, '案由修订')
-                ])
-              }
-            }
+            slot: 'action',
+            minWidth: 100
           }
         ],
         bodyList: []
@@ -280,7 +232,10 @@ export default {
       },
       alertObj: {
         seeFile: false,
-        caseId: null
+        caseId: null,
+        updateTypeBatch: false,
+        batchSaveForm: false,
+        rejectBatch: false
       }
     }
   },
@@ -310,10 +265,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -344,10 +296,7 @@ export default {
         this.dataObj.confCaseId = this.caseList.bodyList[index].caseId
         this.dataObj.confCosts = this.caseList.bodyList[index].cost
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     confSave () {
@@ -357,79 +306,47 @@ export default {
         costs: this.dataObj.confCosts
       }).then(res => {
         this.alertCanc('conf')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resSearch()
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
-    renderCheck (h, params) {
-      let _obj = params.row
-      if (_obj.pendBtnStatus === '3') {
-        if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
-          return h('div', [
-            h('Icon', {
-              props: {
-                type: 'md-square-outline',
-                size: '16'
-              },
-              style: {
-                color: '#2d8cf0',
-                cursor: 'pointer',
-                verticalAlign: 'text-top'
-              },
-              on: {
-                click: () => {
-                  this.seleArrChange(params.index, true)
-                }
-              }
-            })
-          ])
-        } else {
-          return h('div', [
-            h('Icon', {
-              props: {
-                type: 'md-checkbox',
-                size: '16'
-              },
-              style: {
-                color: '#2d8cf0',
-                cursor: 'pointer',
-                verticalAlign: 'text-top'
-              },
-              on: {
-                click: () => {
-                  this.seleArrChange(params.index, false)
-                }
-              }
-            })
-          ])
-        }
-      } else {
-        return h('div', [
-        ])
-      }
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.caseId) === -1) {
           if (this.alertShow.ids.length >= 10) {
-            this.$Message.error({
-              content: '最多只能选择十个案件',
-              duration: 5
-            })
+            this.resMessage('error', '最多只能选择十个案件')
             return false
           } else {
             let _o = {}
-            _o.caseId = info.caseId
-            _o.costs = info.cost
+            if (this.search.batchCondition === '4') {
+              _o.caseId = info.caseId
+              _o.formType = 21
+            } else if (this.search.batchCondition === '3') {
+              _o.caseId = info.caseId
+            } else if (this.search.batchCondition === '2') {
+              _o.caseId = info.caseId
+              _o.costs = info.cost
+            } else if (this.search.batchCondition === '5') {
+              _o.caseId = info.caseId
+            }
             this.alertShow.idsList.push(_o)
             this.alertShow.ids.push(info.caseId)
           }
@@ -443,10 +360,7 @@ export default {
     },
     resBatch () {
       if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
+        this.resMessage('error', '请先选择一个案件')
       } else {
         axios.post('/dictionary/findDictionaryList', {
           type: 'caseType'
@@ -462,10 +376,7 @@ export default {
           this.caseTypeList = _select
           this.alertShow.batch = true
         }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
@@ -480,17 +391,11 @@ export default {
         }
       }).then(res => {
         this.alertCanc('batch')
-        this.$Message.success({
-          content: res.data.data,
-          duration: 2
-        })
+        this.resMessage('success', res.data.data)
         this.resSearch()
       }).catch(e => {
         this.alertCanc('batch')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resAction (type, data) {
@@ -511,6 +416,33 @@ export default {
         case 'backCase':
           this.alertShow.resCaseId = data.caseId
           this.alertShow.backCaseModel = true
+          break
+        case 'resUpdateTypeBatch':
+          if (this.search.batchCondition !== '3') {
+            this.resMessage('error', '请先条件选择 \'批量案由修订\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.updateTypeBatch = true
+          }
+          break
+        case 'resBatchSaveForm':
+          if (this.search.batchCondition !== '4') {
+            this.resMessage('error', '请先条件选择 \'批量保存审批表\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.batchSaveForm = true
+          }
+          break
+        case 'resRejectBatch':
+          if (this.search.batchCondition !== '5') {
+            this.resMessage('error', '请先条件选择 \'批量退回\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.rejectBatch = true
+          }
           break
       }
     },
@@ -538,6 +470,18 @@ export default {
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
+        case 'resBatchSaveForm':
+          this.alertObj.batchSaveForm = false
+          this.resSearch()
+          break
+        case 'resUpdateTypeBatch':
+          this.alertObj.updateTypeBatch = false
+          this.resSearch()
+          break
+        case 'resRejectBatch':
+          this.alertObj.rejectBatch = false
+          this.resSearch()
+          break
       }
     },
     alertCanc (type) {
@@ -553,6 +497,7 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           break
         case 'pendForm':
           this.formObj.filing = false
@@ -570,6 +515,18 @@ export default {
         case 'backCase':
           this.alertShow.resCaseId = null
           this.alertShow.backCaseModel = false
+          break
+        case 'resUpdateTypeBatch':
+          this.alertObj.updateTypeBatch = false
+          this.alertCanc('clearIds')
+          break
+        case 'resBatchSaveForm':
+          this.alertObj.batchSaveForm = false
+          this.alertCanc('clearIds')
+          break
+        case 'resRejectBatch':
+          this.alertObj.rejectBatch = false
+          this.alertCanc('clearIds')
           break
       }
     },

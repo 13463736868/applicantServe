@@ -6,34 +6,48 @@
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="7">
+        <Col span="5">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
         </Col>
-        <Col span="2" offset="1">
+        <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">状态</label>
         </Col>
-        <Col span="4">
+        <Col span="3">
           <Select v-model="reviewStatus" @on-change="resChangeStatus()">
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
-        <Col span="1">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="3">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量通知交费</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量退回</Button>
+        <Col span="12">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量通知交费</Button>
+            <Button class="ml20" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量退回</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="check">
+                <div v-if="row.cancelFlag !== '1' && row.state === 1 && row.acceptBtnStatus === '1'">
+                  <Icon v-if="alertShow.ids.indexOf(row.caseId) === -1" class="hand vtt" type="md-square-outline" size="16" color="#2d8cf0" @click="seleArrChange(row, true)"></Icon>
+                  <Icon v-else class="hand vtt" type="md-checkbox" size="16" color="#2d8cf0" @click="seleArrChange(row, false)"></Icon>
+                </div>
+              </template>
+              <template slot-scope="{ row, index }" slot="hashFlag">
+                <span v-if="row.solidifyHashStatus === '3'" @click="resGoCase(index)" style="color: #ff9900;" class="mr5 hand" type="text" size="small">{{row.compareSolidifyHashFlag}}</span>
+                <span v-if="row.solidifyHashStatus === '1'" @click="resGoCase(index)" style="color: #19be6b;" class="mr5 hand" type="text" size="small">{{row.compareSolidifyHashFlag}}</span>
+                <span v-if="row.solidifyHashStatus === '2'" @click="resGoCase(index)" style="color: #ed4014;" class="mr5 hand" type="text" size="small">{{row.compareSolidifyHashFlag}}</span>
+                <span v-if="['1', '2', '3'].indexOf(row.solidifyHashStatus) === -1" @click="resGoCase(index)" class="mr5 hand" type="text" size="small">{{row.compareSolidifyHashFlag}}</span>
+              </template>
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('ACCECASE_PASSWITHDRAW')}" type="primary" size="small" v-if="row.cancelFlag === '1'" @click="resRecallCase(index)">同意撤回</Button>
+                <Button :style="{display: resBtnDis('ACCECASE_ACCEPT')}" type="primary" size="small" v-if="row.cancelFlag !== '1' && row.state === 1 && row.acceptBtnStatus === '1'" @click="resAcceptCase(1, index)">通知交费</Button>
+                <Button :style="{display: resBtnDis('ACCECASE_REJECT')}" type="primary" size="small" v-if="row.cancelFlag !== '1' && row.state === 1 && row.acceptBtnStatus === '1'" @click="resAcceptCase(0, index)">退回</Button>
+                <span style="color: #2d8cf0" class="mr5" type="text" size="small" v-if="row.cancelFlag !== '1' && row.state === 1 && row.acceptBtnStatus === '2'">通知交费审核中</span>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -83,7 +97,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn, resSearFind} from '@/components/common/mixin.js'
+import {resMess, resBtn, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import resFind from '@/page/comm/resFind/resFind'
@@ -92,7 +106,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'acce_case',
-  mixins: [resBtn, resSearFind],
+  mixins: [resMess, resBtn, resSearFind],
   components: { spinComp, alertBtnInfo, resFind },
   data () {
     return {
@@ -112,8 +126,9 @@ export default {
             key: 'caseId',
             width: 60,
             align: 'center',
-            render: (h, params) => {
-              return this.renderCheck(h, params)
+            slot: 'check',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
             }
           },
           {
@@ -171,9 +186,7 @@ export default {
             title: '证据固化',
             key: 'compareSolidifyHashFlag',
             align: 'center',
-            render: (h, params) => {
-              return this.renderHashFlag(h, params)
-            }
+            slot: 'hashFlag'
           },
           {
             title: '案件状态',
@@ -203,12 +216,11 @@ export default {
             key: 'caseId',
             minWidth: 26,
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -258,149 +270,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    renderHashFlag (h, params) {
-      let _status = params.row.solidifyHashStatus
-      if (_status === '3') {
-        return h('span', {
-          props: {
-            type: 'text',
-            size: 'small'
-          },
-          style: {
-            color: '#ff9900',
-            cursor: 'pointer'
-          },
-          on: {
-            click: () => {
-              this.resGoCase(params.index)
-            }
-          }
-        }, params.row.compareSolidifyHashFlag)
-      } else if (_status === '1') {
-        return h('span', {
-          props: {
-            type: 'text',
-            size: 'small'
-          },
-          style: {
-            color: '#19be6b',
-            cursor: 'pointer'
-          },
-          on: {
-            click: () => {
-              this.resGoCase(params.index)
-            }
-          }
-        }, params.row.compareSolidifyHashFlag)
-      } else if (_status === '2') {
-        return h('span', {
-          props: {
-            type: 'text',
-            size: 'small'
-          },
-          style: {
-            color: '#ed4014',
-            cursor: 'pointer'
-          },
-          on: {
-            click: () => {
-              this.resGoCase(params.index)
-            }
-          }
-        }, params.row.compareSolidifyHashFlag)
-      } else {
-        return h('span', {
-          props: {
-            type: 'text',
-            size: 'small'
-          },
-          style: {
-            cursor: 'pointer'
-          },
-          on: {
-            click: () => {
-              this.resGoCase(params.index)
-            }
-          }
-        }, params.row.compareSolidifyHashFlag)
-      }
-    },
-    renderBtn (h, params) {
-      if (params.row.cancelFlag === '1') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('ACCECASE_PASSWITHDRAW')
-            },
-            on: {
-              click: () => {
-                this.resRecallCase(params.index)
-              }
-            }
-          }, '同意撤回')
-        ])
-      } else {
-        if (params.row.state === 1) {
-          if (params.row.acceptBtnStatus === '1') {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px',
-                  display: this.resBtnDis('ACCECASE_ACCEPT')
-                },
-                on: {
-                  click: () => {
-                    this.resAcceptCase(1, params.index)
-                  }
-                }
-              }, '通知交费'),
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px',
-                  display: this.resBtnDis('ACCECASE_REJECT')
-                },
-                on: {
-                  click: () => {
-                    this.resAcceptCase(0, params.index)
-                  }
-                }
-              }, '退回')
-            ])
-          } else if (params.row.acceptBtnStatus === '2') {
-            return h('div', [
-              h('span', {
-                props: {
-                  type: 'text',
-                  size: 'small'
-                },
-                style: {
-                  color: '#2d8cf0'
-                }
-              }, '通知交费审核中')
-            ])
-          } else {
-            return h('div', [
-            ])
-          }
-        } else {
-          return h('div', [
-          ])
-        }
-      }
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/case/findRegisterCaseList', {
@@ -418,10 +287,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -478,24 +344,15 @@ export default {
       }).then(res => {
         this.dataObj.acceAB = res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     acceSave (type) {
       if (type === 'acceA') {
         if (this.dataObj.acceAA === null || this.dataObj.acceAA === '') {
-          this.$Message.warning({
-            content: '请填写纠纷金额！',
-            duration: 5
-          })
+          this.resMessage('warning', '请填写纠纷金额！')
         } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
-          this.$Message.warning({
-            content: '请正确填写金额格式！',
-            duration: 5
-          })
+          this.resMessage('warning', '请正确填写金额格式！')
         } else {
           this.alertShow.acceA = false
           axios.post('/case/updateCaseState', {
@@ -505,29 +362,17 @@ export default {
             cost: this.dataObj.acceAB
           }).then(res => {
             this.alertCanc(type)
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
+            this.resMessage('success', '操作成功')
             this.resSearch()
           }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
         }
       } else if (type === 'acceB') {
         if (this.dataObj.acceB === null || this.dataObj.acceB === '') {
-          this.$Message.warning({
-            content: '请填写退回原因！',
-            duration: 5
-          })
+          this.resMessage('warning', '请填写退回原因！')
         } else if (!setRegExp(this.dataObj.acceB, 'reject')) {
-          this.$Message.warning({
-            content: '请正确填写退回原因格式！',
-            duration: 5
-          })
+          this.resMessage('warning', '请正确填写退回原因格式！')
         } else {
           this.alertShow.acceB = false
           axios.post('/case/updateCaseState', {
@@ -536,16 +381,10 @@ export default {
             reason: this.dataObj.acceB
           }).then(res => {
             this.alertCanc(type)
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
+            this.resMessage('success', '操作成功')
             this.resSearch()
           }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
         }
       }
@@ -556,82 +395,46 @@ export default {
         caseId: this.dataObj.retrCaseId
       }).then(res => {
         this.alertCanc('retr')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resSearch()
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
-    renderCheck (h, params) {
-      let _obj = params.row
-      if (_obj.cancelFlag === '1') {
-        return h('div', [
-        ])
-      } else if (params.row.state === 1) {
-        if (params.row.acceptBtnStatus === '1') {
-          if (this.alertShow.ids.indexOf(_obj.caseId) === -1) {
-            return h('div', [
-              h('Icon', {
-                props: {
-                  type: 'md-square-outline',
-                  size: '16'
-                },
-                style: {
-                  color: '#2d8cf0',
-                  cursor: 'pointer',
-                  verticalAlign: 'text-top'
-                },
-                on: {
-                  click: () => {
-                    this.seleArrChange(params.index, true)
-                  }
-                }
-              })
-            ])
-          } else {
-            return h('div', [
-              h('Icon', {
-                props: {
-                  type: 'md-checkbox',
-                  size: '16'
-                },
-                style: {
-                  color: '#2d8cf0',
-                  cursor: 'pointer',
-                  verticalAlign: 'text-top'
-                },
-                on: {
-                  click: () => {
-                    this.seleArrChange(params.index, false)
-                  }
-                }
-              })
-            ])
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
           }
-        } else {
-          return h('div', [
-          ])
-        }
-      } else {
-        return h('div', [
-        ])
-      }
+        }, '全选')
+      ])
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.cancelFlag !== '1' && _obj.state === 1 && _obj.acceptBtnStatus === '1') {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.caseId) === -1) {
           if (this.alertShow.ids.length >= 10) {
-            this.$Message.error({
-              content: '最多只能选择十个案件',
-              duration: 5
-            })
+            this.resMessage('error', '最多只能选择十个案件')
             return false
           } else {
             let _o = {}
@@ -649,10 +452,7 @@ export default {
     },
     resBatch (type) {
       if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
+        this.resMessage('error', '请先选择一个案件')
       } else {
         this.alertShow.state = type
         this.alertShow.batch = true
@@ -661,10 +461,7 @@ export default {
     batchSave () {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
-          this.$Message.warning({
-            content: '请填写退回原因',
-            duration: 5
-          })
+          this.resMessage('warning', '请填写退回原因')
         } else {
           this.alertShow.batch = false
           axios.put('/caseBatch/updateCaseState_batch', {
@@ -677,17 +474,11 @@ export default {
             }
           }).then(res => {
             this.alertCanc('batch')
-            this.$Message.success({
-              content: res.data.data,
-              duration: 2
-            })
+            this.resMessage('success', res.data.data)
             this.resSearch()
           }).catch(e => {
             this.alertCanc('batch')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
         }
       } else {
@@ -701,17 +492,11 @@ export default {
           }
         }).then(res => {
           this.alertCanc('batch')
-          this.$Message.success({
-            content: res.data.data,
-            duration: 2
-          })
+          this.resMessage('success', res.data.data)
           this.resSearch()
         }).catch(e => {
           this.alertCanc('batch')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
@@ -737,6 +522,7 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+        this.caseList.seleMap = {}
       }
     },
     goCaseInfo (index) {
