@@ -27,7 +27,7 @@
             <Button class="ml5" type="primary" @click="resAction('resUpdateTypeBatch', null)" :style="{display: resBtnDis('PENDCASEM_REVISE_BATCH')}">批量案由修订</Button>
             <Button class="ml5" type="primary" @click="resAction('resBatchSaveForm', null)" :style="{display: resBtnDis('PENDCASEM_SAVEAPPRBATCH')}">批量保存审批表</Button>
             <Button class="ml5" type="primary" @click="resAction('resRejectBatch', null)" :style="{display: resBtnDis('PENDCASEM_REJECT_BATCH')}">批量退回</Button>
-            <Button class="ml5" type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
+            <Button class="ml5" type="primary" @click="resAction('resBatchPass', null)" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
           </div>
         </Col>
       </Row>
@@ -46,7 +46,7 @@
               </template>
               <template slot-scope="{ row, index }" slot="action">
                 <div v-if="row.pendBtnStatus === '3'">
-                  <Button :style="{display: resBtnDis('PENDCASEM_PASS')}" class="mr5" type="primary" size="small" @click="resConfCase(index)">通过</Button>
+                  <Button :style="{display: resBtnDis('PENDCASEM_PASS')}" class="mr5" type="primary" size="small" @click="resAction('resConfCase', row)">通过</Button>
                   <Button :style="{display: resBtnDis('PENDCASEM_REJECT')}" class="mr5" type="primary" size="small" @click="resAction('backCase', row)">退回</Button>
                   <Button :style="{display: resBtnDis('PENDCASEM_APPROVAL')}" class="mr5" type="primary" size="small" @click="resAction('pendForm', row)">立案审批表</Button>
                   <Button :style="{display: resBtnDis('PENDCASEM_REVISE')}" class="mr5" type="primary" size="small" @click="resAction('reson', row)">案由修订</Button>
@@ -64,12 +64,7 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.conf" @alertConfirm="confSave" @alertCancel="alertCanc('conf')" alertTitle="确认立案">
-      <p>确定要通过吗？</p>
-    </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('batch')" alertTitle="确认立案">
-      <p>确定要通过吗？</p>
-    </alert-btn-info>
+    <res-batch-pass v-if="alertObj.batchPass" :resPropsData="alertObj.batchPassData" @alertConfirm="alertSave('resBatchPass')" @alertCancel="alertCanc('resBatchPass')"></res-batch-pass>
     <res-reject-batch  v-if="alertObj.rejectBatch" :resPropsData="alertShow.idsList" @alertConfirm="alertSave('resRejectBatch')" @alertCancel="alertCanc('resRejectBatch')"></res-reject-batch>
     <res-batch-save-form v-if="alertObj.batchSaveForm" :resIdsList="alertShow.idsList" @alertConfirm="alertSave('resBatchSaveForm')" @alertCancel="alertCanc('resBatchSaveForm')"></res-batch-save-form>
     <res-update-type-batch v-if="alertObj.updateTypeBatch" :resPropsData="alertShow.idsList" @alertConfirm="alertSave('resUpdateTypeBatch')" @alertCancel="alertCanc('resUpdateTypeBatch')"></res-update-type-batch>
@@ -92,15 +87,16 @@ import filingCaseForm from '@/page/comm/apprForm/filingCaseForm'
 import resResonAlert from '@/page/filingMana/pendCaseM/children/resResonAlert'
 import resSeeFile from '@/page/filingMana/pendCaseM/children/resSeeFile'
 import resBackCase from '@/page/filingMana/pendCaseM/children/resBackCase'
-import resBatchSaveForm from '@/page/comm/apprForm/resBatchSaveForm'
+import resBatchPass from '@/page/filingMana/pendCaseM/children/resBatchPass'
 import resUpdateTypeBatch from '@/page/filingSecr/pendCase/children/resUpdateTypeBatch'
 import resRejectBatch from '@/page/filingMana/pendCaseM/children/resRejectBatch'
+import resBatchSaveForm from '@/page/comm/apprForm/resBatchSaveForm'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'pend_case_m',
   mixins: [resMess, resBtn, resSearFind],
-  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resResonAlert, resSeeFile, resBackCase, resBatchSaveForm, resUpdateTypeBatch, resRejectBatch },
+  components: { spinComp, alertBtnInfo, resFind, filingCaseForm, resResonAlert, resSeeFile, resBackCase, resBatchPass, resBatchSaveForm, resUpdateTypeBatch, resRejectBatch },
   data () {
     return {
       spinShow: false,
@@ -212,7 +208,6 @@ export default {
         conf: false,
         idsList: [],
         ids: [],
-        batch: false,
         find: false,
         resonModel: false,
         resCaseId: null,
@@ -235,7 +230,9 @@ export default {
         caseId: null,
         updateTypeBatch: false,
         batchSaveForm: false,
-        rejectBatch: false
+        rejectBatch: false,
+        batchPass: false,
+        batchPassData: null
       }
     }
   },
@@ -278,39 +275,6 @@ export default {
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resCaseList()
-    },
-    resConfCase (index) {
-      axios.post('/dictionary/findDictionaryList', {
-        type: 'caseType'
-      }).then(res => {
-        let _dataList = res.data.data
-        let _select = []
-        for (let k in _dataList) {
-          let _o = {}
-          _o.value = _dataList[k].itemValue
-          _o.label = _dataList[k].item
-          _select.push(_o)
-        }
-        this.caseTypeList = _select
-        this.alertShow.conf = true
-        this.dataObj.confCaseId = this.caseList.bodyList[index].caseId
-        this.dataObj.confCosts = this.caseList.bodyList[index].cost
-      }).catch(e => {
-        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-      })
-    },
-    confSave () {
-      this.alertShow.conf = false
-      axios.post('/case/updateCaseStateAnd', {
-        caseId: this.dataObj.confCaseId,
-        costs: this.dataObj.confCosts
-      }).then(res => {
-        this.alertCanc('conf')
-        this.resMessage('success', '操作成功')
-        this.resSearch()
-      }).catch(e => {
-        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-      })
     },
     renderAllSele (h, params) {
       return h('div', [
@@ -358,46 +322,6 @@ export default {
         }
       }
     },
-    resBatch () {
-      if (this.alertShow.ids.length === 0) {
-        this.resMessage('error', '请先选择一个案件')
-      } else {
-        axios.post('/dictionary/findDictionaryList', {
-          type: 'caseType'
-        }).then(res => {
-          let _dataList = res.data.data
-          let _select = []
-          for (let k in _dataList) {
-            let _o = {}
-            _o.value = _dataList[k].itemValue
-            _o.label = _dataList[k].item
-            _select.push(_o)
-          }
-          this.caseTypeList = _select
-          this.alertShow.batch = true
-        }).catch(e => {
-          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-        })
-      }
-    },
-    batchSave () {
-      this.alertShow.batch = false
-      axios.put('/caseBatch/updateCaseStateAnd_batch', {
-        items: JSON.stringify(this.alertShow.idsList),
-        state: '1'
-      }, {
-        headers: {
-          'content-Type': 'application/json;charset=UTF-8'
-        }
-      }).then(res => {
-        this.alertCanc('batch')
-        this.resMessage('success', res.data.data)
-        this.resSearch()
-      }).catch(e => {
-        this.alertCanc('batch')
-        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-      })
-    },
     resAction (type, data) {
       switch (type) {
         case 'pendForm':
@@ -416,6 +340,32 @@ export default {
         case 'backCase':
           this.alertShow.resCaseId = data.caseId
           this.alertShow.backCaseModel = true
+          break
+        case 'resConfCase':
+          this.alertObj.batchPassData = {
+            caseId: data.caseId,
+            costs: data.costs,
+            idsList: [],
+            state: '',
+            type: ''
+          }
+          this.alertObj.batchPass = true
+          break
+        case 'resBatchPass':
+          if (this.search.batchCondition !== '2') {
+            this.resMessage('error', '请先条件选择 \'批量通过\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            this.alertObj.batchPassData = {
+              caseId: '',
+              costs: '',
+              idsList: this.alertShow.idsList,
+              state: '1',
+              type: 'batch'
+            }
+            this.alertObj.batchPass = true
+          }
           break
         case 'resUpdateTypeBatch':
           if (this.search.batchCondition !== '3') {
@@ -465,10 +415,15 @@ export default {
           this.alertObj.caseId = null
           break
         case 'backCase':
-          this.alertShow.resCaseId = null
           this.alertShow.backCaseModel = false
+          this.alertShow.resCaseId = null
           this.pageObj.pageNum = 1
           this.resCaseList()
+          break
+        case 'resBatchPass':
+          this.alertObj.batchPass = false
+          this.alertObj.batchPassData = null
+          this.resSearch()
           break
         case 'resBatchSaveForm':
           this.alertObj.batchSaveForm = false
@@ -486,14 +441,6 @@ export default {
     },
     alertCanc (type) {
       switch (type) {
-        case 'conf':
-          this.alertShow.conf = false
-          this.dataObj.confCaseId = null
-          this.dataObj.confCosts = null
-          break
-        case 'batch':
-          this.alertShow.batch = false
-          break
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
@@ -513,8 +460,13 @@ export default {
           this.alertObj.caseId = null
           break
         case 'backCase':
-          this.alertShow.resCaseId = null
           this.alertShow.backCaseModel = false
+          this.alertShow.resCaseId = null
+          break
+        case 'resBatchPass':
+          this.alertObj.batchPass = false
+          this.alertObj.batchPassData = null
+          this.resSearch()
           break
         case 'resUpdateTypeBatch':
           this.alertObj.updateTypeBatch = false

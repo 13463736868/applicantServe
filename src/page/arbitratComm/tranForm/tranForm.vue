@@ -23,8 +23,10 @@
         <Col span="3">
           <Input v-model="caseFeeEnd" clearable placeholder="结束仲裁费" style="width: 100px" />
         </Col>
-        <Col span="4" offset="2" class="tc">
-          <Button type="primary" class="mr10" @click="resSearch">查询</Button>
+        <Col span="7">
+          <div class="tr pr20">
+            <Button type="primary" class="mr10" @click="resSearch">查询</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
