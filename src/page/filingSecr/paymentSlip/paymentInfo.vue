@@ -58,17 +58,18 @@
         <div class="_page clearfix">
           <Row>
             <Col span="12" offset="6" class="tc">
-              <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+              <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
             </Col>
+          </Row>
+        </div>
       </Row>
     </div>
-      </Row>
-  </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { resPage } from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import { mapGetters, mapActions } from 'vuex'
 import { caseInfo } from '@/config/common.js'
@@ -77,6 +78,7 @@ import regi from '@/config/regiType.js'
 export default {
   name: 'payment_info',
   props: [],
+  mixins: [resPage],
   components: { spinComp },
   data () {
     return {
@@ -176,6 +178,10 @@ export default {
     ...mapActions([
       'setPaymentInfoId'
     ]),
+    resSearch () {
+      this.pageObj.pageNum = 1
+      this.resPayment()
+    },
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resPayment()

@@ -4,7 +4,7 @@
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
         <Col span="4" offset="19">
-          <Select v-model="reviewStatus" @on-change="resChangeStatus()">
+          <Select v-model="reviewStatus" @on-change="resSearch()">
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
@@ -21,7 +21,7 @@
           <div class="_page clearfix">
             <Row>
               <Col span="12" offset="6" class="tc">
-                <Page :total="compPage.total" :current="compPage.pageNum" :page-size="compPage.pageSize" show-elevator show-total @on-change="reschangeCompPage"></Page>
+                <Page :total="compPage.total" :current="compPage.pageNum" :page-size="compPage.pageSize" show-elevator show-total @on-change="reschangeCompPage" @on-page-size-change="reschangePageSize" show-sizer></Page>
               </Col>
             </Row>
           </div>
@@ -37,7 +37,7 @@
           <div class="_page clearfix">
             <Row>
               <Col span="12" offset="6" class="tc">
-                <Page :total="indiPage.total" :current="indiPage.pageNum" :page-size="indiPage.pageSize" show-elevator show-total @on-change="reschangeIndiPage"></Page>
+                <Page :total="indiPage.total" :current="indiPage.pageNum" :page-size="indiPage.pageSize" show-elevator show-total @on-change="reschangeIndiPage" @on-page-size-change="reschangePageSize" show-sizer></Page>
               </Col>
             </Row>
           </div>
@@ -415,13 +415,18 @@ export default {
         // }
       }
     },
-    resChangeStatus () {
+    resSearch () {
       // if (this.tabStatus === 'comp') {
       this.compPage.pageNum = 1
       // } else if (this.tabStatus === 'indi') {
       this.indiPage.pageNum = 1
       // }
       this.resCaseList('change')
+    },
+    reschangePageSize (page) {
+      this.compPage.pageSize = page
+      this.indiPage.pageSize = page
+      this.resSearch()
     },
     reschangeCompPage (page) {
       this.compPage.pageNum = page
