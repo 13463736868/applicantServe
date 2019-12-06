@@ -34,6 +34,15 @@ export const resBtn = {
   }
 }
 
+export const resPage = {
+  methods: {
+    reschangePageSize (obj) {
+      this.pageObj.pageSize = obj
+      this.resSearch()
+    }
+  }
+}
+
 export const resMess = {
   methods: {
     resMessage (type, text) {

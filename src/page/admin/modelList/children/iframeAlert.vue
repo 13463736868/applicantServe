@@ -15,9 +15,11 @@
 </template>
 <script>
 import axios from 'axios'
+import { resMess } from '@/components/common/mixin.js'
 
 export default {
   name: 'iframe_alert',
+  mixins: [resMess],
   props: ['modelId'],
   data () {
     return {
@@ -29,12 +31,6 @@ export default {
     this.resUrl('MODEL_EDIT_URL')
   },
   methods: {
-    resMessage (type, text) {
-      this.$Message[type]({
-        content: text,
-        duration: type === 'success' ? 2 : 5
-      })
-    },
     resUrl (type) {
       axios.post('/arbitration/constant').then(res => {
         this.resSrc = res.data.data[type] + this.modelId

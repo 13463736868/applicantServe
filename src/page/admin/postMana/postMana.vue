@@ -59,11 +59,13 @@
 <script>
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
+import { resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'post_mana',
+  mixins: [resMess],
   components: { spinComp, alertBtnInfo },
   data () {
     return {
@@ -270,10 +272,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -295,17 +294,11 @@ export default {
         }
       }).then(res => {
         this.alertCanc('state')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('state')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resEditPost (index) {
@@ -324,10 +317,7 @@ export default {
         this.restList = res.data.data.treeNode.children
         this.userObj.restShow = true
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     restSave () {
@@ -345,17 +335,11 @@ export default {
         }
       }).then(res => {
         this.alertCanc('rest')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('rest')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resAddPost (type) {
@@ -370,15 +354,9 @@ export default {
     },
     addPostSave () {
       if (this.addData.name === '') {
-        this.$Message.warning({
-          content: '角色名称不能为空',
-          duration: 5
-        })
+        this.resMessage('warning', '角色名称不能为空')
       } else if (!setRegExp(this.addData.name, 'name')) {
-        this.$Message.warning({
-          content: '角色名称只能包含汉字',
-          duration: 5
-        })
+        this.resMessage('warning', '角色名称只能包含汉字')
       } else {
         this.sendAjax()
       }
@@ -392,17 +370,11 @@ export default {
           state: this.addData.state
         }).then(res => {
           this.alertCanc('addPost')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('addPost')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       } else if (type === 'edit') {
         this.alertShow.addPost = false
@@ -416,17 +388,11 @@ export default {
           }
         }).then(res => {
           this.alertCanc('addPost')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('addPost')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },

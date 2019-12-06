@@ -20,7 +20,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -31,10 +31,12 @@
 <script>
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
+import { resPage } from '@/components/common/mixin.js'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'end_case_a',
+  mixins: [resPage],
   components: { spinComp },
   data () {
     return {

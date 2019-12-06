@@ -33,10 +33,12 @@
 
 <script>
 import axios from 'axios'
+import { resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'add_model_list',
+  mixins: [resMess],
   components: { alertBtnInfo },
   data () {
     return {
@@ -53,22 +55,13 @@ export default {
     this.resDictionary('caseFlowModelType')
   },
   methods: {
-    resMessage (type, text) {
-      this.$Message[type]({
-        content: text,
-        duration: type === 'success' ? 2 : 5
-      })
-    },
     resDictionary (_type) {
       axios.post('/dictionary/findDictionaryList', {
         type: _type
       }).then(res => {
         this.modelList = res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     alertSave () {

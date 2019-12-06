@@ -17,7 +17,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -36,12 +36,14 @@
 <script>
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
+import { resPage, resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import addModelAlert from '@/page/admin/modelList/children/addModelAlert'
 import iframeAlert from '@/page/admin/modelList/children/iframeAlert'
 
 export default {
   name: 'model_list',
+  mixins: [resPage, resMess],
   components: { spinComp, alertBtnInfo, addModelAlert, iframeAlert },
   data () {
     return {
@@ -173,10 +175,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {

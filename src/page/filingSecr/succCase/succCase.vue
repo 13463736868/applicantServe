@@ -20,7 +20,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -59,7 +59,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
@@ -68,7 +68,7 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'succ_case',
-  mixins: [resBtn],
+  mixins: [resBtn, resPage],
   components: { spinComp, alertBtnInfo, groupApprForm },
   data () {
     return {

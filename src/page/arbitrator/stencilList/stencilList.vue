@@ -42,7 +42,7 @@
                 :page-size="pageObj.pageSize"
                 show-elevator
                 show-total
-                @on-change="reschangePage"></Page>
+                @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -108,7 +108,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
@@ -116,7 +116,7 @@ import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
 
 export default {
   name: 'stenci_list',
-  mixins: [resBtn],
+  mixins: [resBtn, resPage],
   components: { spinComp, alertBtnInfo, alertEditor },
   data () {
     return {
@@ -201,6 +201,10 @@ export default {
     this.resCaseList()
   },
   methods: {
+    resSearch () {
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
     dictionary () {
       axios.post('/batchCaseDocument/findCaseType').then(res => {
         let _obj = res.data.data

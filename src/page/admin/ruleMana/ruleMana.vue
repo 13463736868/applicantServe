@@ -369,10 +369,12 @@
 <script>
 import axios from 'axios'
 import spinComp from '@/components/common/spin'
+import { resMess } from '@/components/common/mixin.js'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'rule_mana',
+  mixins: [resMess],
   components: { spinComp, alertBtnInfo },
   data () {
     return {
@@ -566,10 +568,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resStatusRule (type, index) {
@@ -588,17 +587,11 @@ export default {
         }
       }).then(res => {
         this.alertCanc('state')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('state')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resEditRule (index) {
@@ -621,34 +614,22 @@ export default {
     },
     addRuleSave () {
       if (this.addData.arbitrateTypeName === '') {
-        this.$Message.warning({
-          content: '规则名称不能为空',
-          duration: 5
-        })
+        this.resMessage('warning', '规则名称不能为空')
       } else {
         this.alertShow.addRule = false
         axios.post('/arbitrationRule/addArbitrationRule', this.addData).then(res => {
           this.alertCanc('addRule')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('addRule')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
     editRuleSave () {
       if (this.editData.arbitrateTypeName === '') {
-        this.$Message.warning({
-          content: '规则名称不能为空',
-          duration: 5
-        })
+        this.resMessage('warning', '规则名称不能为空')
       } else {
         this.alertShow.editRule = false
         axios.put('/arbitrationRule/updateArbitrationRule', this.editData, {
@@ -657,17 +638,11 @@ export default {
           }
         }).then(res => {
           this.alertCanc('editRule')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('editRule')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },

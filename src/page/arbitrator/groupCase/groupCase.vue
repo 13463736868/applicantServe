@@ -35,9 +35,11 @@
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAW')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '2'" @click="resAction('resPassReve', row)">重新生成撤回书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_GENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '3'" @click="resAction('resAddEvid', row)">生成补正书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENCORRECTIONS')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '4'" @click="resAction('resAddEvid', row)">重新生成补正书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11'" @click="resEndCase('resEndCase', row)">结案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_ENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '11' || row.endCasePatten === '12'" @click="resEndCase('resEndCase', row)">结案</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_RESERVATION')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '12'" @click="resAction('resErvation', row)">预约开庭</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_WITHDRAWCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5' || row.endCasePatten === '8' || row.endCasePatten === '11'" @click="resCancCase('resCancCase', row)">撤案</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_ENTERCOURTROOM')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="goCourtRoom(index)">进入庭室</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_CLOSE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="resAction('resClose', row)">关闭庭室</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_RECORD')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '5'" @click="resRecord(index)">记录</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase('resEndCase', row)">重新生成文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase('resCancCase', row)">重新生成撤案书</Button>
@@ -54,7 +56,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -79,12 +81,14 @@
     <res-batch-edit v-if="alertShow.batchEdit" @alertConfirm="alertSave('batchEdit')" @alertCancel="alertCanc('batchEdit')"></res-batch-edit>
     <edit-data-modal v-if="alertShow.editDataModal" :conShow="true" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
     <upload-ques-alert v-if="alertObj.uploadQues" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('uploadQues')" @alertCancel="alertCanc('uploadQues')"></upload-ques-alert>
+    <res-ervation v-if="alertShow.resErvation" :resErvationData="alertShow.ervationData"  @alertConfirm="alertSave('resErvation')" @alertCancel="alertCanc('resErvation')"></res-ervation>
+    <res-close v-if="alertShow.resClose" :resCloseData="alertShow.closeData" @alertConfirm="alertSave('resClose')" @alertCancel="alertCanc('resClose')"></res-close>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage, resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
@@ -94,14 +98,16 @@ import resReveDocu from '@/page/arbitrator/groupCase/children/resReveDocu'
 import resCancDocu from '@/page/arbitrator/groupCase/children/resCancDocu'
 import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
 import resEndDocu from '@/page/arbitrator/groupCase/children/resEndDocu'
+import resErvation from '@/page/arbitrator/groupCase/children/resErvation'
+import resClose from '@/page/arbitrator/groupCase/children/resClose'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'group_case',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu },
+  mixins: [resBtn, resPage, resMess],
+  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu, resErvation, resClose },
   data () {
     return {
       spinShow: false,
@@ -230,7 +236,11 @@ export default {
         confDataAlert: false,
         confDataId: null,
         confDataBatchNo: null,
-        batchEdit: false
+        batchEdit: false,
+        resErvation: false,
+        ervationData: null,
+        resClose: false,
+        closeData: null
       },
       alertObj: {
         uploadQues: false,
@@ -333,10 +343,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -388,27 +395,6 @@ export default {
       this.alertShow.editorDest = true
       this.alertShow.editor = true
       this.alertShow.editorId = _info.id
-      // let newTime = this.getFormatDate()
-      // let newD = newTime.substr(0, 10).split('-').join('')
-      // let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-      // let beginTime = _info.beginTime
-      // let beginD = beginTime.substr(0, 10).split('-').join('')
-      // let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-      // if (newD !== beginD) {
-      //   this.$Message.warning({
-      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
-      //     duration: 5
-      //   })
-      // } else if (beginT - newT > 10 || newT - beginT > 30) {
-      //   this.$Message.warning({
-      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
-      //     duration: 5
-      //   })
-      // } else {
-      //   this.alertShow.editorDest = true
-      //   this.alertShow.editor = true
-      //   this.alertShow.editorId = _info.id
-      // }
     },
     goCourtRoom (index) {
       let _info = this.caseList.bodyList[index]
@@ -417,39 +403,8 @@ export default {
       }).then(res => {
         window.open('' + res.data.data, '_blank')
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
-      // let newTime = this.getFormatDate()
-      // let newD = newTime.substr(0, 10).split('-').join('')
-      // let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-      // let beginTime = _info.beginTime
-      // let beginD = beginTime.substr(0, 10).split('-').join('')
-      // let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-      // if (newD !== beginD) {
-      //   this.$Message.warning({
-      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
-      //     duration: 5
-      //   })
-      // } else if (beginT - newT > 10 || newT - beginT > 30) {
-      //   this.$Message.warning({
-      //     content: '只能在开庭前十分钟及开庭后半小时内进入',
-      //     duration: 5
-      //   })
-      // } else {
-      //   axios.post('/encryption', {
-      //     params: _info.id + '$' + 1
-      //   }).then(res => {
-      //     window.open('' + res.data.data, '_blank')
-      //   }).catch(e => {
-      //     this.$Message.error({
-      //       content: '错误信息:' + e + ' 稍后再试',
-      //       duration: 5
-      //     })
-      //   })
-      // }
     },
     resCancCase (type, data) {
       let _res = data
@@ -463,18 +418,12 @@ export default {
         let beginD = beginTime.substr(0, 10).split('-').join('')
         let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
         if (newD - beginD < 0) {
-          this.$Message.warning({
-            content: '只能开庭半小时之后点击撤回',
-            duration: 5
-          })
+          this.resMessage('warning', '只能开庭半小时之后点击撤回')
         } else if (newD - beginD === 0) {
           if (newT - beginT > 30) {
             this.resAction(type, data)
           } else {
-            this.$Message.warning({
-              content: '只能开庭半小时之后点击撤回',
-              duration: 5
-            })
+            this.resMessage('warning', '只能开庭半小时之后点击撤回')
           }
         } else if (newD - beginD > 0) {
           this.resAction(type, data)
@@ -493,23 +442,14 @@ export default {
         let beginD = beginTime.substr(0, 10).split('-').join('')
         let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
         if (beginTime === '' || beginTime === null) {
-          this.$Message.warning({
-            content: '没有开庭时间，禁止点击',
-            duration: 5
-          })
+          this.resMessage('warning', '没有开庭时间，禁止点击')
         } else if (newD - beginD < 0) {
-          this.$Message.warning({
-            content: '开庭时间未到，禁止点击',
-            duration: 5
-          })
+          this.resMessage('warning', '开庭时间未到，禁止点击')
         } else if (newD - beginD === 0) {
           if (newT - beginT > 0) {
             this.resAction(type, data)
           } else {
-            this.$Message.warning({
-              content: '开庭时间未到，禁止点击',
-              duration: 5
-            })
+            this.resMessage('warning', '开庭时间未到，禁止点击')
           }
         } else if (newD - beginD > 0) {
           this.resAction(type, data)
@@ -523,16 +463,10 @@ export default {
         content: cont
       }).then(res => {
         this.alertCanc('editor')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     renderCheck (h, params) {
@@ -587,10 +521,7 @@ export default {
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
-            this.$Message.error({
-              content: '最多只能选择十个案件',
-              duration: 5
-            })
+            this.resMessage('error', '最多只能选择十个案件')
             return false
           } else {
             let _o = {}
@@ -608,15 +539,9 @@ export default {
     },
     resEnds () {
       if (this.search.batchDocuType === null || this.search.batchDocuType === undefined) {
-        this.$Message.error({
-          content: '请先在条件搜索里选择一个结案方式进行搜索',
-          duration: 5
-        })
+        this.resMessage('error', '请先在条件搜索里选择一个结案方式进行搜索')
       } else if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
+        this.resMessage('error', '请先选择一个案件')
       } else {
         this.alertShow.batch = true
       }
@@ -635,10 +560,7 @@ export default {
         this.resSearch()
       }).catch(e => {
         this.alertCanc('batch')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resAction (type, data) {
@@ -688,6 +610,14 @@ export default {
           this.alertObj.endCaseData.endNewTempCode = data.tempCode
           this.alertObj.resEndCase = true
           break
+        case 'resErvation':
+          this.alertShow.resErvation = true
+          this.alertShow.ervationData = data
+          break
+        case 'resClose':
+          this.alertShow.resClose = true
+          this.alertShow.closeData = data
+          break
       }
     },
     alertSave (type, data) {
@@ -705,17 +635,11 @@ export default {
             caseId: this.alertShow.confDataId,
             isconfirm: 1
           }).then(res => {
-            this.$Message.success({
-              content: res.data.data,
-              duration: 2
-            })
+            this.resMessage('success', res.data.data)
             this.alertCanc(type)
             this.resSearch()
           }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
           break
         case 'find':
@@ -750,6 +674,18 @@ export default {
           break
         case 'resEndCase':
           this.alertObj.resEndCase = false
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resClose':
+          this.alertShow.resClose = false
+          this.alertShow.closeData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resErvation':
+          this.alertShow.resErvation = false
+          this.alertShow.ervationData = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
@@ -808,6 +744,14 @@ export default {
           break
         case 'resEndCase':
           this.alertObj.resEndCase = false
+          break
+        case 'resClose':
+          this.alertShow.resClose = false
+          this.alertShow.closeData = null
+          break
+        case 'resErvation':
+          this.alertShow.resErvation = false
+          this.alertShow.ervationData = null
           break
       }
     }

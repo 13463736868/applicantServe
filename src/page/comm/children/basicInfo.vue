@@ -103,14 +103,34 @@
         </Row>
       </div>
     </div>
+    <div class="_evidence">
+      <div class="_top">证据目录</div>
+      <div class="_mid">
+        <Row>
+          <Col span="23" class="_label tr mt15 mb15">
+            <span class="_enDow hand" @click="dowDoc">
+              <Icon class="mr5" type="md-download" size="16" color="#ff7a7a"/>证据目录下载
+            </span>
+          </Col>
+        </Row>
+        <Row>
+          <Col span="24">
+            <Table ref="table" stripe align="center" :loading="evidenceList.loading" :columns="evidenceList.header" :data="evidenceList.bodyList"></Table>
+          </Col>
+        </Row>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { resMess } from '@/components/common/mixin.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'basic_info',
+  mixins: [resMess],
   props: ['caseId', 'caseState'],
   data () {
     return {
@@ -147,9 +167,33 @@ export default {
             align: 'center'
           },
           {
-            title: '存在问题',
+            title: '备注',
             key: 'memo',
             align: 'center'
+          }
+        ],
+        bodyList: []
+      },
+      evidenceList: {
+        loading: false,
+        header: [
+          {
+            type: 'index',
+            title: '序号',
+            width: 150,
+            align: 'center'
+          },
+          {
+            title: '证据名称',
+            key: 'name',
+            align: 'center',
+            tooltip: true
+          },
+          {
+            title: '证据描述',
+            key: 'remarks',
+            align: 'center',
+            tooltip: true
           }
         ],
         bodyList: []
@@ -168,21 +212,26 @@ export default {
       }).then(res => {
         this.dataBasic = res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
       axios.post('/case/findCaseDetailsProcessByCaseid', {
         caseId: this.caseId
       }).then(res => {
         this.progressList.bodyList = res.data.data === null ? [] : res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
+      axios.post('/case/findCaseDetailsEvidenceApplicantByCaseid', {
+        caseId: this.caseId,
+        evidenceType: 1
+      }).then(res => {
+        this.evidenceList.bodyList = res.data.data === null ? [] : res.data.data
+      }).catch(e => {
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+      })
+    },
+    dowDoc () {
+      window.open(regi.api + '/file/templet/dowload/100?caseId=' + this.caseId, '_blank')
     }
   }
 }
@@ -195,7 +244,11 @@ export default {
     padding-top: 60px;
     padding-bottom: 60px;
   }
-  ._basic ._top, ._progress ._top {
+  ._evidence {
+    // padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  ._basic ._top, ._progress ._top, ._evidence ._top {
     @include backgroundLine(right, #1a2b58, #126eaf);
     @include borderRadius(5px);
     text-align: center;
@@ -204,7 +257,7 @@ export default {
     color: #fff;
     font-size: 20px;
   }
-  ._basic ._mid, ._progress ._mid {
+  ._basic ._mid, ._progress ._mid, ._evidence ._mid {
     @include borderRadius(3px);
     @include boxShadow(0 1px 6px -1px #bbb);
     background: #fff;
@@ -212,6 +265,9 @@ export default {
     p {
       padding: 10px 5px;
     }
+  }
+  ._enDow {
+    color: #2D8CF0
   }
 }
 </style>

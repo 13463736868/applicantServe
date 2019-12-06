@@ -21,7 +21,8 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
-                <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resSeeDocu(row.filePath)">预览文书</Button>
+                <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resAction('resPreviwdoc', row)">预览文书</Button>
+                <Button class="mr5" type="primary" size="small" v-if="row.isServed === null" :style="{display: resBtnDis('DOCUAUDIT_SERVICE')}" @click="resAction('resService', row)">文书送达</Button>
                 <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
@@ -35,7 +36,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -73,21 +74,23 @@
       </Row>
     </alert-btn-info>
     <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('editDocu')" @alertCancel="alertCanc('editDocu')"></alert-editor>
+    <alert-service v-if="alertShow.sendService" :resServiceData="alertShow.serviceData" @alertConfirm="alertSave('resService')" @alertCancel="alertCanc('resService')"></alert-service>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage, resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
+import alertService from '@/page/arbitratComm/docuAudit/children/resService'
 
 export default {
   name: 'docu_audit',
-  mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor },
+  mixins: [resBtn, resPage, resMess],
+  components: { spinComp, alertBtnInfo, alertEditor, alertService },
   data () {
     return {
       spinShow: false,
@@ -211,7 +214,9 @@ export default {
         find: false,
         editor: false,
         caseId: null,
-        docuType: null
+        docuType: null,
+        sendService: false,
+        serviceData: null
       }
     }
   },
@@ -227,10 +232,7 @@ export default {
           this.search.caseTypeList[a.userToken] = a.caseTypeList
         })
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resCaseList () {
@@ -247,10 +249,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -270,16 +269,16 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    resSeeDocu (path) {
-      if (path === null || path === '') {
-        this.$Message.error({
-          content: '获取文书地址出错',
-          duration: 5
-        })
-      } else {
-        window.open(path, '_blank')
-      }
-    },
+    // resSeeDocu (path) {
+    //   if (path === null || path === '') {
+    //     this.$Message.error({
+    //       content: '获取文书地址出错',
+    //       duration: 5
+    //     })
+    //   } else {
+    //     window.open(path, '_blank')
+    //   }
+    // },
     resSaveDocu (index) {
       this.alertShow.id = this.caseList.bodyList[index].id
       this.alertShow.caseDocuId = this.caseList.bodyList[index].caseDocuemntId
@@ -295,10 +294,7 @@ export default {
     docuSave () {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
-          this.$Message.warning({
-            content: '请填写驳回原因',
-            duration: 5
-          })
+          this.resMessage('warning', '请填写驳回原因')
         } else {
           this.alertShow.docu = false
           axios.post('/approve/updateCaseDocumentByApprove', {
@@ -308,17 +304,11 @@ export default {
             caseDocumentReason: this.alertShow.rejeReason
           }).then(res => {
             this.alertCanc('docu')
-            this.$Message.success({
-              content: '操作成功',
-              duration: 2
-            })
+            this.resMessage('success', '操作成功')
             this.resSearch()
           }).catch(e => {
             this.alertCanc('docu')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
         }
       } else {
@@ -329,17 +319,11 @@ export default {
           caseDocuemntId: this.alertShow.caseDocuId
         }).then(res => {
           this.alertCanc('docu')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resSearch()
         }).catch(e => {
           this.alertCanc('docu')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
@@ -395,10 +379,7 @@ export default {
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
-            this.$Message.error({
-              content: '最多只能选择十个案件',
-              duration: 5
-            })
+            this.resMessage('error', '最多只能选择十个案件')
             return false
           } else {
             let _o = {}
@@ -417,10 +398,7 @@ export default {
     },
     resBatch (type) {
       if (this.alertShow.ids.length === 0) {
-        this.$Message.error({
-          content: '请先选择一个案件',
-          duration: 5
-        })
+        this.resMessage('error', '请先选择一个案件')
       } else {
         this.alertShow.state = type
         this.alertShow.batch = true
@@ -429,10 +407,7 @@ export default {
     batchSave () {
       if (this.alertShow.state === 2) {
         if (this.alertShow.rejeReason === '') {
-          this.$Message.warning({
-            content: '请填写驳回原因',
-            duration: 5
-          })
+          this.resMessage('warning', '请填写驳回原因')
         } else {
           this.alertShow.docu = false
           axios.post('/approve/caseDocumentBatch', {
@@ -450,10 +425,7 @@ export default {
             this.resSearch()
           }).catch(e => {
             this.alertCanc('docu')
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
           })
         }
       } else {
@@ -472,10 +444,7 @@ export default {
           this.resSearch()
         }).catch(e => {
           this.alertCanc('docu')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },
@@ -496,36 +465,66 @@ export default {
       this.alertShow.docuType = info.type
       this.alertShow.editor = true
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'resService':
+          this.alertShow.sendService = true
+          this.alertShow.serviceData = data
+          break
+        case 'resPreviwdoc':
+          if (data.filePath === null || data.filePath === '') {
+            this.resMessage('error', '获取文书地址出错')
+          } else {
+            window.open(data.filePath, '_blank')
+          }
+          break
+      }
+    },
     alertSave (type) {
-      if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
-        this.pageObj.pageNum = 1
-        this.resCaseList()
+      switch (type) {
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resService':
+          this.alertShow.sendService = false
+          this.alertShow.serviceData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
-      if (type === 'docu') {
-        this.alertShow.docu = false
-        this.alertShow.id = null
-        this.alertShow.state = null
-        this.alertShow.caseDocuId = null
-        this.alertShow.rejeReason = ''
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
-      } else if (type === 'editDocu') {
-        this.alertShow.editor = false
-        this.alertShow.caseId = null
-        this.alertShow.docuType = null
+      switch (type) {
+        case 'docu':
+          this.alertShow.docu = false
+          this.alertShow.id = null
+          this.alertShow.state = null
+          this.alertShow.caseDocuId = null
+          this.alertShow.rejeReason = ''
+          this.alertShow.batch = false
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.search.requestName = ''
+          this.search.caseType = ''
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
+        case 'editDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          break
+        case 'resService':
+          this.alertShow.sendService = false
+          this.alertShow.serviceData = null
+          break
       }
     }
   }

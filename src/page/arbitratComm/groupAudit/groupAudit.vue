@@ -16,14 +16,23 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPARBITRATORS')}" class="mr5" type="primary" size="small" v-if="row.approverId === '' || row.approverId === null" @click="resAssign(index)">指定仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" class="mr5" type="primary" size="small" v-if="(row.approverId === '' || row.approverId === null) || (row.approverId !== '' && row.approverId !== null && row.passFlag === 3)" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 2" @click="resPass(index)">通过</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 3" @click="resAssignRest(index)">重新指定仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_EDITARBITRATOR')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 4" @click="resEditArbi(index)">修改仲裁员</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_AGREE')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 4" @click="resAction('groupPass', row)">同意</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -98,7 +107,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
@@ -107,7 +116,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
-  mixins: [resBtn],
+  mixins: [resBtn, resPage],
   components: { spinComp, alertBtnInfo, groupApprForm, groupPassAlert },
   data () {
     return {
@@ -202,9 +211,7 @@ export default {
             key: 'id',
             minWidth: 30,
             align: 'center',
-            render: (h, params) => {
-              return this.renderBtn(h, params)
-            }
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -344,129 +351,6 @@ export default {
             }
           })
         ])
-      }
-    },
-    renderBtn (h, params) {
-      let _obj = params.row
-      if (_obj.approverId === null || _obj.approverId === '') {
-        return h('div', [
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              display: this.resBtnDis('GROUPAUDIT_APPARBITRATORS')
-            },
-            on: {
-              click: () => {
-                this.resAssign(params.index)
-              }
-            }
-          }, '指定仲裁员'),
-          h('Button', {
-            props: {
-              type: 'primary',
-              size: 'small'
-            },
-            style: {
-              marginRight: '5px',
-              display: this.resBtnDis('GROUPAUDIT_APPROVAL')
-            },
-            on: {
-              click: () => {
-                this.resAction('groupForm', params.row)
-              }
-            }
-          }, '组庭审批表')
-        ])
-      } else {
-        if (_obj.passFlag === 2) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPAUDIT_PASS')
-              },
-              on: {
-                click: () => {
-                  this.resPass(params.index)
-                }
-              }
-            }, '通过')
-          ])
-        } else if (_obj.passFlag === 3) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                display: this.resBtnDis('GROUPAUDIT_REAPPOINTMENT')
-              },
-              on: {
-                click: () => {
-                  this.resAssignRest(params.index)
-                }
-              }
-            }, '重新指定仲裁员'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPAUDIT_APPROVAL')
-              },
-              on: {
-                click: () => {
-                  this.resAction('groupForm', params.row)
-                }
-              }
-            }, '组庭审批表')
-          ])
-        } else if (_obj.passFlag === 4) {
-          return h('div', [
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPAUDIT_EDITARBITRATOR')
-              },
-              on: {
-                click: () => {
-                  this.resEditArbi(params.index)
-                }
-              }
-            }, '修改仲裁员'),
-            h('Button', {
-              props: {
-                type: 'primary',
-                size: 'small'
-              },
-              style: {
-                marginRight: '5px',
-                display: this.resBtnDis('GROUPAUDIT_AGREE')
-              },
-              on: {
-                click: () => {
-                  this.resAction('groupPass', params.row)
-                }
-              }
-            }, '同意')
-          ])
-        } else {
-          return h('div', [
-          ])
-        }
       }
     },
     resCaseList () {

@@ -20,7 +20,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
           </Col>
         </Row>
       </div>
@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resPage, resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import resRejeDocu from '@/page/arbitratComm/arbiEvas/children/resRejeDocu'
@@ -45,7 +45,7 @@ import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'arbi_evas',
-  mixins: [resBtn],
+  mixins: [resBtn, resPage, resMess],
   components: { spinComp, alertBtnInfo, resRejeDocu },
   data () {
     return {
@@ -147,6 +147,10 @@ export default {
     this.resCaseList()
   },
   methods: {
+    resSearch () {
+      this.pageObj.pageNum = 1
+      this.resCaseList()
+    },
     renderReasBtn (h, params) {
       return h('div', [
         h('Button', {
@@ -181,10 +185,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     reschangePage (page) {
@@ -208,17 +209,11 @@ export default {
         avoidState: 1
       }).then(res => {
         this.alertCanc('agreNew')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('agreNew')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resAction (type, data) {
