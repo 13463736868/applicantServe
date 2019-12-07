@@ -9,17 +9,12 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
-        <Col span="8">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量结案</Button>
+        <Col span="14">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
+            <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量结案</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -92,6 +87,7 @@ import {resBtn, resPage, resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import uploadQuesAlert from '@/page/arbitrator/groupCase/children/uploadQuesAlert'
+import editDataModal from '@/page/arbitratSecr/groupAppl/children/editDataModal'
 import resBatchEdit from '@/page/arbitrator/groupCase/children/resBatchEdit'
 import resFind from '@/page/arbitrator/groupCase/children/resFind'
 import resReveDocu from '@/page/arbitrator/groupCase/children/resReveDocu'
@@ -107,7 +103,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn, resPage, resMess],
-  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu, resErvation, resClose },
+  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, editDataModal, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu, resErvation, resClose },
   data () {
     return {
       spinShow: false,

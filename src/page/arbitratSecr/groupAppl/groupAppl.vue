@@ -2,14 +2,28 @@
   <div class="groupAppl">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <div class="tr pb20 pr20">
-        <Button class="ml10" type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
-        <Button class="ml10" type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
-        <Button class="ml10" type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
-        <Button class="ml10" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
-        <Button class="ml10" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
-        <Button class="ml10" type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
-      </div>
+      <Row class="pb20">
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
+            <Option :value="0" :key="0">全部</Option>
+            <Option :value="2" :key="2">选择审理方式/指定开庭时间</Option>
+            <Option :value="3" :key="3">待提交</Option>
+          </Select>
+        </Col>
+        <Col span="19">
+          <div class="tr pr20">
+            <Button class="ml10" type="primary" @click="resBatchUp" :style="{display: resBtnDis('GROUPAPPL_UPLOAD_DATA')}">上传数据</Button>
+            <Button class="ml10" type="primary" @click="resBatchEdit" :style="{display: resBtnDis('GROUPAPPL_BATCH_MODIFICATION')}">批量下载</Button>
+            <Button class="ml10" type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAPPL_QUERY')}">条件搜索</Button>
+            <Button class="ml10" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('GROUPAPPL_BATCHSUBMIT')}">批量提交</Button>
+            <Button class="ml10" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('GROUPAPPL_BATCHDATE')}">批量指定开庭时间</Button>
+            <Button class="ml10" type="primary" @click="resBatch(3)" :style="{display: resBtnDis('GROUPAPPL_BATCHHEAR')}">批量转书面审理</Button>
+          </div>
+        </Col>
+      </Row>
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
@@ -147,7 +161,7 @@
 
 <script>
 import axios from 'axios'
-import {resBtn, resPage} from '@/components/common/mixin.js'
+import {resMess, resBtn, resPage} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
@@ -159,12 +173,13 @@ import regi from '@/config/regiType.js'
 
 export default {
   name: 'group_appl',
-  mixins: [resBtn, resPage],
+  mixins: [resMess, resBtn, resPage],
   components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal, groupApprForm },
   data () {
     return {
       spinShow: false,
       search: {
+        batchCondition: 0,
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -178,6 +193,9 @@ export default {
             key: 'id',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -266,7 +284,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -401,7 +420,8 @@ export default {
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        groupApproveType: 'arbitrationSecretary'
+        groupApproveType: 'arbitrationSecretary',
+        batchCondition: this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -662,9 +682,37 @@ export default {
       this.alertObj.reasText = this.caseList.bodyList[index].caseDocumentReason === null ? '' : this.caseList.bodyList[index].caseDocumentReason
       this.alertObj.reas = true
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (this.search.batchCondition !== 0 && (_obj.logicState === '1' || _obj.logicState === '4' || _obj.logicState === '7' || _obj.logicState === '8')) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
-      if (_obj.logicState === '1' || _obj.logicState === '4' || _obj.logicState === '7' || _obj.logicState === '8') {
+      if (this.search.batchCondition !== 0 && (_obj.logicState === '1' || _obj.logicState === '4' || _obj.logicState === '7' || _obj.logicState === '8')) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {
@@ -679,7 +727,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -698,7 +746,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -709,96 +757,20 @@ export default {
         ])
       }
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
-        if (this.alertShow.state.length === 0) {
-          if (this.alertShow.ids.indexOf(info.id) === -1) {
-            if (this.alertShow.ids.length >= 10) {
-              this.$Message.error({
-                content: '最多只能选择十个案件',
-                duration: 5
-              })
-              return false
-            } else {
-              if (info.logicState === '1' || info.logicState === '4') {
-                if (this.alertShow.state.length === 0) {
-                  this.alertShow.state.push('1')
-                }
-                this.alertShow.ids.push(info.id)
-              } else if (info.logicState === '7' || info.logicState === '8') {
-                if (this.alertShow.state.length === 0) {
-                  this.alertShow.state.push('7')
-                }
-                this.alertShow.ids.push(info.id)
-              }
-            }
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.resMessage('error', '最多只能选择十个案件')
+            return false
+          } else {
+            this.alertShow.ids.push(info.id)
           }
-        } else if (this.alertShow.state.length === 1) {
-          if (this.alertShow.state[0] === '1') {
-            if (info.logicState === '1' || info.logicState === '4') {
-              if (this.alertShow.ids.indexOf(info.id) === -1) {
-                if (this.alertShow.ids.length >= 10) {
-                  this.$Message.error({
-                    content: '最多只能选择十个案件',
-                    duration: 5
-                  })
-                  return false
-                } else {
-                  if (info.logicState === '1' || info.logicState === '4') {
-                    if (this.alertShow.state.length === 0) {
-                      this.alertShow.state.push('1')
-                    }
-                    this.alertShow.ids.push(info.id)
-                  }
-                }
-              }
-            } else {
-              this.$Message.error({
-                content: '不能同时选择待提交案件，和待指定开庭时间案件',
-                duration: 5
-              })
-              return false
-            }
-          } else if (this.alertShow.state[0] === '7') {
-            if (info.logicState === '7' || info.logicState === '8') {
-              if (this.alertShow.ids.indexOf(info.id) === -1) {
-                if (this.alertShow.ids.length >= 10) {
-                  this.$Message.error({
-                    content: '最多只能选择十个案件',
-                    duration: 5
-                  })
-                  return false
-                } else {
-                  if (info.logicState === '7' || info.logicState === '8') {
-                    if (this.alertShow.state.length === 0) {
-                      this.alertShow.state.push('7')
-                    }
-                    this.alertShow.ids.push(info.id)
-                  }
-                }
-              }
-            } else {
-              this.$Message.error({
-                content: '不能同时选择待提交案件，和待指定开庭时间案件',
-                duration: 5
-              })
-              return false
-            }
-          }
-        } else {
-          this.$Message.error({
-            content: '错误信息:请刷新后重试',
-            duration: 5
-          })
-          return false
         }
       } else {
         if (this.alertShow.ids.indexOf(info.id) !== -1) {
           this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
-          if (this.alertShow.ids.length === 0) {
-            this.alertShow.state = []
-          }
         }
       }
     },
@@ -810,26 +782,24 @@ export default {
         })
       } else {
         if (type === 1) {
-          if (this.alertShow.state[0] === '1') {
-            this.alertShow.batch = true
+          if (this.search.batchCondition !== 3) {
+            this.resMessage('error', '请先条件选择 \'待提交\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
           } else {
-            this.$Message.error({
-              content: '当前选择的案件只能批量指定开庭时间或者转书面审理',
-              duration: 5
-            })
+            this.alertShow.batch = true
           }
         } else if (type === 2 || type === 3) {
-          if (this.alertShow.state[0] === '7') {
+          if (this.search.batchCondition !== 2) {
+            this.resMessage('error', '请先条件选择 \'选择审理方式/指定开庭时间\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
             if (type === 2) {
               this.alertShow.time = true
             } else if (type === 3) {
               this.alertShow.noTime = true
             }
-          } else {
-            this.$Message.error({
-              content: '当前选择的案件只能批量提交',
-              duration: 5
-            })
           }
         }
       }
@@ -1094,6 +1064,7 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.ids = []
         this.alertShow.state = []
+        this.caseList.seleMap = {}
       } else if (type === 'sendDoc') {
         this.alertObj.send = false
         this.alertObj.sendId = null
