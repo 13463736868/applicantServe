@@ -3,14 +3,21 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="19">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
+        <!-- <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
         </Col>
         <Col span="3">
-          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
+          <Select v-model="search.batchCondition" @on-change="resSearchList">
+            <Option :value="0" :key="0">全部</Option>
+            <Option :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}" :value="1" :key="1">批量指定仲裁员(速裁)</Option>
+            <Option :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}" :value="4" :key="4">批量指定仲裁员(普裁)</Option>
+          </Select>
+        </Col> -->
+        <Col span="24">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('GROUPAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resBatch" :style="{display: resBtnDis('GROUPAUDIT_BATCHEAPP')}">批量指定仲裁员</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -20,7 +27,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button :style="{display: resBtnDis('GROUPAUDIT_APPARBITRATORS')}" class="mr5" type="primary" size="small" v-if="row.approverId === '' || row.approverId === null" @click="resAssign(index)">指定仲裁员</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" class="mr5" type="primary" size="small" v-if="(row.approverId === '' || row.approverId === null) || (row.approverId !== '' && row.approverId !== null && row.passFlag === 3)" @click="resAction('groupForm', row)">组庭审批表</Button>
-                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 2" @click="resPass(index)">通过</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 2" @click="resAction('resPass', row)">通过</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 3" @click="resAssignRest(index)">重新指定仲裁员</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_EDITARBITRATOR')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 4" @click="resEditArbi(index)">修改仲裁员</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_AGREE')}" class="mr5" type="primary" size="small" v-if="row.approverId !== '' && row.approverId !== null && row.passFlag === 4" @click="resAction('groupPass', row)">同意</Button>
@@ -75,53 +82,32 @@
         </Col>
       </Row>
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.pass" @alertConfirm="passSave" @alertCancel="alertCanc('pass')" alertTitle="操作">
-      <p>确定要通过吗？</p>
-    </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
+    <res-pass v-if="alertObj.pass" :resPropsData="alertObj.passData" @alertConfirm="alertSave('resPass')" @alertCancel="alertCanc('resPass')"></res-pass>
+    <res-group-pass v-if="alertObj.groupPass" :resPropsData="alertObj.groupPassData" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></res-group-pass>
     <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('groupForm')" @alertCancel="alertCanc('groupForm')"></group-Appr-form>
-    <group-pass-alert v-if="alertObj.groupPass" :resCaseId="alertObj.caseId" :resState="alertObj.state" @alertConfirm="alertSave('groupPass')" @alertCancel="alertCanc('groupPass')"></group-pass-alert>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn, resPage} from '@/components/common/mixin.js'
+import {resBtn, resPage, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
-import groupPassAlert from '@/page/arbitratComm/groupAudit/children/groupPassAlert'
+import resGroupPass from '@/page/arbitratComm/groupAudit/children/resGroupPass'
+import resPass from '@/page/arbitratComm/groupAudit/children/resPass'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'group_audit',
-  mixins: [resBtn, resPage],
-  components: { spinComp, alertBtnInfo, groupApprForm, groupPassAlert },
+  mixins: [resBtn, resPage, resSearFind],
+  components: { spinComp, alertBtnInfo, groupApprForm, resGroupPass, resPass },
   data () {
     return {
       spinShow: false,
       search: {
+        batchCondition: 0,
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -226,8 +212,6 @@ export default {
         tribId: null,
         caseId: null,
         infoMoney: null,
-        pass: false,
-        passId: null,
         assignRest: false,
         editArbi: false,
         idsList: [],
@@ -274,8 +258,9 @@ export default {
       },
       alertObj: {
         groupPass: false,
-        caseId: null,
-        state: null
+        groupPassData: null,
+        pass: false,
+        passData: null
       }
     }
   },
@@ -297,20 +282,6 @@ export default {
     }
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderCheck (h, params) {
       let _id = params.row.id
       if (this.seleArr.indexOf(_id) === -1) {
@@ -360,7 +331,8 @@ export default {
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
-        groupApproveType: 'arbitrationCommission'
+        groupApproveType: 'arbitrationCommission',
+        batchCondition: this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -578,32 +550,6 @@ export default {
         }
       }
     },
-    resPass (index) {
-      this.alertShow.pass = true
-      this.alertShow.tribId = this.caseList.bodyList[index].tribunalRequestId
-      this.alertShow.caseId = this.caseList.bodyList[index].id
-      this.alertShow.passId = this.caseList.bodyList[index].approverId
-    },
-    passSave () {
-      this.alertShow.pass = false
-      axios.post('/approve/updateGroupApproveToArbitrator', {
-        caseId: this.alertShow.caseId,
-        tribunalRequestId: this.alertShow.tribId,
-        arbitratorIds: this.alertShow.passId
-      }).then(res => {
-        this.alertCanc('pass')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
-      }).catch(e => {
-        this.alertCanc('pass')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderCheckS (h, params) {
       let _obj = params.row
       if (_obj.approverId === null || _obj.approverId === '') {
@@ -760,17 +706,6 @@ export default {
         this.resAssign('')
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resAction (type, data) {
       switch (type) {
         case 'groupForm':
@@ -778,9 +713,19 @@ export default {
           this.formObj.filing = true
           break
         case 'groupPass':
-          this.alertObj.state = 1
-          this.alertObj.caseId = data.id
+          this.alertObj.groupPassData = {
+            state: 1,
+            caseId: data.id
+          }
           this.alertObj.groupPass = true
+          break
+        case 'resPass':
+          this.alertObj.passData = {
+            caseId: data.id,
+            tribunalRequestId: data.tribunalRequestId,
+            arbitratorIds: data.approverId
+          }
+          this.alertObj.pass = true
           break
       }
     },
@@ -794,8 +739,13 @@ export default {
           break
         case 'groupPass':
           this.alertObj.groupPass = false
-          this.alertObj.caseId = null
-          this.alertObj.state = null
+          this.alertObj.groupPassData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resPass':
+          this.alertObj.pass = false
+          this.alertObj.passData = null
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
@@ -814,16 +764,8 @@ export default {
         this.alertShow.editArbi = false
         this.alertShow.idsType = ''
       } else if (type === 'pass') {
-        this.alertShow.pass = false
-        this.alertShow.tribId = null
-        this.alertShow.caseId = null
-        this.alertShow.passId = null
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
+        this.alertObj.pass = false
+        this.alertObj.passData = null
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
@@ -833,8 +775,7 @@ export default {
         this.formObj.caseId = null
       } else if (type === 'groupPass') {
         this.alertObj.groupPass = false
-        this.alertObj.caseId = null
-        this.alertObj.state = null
+        this.alertObj.groupPassData = null
       }
     }
   }

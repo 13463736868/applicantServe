@@ -1,8 +1,8 @@
 <template>
-  <div class="_groupPassAlert">
+  <div class="resGroupPass">
     <alert-btn-info :alertShow="alertShow" @alertConfirm="alertSave" @alertCancel="alertCanc" alertTitle="操作">
-      <p v-if="resState === 1">确定要同意吗？</p>
-      <Input v-if="resState === 2" :autosize="{minRows: 5,maxRows: 7}" type="textarea" v-model="resData.caseDocumentReason" placeholder="输入驳回原因..." />
+      <p v-if="resPropsData.state === 1">确定要同意吗？</p>
+      <Input v-if="resPropsData.state === 2" :autosize="{minRows: 5,maxRows: 7}" type="textarea" v-model="resData.caseDocumentReason" placeholder="输入驳回原因..." />
     </alert-btn-info>
   </div>
 </template>
@@ -12,9 +12,9 @@ import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { resMess } from '@/components/common/mixin.js'
 
 export default {
-  name: 'group_pass_alert',
+  name: 'resGroupPass',
   mixins: [resMess],
-  props: ['resCaseId', 'resState'],
+  props: ['resPropsData'],
   components: { alertBtnInfo },
   data () {
     return {
@@ -26,13 +26,13 @@ export default {
   },
   methods: {
     alertSave () {
-      if (this.resState === 2 && this.resData.caseDocumentReason.length === 0) {
+      if (this.resPropsData.state === 2 && this.resData.caseDocumentReason.length === 0) {
         this.resMessage('warning', '驳回原因不能为空')
         return false
       } else {
         axios.post('/approve/updateCourtAuditState', {
-          state: this.resState,
-          caseId: this.resCaseId
+          state: this.resPropsData.state,
+          caseId: this.resPropsData.caseId
         }).then(res => {
           this.resMessage('success', '操作成功')
           this.$emit('alertConfirm')
