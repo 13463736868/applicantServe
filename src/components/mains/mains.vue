@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import watermark from '@/config/waterMark.js'
+// import watermark from '@/config/waterMark.js'
 import { mapGetters } from 'vuex'
 import headTop from '@/components/header/head'
 export default {
@@ -29,16 +29,16 @@ export default {
     routerTitle () {
       return this.$route.meta.title
     }
-  },
-  mounted () {
-    if (JSON.parse(window.localStorage.getItem('usersInfo')) !== null) {
-      this.watermark = JSON.parse(window.localStorage.getItem('usersInfo')).loginname
-      watermark.set(this.watermark)
-    }
-  },
-  destroyed () {
-    watermark.set('')
   }
+  // mounted () {
+  //   if (JSON.parse(window.localStorage.getItem('usersInfo')) !== null) {
+  //     this.watermark = JSON.parse(window.localStorage.getItem('usersInfo')).loginname
+  //     watermark.set(this.watermark)
+  //   }
+  // },
+  // destroyed () {
+  //   watermark.set('')
+  // }
 }
 </script>
 <style lang="scss" scoped>
