@@ -58,6 +58,7 @@
 import axios from 'axios'
 import {resMess, resBtn, resPage, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import groupApprForm from '@/page/comm/apprForm/groupApprForm'
 import resGroupPass from '@/page/arbitratComm/groupAudit/children/resGroupPass'
@@ -68,7 +69,7 @@ import { caseInfo } from '@/config/common.js'
 export default {
   name: 'group_audit',
   mixins: [resMess, resBtn, resPage, resSearFind],
-  components: { spinComp, alertBtnInfo, groupApprForm, resGroupPass, resPass, resRevise },
+  components: { spinComp, resFind, alertBtnInfo, groupApprForm, resGroupPass, resPass, resRevise },
   data () {
     return {
       spinShow: false,

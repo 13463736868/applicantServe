@@ -1,9 +1,17 @@
 <template>
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
-      <ul class="nav fl" v-if="isRegister">
-        <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
-      </ul>
+      <template v-if="roleCode === 'ROLE_ZCMS'">
+        <res-dropdown v-for="item in resMenuObj" :key="item.id" :resTitle="item.title" :resMenu="item.obj"></res-dropdown>
+        <ul class="nav fl" v-if="isRegister">
+          <router-link v-for="item in resMenuDrop.resDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        </ul>
+      </template>
+      <template v-else>
+        <ul class="nav fl" v-if="isRegister">
+          <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        </ul>
+      </template>
       <!-- <Dropdown class="nav_more" v-if="menu.length > 9" @on-click="resToRoute">
         <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
         <DropdownMenu class="tl" slot="list">
@@ -44,16 +52,48 @@
 import axios from 'axios'
 import { mapGetters, mapActions } from 'vuex'
 import {removeToken} from '@/cookies'
+import resDropdown from '@/components/header/children/resDropdown'
 import alertTip from '@/components/common/alertTip'
 
 export default {
   name: 'header_top',
   props: ['isRegister', 'headType'],
-  components: { alertTip },
+  components: { resDropdown, alertTip },
   data () {
     return {
       alertShowOut: false,
       userName: null,
+      roleCode: null,
+      resMenuDrop: {
+        resA: ['/acceCase', '/pendCase', '/filingCase', '/succCase'],
+        resB: ['/groupAppl', '/groupCase'],
+        resC: ['/closeCase'],
+        resD: ['/stencilList', '/docuAudit'],
+        resE: ['/withdrawList', '/arbiEvas', '/applReissue', '/poliProtest'],
+        resDefault: []
+      },
+      resMenuObj: [
+        {
+          title: '立案审批',
+          obj: []
+        },
+        {
+          title: '组庭模块',
+          obj: []
+        },
+        {
+          title: '案件记录',
+          obj: []
+        },
+        {
+          title: '文书处理',
+          obj: []
+        },
+        {
+          title: '其他异议',
+          obj: []
+        }
+      ],
       style: {
         bg: {
           backgroundImage: 'url(' + require('../../static/images/header_bg.png') + ')',
@@ -68,6 +108,7 @@ export default {
   },
   created () {
     this.setUserName()
+    this.setMenuObj()
   },
   computed: {
     ...mapGetters([
@@ -86,72 +127,37 @@ export default {
     userOutSave () {
       try {
         axios.post('/SignOut').then(res => {
-          removeToken()
-          if (window.localStorage) {
-            let loc = window.localStorage
-            loc.removeItem('usersInfo')
-            loc.removeItem('menuArrObj')
-            loc.removeItem('buttonMap')
-          }
-          this.setMenuArrObj(null)
-          this.setMenu(null)
-          this.setRouter(null)
-          this.$router.replace({
-            path: '/login'
-          })
-          setTimeout(() => {
-            location.reload()
-          }, 0)
-          this.$router.replace({
-            path: '/login'
-          })
+          this.resRemove('')
         }).catch(e => {
-          removeToken()
-          if (window.localStorage) {
-            let loc = window.localStorage
-            loc.removeItem('usersInfo')
-            loc.removeItem('menuArrObj')
-            loc.removeItem('buttonMap')
-          }
-          this.setMenuArrObj(null)
-          this.setMenu(null)
-          this.setRouter(null)
-          this.$router.replace({
-            path: '/login'
-          })
-          setTimeout(() => {
-            location.reload()
-          }, 0)
-          this.$router.replace({
-            path: '/login'
-          })
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resRemove(e)
         })
       } catch (error) {
-        removeToken()
-        if (window.localStorage) {
-          let loc = window.localStorage
-          loc.removeItem('usersInfo')
-          loc.removeItem('menuArrObj')
-          loc.removeItem('buttonMap')
-        }
-        this.setMenuArrObj(null)
-        this.setMenu(null)
-        this.setRouter(null)
-        this.$router.replace({
-          path: '/login'
-        })
-        setTimeout(() => {
-          location.reload()
-        }, 0)
-        this.$router.replace({
-          path: '/login'
-        })
+        this.resRemove(error)
+      }
+    },
+    resRemove (e) {
+      removeToken()
+      if (window.localStorage) {
+        let loc = window.localStorage
+        loc.removeItem('usersInfo')
+        loc.removeItem('menuArrObj')
+        loc.removeItem('buttonMap')
+      }
+      this.setMenuArrObj(null)
+      this.setMenu(null)
+      this.setRouter(null)
+      this.$router.replace({
+        path: '/login'
+      })
+      setTimeout(() => {
+        location.reload()
+      }, 0)
+      this.$router.replace({
+        path: '/login'
+      })
+      if (e !== '') {
         this.$Message.error({
-          content: '错误信息:' + error + ' 稍后再试',
+          content: '错误信息:' + e + ' 稍后再试',
           duration: 5
         })
       }
@@ -164,7 +170,25 @@ export default {
         let loc = window.localStorage
         let _usersInfo = loc.getItem('usersInfo')
         this.userName = _usersInfo === null ? null : JSON.parse(_usersInfo).loginname
+        this.roleCode = _usersInfo === null ? null : JSON.parse(_usersInfo).roleCode
       }
+    },
+    setMenuObj () {
+      this.menu.forEach((i) => {
+        if (this.resMenuDrop.resA.indexOf(i.url) !== -1) {
+          this.resMenuObj[0].obj.push(i)
+        } else if (this.resMenuDrop.resB.indexOf(i.url) !== -1) {
+          this.resMenuObj[1].obj.push(i)
+        } else if (this.resMenuDrop.resC.indexOf(i.url) !== -1) {
+          this.resMenuObj[2].obj.push(i)
+        } else if (this.resMenuDrop.resD.indexOf(i.url) !== -1) {
+          this.resMenuObj[3].obj.push(i)
+        } else if (this.resMenuDrop.resE.indexOf(i.url) !== -1) {
+          this.resMenuObj[4].obj.push(i)
+        } else {
+          this.resMenuDrop.resDefault.push(i)
+        }
+      })
     },
     resToRoute (name) {
       this.$router.replace({
