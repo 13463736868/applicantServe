@@ -9,14 +9,11 @@
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
-        <Col span="10">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
+        <Col span="14">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resFind" :style="{display: resBtnDis('PENDCASEM_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resBatch" :style="{display: resBtnDis('PENDCASEM_BATCHPASS')}">批量通过</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">

@@ -3,17 +3,12 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="18">
-          &nbsp;
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
-        </Col>
-        <Col span="2">
-          <Button type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量驳回</Button>
+        <Col span="24">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resFind" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
+            <Button class="ml20" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量驳回</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
