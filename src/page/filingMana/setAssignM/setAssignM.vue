@@ -247,9 +247,7 @@ export default {
     }
   },
   created () {
-    this.addObj.index = this.caseList.bodyList.length
-    this.caseList.bodyList.push(this.addObj)
-    // this.resCaseList()
+    this.resCaseList()
   },
   methods: {
     resCaseList () {
