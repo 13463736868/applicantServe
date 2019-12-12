@@ -9,7 +9,7 @@
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="8">
+        <Col span="5">
           <Input v-model="search.text" icon="ios-search" class="_search hand" placeholder="仲裁员名称" @on-click="resSearch" @keyup.enter.native="resSearch"></Input>
         </Col>
       </Row>
@@ -22,7 +22,7 @@
                   <span class="mr5" type="text" size="small"></span>
                 </div>
                 <div v-else>
-                  <span class="mr5" type="text" size="small" v-text="index + 1"></span>
+                  <span class="mr5" type="text" size="small" v-text="(pageObj.pageNum - 1) * pageObj.pageSize + index + 1"></span>
                 </div>
               </template>
               <template slot-scope="{ row, index }" slot="startTime">
@@ -98,6 +98,7 @@
                 </div>
               </template>
             </Table>
+            <p class="pt10 pb10" style="color:red;">特别提示：当事人申请仲裁员回避的案件，不会被自动分配。</p>
           </Col>
         </Row>
       </div>
@@ -188,23 +189,7 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: [
-          {
-            id: 1,
-            startTime: '2019-12-10',
-            endTime: '2019-12-12',
-            createTime: '2019-12-09',
-            updateTime: '',
-            arbitratorSole: 1,
-            arbitratorOne: 2,
-            arbitratorTwo: 3,
-            arbitratorThree: 4,
-            arbitratorSoleName: '一',
-            arbitratorOneName: '二',
-            arbitratorTwoName: '三',
-            arbitratorThreeName: '四'
-          }
-        ]
+        bodyList: []
       },
       alertObj: {
         assign: false,
