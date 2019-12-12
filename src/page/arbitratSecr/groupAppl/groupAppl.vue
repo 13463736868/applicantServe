@@ -78,7 +78,7 @@
           <p class="pt7 pb7">指定开庭时间：</p>
         </Col>
         <Col span="12">
-          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker :options="dateDisa" @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
         </Col>
       </Row>
     </alert-btn-info>
@@ -104,7 +104,7 @@
           <p class="pt7 pb7">指定开庭时间：</p>
         </Col>
         <Col span="12">
-          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker :options="dateDisa" @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
         </Col>
       </Row>
     </alert-btn-info>
@@ -155,7 +155,7 @@
       <upload-book childName="批量导入修改" :fileType="['xlsx']" :uploadUrl="resUploadUrl" @saveClick="batchUpSave" @cancClick="alertCanc('batchUp')"></upload-book>
     </alert-btn-info>
     <edit-data-modal v-if="alertShow.editDataModal" :editDataId="alertShow.editDataId" @alertConfirm="alertSave('editData')" @alertCancel="alertCanc('editData')"></edit-data-modal>
-    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSava('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
+    <group-Appr-form v-if="formObj.filing" :caseId="formObj.caseId" @alertConfirm="alertSave('succForm')" @alertCancel="alertCanc('succForm')"></group-Appr-form>
   </div>
 </template>
 
@@ -177,6 +177,11 @@ export default {
   components: { spinComp, createDocu, alertBtnInfo, uploadBook, editDataModal, groupApprForm },
   data () {
     return {
+      dateDisa: {
+        disabledDate (date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
+      },
       spinShow: false,
       search: {
         batchCondition: 0,
@@ -536,61 +541,63 @@ export default {
     },
     beginSave () {
       if (this.alertObj.type === 'once') {
-        axios.post('/getDateSection').then(res => {
-          let _res = res.data.data
-          try {
-            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-            let _sTime = res.data.data.startDate.split('-').join('')
-            let _eTime = res.data.data.endDate.split('-').join('')
-            if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
-            } else {
-              this.upTimeSave()
-            }
-          } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
-          }
-        }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
-        })
+        this.upTimeSave()
+        // axios.post('/getDateSection').then(res => {
+        //   let _res = res.data.data
+        //   try {
+        //     let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+        //     let _sTime = res.data.data.startDate.split('-').join('')
+        //     let _eTime = res.data.data.endDate.split('-').join('')
+        //     if (_time - _sTime < 0 || _time - _eTime > 0) {
+        //       this.$Message.warning({
+        //         content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+        //         duration: 6
+        //       })
+        //     } else {
+        //       this.upTimeSave()
+        //     }
+        //   } catch (e) {
+        //     this.$Message.error({
+        //       content: '调取时间范围出错,稍后再试',
+        //       duration: 5
+        //     })
+        //   }
+        // }).catch(e => {
+        //   this.$Message.error({
+        //     content: '调取时间范围出错,稍后再试',
+        //     duration: 5
+        //   })
+        // })
       } else if (this.alertObj.type === 'edit') {
-        axios.post('/getDateSection', {
-          baseDate: this.alertObj.composeTime
-        }).then(res => {
-          let _res = res.data.data
-          try {
-            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-            let _sTime = res.data.data.startDate.split('-').join('')
-            let _eTime = res.data.data.endDate.split('-').join('')
-            if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
-            } else {
-              this.upTimeSave()
-            }
-          } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
-          }
-        }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
-        })
+        this.upTimeSave()
+        // axios.post('/getDateSection', {
+        //   baseDate: this.alertObj.composeTime
+        // }).then(res => {
+        //   let _res = res.data.data
+        //   try {
+        //     let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+        //     let _sTime = res.data.data.startDate.split('-').join('')
+        //     let _eTime = res.data.data.endDate.split('-').join('')
+        //     if (_time - _sTime < 0 || _time - _eTime > 0) {
+        //       this.$Message.warning({
+        //         content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+        //         duration: 6
+        //       })
+        //     } else {
+        //       this.upTimeSave()
+        //     }
+        //   } catch (e) {
+        //     this.$Message.error({
+        //       content: '调取时间范围出错,稍后再试',
+        //       duration: 5
+        //     })
+        //   }
+        // }).catch(e => {
+        //   this.$Message.error({
+        //     content: '调取时间范围出错,稍后再试',
+        //     duration: 5
+        //   })
+        // })
       }
     },
     upTimeSave () {
@@ -824,32 +831,33 @@ export default {
       })
     },
     timeSave () {
-      axios.post('/getDateSection').then(res => {
-        let _res = res.data.data
-        try {
-          let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-          let _sTime = res.data.data.startDate.split('-').join('')
-          let _eTime = res.data.data.endDate.split('-').join('')
-          if (_time - _sTime < 0 || _time - _eTime > 0) {
-            this.$Message.warning({
-              content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-              duration: 6
-            })
-          } else {
-            this.timesSave()
-          }
-        } catch (e) {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
-        }
-      }).catch(e => {
-        this.$Message.error({
-          content: '调取时间范围出错,稍后再试',
-          duration: 5
-        })
-      })
+      this.timesSave()
+      // axios.post('/getDateSection').then(res => {
+      //   let _res = res.data.data
+      //   try {
+      //     let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+      //     let _sTime = res.data.data.startDate.split('-').join('')
+      //     let _eTime = res.data.data.endDate.split('-').join('')
+      //     if (_time - _sTime < 0 || _time - _eTime > 0) {
+      //       this.$Message.warning({
+      //         content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+      //         duration: 6
+      //       })
+      //     } else {
+      //       this.timesSave()
+      //     }
+      //   } catch (e) {
+      //     this.$Message.error({
+      //       content: '调取时间范围出错,稍后再试',
+      //       duration: 5
+      //     })
+      //   }
+      // }).catch(e => {
+      //   this.$Message.error({
+      //     content: '调取时间范围出错,稍后再试',
+      //     duration: 5
+      //   })
+      // })
     },
     timesSave () {
       this.alertShow.time = false
@@ -1005,6 +1013,12 @@ export default {
           this.alertCanc(type)
           this.resSearch()
           break
+        case 'succForm':
+          this.formObj.filing = false
+          this.formObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
       }
     },
     resAction (type, data) {
@@ -1012,16 +1026,6 @@ export default {
         case 'succForm':
           this.formObj.caseId = data.id
           this.formObj.filing = true
-          break
-      }
-    },
-    alertSava (type) {
-      switch (type) {
-        case 'succForm':
-          this.formObj.filing = false
-          this.formObj.caseId = null
-          this.pageObj.pageNum = 1
-          this.resCaseList()
           break
       }
     },

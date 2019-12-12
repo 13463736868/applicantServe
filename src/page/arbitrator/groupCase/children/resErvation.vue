@@ -6,7 +6,7 @@
           <p class="pt7 pb7">指定开庭时间：</p>
         </Col>
         <Col span="12">
-          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker :options="dateDisa" @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
         </Col>
       </Row>
     </alert-btn-info>
@@ -24,6 +24,11 @@ export default {
   components: { alertBtnInfo },
   data () {
     return {
+      dateDisa: {
+        disabledDate (date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
+      },
       alertShow: true,
       alertObj: {
         time: ''
@@ -38,23 +43,24 @@ export default {
       if (!this.alertObj.time) {
         this.resMessage('warning', '开庭时间不能为空')
       } else {
-        axios.post('/getDateSection').then(res => {
-          let _res = res.data.data
-          try {
-            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-            let _sTime = res.data.data.startDate.split('-').join('')
-            let _eTime = res.data.data.endDate.split('-').join('')
-            if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.resMessage('warning', '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间')
-            } else {
-              this.upTimeSave()
-            }
-          } catch (e) {
-            this.resMessage('error', '调取时间范围出错,稍后再试')
-          }
-        }).catch(e => {
-          this.resMessage('error', '调取时间范围出错,稍后再试')
-        })
+        this.upTimeSave()
+        // axios.post('/getDateSection').then(res => {
+        //   let _res = res.data.data
+        //   try {
+        //     let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+        //     let _sTime = res.data.data.startDate.split('-').join('')
+        //     let _eTime = res.data.data.endDate.split('-').join('')
+        //     if (_time - _sTime < 0 || _time - _eTime > 0) {
+        //       this.resMessage('warning', '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间')
+        //     } else {
+        //       this.upTimeSave()
+        //     }
+        //   } catch (e) {
+        //     this.resMessage('error', '调取时间范围出错,稍后再试')
+        //   }
+        // }).catch(e => {
+        //   this.resMessage('error', '调取时间范围出错,稍后再试')
+        // })
       }
     },
     alertCanc () {
