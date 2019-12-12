@@ -425,7 +425,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/setAssignM')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
