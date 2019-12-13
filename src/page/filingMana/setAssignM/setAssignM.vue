@@ -27,10 +27,10 @@
               </template>
               <template slot-scope="{ row, index }" slot="startTime">
                 <div v-if="addObj.index === index">
-                  <DatePicker transfer v-model="addObj.startTime" class="wmax" :options="dateDisa" @on-change="resAction('addStartTimeChange', ...arguments)" type="date"></DatePicker>
+                  <DatePicker format="yyyy-MM-dd" transfer :value="addObj.startTime" class="wmax" :options="dateDisa" @on-change="resAction('addStartTimeChange', ...arguments)" type="date"></DatePicker>
                 </div>
                 <div v-else-if="editObj.index === index">
-                  <DatePicker transfer v-model="editObj.startTime" class="wmax" :options="dateDisa" @on-change="resAction('startTimeChange', ...arguments)" type="date"></DatePicker>
+                  <DatePicker format="yyyy-MM-dd" transfer :value="editObj.startTime" class="wmax" :options="dateDisa" @on-change="resAction('startTimeChange', ...arguments)" type="date"></DatePicker>
                 </div>
                 <div v-else>
                   <span class="mr5" type="text" size="small" v-text="row.startTime"></span>
@@ -38,10 +38,10 @@
               </template>
               <template slot-scope="{ row, index }" slot="endTime">
                 <div v-if="addObj.index === index">
-                  <DatePicker transfer v-model="addObj.endTime" class="wmax" :options="dateDisa" @on-change="resAction('addEndTimeChange', ...arguments)" type="date"></DatePicker>
+                  <DatePicker format="yyyy-MM-dd" transfer :value="addObj.endTime" class="wmax" :options="dateDisa" @on-change="resAction('addEndTimeChange', ...arguments)" type="date"></DatePicker>
                 </div>
                 <div v-else-if="editObj.index === index">
-                  <DatePicker transfer v-model="editObj.endTime" class="wmax" :options="dateDisa" @on-change="resAction('endTimeChange', ...arguments)" type="date"></DatePicker>
+                  <DatePicker format="yyyy-MM-dd" transfer :value="editObj.endTime" class="wmax" :options="dateDisa" @on-change="resAction('endTimeChange', ...arguments)" type="date"></DatePicker>
                 </div>
                 <div v-else>
                   <span class="mr5" type="text" size="small" v-text="row.endTime"></span>
@@ -89,8 +89,8 @@
                   <Button class="ml10" size="small" type="primary" @click="alertCanc('clearAddObj')">清空</Button>
                 </div>
                 <div v-else-if="editObj.index === index">
-                  <Button class="ml10" size="small" type="primary" @click="editObj.index = -1">取消</Button>
                   <Button class="ml10" size="small" type="primary" @click="resAction('saveRow', row)">保存</Button>
+                  <Button class="ml10" size="small" @click="editObj.index = -1">取消</Button>
                 </div>
                 <div v-else>
                   <Button class="ml10" size="small" type="primary" @click="resAction('editRow', row)">修改</Button>
@@ -316,24 +316,30 @@ export default {
           })
           break
         case 'saveRow':
-          axios.post('/assignRule/addOrUpdate/2', {
-            id: data.id,
-            startTimeStr: this.editObj.startTime,
-            endTimeStr: this.editObj.endTime,
-            arbitratorSole: this.editObj.arbitratorSole,
-            arbitratorOne: this.editObj.arbitratorOne,
-            arbitratorTwo: this.editObj.arbitratorTwo,
-            arbitratorThree: this.editObj.arbitratorThree,
-            arbitratorSoleName: this.editObj.arbitratorSoleName === '随机分配' ? null : this.editObj.arbitratorSoleName,
-            arbitratorOneName: this.editObj.arbitratorOneName === '随机分配' ? null : this.editObj.arbitratorOneName,
-            arbitratorTwoName: this.editObj.arbitratorTwoName === '随机分配' ? null : this.editObj.arbitratorTwoName,
-            arbitratorThreeName: this.editObj.arbitratorThreeName === '随机分配' ? null : this.editObj.arbitratorThreeName
-          }).then(res => {
-            this.resCaseList()
-            this.resMessage('success', '操作成功')
-          }).catch(e => {
-            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-          })
+          console.log(this.editObj.startTime, this.editObj.endTime)
+          if ((this.editObj.startTime.split('-').join('') - this.editObj.endTime.split('-').join('')) > 0) {
+            this.resMessage('warning', '开始时间不能大于结束时间')
+          } else {
+            axios.post('/assignRule/addOrUpdate/2', {
+              id: data.id,
+              startTimeStr: this.editObj.startTime,
+              endTimeStr: this.editObj.endTime,
+              arbitratorSole: this.editObj.arbitratorSole,
+              arbitratorOne: this.editObj.arbitratorOne,
+              arbitratorTwo: this.editObj.arbitratorTwo,
+              arbitratorThree: this.editObj.arbitratorThree,
+              arbitratorSoleName: this.editObj.arbitratorSoleName === '随机分配' ? null : this.editObj.arbitratorSoleName,
+              arbitratorOneName: this.editObj.arbitratorOneName === '随机分配' ? null : this.editObj.arbitratorOneName,
+              arbitratorTwoName: this.editObj.arbitratorTwoName === '随机分配' ? null : this.editObj.arbitratorTwoName,
+              arbitratorThreeName: this.editObj.arbitratorThreeName === '随机分配' ? null : this.editObj.arbitratorThreeName
+            }).then(res => {
+              this.editObj.index = -1
+              this.resCaseList()
+              this.resMessage('success', '操作成功')
+            }).catch(e => {
+              this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+            })
+          }
           break
         case 'resDel':
           this.alertObj.delData = {
@@ -342,15 +348,19 @@ export default {
           this.alertObj.del = true
           break
         case 'addStartTimeChange':
+          console.log(data)
           this.addObj.startTime = data
           break
         case 'addEndTimeChange':
+          console.log(data)
           this.addObj.endTime = data
           break
         case 'startTimeChange':
+          console.log(data)
           this.editObj.startTime = data
           break
         case 'endTimeChange':
+          console.log(data)
           this.editObj.endTime = data
           break
         case 'addArbitratorSole':
