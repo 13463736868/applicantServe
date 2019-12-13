@@ -16,6 +16,7 @@
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
               <template slot-scope="{ row, index }" slot="action">
                 <Button class="mr5" type="primary" size="small" @click="resAction('inquire', row)" :style="{display: resBtnDis('TRANRECOE_PROCESS')}">进度查询</Button>
+                <Button class="mr5" type="primary" size="small" @click="resAction('seeFile', row)" :style="{display: resBtnDis('TRANRECOE_FILELIST')}">查看文件</Button>
               </template>
             </Table>
           </Col>
@@ -29,6 +30,7 @@
         </Row>
       </div>
     </div>
+    <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.resCaseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
     <res-inquire-alert v-if="alertObj.inquire" :resCaseId="alertObj.resCaseId" @alertConfirm="alertSave('inquire')" @alertCancel="alertCanc('inquire')"></res-inquire-alert>
   </div>
 </template>
@@ -38,12 +40,13 @@ import axios from 'axios'
 import {resBtn} from '@/components/common/mixin.js'
 import { caseInfo } from '@/config/common.js'
 import spinComp from '@/components/common/spin'
+import resSeeFile from '@/page/filingSecr/tranReco/children/resSeeFile'
 import resInquireAlert from '@/page/filingSecr/tranReco/children/resInquireAlert'
 
 export default {
   name: 'tran_reco_e',
   mixins: [resBtn],
-  components: { spinComp, resInquireAlert },
+  components: { spinComp, resSeeFile, resInquireAlert },
   data () {
     return {
       spinShow: false,
@@ -117,6 +120,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
+            minWidth: 80,
             slot: 'action'
           }
         ],
@@ -129,7 +133,8 @@ export default {
       },
       alertObj: {
         inquire: false,
-        resCaseId: null
+        resCaseId: null,
+        seeFile: false
       }
     }
   },
@@ -170,6 +175,10 @@ export default {
           this.alertObj.resCaseId = data.caseid
           this.alertObj.inquire = true
           break
+        case 'seeFile':
+          this.alertObj.resCaseId = data.caseid
+          this.alertObj.seeFile = true
+          break
       }
     },
     alertSave (type) {
@@ -179,12 +188,20 @@ export default {
           this.alertObj.resCaseId = null
           this.resSearch()
           break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.resCaseId = null
+          break
       }
     },
     alertCanc (type) {
       switch (type) {
         case 'inquire':
           this.alertObj.inquire = false
+          this.alertObj.resCaseId = null
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
           this.alertObj.resCaseId = null
           break
       }
