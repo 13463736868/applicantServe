@@ -384,11 +384,12 @@ export default {
         case 'resAssign':
           let _obj = []
           let _switch = true
-          if (this.alertObj.assignData.type !== 'arbitratorSole') {
-            _obj = [this[this.objType].arbitratorOne, this[this.objType].arbitratorTwo, this[this.objType].arbitratorThree]
-          }
-          if (this.alertObj.assignData.type !== 'addArbitratorSole') {
-            _obj = [this[this.objType].addArbitratorOne, this[this.objType].addArbitratorTwo, this[this.objType].addArbitratorThree]
+          if (this.alertObj.assignData.type !== 'arbitratorSole' && this.alertObj.assignData.type !== 'addArbitratorSole') {
+            if (this.alertObj.assignData.type.indexOf('add') !== -1) {
+              _obj = [this[this.objType].addArbitratorOne, this[this.objType].addArbitratorTwo, this[this.objType].addArbitratorThree]
+            } else {
+              _obj = [this[this.objType].arbitratorOne, this[this.objType].arbitratorTwo, this[this.objType].arbitratorThree]
+            }
           }
           _obj.forEach(i => {
             if (i !== -1 && i !== 0) {

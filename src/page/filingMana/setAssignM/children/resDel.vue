@@ -23,8 +23,8 @@ export default {
   },
   methods: {
     alertSave () {
-      axios.post('assignRule/deleteById', {
-        id: this.resPropsData.id
+      axios.post('/assignRule/deleteById', {
+        assignRuleId: this.resPropsData.id
       }).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')
