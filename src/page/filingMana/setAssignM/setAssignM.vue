@@ -57,7 +57,7 @@
                   <Icon class="hand vs" type="md-person" size="16" style="color: #3399ff" @click="resAction('arbitratorSole', row)"/>
                 </div>
                 <div v-else>
-                  <span class="mr5" type="text" size="small" v-text="row.arbitratorSoleName"></span>
+                  <span class="mr5" type="text" size="small" v-html="brightenKeyword(row.arbitratorSoleName)"></span>
                 </div>
               </template>
               <template slot-scope="{ row, index }" slot="arbiThree">
@@ -78,9 +78,9 @@
                   <Icon class="hand vs" type="md-person" size="16" style="color: #3399ff" @click="resAction('arbitratorThree', row)"/>
                 </div>
                 <div v-else>
-                  <span class="mr5" type="text" size="small" v-text="'主裁：' + row.arbitratorOneName"></span>
-                  <span class="mr5" type="text" size="small" v-text="'边裁：' + row.arbitratorTwoName"></span>
-                  <span class="mr5" type="text" size="small" v-text="'边裁：' + row.arbitratorThreeName"></span>
+                  <span class="mr5" type="text" size="small" v-html="brightenKeyword('主裁：' + row.arbitratorOneName)"></span>
+                  <span class="mr5" type="text" size="small" v-html="brightenKeyword('边裁：' + row.arbitratorTwoName)"></span>
+                  <span class="mr5" type="text" size="small" v-html="brightenKeyword('边裁：' + row.arbitratorThreeName)"></span>
                 </div>
               </template>
               <template slot-scope="{ row, index }" slot="action">
@@ -235,6 +235,13 @@ export default {
     this.resCaseList()
   },
   methods: {
+    brightenKeyword (_data) {
+      if (_data.indexOf(this.search.text !== -1) && this.search.text !== '') {
+        return _data.replace(this.search.text, '<font color="red">' + this.search.text + '</font>')
+      } else {
+        return _data
+      }
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/assignRule/list', {

@@ -2,9 +2,18 @@
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
       <template v-if="roleCode === 'ROLE_ZCMS'">
-        <res-dropdown v-for="item in resMenuObj" :key="item.id" :resTitle="item.title" :resMenu="item.obj"></res-dropdown>
+        <res-dropdown v-for="item in resMenuObj[roleCode]" :key="item.id" :resTitle="item.title" :resMenu="item.obj"></res-dropdown>
         <ul class="nav fl" v-if="isRegister">
-          <router-link v-for="item in resMenuDrop.resDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+          <router-link v-for="item in resMenuDrop[roleCode].resDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        </ul>
+      </template>
+      <template v-else-if="roleCode === 'ROLE_YWZR'">
+        <ul class="nav fl" v-if="isRegister">
+          <router-link v-for="item in resMenuDrop[roleCode].resBeforeDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        </ul>
+        <res-dropdown v-for="item in resMenuObj[roleCode]" :key="item.id" :resTitle="item.title" :resMenu="item.obj"></res-dropdown>
+        <ul class="nav fl" v-if="isRegister">
+          <router-link v-for="item in resMenuDrop[roleCode].resDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
         </ul>
       </template>
       <template v-else>
@@ -65,35 +74,50 @@ export default {
       userName: null,
       roleCode: null,
       resMenuDrop: {
-        resA: ['/acceCase', '/pendCase', '/filingCase', '/succCase'],
-        resB: ['/groupAppl', '/groupCase'],
-        resC: ['/closeCase'],
-        resD: ['/stencilList', '/docuAudit'],
-        resE: ['/withdrawList', '/arbiEvas', '/applReissue', '/poliProtest'],
-        resDefault: []
-      },
-      resMenuObj: [
-        {
-          title: '立案审批',
-          obj: []
+        'ROLE_ZCMS': {
+          resA: ['/acceCase', '/pendCase', '/filingCase', '/succCase'],
+          resB: ['/groupAppl', '/groupCase'],
+          resC: ['/closeCase'],
+          resD: ['/stencilList', '/docuAudit'],
+          resE: ['/withdrawList', '/arbiEvas', '/applReissue', '/poliProtest'],
+          resDefault: []
         },
-        {
-          title: '组庭模块',
-          obj: []
-        },
-        {
-          title: '案件记录',
-          obj: []
-        },
-        {
-          title: '文书处理',
-          obj: []
-        },
-        {
-          title: '其他异议',
-          obj: []
+        'ROLE_YWZR': {
+          resBeforeDefault: [],
+          resA: ['/groupAudit', '/setAssignM'],
+          resDefault: []
         }
-      ],
+      },
+      resMenuObj: {
+        'ROLE_ZCMS': [
+          {
+            title: '立案审批',
+            obj: []
+          },
+          {
+            title: '组庭模块',
+            obj: []
+          },
+          {
+            title: '案件记录',
+            obj: []
+          },
+          {
+            title: '文书处理',
+            obj: []
+          },
+          {
+            title: '其他异议',
+            obj: []
+          }
+        ],
+        'ROLE_YWZR': [
+          {
+            title: '组庭程序',
+            obj: []
+          }
+        ]
+      },
       style: {
         bg: {
           backgroundImage: 'url(' + require('../../static/images/header_bg.png') + ')',
@@ -108,7 +132,7 @@ export default {
   },
   created () {
     this.setUserName()
-    this.setMenuObj()
+    this.setMenuObj(this.roleCode)
   },
   computed: {
     ...mapGetters([
@@ -173,20 +197,32 @@ export default {
         this.roleCode = _usersInfo === null ? null : JSON.parse(_usersInfo).roleCode
       }
     },
-    setMenuObj () {
+    setMenuObj (roleType) {
       this.menu.forEach((i) => {
-        if (this.resMenuDrop.resA.indexOf(i.url) !== -1) {
-          this.resMenuObj[0].obj.push(i)
-        } else if (this.resMenuDrop.resB.indexOf(i.url) !== -1) {
-          this.resMenuObj[1].obj.push(i)
-        } else if (this.resMenuDrop.resC.indexOf(i.url) !== -1) {
-          this.resMenuObj[2].obj.push(i)
-        } else if (this.resMenuDrop.resD.indexOf(i.url) !== -1) {
-          this.resMenuObj[3].obj.push(i)
-        } else if (this.resMenuDrop.resE.indexOf(i.url) !== -1) {
-          this.resMenuObj[4].obj.push(i)
-        } else {
-          this.resMenuDrop.resDefault.push(i)
+        if (roleType === 'ROLE_ZCMS') {
+          if (this.resMenuDrop[roleType].resA.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][0].obj.push(i)
+          } else if (this.resMenuDrop[roleType].resB.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][1].obj.push(i)
+          } else if (this.resMenuDrop[roleType].resC.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][2].obj.push(i)
+          } else if (this.resMenuDrop[roleType].resD.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][3].obj.push(i)
+          } else if (this.resMenuDrop[roleType].resE.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][4].obj.push(i)
+          } else {
+            this.resMenuDrop[roleType].resDefault.push(i)
+          }
+        } else if (roleType === 'ROLE_YWZR') {
+          if (this.resMenuDrop[roleType].resA.indexOf(i.url) !== -1) {
+            this.resMenuObj[roleType][0].obj.unshift(i)
+          } else {
+            if (i.url === '/pendCaseM') {
+              this.resMenuDrop[roleType].resBeforeDefault.push(i)
+            } else {
+              this.resMenuDrop[roleType].resDefault.push(i)
+            }
+          }
         }
       })
     },
