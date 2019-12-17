@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">条件选择</label>
         </Col>
         <Col span="3">
-          <Select v-model="search.batchCondition" @on-change="resSearchList">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
             <Option :value="0" :key="0">全部</Option>
             <Option :value="1" :key="1">指定仲裁员(速裁)</Option>
             <Option :value="4" :key="4">指定仲裁员(普裁)</Option>
@@ -230,7 +230,7 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    resSearchList () {
+    resSearch () {
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
@@ -423,7 +423,7 @@ export default {
         case 'groupPass':
           this.alertObj.groupPass = false
           this.alertObj.groupPassData = null
-          this.resSearchList()
+          this.resSearch()
           break
         case 'resPass':
           this.alertObj.pass = false
@@ -434,7 +434,7 @@ export default {
         case 'resRevise':
           this.alertObj.revise = false
           this.alertObj.reviseData = null
-          this.resSearchList()
+          this.resSearch()
           break
       }
     },
