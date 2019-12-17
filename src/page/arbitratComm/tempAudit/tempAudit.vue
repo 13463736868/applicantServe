@@ -7,7 +7,7 @@
           &nbsp;
         </Col>
         <Col span="2" class="tc">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('TEMPAUDIT_QUERY')}">条件搜索</Button>
+          <Button type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('TEMPAUDIT_QUERY')}">条件搜索</Button>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -25,46 +25,26 @@
         </Row>
       </div>
     </div>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.temp" @alertConfirm="tempSave" @alertCancel="alertCanc('temp')" alertTitle="操作">
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.tempReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn, resPage} from '@/components/common/mixin.js'
+import {resBtn, resPage, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 
 export default {
   name: 'temp_audit',
-  mixins: [resBtn, resPage],
-  components: { spinComp, alertBtnInfo },
+  mixins: [resBtn, resPage, resSearFind],
+  components: { spinComp, resFind, alertBtnInfo },
   data () {
     return {
       spinShow: false,
@@ -139,20 +119,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
-      })
-    },
     renderBtn (h, params) {
       let _obj = params.row
       if (_obj.status === 3) {
@@ -251,16 +217,6 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resSaveTemp (index) {
       this.alertShow.state = 1
       this.alertShow.id = this.caseList.bodyList[index].id
@@ -325,20 +281,11 @@ export default {
     },
     alertCanc (type) {
       switch (type) {
-        case 'find':
-          this.alertShow.find = false
-          this.search.requestName = ''
-          this.search.caseType = ''
-          // this.search.caseTypeList = {}
-          // this.search.requestNameList = []
-          break
         case 'temp':
           this.alertShow.temp = false
           this.alertShow.state = null
           this.alertShow.id = null
           this.alertShow.tempReason = ''
-          break
-        default:
           break
       }
     }

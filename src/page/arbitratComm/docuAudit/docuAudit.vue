@@ -5,7 +5,7 @@
       <Row class="pb20">
         <Col span="24">
           <div class="tr pr20">
-            <Button class="ml20" type="primary" @click="resFind" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
             <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
             <Button class="ml20" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('DOCUAUDIT_BATCHREJECTION')}">批量驳回</Button>
           </div>
@@ -46,37 +46,17 @@
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
-    <alert-btn-info :alertShow="alertShow.find"  @alertConfirm="findSave" @alertCancel="alertCanc('find')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>注册名称：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.requestName" filterable>
-            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-      <Row class="_labelFor" v-if="search.requestName !== ''">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>案件类型：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="search.caseType">
-            <Option v-for="item in search.caseTypeList[search.requestName]" :value="item.caseTypeCode" :key="item.caseTypeCode">{{ item.caseTypeName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </alert-btn-info>
     <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('editDocu')" @alertCancel="alertCanc('editDocu')"></alert-editor>
     <alert-service v-if="alertShow.sendService" :resServiceData="alertShow.serviceData" @alertConfirm="alertSave('resService')" @alertCancel="alertCanc('resService')"></alert-service>
+    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn, resPage, resMess} from '@/components/common/mixin.js'
+import {resBtn, resPage, resMess, resSearFind} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
+import resFind from '@/page/comm/resFind/resFind'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
 import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
@@ -84,8 +64,8 @@ import alertService from '@/page/arbitratComm/docuAudit/children/resService'
 
 export default {
   name: 'docu_audit',
-  mixins: [resBtn, resPage, resMess],
-  components: { spinComp, alertBtnInfo, alertEditor, alertService },
+  mixins: [resBtn, resPage, resMess, resSearFind],
+  components: { spinComp, resFind, alertBtnInfo, alertEditor, alertService },
   data () {
     return {
       spinShow: false,
@@ -219,17 +199,6 @@ export default {
     this.resCaseList()
   },
   methods: {
-    dictionary () {
-      axios.post('/batchCaseDocument/findCaseType').then(res => {
-        let _obj = res.data.data
-        this.search.requestNameList = _obj
-        this.search.requestNameList.map((a) => {
-          this.search.caseTypeList[a.userToken] = a.caseTypeList
-        })
-      }).catch(e => {
-        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
-      })
-    },
     resCaseList () {
       this.spinShow = true
       axios.post('/approve/findCaseDocumentList', {
@@ -443,17 +412,6 @@ export default {
         })
       }
     },
-    resFind () {
-      this.alertCanc('find')
-      this.alertShow.find = true
-      this.dictionary()
-    },
-    findSave () {
-      this.alertShow.find = false
-      this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
-      this.resCaseList()
-    },
     resEditDocu (index) {
       let info = this.caseList.bodyList[index]
       this.alertShow.caseId = info.id
@@ -501,11 +459,6 @@ export default {
           this.alertShow.caseDocuId = null
           this.alertShow.rejeReason = ''
           this.alertShow.batch = false
-          break
-        case 'find':
-          this.alertShow.find = false
-          this.search.requestName = ''
-          this.search.caseType = ''
           break
         case 'clearIds':
           this.alertShow.idsList = []
