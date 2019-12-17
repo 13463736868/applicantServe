@@ -243,6 +243,7 @@ export default {
         name: this.search.text
       }).then(res => {
         let _data = res.data.data
+        this.editObj.index = -1
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
         this.addObj.index = this.caseList.bodyList.length
         this.caseList.bodyList.push(this.addObj)
@@ -316,7 +317,6 @@ export default {
           })
           break
         case 'saveRow':
-          console.log(this.editObj.startTime, this.editObj.endTime)
           if ((this.editObj.startTime.split('-').join('') - this.editObj.endTime.split('-').join('')) > 0) {
             this.resMessage('warning', '开始时间不能大于结束时间')
           } else {
@@ -348,19 +348,15 @@ export default {
           this.alertObj.del = true
           break
         case 'addStartTimeChange':
-          console.log(data)
           this.addObj.startTime = data
           break
         case 'addEndTimeChange':
-          console.log(data)
           this.addObj.endTime = data
           break
         case 'startTimeChange':
-          console.log(data)
           this.editObj.startTime = data
           break
         case 'endTimeChange':
-          console.log(data)
           this.editObj.endTime = data
           break
         case 'addArbitratorSole':
