@@ -3,7 +3,18 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="24">
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">状态选择</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.state" @on-change="resSearch">
+            <Option value="all" :key="0">全部</Option>
+            <Option value="1" :key="1">通过</Option>
+            <Option value="2" :key="2">驳回</Option>
+            <Option value="3" :key="3">未审核</Option>
+          </Select>
+        </Col>
+        <Col span="19">
           <div class="tr pr20">
             <Button class="ml20" type="primary" @click="resActionFind('resFind', null)" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
             <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('DOCUAUDIT_BATCHPASS')}">批量通过</Button>
@@ -70,6 +81,7 @@ export default {
     return {
       spinShow: false,
       search: {
+        state: 'all',
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -83,6 +95,9 @@ export default {
             key: 'id',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -170,7 +185,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -205,7 +221,8 @@ export default {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
-        caseTypeCode: this.search.caseType
+        caseTypeCode: this.search.caseType,
+        state: this.search.state === 'all' ? null : this.search.state
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -291,6 +308,34 @@ export default {
         })
       }
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.caseDocuemntApproveState === 3) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
       if (_obj.caseDocuemntApproveState === 3) {
@@ -308,7 +353,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -327,7 +372,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -338,8 +383,8 @@ export default {
         ])
       }
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.id) === -1) {
           if (this.alertShow.ids.length >= 10) {
@@ -463,6 +508,7 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           break
         case 'editDocu':
           this.alertShow.editor = false

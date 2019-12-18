@@ -98,6 +98,9 @@ export default {
             key: 'caseId',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -188,7 +191,8 @@ export default {
             }
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -446,6 +450,34 @@ export default {
         }
       }
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.cancelFlag !== '1' && this.reviewStatus === 1 && _obj.acceptBtnStatus === '3') {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
       if (_obj.cancelFlag === '1') {
@@ -626,6 +658,7 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+        this.caseList.seleMap = {}
       }
     },
     goCaseInfo (index) {

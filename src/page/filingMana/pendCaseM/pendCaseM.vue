@@ -4,7 +4,7 @@
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>
         <Col span="2">
-          <label class="lh32 f16 fc6 fr mr15">搜索</label>
+          <label class="lh32 f16 fc6 fr mr15">搜 索</label>
         </Col>
         <Col span="8">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
@@ -94,6 +94,9 @@ export default {
             key: 'caseId',
             width: 60,
             align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
             render: (h, params) => {
               return this.renderCheck(h, params)
             }
@@ -217,7 +220,8 @@ export default {
             }
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -343,6 +347,34 @@ export default {
         })
       })
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (_obj.pendBtnStatus === '3') {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     renderCheck (h, params) {
       let _obj = params.row
       if (_obj.pendBtnStatus === '3') {
@@ -360,7 +392,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, true)
+                  this.seleArrChange(_obj, true)
                 }
               }
             })
@@ -379,7 +411,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.seleArrChange(params.index, false)
+                  this.seleArrChange(_obj, false)
                 }
               }
             })
@@ -390,8 +422,8 @@ export default {
         ])
       }
     },
-    seleArrChange (index, bool) {
-      let info = this.caseList.bodyList[index]
+    seleArrChange (_data, bool) {
+      let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.caseId) === -1) {
           if (this.alertShow.ids.length >= 10) {
@@ -512,6 +544,7 @@ export default {
       } else if (type === 'clearIds') {
         this.alertShow.idsList = []
         this.alertShow.ids = []
+        this.caseList.seleMap = {}
       } else if (type === 'pendForm') {
         this.formObj.filing = false
         this.formObj.caseId = null

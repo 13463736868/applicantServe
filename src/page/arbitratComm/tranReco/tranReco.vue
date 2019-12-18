@@ -30,9 +30,11 @@
             <Option value="assign" key="assign">已分配</Option>
           </Select>
         </Col>
-        <Col span="4" class="tc">
-          <Button type="primary" class="mr10" @click="resSearch">查询</Button>
-          <Button type="primary" @click="resAction('assignAll', null)" :style="{display: resBtnDis('TRANRECOD_BATCHASSIGN')}">批量分配</Button>
+        <Col span="4">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resSearch">查询</Button>
+            <Button class="ml20" type="primary" @click="resAction('assignAll', null)" :style="{display: resBtnDis('TRANRECOD_BATCHASSIGN')}">批量分配</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -403,14 +405,17 @@ export default {
     alertSave (type) {
       if (type === 'assig') {
         this.alertShow.caseIdList = []
+        this.caseList.seleMap = {}
         this.alertShow.assigModel = false
         this.pageObj.pageNum = 1
         this.resCaseList()
       }
     },
     alertCanc (type) {
-      if (type === 'assig') {
-        this.alertShow.assigModel = false
+      switch (type) {
+        case 'assig':
+          this.alertShow.assigModel = false
+          break
       }
     },
     goCaseInfo (index) {
