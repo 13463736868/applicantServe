@@ -11,7 +11,7 @@
       </div>
       <div slot="footer">
         <Button size="large" @click="alertCancel">取消</Button>
-        <Button size="large" @click="alertSee">预览</Button>
+        <Button v-if="isSeeBtn !== true" size="large" @click="alertSee">预览</Button>
         <Button type="primary" size="large" @click="alertConfirm">提交</Button>
       </div>
     </Modal>
@@ -21,7 +21,7 @@
 <script>
 export default {
   name: 'create_docu',
-  props: ['alertShow', 'alertTitle'],
+  props: ['alertShow', 'alertTitle', 'isSeeBtn'],
   data () {
     return {}
   },

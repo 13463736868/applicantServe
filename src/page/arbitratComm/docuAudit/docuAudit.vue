@@ -66,6 +66,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('resEditDocu')" @alertCancel="alertCanc('resEditDocu')"></alert-editor>
   </div>
 </template>
 
@@ -75,12 +76,13 @@ import {resBtn} from '@/components/common/mixin.js'
 import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import alertEditor from '@/page/arbitratComm/docuAudit/children/alertEditor'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'docu_audit',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo },
+  components: { headTop, spinComp, alertBtnInfo, alertEditor },
   data () {
     return {
       spinShow: false,
@@ -203,7 +205,10 @@ export default {
         idsList: [],
         ids: [],
         batch: false,
-        find: false
+        find: false,
+        editor: false,
+        caseId: null,
+        docuType: null
       }
     }
   },
@@ -273,7 +278,22 @@ export default {
                 this.resCancDocu(params.index)
               }
             }
-          }, '驳回')
+          }, '驳回'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px',
+              display: _obj.editFlag === 0 ? 'none' : ''
+            },
+            on: {
+              click: () => {
+                this.resAction('resEditDocu', _obj)
+              }
+            }
+          }, '修改')
         ])
       } else {
         return h('div', [
@@ -552,23 +572,52 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'resEditDocu':
+          this.alertShow.caseId = data.id
+          this.alertShow.docuType = data.type
+          this.alertShow.editor = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'resEditDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
-      if (type === 'docu') {
-        this.alertShow.docu = false
-        this.alertShow.id = null
-        this.alertShow.state = null
-        this.alertShow.caseDocuId = null
-        this.alertShow.rejeReason = ''
-        this.alertShow.batch = false
-      } else if (type === 'find') {
-        this.alertShow.find = false
-        this.search.requestName = ''
-        this.search.caseType = ''
-        // this.search.caseTypeList = {}
-        // this.search.requestNameList = []
-      } else if (type === 'clearIds') {
-        this.alertShow.idsList = []
-        this.alertShow.ids = []
+      switch (type) {
+        case 'resEditDocu':
+          this.alertShow.editor = false
+          this.alertShow.caseId = null
+          this.alertShow.docuType = null
+          break
+        case 'docu':
+          this.alertShow.docu = false
+          this.alertShow.id = null
+          this.alertShow.state = null
+          this.alertShow.caseDocuId = null
+          this.alertShow.rejeReason = ''
+          this.alertShow.batch = false
+          break
+        case 'find':
+          this.alertShow.find = false
+          this.search.requestName = ''
+          this.search.caseType = ''
+          // this.search.caseTypeList = {}
+          // this.search.requestNameList = []
+          break
+        case 'clearIds':
+          this.alertShow.idsList = []
+          this.alertShow.ids = []
+          break
       }
     }
   }

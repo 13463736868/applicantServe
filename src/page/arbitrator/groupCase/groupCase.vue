@@ -47,118 +47,6 @@
         </Col>
       </Row>
     </create-docu>
-    <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('endNew')" @alertSee="seeDocu('endNew')" @alertCancel="alertCanc('endNew')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>文书类型：</b></p>
-        </Col>
-        <Col span="16">
-          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
-            <Radio :label="1">裁决书</Radio>
-            <Radio :label="2">调解书</Radio>
-          </RadioGroup>
-        </Col>
-      </Row>
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>结案模版：</b></p>
-        </Col>
-        <Col span="16">
-          <Select v-model="alertShow.endNewTempCode">
-            <Option v-if="item.tempDocumentType === alertShow.docuType" v-for="item in alertShow.endNewTempList" :value="item.tempCode" :key="item.tempCode">{{ item.tempName }}</Option>
-          </Select>
-        </Col>
-      </Row>
-    </create-docu>
-    <!-- <create-docu :alertShow="alertShow.end" @alertConfirm="docuSave('end')" @alertSee="seeDocu('end')" @alertCancel="alertCanc('end')" alertTitle="操作">
-      <Row class="_labelFor">
-        <Col span="6" offset="1">
-          <p><span class="_span">*</span><b>文书类型：</b></p>
-        </Col>
-        <Col span="16">
-          <RadioGroup v-model="alertShow.docuType" @on-change="alertCanc('docuType')">
-            <Radio :label="1">裁决书</Radio>
-            <Radio :label="2">调解书</Radio>
-          </RadioGroup>
-        </Col>
-      </Row>
-      <div v-if="alertShow.docuType === 1">
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同名称：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractName"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同约定情况：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractualStipulation"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同履行情况：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractPerformance"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>需要还款本金：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.repaymentPrincipal"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>还款基数：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.repaymentBase"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>年利率：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.annualRate"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b title="关于利息及逾期利息的计算">利息计算：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.interestCalculation"></Input>
-          </Col>
-        </Row>
-      </div>
-      <div v-else-if="alertShow.docuType === 2">
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>合同名称：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.contractName"></Input>
-          </Col>
-        </Row>
-        <Row class="_labelFor">
-          <Col span="6" offset="1">
-            <p><span class="_span">*</span><b title="自愿达成协议内容">协议内容：</b></p>
-          </Col>
-          <Col span="16">
-            <Input v-model="alertShow.agreementContent" type="textarea" :autosize="{minRows: 3,maxRows: 10}"/>
-          </Col>
-        </Row>
-      </div>
-    </create-docu> -->
     <create-docu :alertShow="alertShow.reve" @alertConfirm="docuSave('reve')" @alertSee="seeDocu('reve')" @alertCancel="alertCanc('reve')" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
@@ -244,6 +132,7 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <end-case-alert v-if="alertObj.resEndCase" :resVal="alertObj.endCaseData" @alertConfirm="alertSave('resEndCase')" @alertCancel="alertCanc('resEndCase')"></end-case-alert>
   </div>
 </template>
 
@@ -254,6 +143,7 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import createDocu from '@/components/common/createDocu'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
+import endCaseAlert from '@/page/arbitrator/groupCase/children/endCaseAlert'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -261,7 +151,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor },
+  components: { headTop, spinComp, createDocu, alertBtnInfo, alertEditor, endCaseAlert },
   data () {
     return {
       spinShow: false,
@@ -378,14 +268,6 @@ export default {
         contractName: '',
         docuType: null,
         userId: null,
-        end: false,
-        contractualStipulation: '',
-        contractPerformance: '',
-        repaymentPrincipal: '',
-        repaymentBase: '',
-        annualRate: '',
-        interestCalculation: '',
-        agreementContent: '',
         reve: false,
         addE: false,
         pageNum: '',
@@ -400,6 +282,10 @@ export default {
         idsList: [],
         batch: false,
         find: false
+      },
+      alertObj: {
+        resEndCase: false,
+        endCaseData: null
       }
     }
   },
@@ -593,7 +479,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resEndCase(params.index)
+                  this.resAction('resEndCase', params.row)
                 }
               }
             }, '结案'),
@@ -654,7 +540,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resEndCase(params.index)
+                  this.resAction('resEndCase', params.row)
                 }
               }
             }, '重新生成文书')
@@ -709,7 +595,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resEndCase(params.index)
+                  this.resAction('resEndCase', params.row)
                 }
               }
             }, '重新结案')
@@ -727,7 +613,7 @@ export default {
               },
               on: {
                 click: () => {
-                  this.resEndCase(params.index)
+                  this.resAction('resEndCase', params.row)
                 }
               }
             }, '结案'),
@@ -922,74 +808,6 @@ export default {
         }
       }
     },
-    resEndCase (index) {
-      let _res = this.caseList.bodyList[index]
-      if (_res.writtenFlag === 1) {
-        axios.post('/caseType/findAllTemplate').then(res => {
-          this.alertShow.endNewTempList = res.data.data
-          this.alertShow.userId = _res.id
-          this.alertShow.docuType = 1
-          this.alertShow.endNewTempCode = _res.tempCode
-          this.alertShow.end = true
-        }).catch(e => {
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
-        })
-      } else {
-        let newTime = this.getFormatDate()
-        let newD = newTime.substr(0, 10).split('-').join('')
-        let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
-        let beginTime = _res.beginTime
-        let beginD = beginTime.substr(0, 10).split('-').join('')
-        let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
-        if (beginTime === '' || beginTime === null) {
-          this.$Message.warning({
-            content: '没有开庭时间，禁止点击',
-            duration: 5
-          })
-        } else if (newD - beginD < 0) {
-          this.$Message.warning({
-            content: '开庭时间未到，禁止点击',
-            duration: 5
-          })
-        } else if (newD - beginD === 0) {
-          if (newT - beginT > 0) {
-            axios.post('/caseType/findAllTemplate').then(res => {
-              this.alertShow.endNewTempList = res.data.data
-              this.alertShow.userId = _res.id
-              this.alertShow.docuType = 1
-              this.alertShow.endNewTempCode = _res.tempCode
-              this.alertShow.end = true
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          } else {
-            this.$Message.warning({
-              content: '开庭时间未到，禁止点击',
-              duration: 5
-            })
-          }
-        } else if (newD - beginD > 0) {
-          axios.post('/caseType/findAllTemplate').then(res => {
-            this.alertShow.endNewTempList = res.data.data
-            this.alertShow.userId = _res.id
-            this.alertShow.docuType = 1
-            this.alertShow.endNewTempCode = _res.tempCode
-            this.alertShow.end = true
-          }).catch(e => {
-            this.$Message.error({
-              content: '错误信息:' + e + ' 稍后再试',
-              duration: 5
-            })
-          })
-        }
-      }
-    },
     resPassReve (index) {
       let res = this.caseList.bodyList[index]
       this.alertShow.userId = res.id
@@ -1037,140 +855,6 @@ export default {
                 content: '错误信息:' + e + ' 稍后再试',
                 duration: 5
               })
-            })
-          }
-          break
-        case 'endNew':
-          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
-            this.$Message.warning({
-              content: '请选择结案模版',
-              duration: 5
-            })
-          } else {
-            let _o = {}
-            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
-            axios.post('/batchCaseDocument/addCaseDocument', {
-              documentType: this.alertShow.docuType,
-              caseDocumentDataJson: JSON.stringify([_o])
-            }).then(res => {
-              this.alertCanc('end')
-              this.$Message.success({
-                content: '操作成功',
-                duration: 2
-              })
-              this.resCaseList()
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        case 'end':
-          // 单案结案改成选模版次处废掉
-          if (this.alertShow.docuType === 1) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.contractualStipulation === '') {
-              this.$Message.warning({
-                content: '请填写合同约定情况',
-                duration: 5
-              })
-            } else if (this.alertShow.contractPerformance === '') {
-              this.$Message.warning({
-                content: '请填写合同履行情况',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentPrincipal === '') {
-              this.$Message.warning({
-                content: '请填写需要还款本金',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentBase === '') {
-              this.$Message.warning({
-                content: '请填写还款基数',
-                duration: 5
-              })
-            } else if (this.alertShow.annualRate === '') {
-              this.$Message.warning({
-                content: '请填写年利率',
-                duration: 5
-              })
-            } else if (this.alertShow.interestCalculation === '') {
-              this.$Message.warning({
-                content: '请填写利息计算',
-                duration: 5
-              })
-            } else {
-              this.alertShow.end = false
-              axios.post('/case/addDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  contractualStipulation: this.alertShow.contractualStipulation,
-                  contractPerformance: this.alertShow.contractPerformance,
-                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
-                  repaymentBase: this.alertShow.repaymentBase,
-                  annualRate: this.alertShow.annualRate,
-                  interestCalculation: this.alertShow.interestCalculation
-                })
-              }).then(res => {
-                this.alertCanc('end')
-                this.$Message.success({
-                  content: '操作成功',
-                  duration: 2
-                })
-                this.resCaseList()
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else if (this.alertShow.docuType === 2) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.agreementContent === '') {
-              this.$Message.warning({
-                content: '请填写协议内容',
-                duration: 5
-              })
-            } else {
-              this.alertShow.end = false
-              axios.post('/case/addDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  agreementContent: this.alertShow.agreementContent
-                })
-              }).then(res => {
-                this.alertCanc('end')
-                this.$Message.success({
-                  content: '操作成功',
-                  duration: 2
-                })
-                this.resCaseList()
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else {
-            this.$Message.error({
-              content: '请稍后再试',
-              duration: 5
             })
           }
           break
@@ -1246,123 +930,6 @@ export default {
                 content: '错误信息:' + e + ' 稍后再试',
                 duration: 5
               })
-            })
-          }
-          break
-        case 'endNew':
-          if (this.alertShow.endNewTempCode === '' || this.alertShow.endNewTempCode === undefined) {
-            this.$Message.warning({
-              content: '请选择结案模版',
-              duration: 5
-            })
-          } else {
-            let _o = {}
-            _o[this.alertShow.userId] = this.alertShow.endNewTempCode
-            axios.post('/batchCaseDocument/findPreviewCaseDocument', {
-              documentType: this.alertShow.docuType,
-              caseDocumentDataJson: JSON.stringify([_o])
-            }).then(res => {
-              window.open(res.data.data, '_blank')
-            }).catch(e => {
-              this.$Message.error({
-                content: '错误信息:' + e + ' 稍后再试',
-                duration: 5
-              })
-            })
-          }
-          break
-        case 'end':
-          // 单案结案改成选模版次处废掉
-          if (this.alertShow.docuType === 1) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.contractualStipulation === '') {
-              this.$Message.warning({
-                content: '请填写合同约定情况',
-                duration: 5
-              })
-            } else if (this.alertShow.contractPerformance === '') {
-              this.$Message.warning({
-                content: '请填写合同履行情况',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentPrincipal === '') {
-              this.$Message.warning({
-                content: '请填写需要还款本金',
-                duration: 5
-              })
-            } else if (this.alertShow.repaymentBase === '') {
-              this.$Message.warning({
-                content: '请填写还款基数',
-                duration: 5
-              })
-            } else if (this.alertShow.annualRate === '') {
-              this.$Message.warning({
-                content: '请填写年利率',
-                duration: 5
-              })
-            } else if (this.alertShow.interestCalculation === '') {
-              this.$Message.warning({
-                content: '请填写利息计算',
-                duration: 5
-              })
-            } else {
-              axios.post('/case/previewDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  contractualStipulation: this.alertShow.contractualStipulation,
-                  contractPerformance: this.alertShow.contractPerformance,
-                  repaymentPrincipal: this.alertShow.repaymentPrincipal,
-                  repaymentBase: this.alertShow.repaymentBase,
-                  annualRate: this.alertShow.annualRate,
-                  interestCalculation: this.alertShow.interestCalculation
-                })
-              }).then(res => {
-                window.open(res.data.data.filepath, '_blank')
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else if (this.alertShow.docuType === 2) {
-            if (this.alertShow.contractName === '') {
-              this.$Message.warning({
-                content: '请填写合同名称',
-                duration: 5
-              })
-            } else if (this.alertShow.agreementContent === '') {
-              this.$Message.warning({
-                content: '请填写协议内容',
-                duration: 5
-              })
-            } else {
-              axios.post('/case/previewDocumentFile', {
-                caseId: this.alertShow.userId,
-                documentType: this.alertShow.docuType,
-                jsonData: JSON.stringify({
-                  contractName: this.alertShow.contractName,
-                  agreementContent: this.alertShow.agreementContent
-                })
-              }).then(res => {
-                window.open(res.data.data.filepath, '_blank')
-              }).catch(e => {
-                this.$Message.error({
-                  content: '错误信息:' + e + ' 稍后再试',
-                  duration: 5
-                })
-              })
-            }
-          } else {
-            this.$Message.error({
-              content: '请稍后再试',
-              duration: 5
             })
           }
           break
@@ -1547,6 +1114,62 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    resAction (type, data) {
+      switch (type) {
+        case 'resEndCase':
+          if (data.writtenFlag === 1) {
+            this.alertObj.endCaseData = {}
+            this.alertObj.endCaseData.id = data.id
+            this.alertObj.endCaseData.endNewTempCode = data.tempCode
+            this.alertObj.resEndCase = true
+          } else {
+            let newTime = this.getFormatDate()
+            let newD = newTime.substr(0, 10).split('-').join('')
+            let newT = (newTime.substr(11, 2) - 0) * 60 + (newTime.substr(14, 2) - 0)
+            let beginTime = data.beginTime
+            let beginD = beginTime.substr(0, 10).split('-').join('')
+            let beginT = (beginTime.substr(11, 2) - 0) * 60 + (beginTime.substr(14, 2) - 0)
+            if (beginTime === '' || beginTime === null) {
+              this.$Message.warning({
+                content: '没有开庭时间，禁止点击',
+                duration: 5
+              })
+            } else if (newD - beginD < 0) {
+              this.$Message.warning({
+                content: '开庭时间未到，禁止点击',
+                duration: 5
+              })
+            } else if (newD - beginD === 0) {
+              if (newT - beginT > 0) {
+                this.alertObj.endCaseData = {}
+                this.alertObj.endCaseData.id = data.id
+                this.alertObj.endCaseData.endNewTempCode = data.tempCode
+                this.alertObj.resEndCase = true
+              } else {
+                this.$Message.warning({
+                  content: '开庭时间未到，禁止点击',
+                  duration: 5
+                })
+              }
+            } else if (newD - beginD > 0) {
+              this.alertObj.endCaseData = {}
+              this.alertObj.endCaseData.id = data.id
+              this.alertObj.endCaseData.endNewTempCode = data.tempCode
+              this.alertObj.resEndCase = true
+            }
+          }
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'resEndCase':
+          this.alertObj.resEndCase = false
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+      }
+    },
     alertCanc (type) {
       switch (type) {
         case 'canc':
@@ -1554,29 +1177,6 @@ export default {
           this.alertShow.contractName = ''
           this.alertShow.userId = null
           this.alertShow.docuType = null
-          break
-        case 'end':
-        case 'endNew':
-        case 'docuType':
-          this.alertShow.contractName = ''
-          this.alertShow.contractualStipulation = ''
-          this.alertShow.contractPerformance = ''
-          this.alertShow.repaymentPrincipal = ''
-          this.alertShow.repaymentBase = ''
-          this.alertShow.annualRate = ''
-          this.alertShow.interestCalculation = ''
-          this.alertShow.agreementContent = ''
-          if (type === 'end') {
-            this.alertShow.end = false
-            this.alertShow.userId = null
-            this.alertShow.docuType = null
-          }
-          if (type === 'endNew') {
-            this.alertShow.end = false
-            this.alertShow.userId = null
-            this.alertShow.endNewTempList = []
-          }
-          this.alertShow.endNewTempCode = ''
           break
         case 'reve':
           this.alertShow.contractName = ''
@@ -1615,6 +1215,9 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          break
+        case 'resEndCase':
+          this.alertObj.resEndCase = false
           break
         default:
           break
