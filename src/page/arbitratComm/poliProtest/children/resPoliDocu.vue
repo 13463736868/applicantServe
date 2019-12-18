@@ -171,5 +171,14 @@ export default {
   ._span {
     color: #ff7a7a;
   }
+  ._input {
+    padding: 7px 0;
+    color: #337BB5;
+    ._del {
+      font-size: 14px;
+      color: #ff7a7a;
+      vertical-align: text-bottom;
+    }
+  }
 }
 </style>
