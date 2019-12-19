@@ -18,8 +18,12 @@
               <span v-text="infoData.remarks"></span>
             </p>
             <p>
-              <span class="mr10">附件名称 :</span>
-              <span class="_file" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</span>
+              <Row>
+                <Col span="3">附件名称 :</Col>
+                <Col span="21">
+                  <div class="_file pb10" v-for="(item, index) in infoData.fileObjects" :key="index" :title="'点击查看: '+item.fileName" @click="seeFile(item.filePath)">{{item.fileName.length > 15 ? item.fileName.substr(0, 15) + '...' : item.fileName}}</div>
+                </Col>
+              </Row>
             </p>
             <p>
               <span class="mr10">固化状态 :</span>
@@ -67,7 +71,6 @@ export default {
     ._file {
       @include hand;
       color: #337BB5;
-      margin-right: 60px;
     }
   }
 }
