@@ -3,6 +3,7 @@
     <div class="_evidences">
       <div class="_top">申请人证据</div>
       <div v-if="evidObj.list">
+        <evid-dow-zip :caseId="caseId" partyType="1"></evid-dow-zip>
         <div v-if="evidData !== null" v-for="(item, index) in evidData" :key="index">
           <evid-info :infoData="item"></evid-info>
         </div>
@@ -11,6 +12,7 @@
     <div class="_revEvidences">
       <div class="_top">被申请人证据</div>
       <div v-if="revEvidObj.list">
+      <evid-dow-zip :caseId="caseId" partyType="2"></evid-dow-zip>
         <div v-if="revEvidData !== null" v-for="(item, index) in revEvidData" :key="index">
           <evid-info :infoData="item"></evid-info>
         </div>
@@ -22,11 +24,12 @@
 <script>
 import axios from 'axios'
 import evidInfo from '@/page/comm/children/children/evidInfo'
+import evidDowZip from '@/page/comm/children/children/evidDowZip'
 
 export default {
   name: 'evidencesInfo',
   props: ['caseId', 'caseState'],
-  components: { evidInfo },
+  components: { evidInfo, evidDowZip },
   data () {
     return {
       evidObj: {
