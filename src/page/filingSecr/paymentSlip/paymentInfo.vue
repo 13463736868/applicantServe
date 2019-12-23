@@ -57,6 +57,13 @@
             <button class="_exportBtn" @click="exportData">导出数据</button>
           </div> -->
         </div>
+        <div class="_page clearfix">
+          <Row>
+            <Col span="12" offset="6" class="tc">
+              <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage"></Page>
+            </Col>
+          </Row>
+        </div>
       </Row>
     </div>
   </div>
@@ -170,6 +177,10 @@ export default {
     ...mapActions([
       'setPaymentInfoId'
     ]),
+    reschangePage (page) {
+      this.pageObj.pageNum = page
+      this.resPayment()
+    },
     resPayment () {
       axios.post('/payMentRequest/findPayOrderDetails', {
         paymentId: this.publicData.id,
@@ -266,7 +277,7 @@ export default {
     }
   }
   ._payList {
-    padding-bottom: 60px;
+    padding-bottom: 20px;
     ._exportBtn {
       @include btn(#126eaf, 90px, 14px, 32px);
       @include boxShadow(0 1px 6px -1px #bbb);
@@ -275,6 +286,9 @@ export default {
       margin-right: 20px;
       margin-top: 20px;
     }
+  }
+  ._page {
+    padding-bottom: 60px;
   }
 }
 </style>
