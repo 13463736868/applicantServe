@@ -87,7 +87,7 @@
           <p class="pt7 pb7">指定开庭时间：</p>
         </Col>
         <Col span="12">
-          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker @on-change="changeDate" :options="dateDisa" type="datetime" placeholder="请指定开庭时间"></DatePicker>
         </Col>
       </Row>
     </alert-btn-info>
@@ -141,6 +141,11 @@ export default {
   components: { headTop, spinComp, createDocu, alertBtnInfo },
   data () {
     return {
+      dateDisa: {
+        disabledDate (date) {
+          return date && date.valueOf() < Date.now() - 86400000
+        }
+      },
       spinShow: false,
       search: {
         requestName: '',
