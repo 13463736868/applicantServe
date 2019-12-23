@@ -609,6 +609,7 @@ export default {
         tribunalRequestId: this.alertShow.tribId,
         arbitratorIds: this.alertShow.passId
       }).then(res => {
+        this.resSearchList()
         this.alertCanc('pass')
         this.$Message.success({
           content: '操作成功',
