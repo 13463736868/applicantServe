@@ -6,7 +6,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">姓名 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">姓名 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.name"></span>
                   <span class="_icon">
@@ -17,7 +17,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10" v-text="infoData.idcardTypeName + ' :'"></span></Col>
+                <Col class="tr" span="5"><span class="mr5" v-text="infoData.idcardTypeName + ' :'"></span></Col>
                 <Col span="18">
                   <span v-text="infoData.idcard"></span>
                 </Col>
@@ -25,7 +25,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达手机 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.phone"></span>
                 </Col>
@@ -33,7 +33,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达邮箱 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.email"></span>
                 </Col>
@@ -41,7 +41,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">联系地址 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.address"></span>
                 </Col>
@@ -49,7 +49,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">委托人姓名 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">委托人姓名 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.consigner"></span>
                 </Col>
@@ -57,7 +57,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">授权委托书 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">授权委托书 :</span></Col>
                 <Col span="18">
                   <span v-if="infoData.authorizeBook !== undefined && infoData.authorizeBook !== null" @click="seeFile(infoData.authorizeBook.filepath)" class="_autBook" v-text="infoData.authorizeBook.filename"></span>
                 </Col>

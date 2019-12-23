@@ -6,7 +6,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">姓名 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">姓名 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.name"></span>
                   <span class="_icon">
@@ -17,7 +17,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10" v-text="infoData.idcardTypeName + ' :'"></span></Col>
+                <Col class="tr" span="5"><span class="mr5" v-text="infoData.idcardTypeName + ' :'"></span></Col>
                 <Col span="18">
                   <span v-text="infoData.idcard"></span>
                 </Col>
@@ -25,7 +25,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达手机 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.phone"></span>
                 </Col>
@@ -33,7 +33,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达邮箱 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.email"></span>
                 </Col>
@@ -41,7 +41,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">联系地址 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.address"></span>
                 </Col>
@@ -53,7 +53,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">企业名 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">企业名 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseName"></span>
                   <span class="_icon">
@@ -64,7 +64,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col class="tr" span="5"><span class="mr5" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseIdcard"></span>
                 </Col>
@@ -72,7 +72,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达手机 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.phone"></span>
                 </Col>
@@ -80,7 +80,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达邮箱 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.email"></span>
                 </Col>
@@ -88,7 +88,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">联系地址 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.address"></span>
                 </Col>
@@ -100,7 +100,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">名称 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">名称 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseName"></span>
                   <span class="_icon">
@@ -111,7 +111,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col class="tr" span="5"><span class="mr5" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseIdcard"></span>
                 </Col>
@@ -119,7 +119,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达手机 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.phone"></span>
                 </Col>
@@ -127,7 +127,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达邮箱 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.email"></span>
                 </Col>
@@ -135,7 +135,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">联系地址 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.address"></span>
                 </Col>
@@ -147,7 +147,7 @@
           <Col span="22" offset="1">
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">组织名称 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">组织名称 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseName"></span>
                   <span class="_icon">
@@ -158,7 +158,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
+                <Col class="tr" span="5"><span class="mr5" v-text="infoData.enterpriseTypeName + ' :'"></span></Col>
                 <Col span="18">
                   <span v-text="infoData.enterpriseIdcard"></span>
                 </Col>
@@ -166,7 +166,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达手机 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达手机 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.phone"></span>
                 </Col>
@@ -174,7 +174,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">送达邮箱 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">送达邮箱 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.email"></span>
                 </Col>
@@ -182,7 +182,7 @@
             </p>
             <p>
               <Row>
-                <Col class="tr" span="5"><span class="mr10">联系地址 :</span></Col>
+                <Col class="tr" span="5"><span class="mr5">联系地址 :</span></Col>
                 <Col span="18">
                   <span v-text="infoData.address"></span>
                 </Col>
