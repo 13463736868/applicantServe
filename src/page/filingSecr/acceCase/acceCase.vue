@@ -162,12 +162,6 @@ export default {
             align: 'center'
           },
           {
-            title: '代理人',
-            key: 'proxyName',
-            tooltip: 'true',
-            align: 'center'
-          },
-          {
             title: '被申请人',
             key: 'defendantName',
             tooltip: 'true',
@@ -196,6 +190,19 @@ export default {
             title: '案件类型',
             key: 'caseTypeName',
             align: 'center'
+          },
+          {
+            title: '争议金额(元)',
+            key: 'money',
+            align: 'center',
+            render: (h, params) => {
+              return h('span', {
+                props: {
+                  type: 'text',
+                  size: 'small'
+                }
+              }, params.row.money === null ? '' : params.row.money + ' 元')
+            }
           },
           {
             title: '仲裁费(元)',

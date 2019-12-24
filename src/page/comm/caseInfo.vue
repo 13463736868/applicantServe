@@ -169,10 +169,10 @@ export default {
     }
   },
   created () {
-    if (this.caseId === null || this.caseState === null) {
+    if (this.caseId === '' || this.caseId === null || this.caseState === null) {
       this.menuClaim = this.menuClaimA
       this.$router.go(-1)
-      return
+      return false
     }
     if (this.stateA.indexOf(this.caseState) !== -1) {
       this.menuClaim = this.menuClaimA
@@ -197,6 +197,9 @@ export default {
   },
   methods: {
     resStep () {
+      if (this.caseId === '' || this.caseId === null) {
+        return false
+      }
       axios.post('/case/findProcessByCaseId', {
         caseId: this.caseId
       }).then(res => {

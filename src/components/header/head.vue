@@ -48,7 +48,8 @@
     <div class="header_bot">
       <Row type="flex" justify="center" align="middle">
         <Col span="24" class="tc">
-          <router-link to="/home" tag="img" :src="img.logoUrl" alt="logo" class="_logo hand pa"></router-link>
+          <img :src="img.logoUrl" alt="logo" class="_logo pa"/>
+          <!-- <router-link to="/home" tag="img" :src="img.logoUrl" alt="logo" class="_logo hand pa"></router-link> -->
           <slot></slot>
         </Col>
       </Row>
@@ -107,7 +108,7 @@ export default {
             obj: []
           },
           {
-            title: '其他异议',
+            title: '特殊程序',
             obj: []
           }
         ],

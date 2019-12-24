@@ -8,7 +8,8 @@
             <div class="_logo">
               <img :src="dataArb.loginLogoUrl" alt="">
               <div class="f14 pt5"><b v-text="dataArb.name"></b></div>
-              <div><b v-text="dataArb.enName"></b></div>
+              <!-- <div><b v-text="dataArb.enName"></b></div> -->
+              <div class="f14"><b>网络办案平台</b></div>
             </div>
             <p>
               <Row>

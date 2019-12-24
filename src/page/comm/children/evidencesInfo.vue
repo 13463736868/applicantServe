@@ -1,21 +1,5 @@
 <template>
   <div class="evidencesInfo">
-    <div class="_defence">
-      <div class="_top">答辩</div>
-      <div v-if="defenceObj.list">
-        <div v-for="(item, index) in dataList" :key="index">
-          <defence-info v-if="item.replyOpinion !== null" :infoData="item" :seeType="1"></defence-info>
-        </div>
-      </div>
-    </div>
-    <div class="_question">
-      <div class="_top">问题清单</div>
-      <div v-if="questionObj.list">
-        <div v-for="(item, index) in questionData" :key="index">
-          <question-info :infoData="item"></question-info>
-        </div>
-      </div>
-    </div>
     <div class="_evidences">
       <div class="_top">申请人证据</div>
       <div v-if="evidObj.list">
@@ -32,8 +16,24 @@
         </div>
       </div>
     </div>
+    <div class="_question">
+      <div class="_top">问题清单</div>
+      <div v-if="questionObj.list">
+        <div v-for="(item, index) in questionData" :key="index">
+          <question-info :infoData="item"></question-info>
+        </div>
+      </div>
+    </div>
     <div class="_defence">
-      <div class="_top">最后描述</div>
+      <div class="_top">答辩</div>
+      <div v-if="defenceObj.list">
+        <div v-for="(item, index) in dataList" :key="index">
+          <defence-info v-if="item.replyOpinion !== null" :infoData="item" :seeType="1"></defence-info>
+        </div>
+      </div>
+    </div>
+    <div class="_defence">
+      <div class="_top">最后陈述</div>
       <div v-if="descrObj.list">
         <div v-for="(item, index) in dataList" :key="index">
           <defence-info v-if="item.finalStatement !== null" :infoData="item"  :seeType="3"></defence-info>
@@ -195,16 +195,7 @@ export default {
 <style lang="scss" scoped>
 @import '@/style/mixin';
 .evidencesInfo {
-  ._evidences {
-    padding-bottom: 60px;
-  }
-  ._revEvidences {
-    padding-bottom: 60px;
-  }
-  ._question {
-    padding-bottom: 60px;
-  }
-  ._defence {
+  ._evidences, ._revEvidences, ._question, ._defence {
     padding-bottom: 60px;
   }
   ._evidences ._top, ._revEvidences ._top, ._question ._top, ._defence ._top {

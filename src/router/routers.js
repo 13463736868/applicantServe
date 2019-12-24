@@ -6,7 +6,8 @@ const routerMap = [
     name: 'userMana',
     meta: {
       requireAuth: true,
-      title: '用户管理'
+      title: '用户管理',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/admin/userMana/userMana.vue')))
   },
@@ -15,7 +16,8 @@ const routerMap = [
     name: 'depaMana',
     meta: {
       requireAuth: true,
-      title: '部门管理'
+      title: '部门管理',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/admin/depaMana/depaMana.vue')))
   },
@@ -24,7 +26,8 @@ const routerMap = [
     name: 'postMana',
     meta: {
       requireAuth: true,
-      title: '角色管理'
+      title: '角色管理',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/admin/postMana/postMana.vue')))
   },
@@ -33,7 +36,8 @@ const routerMap = [
     name: 'ruleMana',
     meta: {
       requireAuth: true,
-      title: '仲裁规则管理'
+      title: '仲裁规则管理',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/admin/ruleMana/ruleMana.vue')))
   },
@@ -42,7 +46,8 @@ const routerMap = [
     name: 'modelList',
     meta: {
       requireAuth: true,
-      title: '模型列表'
+      title: '模型列表',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/admin/modelList/modelList.vue')))
   },
@@ -51,7 +56,8 @@ const routerMap = [
     name: 'arbiEvas',
     meta: {
       requireAuth: true,
-      title: '仲裁员回避'
+      title: '仲裁员回避',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/arbiEvas/arbiEvas.vue')))
   },
@@ -60,7 +66,8 @@ const routerMap = [
     name: 'groupAudit',
     meta: {
       requireAuth: true,
-      title: '组庭审核'
+      title: '组庭审核',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/groupAudit/groupAudit.vue')))
   },
@@ -69,7 +76,8 @@ const routerMap = [
     name: 'applReissue',
     meta: {
       requireAuth: true,
-      title: '申请补正'
+      title: '申请补正',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/applReissue/applReissue.vue')))
   },
@@ -78,7 +86,8 @@ const routerMap = [
     name: 'poliProtest',
     meta: {
       requireAuth: true,
-      title: '管辖权异议'
+      title: '管辖权异议',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/poliProtest/poliProtest.vue')))
   },
@@ -87,7 +96,8 @@ const routerMap = [
     name: 'tranRecoD',
     meta: {
       requireAuth: true,
-      title: '案件分配'
+      title: '案件分配',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranReco/tranReco.vue')))
   },
@@ -96,7 +106,8 @@ const routerMap = [
     name: 'tranForm',
     meta: {
       requireAuth: true,
-      title: '案件查询'
+      title: '案件查询',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tranForm/tranForm.vue')))
   },
@@ -105,7 +116,8 @@ const routerMap = [
     name: 'docuAudit',
     meta: {
       requireAuth: true,
-      title: '文书审核'
+      title: '文书审核',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/docuAudit/docuAudit.vue')))
   },
@@ -114,7 +126,8 @@ const routerMap = [
     name: 'tempAudit',
     meta: {
       requireAuth: true,
-      title: '模版审核'
+      title: '模版审核',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratComm/tempAudit/tempAudit.vue')))
   },
@@ -123,7 +136,8 @@ const routerMap = [
     name: 'groupCase',
     meta: {
       requireAuth: true,
-      title: '组庭案件'
+      title: '组庭案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/groupCase/groupCase.vue')))
   },
@@ -132,7 +146,8 @@ const routerMap = [
     name: 'trialList',
     meta: {
       requireAuth: true,
-      title: '审核中列表'
+      title: '审核中列表',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/trialList/trialList.vue')))
   },
@@ -141,7 +156,8 @@ const routerMap = [
     name: 'stencilList',
     meta: {
       requireAuth: true,
-      title: '模版列表'
+      title: '模版列表',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitrator/stencilList/stencilList.vue')))
   },
@@ -150,7 +166,8 @@ const routerMap = [
     name: 'filingCase',
     meta: {
       requireAuth: true,
-      title: '已立案案件'
+      title: '已立案案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/filingCase/filingCase.vue')))
   },
@@ -159,7 +176,8 @@ const routerMap = [
     name: 'endCaseA',
     meta: {
       requireAuth: true,
-      title: '已结束案件'
+      title: '已结束案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCase/endCase.vue')))
   },
@@ -168,7 +186,8 @@ const routerMap = [
     name: 'closeCase',
     meta: {
       requireAuth: true,
-      title: '已结案案件'
+      title: '已结案案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/closeCase/closeCase.vue')))
   },
@@ -177,7 +196,8 @@ const routerMap = [
     name: 'sealCase',
     meta: {
       requireAuth: true,
-      title: '已归档案件'
+      title: '已归档案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/sealCase/sealCase.vue')))
   },
@@ -186,7 +206,8 @@ const routerMap = [
     name: 'groupAppl',
     meta: {
       requireAuth: true,
-      title: '组庭申请'
+      title: '组庭申请',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/groupAppl/groupAppl.vue')))
   },
@@ -195,7 +216,8 @@ const routerMap = [
     name: 'remuneAudit',
     meta: {
       requireAuth: true,
-      title: '组庭申请'
+      title: '组庭申请',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/remuneAudit/remuneAudit.vue')))
   },
@@ -204,7 +226,8 @@ const routerMap = [
     name: 'withdrawList',
     meta: {
       requireAuth: true,
-      title: '已分配案件'
+      title: '已分配案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/withdrawList/withdrawList.vue')))
   },
@@ -213,7 +236,8 @@ const routerMap = [
     name: 'endCaseAudit',
     meta: {
       requireAuth: true,
-      title: '组庭申请'
+      title: '组庭申请',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/arbitratSecr/endCaseAudit/endCaseAudit.vue')))
   },
@@ -222,7 +246,8 @@ const routerMap = [
     name: 'acceCase',
     meta: {
       requireAuth: true,
-      title: '待受理案件'
+      title: '待受理案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/acceCase/acceCase.vue')))
   },
@@ -231,7 +256,8 @@ const routerMap = [
     name: 'pendCase',
     meta: {
       requireAuth: true,
-      title: '待立案案件'
+      title: '待立案案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/pendCase/pendCase.vue')))
   },
@@ -240,7 +266,8 @@ const routerMap = [
     name: 'acceCaseM',
     meta: {
       requireAuth: true,
-      title: '受理审核案件'
+      title: '受理审核案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingMana/acceCaseM/acceCaseM.vue')))
   },
@@ -249,7 +276,8 @@ const routerMap = [
     name: 'pendCaseM',
     meta: {
       requireAuth: true,
-      title: '立案审核案件'
+      title: '立案审核案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingMana/pendCaseM/pendCaseM.vue')))
   },
@@ -258,7 +286,8 @@ const routerMap = [
     name: 'setAssignM',
     meta: {
       requireAuth: true,
-      title: '自动分配仲裁员'
+      title: '自动分配仲裁员',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingMana/setAssignM/setAssignM.vue')))
   },
@@ -267,7 +296,8 @@ const routerMap = [
     name: 'succCase',
     meta: {
       requireAuth: true,
-      title: '立案成功案件'
+      title: '立案成功案件',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/succCase/succCase.vue')))
   },
@@ -276,7 +306,8 @@ const routerMap = [
     name: 'tranRecoE',
     meta: {
       requireAuth: true,
-      title: '案件记录'
+      title: '案件记录',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/tranReco/tranReco.vue')))
   },
@@ -285,7 +316,8 @@ const routerMap = [
     name: 'idenCheck',
     meta: {
       requireAuth: true,
-      title: '身份审核'
+      title: '身份审核',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenCheck.vue')))
   },
@@ -294,7 +326,8 @@ const routerMap = [
     name: 'idenInfo',
     meta: {
       requireAuth: true,
-      title: '身份信息详情'
+      title: '身份信息详情',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/idenCheck/idenInfo.vue')))
   },
@@ -303,7 +336,8 @@ const routerMap = [
     name: 'paymentSlip',
     meta: {
       requireAuth: true,
-      title: '缴费单审核'
+      title: '缴费单审核',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentSlip.vue')))
   },
@@ -312,7 +346,8 @@ const routerMap = [
     name: 'paymentInfo',
     meta: {
       requireAuth: true,
-      title: '缴费单查询'
+      title: '缴费单查询',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/filingSecr/paymentSlip/paymentInfo.vue')))
   },
@@ -321,7 +356,8 @@ const routerMap = [
     name: 'onesInfo',
     meta: {
       requireAuth: true,
-      title: '个人信息'
+      title: '个人信息',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/comm/onesInfo.vue')))
   },
@@ -330,14 +366,16 @@ const routerMap = [
     name: 'meetList',
     meta: {
       requireAuth: true,
-      title: '视频会议'
+      title: '视频会议',
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/meetList/meetList.vue')))
   },
   {
     path: '/caseInfo',
     meta: {
-      requireAuth: true
+      requireAuth: true,
+      keepAlive: true
     },
     component: r => require.ensure([], () => r(require('@/page/comm/caseInfo.vue'))),
     children: [
@@ -350,7 +388,8 @@ const routerMap = [
         name: 'basicInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/basicInfo.vue')), 'basicInfo')
       },
@@ -359,7 +398,8 @@ const routerMap = [
         name: 'proposerInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/proposerInfo.vue')), 'proposerInfo')
       },
@@ -368,7 +408,8 @@ const routerMap = [
         name: 'respondentInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/respondentInfo.vue')), 'respondentInfo')
       },
@@ -377,7 +418,8 @@ const routerMap = [
         name: 'claimItem',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/claimItem.vue')), 'claimItem')
       },
@@ -386,7 +428,8 @@ const routerMap = [
         name: 'revClaimItem',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/revClaimItem.vue')), 'revClaimItem')
       },
@@ -395,7 +438,8 @@ const routerMap = [
         name: 'evidencesInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/evidencesInfo.vue')), 'evidencesInfo')
       },
@@ -404,7 +448,8 @@ const routerMap = [
         name: 'sendInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/sendInfo.vue')), 'sendInfo')
       },
@@ -413,7 +458,8 @@ const routerMap = [
         name: 'endCaseInfo',
         meta: {
           requireAuth: true,
-          title: '案件详情'
+          title: '案件详情',
+          keepAlive: true
         },
         component: r => require.ensure([], () => r(require('@/page/comm/children/endCaseInfo.vue')), 'endCaseInfo')
       }

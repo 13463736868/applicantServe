@@ -6,7 +6,9 @@
       </head-top>
     </div>
     <div class="mainCont">
-      <router-view></router-view>
+      <keep-alive exclude="case_info">
+        <router-view></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>
