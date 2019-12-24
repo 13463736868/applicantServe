@@ -21,7 +21,7 @@
           <div class="_page clearfix">
             <Row>
               <Col span="12" offset="6" class="tc">
-                <Page :total="compPage.total" :current="compPage.pageNum" :page-size="compPage.pageSize" show-elevator show-total @on-change="reschangeCompPage" @on-page-size-change="reschangePageSize" show-sizer></Page>
+                <Page :total="compPage.total" :current="compPage.pageNum" :page-size="compPage.pageSize" show-elevator show-total @on-change="reschangeCompPage" @on-page-size-change="reschangePageSize" show-sizer :page-size-opts="[10, 20, 30, 40, 80, 100, 200]"></Page>
               </Col>
             </Row>
           </div>
@@ -37,7 +37,7 @@
           <div class="_page clearfix">
             <Row>
               <Col span="12" offset="6" class="tc">
-                <Page :total="indiPage.total" :current="indiPage.pageNum" :page-size="indiPage.pageSize" show-elevator show-total @on-change="reschangeIndiPage" @on-page-size-change="reschangePageSize" show-sizer></Page>
+                <Page :total="indiPage.total" :current="indiPage.pageNum" :page-size="indiPage.pageSize" show-elevator show-total @on-change="reschangeIndiPage" @on-page-size-change="reschangePageSize" show-sizer :page-size-opts="[10, 20, 30, 40, 80, 100, 200]"></Page>
               </Col>
             </Row>
           </div>

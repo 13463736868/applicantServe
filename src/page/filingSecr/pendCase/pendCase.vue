@@ -26,7 +26,7 @@
       <div class="_page clearfix">
         <Row>
           <Col span="12" offset="6" class="tc">
-            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
+            <Page :total="pageObj.total" :current="pageObj.pageNum" :page-size="pageObj.pageSize" show-elevator show-total @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer :page-size-opts="[10, 20, 30, 40, 80, 100, 200]"></Page>
           </Col>
         </Row>
       </div>
@@ -439,9 +439,9 @@ export default {
       let info = _data
       if (bool) {
         if (this.alertShow.ids.indexOf(info.caseId) === -1) {
-          if (this.alertShow.ids.length >= 10) {
+          if (this.alertShow.ids.length >= 200) {
             this.$Message.error({
-              content: '最多只能选择十个案件',
+              content: '最多只能选择二百个案件',
               duration: 5
             })
             return false

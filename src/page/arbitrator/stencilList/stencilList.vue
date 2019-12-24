@@ -42,7 +42,7 @@
                 :page-size="pageObj.pageSize"
                 show-elevator
                 show-total
-                @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer></Page>
+                @on-change="reschangePage" @on-page-size-change="reschangePageSize" show-sizer :page-size-opts="[10, 20, 30, 40, 80, 100, 200]"></Page>
           </Col>
         </Row>
       </div>
