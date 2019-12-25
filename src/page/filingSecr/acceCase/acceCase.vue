@@ -2,26 +2,29 @@
   <div class="acceCase">
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
-      <Row>
+      <Row class="mb20">
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="5">
+        <Col span="4">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
-        <Col span="2">
-          <label class="lh32 f16 fc6 fr mr15">状态</label>
-        </Col>
-        <Col span="3">
-          <Select v-model="reviewStatus" @on-change="resChangeStatus()">
+        <Col span="8">
+          <Input class="ml10 vtb" v-model="search.startMoney" clearable placeholder="起始争议金额" style="width: 90px"/>
+          <Icon class="vt" type="md-remove"/>
+          <Input class="vtb" v-model="search.endMoney" clearable placeholder="结束争议金额" style="width: 90px" />
+          <label class="lh32 f16 fc6 mr5 ml10 vtb">状态</label>
+          <Select class="vtb" v-model="reviewStatus" @on-change="resChangeStatus()" style="width: 90px;height: 32px;">
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
           </Select>
         </Col>
-        <Col span="12">
+        <Col span="10">
           <div class="tr pr20">
-            <Button class="ml20" type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
-            <Button class="ml20" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
-            <Button class="ml20" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
+            <Button class="ml10" type="primary" @click="resSearch">查询</Button>
+            <Button class="ml10" type="primary" @click="resSearch">批量导出</Button>
+            <Button class="ml10" type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
+            <Button class="ml10" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
+            <Button class="ml10" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
           </div>
         </Col>
       </Row>
@@ -117,7 +120,9 @@ export default {
         requestName: '',
         caseType: '',
         caseTypeList: {},
-        requestNameList: []
+        requestNameList: [],
+        startMoney: '',
+        endMoney: ''
       },
       caseList: {
         loading: false,
@@ -440,6 +445,8 @@ export default {
         state: this.reviewStatus,
         registerToken: this.search.requestName,
         caseTypeCode: this.search.caseType,
+        startMoney: this.search.startMoney === '' ? null : this.search.startMoney,
+        endMoney: this.search.endMoney === '' ? null : this.search.endMoney,
         caseListType: 1
       }).then(res => {
         let _data = res.data.data
@@ -455,6 +462,13 @@ export default {
       })
     },
     resSearch () {
+      if (this.search.startMoney !== '' && this.search.endMoney !== '' && this.search.endMoney - this.search.startMoney < 0) {
+        this.$Message.warning({
+          content: '起始争议金额不能大于结束争议金额',
+          duration: 5
+        })
+        return false
+      }
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
@@ -842,7 +856,6 @@ export default {
   padding-top: 40px;
   ._search {
     max-width: 450px;
-    margin-bottom: 20px;
   }
   ._caseList {
     margin-bottom: 20px;
