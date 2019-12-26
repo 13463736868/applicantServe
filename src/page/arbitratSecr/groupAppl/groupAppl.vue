@@ -61,7 +61,7 @@
           <p class="pt7 pb7">指定开庭时间：</p>
         </Col>
         <Col span="12">
-          <DatePicker @on-change="changeDate" type="datetime" placeholder="请指定开庭时间"></DatePicker>
+          <DatePicker @on-change="changeDate" :options="dateDisa" type="datetime" placeholder="请指定开庭时间"></DatePicker>
         </Col>
       </Row>
     </alert-btn-info>
