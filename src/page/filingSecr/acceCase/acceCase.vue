@@ -21,7 +21,7 @@
         <Col span="10">
           <div class="tr pr20">
             <Button class="ml10" type="primary" @click="resSearch">查询</Button>
-            <Button class="ml10" type="primary" @click="resSearch">批量导出</Button>
+            <Button class="ml10" type="primary" @click="resCaseExport">批量导出</Button>
             <Button class="ml10" type="primary" @click="resFind" :style="{display: resBtnDis('ACCECASE_QUERY')}">条件搜索</Button>
             <Button class="ml10" type="primary" @click="resBatch(1)" :style="{display: resBtnDis('ACCECASE_BATCHACC')}">批量受理</Button>
             <Button class="ml10" type="primary" @click="resBatch(2)" :style="{display: resBtnDis('ACCECASE_BATCHREJECTION')}">批量驳回</Button>
@@ -107,6 +107,7 @@ import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 import { caseInfo } from '@/config/common.js'
+import regi from '@/config/regiType.js'
 
 export default {
   name: 'acce_case',
@@ -797,6 +798,26 @@ export default {
       this.alertCanc('clearIds')
       this.pageObj.pageNum = 1
       this.resCaseList()
+    },
+    resCaseExport () {
+      let _s = '?caseListType=1&state=' + this.reviewStatus
+      if (this.search.text !== '') {
+        _s += ('&keyword=' + this.search.text)
+      }
+      if (this.search.caseType !== '') {
+        _s += ('&caseTypeCode=' + this.search.caseType)
+      }
+      if (this.search.requestName !== '') {
+        _s += ('&registerToken=' + this.search.requestName)
+      }
+      if (this.search.startMoney !== '') {
+        _s += ('&startMoney=' + this.search.startMoney)
+      }
+      if (this.search.endMoney !== '') {
+        _s += ('&endMoney=' + this.search.endMoney)
+      }
+      _s += ('&startIndex=' + (this.pageObj.pageNum - 1) * this.pageObj.pageSize + '&pageSize=' + this.pageObj.pageSize)
+      window.open(regi.api + '/caseExport/dowload/1' + _s, '_blank')
     },
     alertCanc (type) {
       if (type === 'acceA') {
