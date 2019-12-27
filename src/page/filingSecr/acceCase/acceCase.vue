@@ -10,13 +10,22 @@
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="申请人 / 被申请人"></Input>
         </Col>
         <Col span="8">
-          <Input class="ml10 vtb" v-model="search.startMoney" clearable placeholder="起始争议金额" style="width: 90px"/>
+          <div class="lh32" style="margin-top:-2px;">
+            <Input class="ml10" v-model="search.startMoney" clearable placeholder="起始争议金额" style="width: 90px"/>
+            <Icon class="" type="md-remove"/>
+            <Input class="" v-model="search.endMoney" clearable placeholder="结束争议金额" style="width: 90px" />
+            <label class="lh32 f16 fc6 mr5 ml10">状态</label>
+            <Select class="" v-model="reviewStatus" @on-change="resChangeStatus()" style="width: 90px;height: 32px;">
+              <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+            </Select>
+          </div>
+          <!-- <Input class="ml10 vtb" v-model="search.startMoney" clearable placeholder="起始争议金额" style="width: 90px"/>
           <Icon class="vt" type="md-remove"/>
           <Input class="vtb" v-model="search.endMoney" clearable placeholder="结束争议金额" style="width: 90px" />
           <label class="lh32 f16 fc6 mr5 ml10 vtb">状态</label>
           <Select class="vtb" v-model="reviewStatus" @on-change="resChangeStatus()" style="width: 90px;height: 32px;">
             <Option v-for="item in reviewList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-          </Select>
+          </Select> -->
         </Col>
         <Col span="10">
           <div class="tr pr20">
