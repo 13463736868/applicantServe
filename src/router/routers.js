@@ -98,6 +98,14 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/arbitrator/groupCase/groupCase.vue')))
   },
   {
+    path: '/docuRevise',
+    name: 'docuRevise',
+    meta: {
+      requireAuth: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/arbitrator/docuRevise/docuRevise.vue')))
+  },
+  {
     path: '/trialList',
     name: 'trialList',
     meta: {
