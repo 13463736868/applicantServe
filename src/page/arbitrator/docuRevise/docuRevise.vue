@@ -6,7 +6,7 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="18">
+        <Col span="22">
           &nbsp;
         </Col>
         <Col span="2">
@@ -51,6 +51,8 @@
       </Row>
     </alert-btn-info>
     <alert-editor v-if="alertShow.editor" :caseId="alertShow.caseId" :docuType="alertShow.docuType" @alertConfirm="alertSave('resEditDocu')" @alertCancel="alertCanc('resEditDocu')"></alert-editor>
+    <res-submit v-if="alertObj.resSubmit" :resVal="alertObj.resSubmitData" @alertConfirm="alertSave('resSubmit')" @alertCancel="alertCanc('resSubmit')"></res-submit>
+    <res-upload-doc v-if="alertObj.resUploadDoc" :resVal="alertObj.resUploadDocData" @alertConfirm="alertSave('resUploadDoc')" @alertCancel="alertCanc('resUploadDoc')"></res-upload-doc>
   </div>
 </template>
 
@@ -61,12 +63,14 @@ import headTop from '@/components/header/head'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/page/arbitrator/docuRevise/children/alertEditor'
+import resSubmit from '@/page/arbitrator/docuRevise/children/resSubmit'
+import resUploadDoc from '@/page/arbitrator/docuRevise/children/resUploadDoc'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'docuRevise',
   mixins: [resBtn],
-  components: { headTop, spinComp, alertBtnInfo, alertEditor },
+  components: { headTop, spinComp, alertBtnInfo, alertEditor, resSubmit, resUploadDoc },
   data () {
     return {
       spinShow: false,
@@ -172,18 +176,19 @@ export default {
         pageSize: 10
       },
       alertShow: {
-        state: null,
-        docu: false,
         id: null,
-        caseDocuId: null,
-        rejeReason: '',
         idsList: [],
         ids: [],
-        batch: false,
         find: false,
         editor: false,
         caseId: null,
         docuType: null
+      },
+      alertObj: {
+        resSubmit: false,
+        resSubmitData: null,
+        resUploadDoc: null,
+        resUploadDocData: null
       }
     }
   },
@@ -207,7 +212,7 @@ export default {
     },
     renderBtn (h, params) {
       let _obj = params.row
-      if (_obj.caseDocuemntApproveState === null || _obj.caseDocuemntApproveState === 3) {
+      if (_obj.submitFlag === 1) {
         return h('div', [
           h('Button', {
             props: {
@@ -230,14 +235,42 @@ export default {
             },
             style: {
               marginRight: '5px',
-              display: _obj.editFlag === 0 ? 'none' : ''
+              display: _obj.editFlag === 1 ? '' : 'none'
             },
             on: {
               click: () => {
                 this.resAction('resEditDocu', _obj)
               }
             }
-          }, '修改')
+          }, '修改'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resAction('resUploadDoc', _obj)
+              }
+            }
+          }, '更新文书'),
+          h('Button', {
+            props: {
+              type: 'primary',
+              size: 'small'
+            },
+            style: {
+              marginRight: '5px'
+            },
+            on: {
+              click: () => {
+                this.resAction('resSubmit', _obj)
+              }
+            }
+          }, '提交')
         ])
       } else {
         return h('div', [
@@ -323,6 +356,18 @@ export default {
           this.alertShow.docuType = data.type
           this.alertShow.editor = true
           break
+        case 'resSubmit':
+          this.alertObj.resSubmitData = {
+            documentId: data.caseDocuemntId
+          }
+          this.alertObj.resSubmit = true
+          break
+        case 'resUploadDoc':
+          this.alertObj.resUploadDocData = {
+            documentId: data.caseDocuemntId
+          }
+          this.alertObj.resUploadDoc = true
+          break
       }
     },
     alertSave (type) {
@@ -334,6 +379,18 @@ export default {
           this.pageObj.pageNum = 1
           this.resCaseList()
           break
+        case 'resSubmit':
+          this.alertObj.resSubmit = false
+          this.alertObj.resSubmitData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
+        case 'resUploadDoc':
+          this.alertObj.resUploadDoc = false
+          this.alertObj.resUploadDocData = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
@@ -342,6 +399,14 @@ export default {
           this.alertShow.editor = false
           this.alertShow.caseId = null
           this.alertShow.docuType = null
+          break
+        case 'resSubmit':
+          this.alertObj.resSubmit = false
+          this.alertObj.resSubmitData = null
+          break
+        case 'resUploadDoc':
+          this.alertObj.resUploadDoc = false
+          this.alertObj.resUploadDocData = null
           break
         case 'find':
           this.alertShow.find = false
