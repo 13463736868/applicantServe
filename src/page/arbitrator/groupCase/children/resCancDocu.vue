@@ -6,8 +6,9 @@
           <p><span class="_span">*</span><b>文书类型：</b></p>
         </Col>
         <Col span="16" class="lh32">
-          <RadioGroup v-model="resData.docuType">
-            <Radio :label="6" disabled>撤案决定书(申请人庭审未出庭)</Radio>
+          <RadioGroup v-model="resData.docuType" @on-change="resChange">
+            <Radio :label="15">撤案决定书(书面审理)</Radio>
+            <Radio :label="6">撤案决定书(申请人庭审未出庭)</Radio>
           </RadioGroup>
         </Col>
       </Row>
@@ -38,7 +39,7 @@ export default {
     return {
       alertShow: true,
       resData: {
-        docuType: 6,
+        docuType: 15,
         endNewTempList: [],
         endNewTempCode: ''
       }
@@ -48,6 +49,9 @@ export default {
     this.resList()
   },
   methods: {
+    resChange () {
+      this.resData.endNewTempCode = ''
+    },
     resList () {
       axios.post('/caseType/findAllTemplate').then(res => {
         this.resData.endNewTempList = res.data.data
