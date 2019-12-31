@@ -216,7 +216,7 @@ export default {
                   type: 'text',
                   size: 'small'
                 }
-              }, params.row.money === null ? '' : params.row.money + ' 元')
+              }, params.row.money)
             }
           },
           {
@@ -229,7 +229,7 @@ export default {
                   type: 'text',
                   size: 'small'
                 }
-              }, params.row.cost === null ? '' : params.row.cost + ' 元')
+              }, params.row.cost)
             }
           },
           {
