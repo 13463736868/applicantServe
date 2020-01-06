@@ -1,8 +1,5 @@
 <template>
   <div class="endCaseA">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">已结案案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>

@@ -1,8 +1,5 @@
 <template>
   <div class="onesInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">个人信息</span>
-    </head-top>
     <div class="_center pr">
       <Row>
         <Col span="14" offset="5">

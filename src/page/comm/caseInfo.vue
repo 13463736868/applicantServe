@@ -1,8 +1,5 @@
 <template>
   <div class="caseInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">案件详情</span>
-    </head-top>
     <div class="_center pr">
       <Row>
         <Col span="4" offset="1" class="_center_left not_s">

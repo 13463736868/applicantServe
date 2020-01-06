@@ -1,8 +1,5 @@
 <template>
   <div class="idenCheck">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">身份审核</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>

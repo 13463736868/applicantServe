@@ -1,8 +1,5 @@
 <template>
   <div class="idenInfo">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">身份信息详情</span>
-    </head-top>
     <div class="_center pr">
       <Row v-if="idenCheckId !== null && idenCheckType !== null && idenCheckState !== null">
         <Col span="14" offset="5">

@@ -1,8 +1,5 @@
 <template>
   <div class="acceCase">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">受理审核案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>

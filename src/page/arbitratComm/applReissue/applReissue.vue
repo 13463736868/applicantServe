@@ -1,8 +1,5 @@
 <template>
   <div class="applReissue">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">申请补正</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <div class="_caseList clearfix">

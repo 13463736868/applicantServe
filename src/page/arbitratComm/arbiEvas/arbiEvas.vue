@@ -1,8 +1,5 @@
 <template>
   <div class="arbiEvas">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">仲裁员回避</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <div class="_caseList clearfix">

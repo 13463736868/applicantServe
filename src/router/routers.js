@@ -343,15 +343,24 @@ export const getRouter = (obj) => {
   _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
-    redirect: _a[0]
+    component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),
+    children: [
+      {
+        path: '/',
+        redirect: _a[0]
+      }
+    ]
   })
   for (let k in routerMap) {
     if (_a.indexOf(routerMap[k].path) !== -1) {
+      if (obj.menuName[_a.indexOf(routerMap[k].path)]) {
+        routerMap[k].meta.title = obj.menuName[_a.indexOf(routerMap[k].path)]
+      }
       _l++
-      _r.push(routerMap[k])
+      _r[0].children.push(routerMap[k])
     }
     if (_a.length === _l) {
-      _r.push({
+      _r[0].children.push({
         path: '*',
         redirect: _a[0]
       })

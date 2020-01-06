@@ -1,8 +1,5 @@
 <template>
   <div class="tranRecoE">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">案件记录</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>

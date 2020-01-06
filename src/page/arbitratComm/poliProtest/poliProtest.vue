@@ -1,8 +1,5 @@
 <template>
   <div class="poliProtest">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">管辖权异议</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <div class="_caseList clearfix">

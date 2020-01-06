@@ -1,8 +1,5 @@
 <template>
   <div class="trialList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">审核中列表</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <div class="_caseList clearfix">

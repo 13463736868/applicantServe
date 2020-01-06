@@ -1,8 +1,5 @@
 <template>
   <div class="stenciList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">模版列表</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">

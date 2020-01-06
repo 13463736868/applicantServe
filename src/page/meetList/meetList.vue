@@ -1,8 +1,5 @@
 <template>
   <div class="meetList">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">视频会议</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">

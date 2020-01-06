@@ -2,9 +2,15 @@
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
       <ul class="nav fl" v-if="isRegister">
-        <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+        <router-link v-if="index < 9" v-for="(item, index) in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
       </ul>
-      <div class="user fr w300">
+      <Dropdown class="nav_more" v-if="menu.length > 9" @on-click="resToRoute">
+        <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
+        <DropdownMenu class="tl" slot="list">
+          <DropdownItem v-if="index > 8" v-for="(item, index) in menu" :key="item.id" :name="item.url">{{item.text}}</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+      <div class="user fr w200">
         <Row type="flex" justify="center" align="middle" class="hmax tc">
           <Col span="18 tr">
             <!-- <span class="fcf f13" v-if="isRegister"><span class="hand" @click="resOnes" v-if="userName !== null" v-text="userName + '，您好！'"></span></span> -->
@@ -157,6 +163,11 @@ export default {
         this.userName = _usersInfo === null ? null : JSON.parse(_usersInfo).loginname
       }
     },
+    resToRoute (name) {
+      this.$router.replace({
+        path: name
+      })
+    },
     changeDown (name) {
       switch (name) {
         case 'resOnes':
@@ -181,7 +192,7 @@ export default {
   @include wh(100%, 13rem);
   @include mw(1180px);
   .header_top {
-    @include wh(90%, 6rem);
+    @include wh(90%, 4rem);
     @include mw(1180px);
     @include bc;
     .nav {
@@ -190,13 +201,18 @@ export default {
       li {
         padding: 0 15px;
         height: 100%;
-        line-height: 6rem;
+        line-height: 4rem;
         text-align: center;
         color: #fff;
       }
       li.router-link-exact-active {
         color: #fff;
       }
+    }
+    .nav_more {
+      padding: 0 15px;
+      height: 100%;
+      line-height: 4rem;
     }
     .user {
       height: 100%;
@@ -207,15 +223,15 @@ export default {
       left: 50%;
       -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
-      height: 80px;
-      top: -140px;
+      height: 65px;
+      top: -85px;
     }
     z-index: -1;
     @include wh(100%, 7rem);
     @include mw(1180px);
     @include bc;
     border-top:1px solid #fff;
-    padding-top:40px;
+    padding-top:110px;
   }
 }
 </style>

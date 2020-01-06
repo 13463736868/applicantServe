@@ -1,8 +1,5 @@
 <template>
   <div class="sealCase">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">已归档案件</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row>

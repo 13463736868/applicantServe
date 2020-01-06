@@ -1,8 +1,5 @@
 <template>
   <div class="groupAudit">
-    <head-top :isRegister="true">
-      <span class="f36 fcf">组庭审核</span>
-    </head-top>
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
