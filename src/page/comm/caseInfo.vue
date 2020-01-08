@@ -51,6 +51,11 @@ export default {
           id: '5',
           text: '证据和质证',
           url: '/evidencesInfo'
+        },
+        {
+          id: '6',
+          text: '问题清单',
+          url: '/questionInfo'
         }
       ],
       menuClaimB: [
@@ -86,6 +91,11 @@ export default {
         },
         {
           id: '6',
+          text: '问题清单',
+          url: '/questionInfo'
+        },
+        {
+          id: '7',
           text: '送达',
           url: '/sendInfo'
         }
@@ -123,11 +133,16 @@ export default {
         },
         {
           id: '6',
+          text: '问题清单',
+          url: '/questionInfo'
+        },
+        {
+          id: '7',
           text: '送达',
           url: '/sendInfo'
         },
         {
-          id: '7',
+          id: '8',
           text: '结案',
           url: '/endCaseInfo'
         }
@@ -157,6 +172,11 @@ export default {
           id: '5',
           text: '证据和质证',
           url: '/evidencesInfo'
+        },
+        {
+          id: '6',
+          text: '问题清单',
+          url: '/questionInfo'
         },
         {
           id: '7',

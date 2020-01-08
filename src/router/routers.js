@@ -418,6 +418,15 @@ const routerMap = [
         component: r => require.ensure([], () => r(require('@/page/comm/children/evidencesInfo.vue')), 'evidencesInfo')
       },
       {
+        path: 'questionInfo',
+        name: 'questionInfo',
+        meta: {
+          requireAuth: true,
+          title: '案件详情'
+        },
+        component: r => require.ensure([], () => r(require('@/page/comm/children/questionInfo.vue')), 'questionInfo')
+      },
+      {
         path: 'sendInfo',
         name: 'sendInfo',
         meta: {

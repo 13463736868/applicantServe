@@ -16,26 +16,17 @@
         </div>
       </div>
     </div>
-    <div v-if="questionObj.list" class="_question">
-      <div class="_top">问题清单</div>
-      <div v-if="questionObj.list">
-        <div v-for="(item, index) in questionData" :key="index">
-          <question-info :infoData="item"></question-info>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
 import evidInfo from '@/page/comm/children/children/evidInfo'
-import questionInfo from '@/page/comm/children/children/questionInfo'
 
 export default {
   name: 'evidencesInfo',
   props: ['caseId', 'caseState'],
-  components: { evidInfo, questionInfo },
+  components: { evidInfo },
   data () {
     return {
       evidObj: {
@@ -44,19 +35,14 @@ export default {
       revEvidObj: {
         list: false
       },
-      questionObj: {
-        list: false
-      },
       evidData: null,
-      revEvidData: null,
-      questionData: null
+      revEvidData: null
     }
   },
   created () {
     if (this.caseId !== null && this.caseState !== null) {
       this.resEvid()
       this.resRevEvid()
-      this.resQuestion()
     }
   },
   methods: {
@@ -103,27 +89,6 @@ export default {
           duration: 5
         })
       })
-    },
-    resQuestion () {
-      axios.post('/case/findCaseQusetionList', {
-        caseId: this.caseId
-      }).then(res => {
-        this.questionData = res.data.data
-        if (this.questionData !== null) {
-          if (this.questionData.length === 0) {
-            this.questionObj.list = false
-          } else {
-            this.questionObj.list = true
-          }
-        } else {
-          this.questionObj.list = false
-        }
-      }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
-      })
     }
   }
 }
@@ -138,10 +103,7 @@ export default {
   ._revEvidences {
     padding-bottom: 60px;
   }
-  ._question {
-    padding-bottom: 60px;
-  }
-  ._evidences ._top, ._revEvidences ._top, ._question ._top {
+  ._evidences ._top, ._revEvidences ._top {
     @include backgroundLine(right, #1a2b58, #126eaf);
     @include borderRadius(5px);
     text-align: center;
