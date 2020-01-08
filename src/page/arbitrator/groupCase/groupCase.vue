@@ -16,6 +16,7 @@
           <Select v-model="search.batchCondition" @on-change="resSearch">
             <Option value="1" key="1">全部</Option>
             <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="2" key="2">起草文书</Option>
+            <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="all" key="all">上传问题清单</Option>
           </Select>
         </Col>
         <Col span="12">
@@ -23,6 +24,7 @@
             <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
             <!-- <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button> -->
             <Button class="ml20" type="primary" @click="resAction('resBatchEnd', null)" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchQues', null)" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量上传问题清单</Button>
           </div>
         </Col>
       </Row>
@@ -276,7 +278,7 @@ export default {
         caseTypeCode: this.search.caseType,
         keyword: this.search.text,
         caseDocementType: this.search.batchDocuType,
-        batchCondition: this.search.batchCondition
+        batchCondition: this.search.batchCondition === 'all' ? '1' : this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -496,14 +498,14 @@ export default {
       }
       this.caseList.bodyList.forEach((item, index) => {
         let _obj = item
-        if (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1)) {
+        if (this.search.batchCondition === 'all' || (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1))) {
           this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
         }
       })
     },
     renderCheck (h, params) {
       let _obj = params.row
-      if (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1)) {
+      if (this.search.batchCondition === 'all' || (this.search.batchCondition !== '1' && (['6', '5', '10', '11'].indexOf(_obj.endCasePatten) !== -1))) {
         if (this.alertShow.ids.indexOf(_obj.id) === -1) {
           return h('div', [
             h('Icon', {
@@ -633,6 +635,22 @@ export default {
             this.alertShow.batchEnd = true
           }
           break
+        case 'resBatchQues':
+          if (this.search.batchCondition !== 'all') {
+            this.$Message.error({
+              content: '请先条件选择 \'上传问题清单\'',
+              duration: 5
+            })
+          } else if (this.alertShow.ids.length === 0) {
+            this.$Message.error({
+              content: '请先选择一个案件',
+              duration: 5
+            })
+          } else {
+            this.alertObj.caseId = this.alertShow.ids
+            this.alertObj.uploadQues = true
+          }
+          break
       }
     },
     alertSave (type, data) {
@@ -674,9 +692,13 @@ export default {
           break
         case 'uploadQues':
           this.alertObj.uploadQues = false
-          this.alertObj.caseId = null
-          this.pageObj.pageNum = 1
-          this.resCaseList()
+          if (this.alertObj.caseId.length === 1) {
+            this.alertObj.caseId = null
+            this.pageObj.pageNum = 1
+            this.resCaseList()
+          } else {
+            this.alertObj.caseId = null
+          }
           break
         case 'reve':
           this.alertShow.reve = false

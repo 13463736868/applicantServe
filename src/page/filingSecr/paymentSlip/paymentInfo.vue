@@ -53,12 +53,18 @@
             <Col span="6">
               <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="票据单号"></Input>
             </Col>
+            <Col span="16">
+              <div class="tr pr20">
+                <Button v-if="publicData.status === 2" class="ml20" type="primary" @click="resAction('dowZip', null)">批量下载收据</Button>
+              </div>
+            </Col>
           </Row>
           <Row>
             <Col span="24" class="pl20 pr20">
               <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList">
                 <template slot-scope="{ row, index }" slot="action">
                   <Button class="mr5" type="primary" size="small" @click="resAction('resBillNumber', row)">录入票据号</Button>
+                  <Button v-if="publicData.status === 2" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看收据</Button>
                 </template>
               </Table>
             </Col>
@@ -167,6 +173,7 @@ export default {
             title: '操作',
             key: 'id',
             align: 'center',
+            minWidth: 30,
             slot: 'action'
           }
         ],
@@ -262,6 +269,22 @@ export default {
             caseId: data.id
           }
           this.alertObj.billNumber = true
+          break
+        case 'seeForm':
+          axios.post('/approvalForm/queryUrl', {
+            caseId: data.id,
+            type: 26
+          }).then(res => {
+            window.open(res.data.data, '_blank')
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+        case 'dowZip':
+          window.open(regi.api + '/file/dowloadReceiptZip?paymentId=' + this.publicData.id, '_blank')
           break
       }
     },

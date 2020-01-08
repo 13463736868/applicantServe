@@ -281,6 +281,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/filingSecr/succCase/succCase.vue')))
   },
   {
+    path: '/arbPendPay',
+    name: 'arbPendPay',
+    meta: {
+      requireAuth: true,
+      title: '待交仲裁费'
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/arbPendPay/arbPendPay.vue')))
+  },
+  {
     path: '/tranRecoE',
     name: 'tranRecoE',
     meta: {
@@ -434,7 +443,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/arbPendPay')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),

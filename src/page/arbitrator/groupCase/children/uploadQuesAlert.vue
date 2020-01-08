@@ -70,15 +70,18 @@ export default {
       childName: '上传问题清单',
       fileType: ['pdf'],
       resData: {
-        remark: '',
-        caseId: this.resCaseId
+        remark: ''
       },
       fileObj: null
     }
   },
   computed: {
     uploadUrl () {
-      return regi.api + '/caseImport/uploadQuestionList'
+      if (this.resCaseId.length === 1) {
+        return regi.api + '/caseImport/uploadQuestionList'
+      } else {
+        return regi.api + '/caseImport/uploadQuestionListBatch'
+      }
     },
     addFileBtn () {
       if (this.fileObj === null) {
@@ -91,17 +94,13 @@ export default {
   methods: {
     resFormError (file) {
       this.spinShow = false
-      this.$Message.error({
-        content: '文件格式错误只支持 ' + this.fileType,
-        duration: 5
-      })
+      this.fileObj = null
+      this.resMessage('error', '文件格式错误只支持 ' + this.fileType)
     },
     resSzieError (file) {
       this.spinShow = false
-      this.$Message.error({
-        content: '文件不能超过200MB',
-        duration: 5
-      })
+      this.fileObj = null
+      this.resMessage('error', '文件不能超过200MB')
     },
     resBefoUpload (file) {
       this.fileObj = file
@@ -120,10 +119,7 @@ export default {
       this.fileObj = null
       this.spinShow = false
       if (res.flag === false) {
-        this.$Message.error({
-          content: '错误信息:' + res.message + '',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + res.message + '')
       } else {
         this.$Message.success({
           content: '文件上传成功',
@@ -138,13 +134,15 @@ export default {
     },
     resError (error, file) {
       this.spinShow = false
-      this.$Message.error({
-        content: '错误信息:' + error.status + ' 稍后再试',
-        duration: 5
-      })
+      this.resMessage('error', '错误信息:' + error.status + ' 稍后再试')
     },
     alertSave () {
       this.spinShow = true
+      if (this.resCaseId.length === 1) {
+        this.resData.caseId = this.resCaseId
+      } else {
+        this.resData.caseIds = this.resCaseId
+      }
       this.$refs.upload.post(this.fileObj)
     },
     alertCanc () {

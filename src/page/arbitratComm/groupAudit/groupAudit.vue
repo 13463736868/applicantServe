@@ -38,7 +38,7 @@
                 <p v-if="row.approver !== ''" class="mr5" type="text" size="small">{{row.approver}}</p>
               </template>
               <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="['19', '20', '21', '9', '7'].indexOf(row.logicState) !== -1 || row.passFlag === 3" @click="resAction('groupForm', row)">组庭审批表</Button>
+                <Button :style="{display: resBtnDis('GROUPAUDIT_APPROVAL')}" type="primary" size="small" v-if="['19', '20', '21', '9', '7', '6'].indexOf(row.logicState) !== -1 || row.passFlag === 3" @click="resAction('groupForm', row)" v-text="row.fromSaved === true ? '修订组庭审批表' : '保存组庭审批表'"></Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_PASS')}" type="primary" size="small" v-if="row.passFlag === 2" @click="resAction('resPass', row)">通过</Button>
                 <Button :style="{display: resBtnDis('GROUPAUDIT_REAPPOINTMENT')}" type="primary" size="small" v-if="row.passFlag === 3" @click="resAction('resRevise', row)">重新指定仲裁员</Button>
               </template>
