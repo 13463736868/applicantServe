@@ -28,9 +28,20 @@ export default {
   },
   methods: {
     alertSave () {
-      axios.post('/approve/updateCaseDocument', {
-        documentId: this.resData.documentId
-      }).then(res => {
+      let _url = ''
+      let _data = {}
+      if (this.resData.documentIds === undefined) {
+        _url = '/approve/updateCaseDocument'
+        _data = {
+          documentId: this.resData.documentId
+        }
+      } else {
+        _url = '/approve/submitDocumentBatch'
+        _data = {
+          documentIds: this.resData.documentIds.join(',')
+        }
+      }
+      axios.post(_url, _data).then(res => {
         this.resMessage('success', '操作成功')
         this.$emit('alertConfirm')
       }).catch(e => {

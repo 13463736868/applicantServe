@@ -3,11 +3,20 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="pb20">
-        <Col span="22">
-          &nbsp;
-        </Col>
         <Col span="2">
-          <Button type="primary" @click="resFind" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
+            <Option value="all" key="all">全部</Option>
+            <Option :value="0" :key="0">提交</Option>
+          </Select>
+        </Col>
+        <Col span="19">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resFind" :style="{display: resBtnDis('DOCUAUDIT_QUERY')}">条件搜索</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchSub', null)">批量提交</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -72,6 +81,7 @@ export default {
     return {
       spinShow: false,
       search: {
+        batchCondition: 'all',
         requestName: '',
         caseType: '',
         caseTypeList: {},
@@ -80,6 +90,18 @@ export default {
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'id',
+            width: 60,
+            align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案号',
             key: 'code',
@@ -165,7 +187,8 @@ export default {
             }
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -294,7 +317,8 @@ export default {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
         registerToken: this.search.requestName,
-        caseTypeCode: this.search.caseType
+        caseTypeCode: this.search.caseType,
+        state: this.search.batchCondition === 'all' ? null : this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -346,6 +370,102 @@ export default {
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        if (this.search.batchCondition !== 'all') {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (this.search.batchCondition !== 'all') {
+        if (this.alertShow.ids.indexOf(_obj.id) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(_obj, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(_obj, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (_data, bool) {
+      let info = _data
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.$Message.error({
+              content: '最多只能选择十个案件',
+              duration: 5
+            })
+            return false
+          } else {
+            this.alertShow.idsList.push(info.caseDocuemntId)
+            this.alertShow.ids.push(info.id)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.id) !== -1) {
+          this.alertShow.idsList.splice(this.alertShow.ids.indexOf(info.id), 1)
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
+        }
+      }
+    },
     resAction (type, data) {
       switch (type) {
         case 'resEditDocu':
@@ -364,6 +484,24 @@ export default {
             documentId: data.caseDocuemntId
           }
           this.alertObj.resUploadDoc = true
+          break
+        case 'resBatchSub':
+          if (this.search.batchCondition !== 0) {
+            this.$Message.error({
+              content: '请先条件选择 \'提交\'',
+              duration: 5
+            })
+          } else if (this.alertShow.ids.length === 0) {
+            this.$Message.error({
+              content: '请先选择一个案件',
+              duration: 5
+            })
+          } else {
+            this.alertObj.resSubmitData = {
+              documentIds: this.alertShow.idsList
+            }
+            this.alertObj.resSubmit = true
+          }
           break
       }
     },
@@ -415,6 +553,7 @@ export default {
         case 'clearIds':
           this.alertShow.idsList = []
           this.alertShow.ids = []
+          this.caseList.seleMap = {}
           break
       }
     }
