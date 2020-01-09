@@ -141,7 +141,7 @@ export default {
       if (this.resCaseId.length === 1) {
         this.resData.caseId = this.resCaseId
       } else {
-        this.resData.caseIds = this.resCaseId
+        this.resData.caseIds = this.resCaseId.join(',')
       }
       this.$refs.upload.post(this.fileObj)
     },
