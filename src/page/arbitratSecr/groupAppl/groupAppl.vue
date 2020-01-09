@@ -505,7 +505,7 @@ export default {
         caseId: this.alertObj.caseId
       }).then(res => {
         this.alertCanc('subm')
-        this.resMessage('error', '操作成功')
+        this.resMessage('success', '操作成功')
         this.resSearch()
       }).catch(e => {
         this.alertCanc('subm')
