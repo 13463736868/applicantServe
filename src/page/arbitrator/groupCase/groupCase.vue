@@ -16,7 +16,7 @@
           <Select v-model="search.batchCondition" @on-change="resSearch">
             <Option value="1" key="1">全部</Option>
             <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="2" key="2">起草文书</Option>
-            <Option :style="{display: resBtnDis('GROUPCASE_BATCHEND')}" value="all" key="all">上传问题清单</Option>
+            <Option :style="{display: resBtnDis('GROUPCASE_UPLOADQUESTION_BATCH')}" value="all" key="all">上传问题清单</Option>
           </Select>
         </Col>
         <Col span="12">
@@ -24,7 +24,7 @@
             <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
             <!-- <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button> -->
             <Button class="ml20" type="primary" @click="resAction('resBatchEnd', null)" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量起草文书</Button>
-            <Button class="ml20" type="primary" @click="resAction('resBatchQues', null)" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量上传问题清单</Button>
+            <Button class="ml20" type="primary" @click="resAction('resBatchQues', null)" :style="{display: resBtnDis('GROUPCASE_UPLOADQUESTION_BATCH')}">批量上传问题清单</Button>
           </div>
         </Col>
       </Row>

@@ -321,7 +321,7 @@ export default {
     applMoney () {
       if (this.dataObj.acceAA === null || this.dataObj.acceAA === '') {
         this.emObj.status = 1
-        this.emObj.text = '请填写纠纷金额！'
+        this.emObj.text = '请填写争议标的额！'
         this.dataObj.acceAB = null
       } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
         this.emObj.status = 1
@@ -329,7 +329,7 @@ export default {
         this.dataObj.acceAB = null
       } else if (this.dataObj.acceAA === '0' || this.dataObj.acceAA === '0.0' || this.dataObj.acceAA === '0.00') {
         this.emObj.status = 1
-        this.emObj.text = '纠纷金额不能为零！'
+        this.emObj.text = '争议标的额不能为零！'
         this.dataObj.acceAB = null
       } else {
         this.emObj.status = 0
@@ -350,7 +350,7 @@ export default {
     acceSave (type) {
       if (type === 'acceA') {
         if (this.dataObj.acceAA === null || this.dataObj.acceAA === '') {
-          this.resMessage('warning', '请填写纠纷金额！')
+          this.resMessage('warning', '请填写争议标的额！')
         } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
           this.resMessage('warning', '请正确填写金额格式！')
         } else {
