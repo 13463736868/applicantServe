@@ -278,7 +278,7 @@ export default {
         caseTypeCode: this.search.caseType,
         keyword: this.search.text,
         caseDocementType: this.search.batchDocuType,
-        batchCondition: this.search.batchCondition === 'all' ? '1' : this.search.batchCondition
+        batchCondition: this.search.batchCondition === 'all' ? '2' : this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -692,13 +692,9 @@ export default {
           break
         case 'uploadQues':
           this.alertObj.uploadQues = false
-          if (this.alertObj.caseId.length === 1) {
-            this.alertObj.caseId = null
-            this.pageObj.pageNum = 1
-            this.resCaseList()
-          } else {
-            this.alertObj.caseId = null
-          }
+          this.alertObj.caseId = null
+          this.pageObj.pageNum = 1
+          this.resCaseList()
           break
         case 'reve':
           this.alertShow.reve = false

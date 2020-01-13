@@ -290,6 +290,15 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/filingSecr/arbPendPay/arbPendPay.vue')))
   },
   {
+    path: '/statisticsCase',
+    name: 'statisticsCase',
+    meta: {
+      requireAuth: true,
+      title: '案件统计'
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/statisticsCase/statisticsCase.vue')))
+  },
+  {
     path: '/tranRecoE',
     name: 'tranRecoE',
     meta: {
@@ -418,13 +427,13 @@ const routerMap = [
         component: r => require.ensure([], () => r(require('@/page/comm/children/evidencesInfo.vue')), 'evidencesInfo')
       },
       {
-        path: 'questionInfo',
-        name: 'questionInfo',
+        path: 'questionsInfo',
+        name: 'questionsInfo',
         meta: {
           requireAuth: true,
           title: '案件详情'
         },
-        component: r => require.ensure([], () => r(require('@/page/comm/children/questionInfo.vue')), 'questionInfo')
+        component: r => require.ensure([], () => r(require('@/page/comm/children/questionsInfo.vue')), 'questionsInfo')
       },
       {
         path: 'sendInfo',
@@ -452,7 +461,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/arbPendPay')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),

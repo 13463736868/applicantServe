@@ -1,5 +1,5 @@
 <template>
-  <div class="questionInfo">
+  <div class="questionsInfo">
     <div class="_question">
       <div class="_top">问题清单</div>
       <div v-if="questionObj.list">
@@ -16,7 +16,7 @@ import axios from 'axios'
 import questionInfo from '@/page/comm/children/children/questionInfo'
 
 export default {
-  name: 'questionInfo',
+  name: 'questionsInfo',
   props: ['caseId', 'caseState'],
   components: { questionInfo },
   data () {
@@ -60,7 +60,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/style/mixin';
-.questionInfo {
+.questionsInfo {
   ._question {
     padding-bottom: 60px;
   }

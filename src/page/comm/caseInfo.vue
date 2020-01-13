@@ -55,7 +55,7 @@ export default {
         {
           id: '6',
           text: '问题清单',
-          url: '/questionInfo'
+          url: '/questionsInfo'
         }
       ],
       menuClaimB: [
@@ -92,7 +92,7 @@ export default {
         {
           id: '6',
           text: '问题清单',
-          url: '/questionInfo'
+          url: '/questionsInfo'
         },
         {
           id: '7',
@@ -134,7 +134,7 @@ export default {
         {
           id: '6',
           text: '问题清单',
-          url: '/questionInfo'
+          url: '/questionsInfo'
         },
         {
           id: '7',
@@ -176,7 +176,7 @@ export default {
         {
           id: '6',
           text: '问题清单',
-          url: '/questionInfo'
+          url: '/questionsInfo'
         },
         {
           id: '7',
