@@ -6,7 +6,9 @@
       </head-top>
     </div>
     <div class="mainCont">
-      <router-view></router-view>
+      <keep-alive exclude="case_info,payment_info,iden_info,ceshi_editor,alert_editor">
+        <router-view></router-view>
+      </keep-alive>
     </div>
   </div>
 </template>
