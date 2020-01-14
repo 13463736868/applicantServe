@@ -32,9 +32,6 @@ export default {
       resData: {}
     }
   },
-  created () {
-    console.log(this.resIdsList)
-  },
   methods: {
     alertSave () {
       axios.put('/caseBatch/saveForm_batch', {
