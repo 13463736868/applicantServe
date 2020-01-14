@@ -3,22 +3,33 @@
     <div class="_center pr">
       <spin-comp :spinShow="spinShow"></spin-comp>
       <Row class="mb20">
-        <!-- <Col span="2">
-          <label class="lh32 f16 fc6 fr mr15">搜索</label>
-        </Col>
-        <Col span="8">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
-        </Col> -->
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">日期选择</label>
         </Col>
-        <Col span="4">
+        <Col span="3">
           <DatePicker class="wmax" @on-change="resDateChange" :options="dateDisa" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="起始日期 - 结束日期"></DatePicker>
         </Col>
-        <Col span="18">
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">注册名称：</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.requestName" filterable>
+            <Option value="all" key="all">全部</Option>
+            <Option v-for="item in search.requestNameList" :value="item.userToken" :key="item.userToken">{{ item.userName }}</Option>
+          </Select>
+        </Col>
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">案由：</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.caseType">
+            <Option value="all" key="all">全部</Option>
+            <Option v-for="item in search.caseTypeList" :value="item.itemValue" :key="item.itemValue">{{ item.item }}</Option>
+          </Select>
+        </Col>
+        <Col span="9">
           <div class="tr pr20">
-            <Button type="primary" class="mr10" @click="resSearch">查询</Button>
-            <Button class="ml20" type="primary" :style="{display: resBtnDis('STATISTICSCASE_SEARCH')}" @click="resActionFind('resFind', null)">条件搜索</Button>
+            <Button type="primary" class="mr10" :style="{display: resBtnDis('STATISTICSCASE_SEARCH')}" @click="resSearch">查询</Button>
             <Button class="ml20" type="primary" :style="{display: resBtnDis('STATISTICSCASE_EXPEXCEL')}" @click="resAction('resExportCase', null)">导出列表</Button>
           </div>
         </Col>
@@ -38,22 +49,20 @@
         </Row>
       </div>
     </div>
-    <res-find v-if="alertShow.find" @alertConfirm="alertSaveFind('find', ...arguments)" @alertCancel="alertCancFind('find')"></res-find>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import {resBtn, resSearFind} from '@/components/common/mixin.js'
+import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
-import resFind from '@/page/comm/resFind/resFind'
 import { caseInfo } from '@/config/common.js'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'statisticsCase',
-  mixins: [resBtn, resSearFind],
-  components: { spinComp, resFind },
+  mixins: [resBtn],
+  components: { spinComp },
   data () {
     return {
       dateDisa: {
@@ -64,8 +73,8 @@ export default {
       spinShow: false,
       search: {
         text: '',
-        requestName: '',
-        caseType: '',
+        requestName: 'all',
+        caseType: 'all',
         caseTypeList: {},
         requestNameList: [],
         startTime: '',
@@ -122,16 +131,32 @@ export default {
     }
   },
   created () {
+    this.dictionary()
     this.resCaseList()
   },
   methods: {
+    dictionary () {
+      axios.post('/dictionary/findDictionaryList', {
+        type: 'caseType'
+      }).then(res => {
+        this.search.caseTypeList = res.data.data
+      }).catch(e => {
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+      })
+      axios.post('/batchCaseDocument/findCaseType').then(res => {
+        let _obj = res.data.data
+        this.search.requestNameList = _obj
+      }).catch(e => {
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+      })
+    },
     resCaseList () {
       this.spinShow = true
       axios.post('/caseStatistics/list', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
-        token: this.search.requestName,
-        type: this.search.caseType,
+        token: this.search.requestName === 'all' ? '' : this.search.requestName,
+        type: this.search.caseType === 'all' ? '' : this.search.caseType,
         startTime: this.search.startTime,
         endTime: this.search.endTime
       }).then(res => {
@@ -148,8 +173,6 @@ export default {
       })
     },
     resSearch () {
-      this.search.requestName = ''
-      this.search.caseType = ''
       this.pageObj.pageNum = 1
       this.resCaseList()
     },

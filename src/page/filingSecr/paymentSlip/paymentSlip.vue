@@ -1,7 +1,7 @@
 <template>
   <div class="paymentSlip">
     <div class="_center pr">
-      <spin-comp :spinShow="spinShow"></spin-comp>
+      <spin-comp :spinShow="spinShow"><p v-text="spinShowText"></p></spin-comp>
       <Row>
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
@@ -45,6 +45,7 @@ export default {
   data () {
     return {
       spinShow: true,
+      spinShowText: '',
       search: {
         text: ''
       },
@@ -252,16 +253,22 @@ export default {
     },
     cancSave () {
       this.alertShow.canc = false
+      this.spinShowText = '正在生成收据，请稍后...'
+      this.spinShow = true
       axios.post('/payMentRequest/updatePayMent', {
         id: this.alertShow.id,
         state: this.alertShow.cancType
       }).then(res => {
+        this.spinShow = false
+        this.spinShowText = ''
         this.resSearch()
         this.$Message.success({
           content: '操作成功',
           duration: 2
         })
       }).catch(e => {
+        this.spinShow = false
+        this.spinShowText = ''
         this.$Message.error({
           content: '错误信息:' + e + ' 稍后再试',
           duration: 5
