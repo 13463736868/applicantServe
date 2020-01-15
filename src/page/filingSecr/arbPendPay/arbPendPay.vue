@@ -85,7 +85,7 @@ export default {
           },
           {
             title: '争议金额总额(元)',
-            key: 'totleCost',
+            key: 'totleMoney',
             align: 'center'
           },
           {

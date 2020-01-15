@@ -6,8 +6,24 @@
         <Col span="2">
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
-        <Col span="8">
+        <Col span="6">
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 案件编号 / 申请人 / 被申请人 / 代理人 / 年限"></Input>
+        </Col>
+        <Col span="2">
+          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
+        </Col>
+        <Col span="3">
+          <Select v-model="search.batchCondition" @on-change="resSearch">
+            <Option value="all" key="all">全部</Option>
+            <Option value="1" key="1">待撤回 (未立案案件)</Option>
+            <Option value="4" key="4">待撤回 (已立案未组庭案件)</Option>
+            <Option value="5" key="5">待撤回 (已组庭案件)</Option>
+          </Select>
+        </Col>
+        <Col span="11">
+          <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resAction('resBatchAgree', null)" :style="{display: resBtnDis('WITHDRAW_AGREEBATCH')}">批量同意撤案</Button>
+          </div>
         </Col>
       </Row>
       <div class="_caseList clearfix">
@@ -41,23 +57,36 @@
 import axios from 'axios'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertWithdrawInfo from '@/page/arbitratSecr/withdrawList/children/alertWithdrawInfo'
-import {resBtn} from '@/components/common/mixin.js'
+import {resBtn, resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import { caseInfo } from '@/config/common.js'
 
 export default {
   name: 'withdraw-list',
-  mixins: [resBtn],
+  mixins: [resBtn, resMess],
   components: { spinComp, alertBtnInfo, alertWithdrawInfo },
   data () {
     return {
       spinShow: true,
       search: {
-        text: ''
+        text: '',
+        batchCondition: 'all'
       },
       caseList: {
         loading: false,
         header: [
+          {
+            title: '选择',
+            key: 'id',
+            width: 60,
+            align: 'center',
+            renderHeader: (h, params) => {
+              return this.renderAllSele(h, params)
+            },
+            render: (h, params) => {
+              return this.renderCheck(h, params)
+            }
+          },
           {
             title: '案件编号',
             key: 'id',
@@ -144,7 +173,8 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [],
+        seleMap: {}
       },
       pageObj: {
         total: 0,
@@ -156,6 +186,9 @@ export default {
         withdraw: false,
         withdrawInfo: false,
         withdrawType: null
+      },
+      alertShow: {
+        ids: []
       }
     }
   },
@@ -168,7 +201,8 @@ export default {
       axios.post('/closeCaseForm/withdrawList', {
         pageIndex: (this.pageObj.pageNum - 1) * this.pageObj.pageSize,
         pageSize: this.pageObj.pageSize,
-        keyword: this.search.text
+        keyword: this.search.text,
+        batchCondition: this.search.batchCondition === 'all' ? '' : this.search.batchCondition
       }).then(res => {
         let _data = res.data.data
         this.caseList.bodyList = _data.dataList === null ? [] : _data.dataList
@@ -183,6 +217,8 @@ export default {
       })
     },
     resSearch () {
+      this.alertShow.ids = []
+      this.caseList.seleMap = {}
       this.pageObj.pageNum = 1
       this.resCaseList()
     },
@@ -190,18 +226,108 @@ export default {
       this.pageObj.pageNum = page
       this.resCaseList()
     },
+    renderAllSele (h, params) {
+      return h('div', [
+        h('span', {
+          style: {
+            cursor: 'pointer',
+            userSelect: 'none'
+          },
+          on: {
+            click: () => {
+              this.resAllSele()
+            }
+          }
+        }, '全选')
+      ])
+    },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (this.search.batchCondition !== 'all' && _obj.buttonFlag) {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
+    renderCheck (h, params) {
+      let _obj = params.row
+      if (this.search.batchCondition !== 'all' && _obj.buttonFlag) {
+        if (this.alertShow.ids.indexOf(_obj.id) === -1) {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-square-outline',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(_obj, true)
+                }
+              }
+            })
+          ])
+        } else {
+          return h('div', [
+            h('Icon', {
+              props: {
+                type: 'md-checkbox',
+                size: '16'
+              },
+              style: {
+                color: '#2d8cf0',
+                cursor: 'pointer',
+                verticalAlign: 'text-top'
+              },
+              on: {
+                click: () => {
+                  this.seleArrChange(_obj, false)
+                }
+              }
+            })
+          ])
+        }
+      } else {
+        return h('div', [
+        ])
+      }
+    },
+    seleArrChange (_data, bool) {
+      let info = _data
+      if (bool) {
+        if (this.alertShow.ids.indexOf(info.id) === -1) {
+          if (this.alertShow.ids.length >= 10) {
+            this.resMessage('error', '最多只能选择十个案件')
+            return false
+          } else {
+            this.alertShow.ids.push(info.id)
+          }
+        }
+      } else {
+        if (this.alertShow.ids.indexOf(info.id) !== -1) {
+          this.alertShow.ids.splice(this.alertShow.ids.indexOf(info.id), 1)
+        }
+      }
+    },
     resAction (type, data) {
       switch (type) {
         case 'withdrawForm':
-          this.formObj.caseId = data.id
           if (data.withdrawType === '1') {
+            this.formObj.caseId = [data.id]
             this.formObj.withdraw = true
           } else if (data.withdrawType === '5' || data.withdrawType === '4') {
+            this.formObj.caseId = [data.id]
             this.formObj.withdrawType = data.withdrawType
             this.formObj.withdrawInfo = true
-          } else {
-            this.formObj.caseId = null
-            return false
           }
           break
         case 'seeForm':
@@ -216,13 +342,29 @@ export default {
             })
           })
           break
+        case 'resBatchAgree':
+          if (this.search.batchCondition === 'all') {
+            this.resMessage('error', '请先条件选择 \'待撤回\'')
+          } else if (this.alertShow.ids.length === 0) {
+            this.resMessage('error', '请先选择一个案件')
+          } else {
+            if (this.search.batchCondition === '1') {
+              this.formObj.caseId = this.alertShow.ids
+              this.formObj.withdraw = true
+            } else if (this.search.batchCondition === '5' || this.search.batchCondition === '4') {
+              this.formObj.caseId = this.alertShow.ids
+              this.formObj.withdrawType = this.search.batchCondition
+              this.formObj.withdrawInfo = true
+            }
+          }
+          break
       }
     },
     alertSave (type) {
       switch (type) {
         case 'withdrawForm':
           axios.post('/case/updateCaseStateByCancel', {
-            caseId: this.formObj.caseId
+            caseId: this.formObj.caseId.join(',')
           }).then(res => {
             this.alertCanc('withdrawForm')
             this.$Message.success({

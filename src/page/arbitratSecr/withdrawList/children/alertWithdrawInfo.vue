@@ -1,6 +1,6 @@
 <template>
   <div class="resEndDocu">
-    <create-docu :alertShow="alertShow" @alertConfirm="alertSave('docuSave')" @alertSee="alertSave('seeSave')" @alertCancel="alertCanc" alertTitle="操作">
+    <create-docu :seeHide="resCaseId.length !== 1" :alertShow="alertShow" @alertConfirm="alertSave('docuSave')" @alertSee="alertSave('seeSave')" @alertCancel="alertCanc" alertTitle="操作">
       <Row class="_labelFor">
         <Col span="6" offset="1">
           <p><span class="_span">*</span><b>文书类型：</b></p>
@@ -67,21 +67,27 @@ export default {
       if (this.resData.endNewTempCode === '' || this.resData.endNewTempCode === undefined) {
         this.resMessage('warning', '请选择模版')
       } else {
-        let _o = {}
-        _o[this.resCaseId] = this.resData.endNewTempCode
-        axios.post(_url, {
-          documentType: this.resData.docuType,
-          caseDocumentDataJson: JSON.stringify([_o])
-        }).then(res => {
-          if (type === 'docuSave') {
-            this.resMessage('success', '操作成功')
-            this.$emit('alertConfirm')
-          } else if (type === 'seeSave') {
-            window.open(res.data.data, '_blank')
-          }
-        }).catch(e => {
-          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+        let _list = []
+        this.resCaseId.map(i => {
+          let _o = {}
+          _o[i] = this.resData.endNewTempCode
+          _list.push(_o)
         })
+        setTimeout(() => {
+          axios.post(_url, {
+            documentType: this.resData.docuType,
+            caseDocumentDataJson: JSON.stringify(_list)
+          }).then(res => {
+            if (type === 'docuSave') {
+              this.resMessage('success', '操作成功')
+              this.$emit('alertConfirm')
+            } else if (type === 'seeSave') {
+              window.open(res.data.data, '_blank')
+            }
+          }).catch(e => {
+            this.resMessage('error', '错误信息:' + e + ' 稍后再试')
+          })
+        }, 50)
       }
     },
     alertCanc () {
