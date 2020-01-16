@@ -6,7 +6,7 @@
           <caption class="f35 h60 lh60">
             <p>退 还 仲 裁 费 审 批 表</p>
           </caption>
-          <caption class="tr f16 h60 lh60">青仲互退费字({{form.codeYear}})第{{form.codeNum}}号</caption>
+          <caption class="tr f16 h60 lh60">哈仲互退费字({{form.codeYear}})第{{form.codeNum}}号</caption>
           <tr>
             <td class="tdb tc w120">
               <span class="fls5">申请人</span>
