@@ -51,12 +51,12 @@ export default {
           id: '5',
           text: '证据和质证',
           url: '/evidencesInfo'
-        },
-        {
-          id: '6',
-          text: '问题清单',
-          url: '/questionsInfo'
         }
+        // {
+        //   id: '6',
+        //   text: '问题清单',
+        //   url: '/questionsInfo'
+        // }
       ],
       menuClaimB: [
         {
@@ -89,11 +89,11 @@ export default {
           text: '证据和质证',
           url: '/evidencesInfo'
         },
-        {
-          id: '6',
-          text: '问题清单',
-          url: '/questionsInfo'
-        },
+        // {
+        //   id: '6',
+        //   text: '问题清单',
+        //   url: '/questionsInfo'
+        // },
         {
           id: '7',
           text: '送达',
@@ -131,11 +131,11 @@ export default {
           text: '证据和质证',
           url: '/evidencesInfo'
         },
-        {
-          id: '6',
-          text: '问题清单',
-          url: '/questionsInfo'
-        },
+        // {
+        //   id: '6',
+        //   text: '问题清单',
+        //   url: '/questionsInfo'
+        // },
         {
           id: '7',
           text: '送达',
@@ -173,11 +173,11 @@ export default {
           text: '证据和质证',
           url: '/evidencesInfo'
         },
-        {
-          id: '6',
-          text: '问题清单',
-          url: '/questionsInfo'
-        },
+        // {
+        //   id: '6',
+        //   text: '问题清单',
+        //   url: '/questionsInfo'
+        // },
         {
           id: '7',
           text: '结案',

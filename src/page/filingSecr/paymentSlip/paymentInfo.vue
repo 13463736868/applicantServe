@@ -55,7 +55,7 @@
             </Col>
             <Col span="16">
               <div class="tr pr20">
-                <Button v-if="publicData.status === 2" class="ml20" type="primary" @click="resAction('dowZip', null)">批量下载收据</Button>
+                <!-- <Button v-if="publicData.status === 2" class="ml20" type="primary" @click="resAction('dowZip', null)">批量下载收据</Button> -->
               </div>
             </Col>
           </Row>
@@ -64,7 +64,7 @@
               <Table ref="table" stripe border align="center" :loading="payList.loading" :columns="payList.header" :data="payList.bodyList">
                 <template slot-scope="{ row, index }" slot="action">
                   <Button class="mr5" type="primary" size="small" @click="resAction('resBillNumber', row)">录入票据号</Button>
-                  <Button v-if="publicData.status === 2" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看收据</Button>
+                  <!-- <Button v-if="publicData.status === 2" class="mr5" type="primary" size="small" @click="resAction('seeForm', row)">查看收据</Button> -->
                 </template>
               </Table>
             </Col>
