@@ -291,6 +291,19 @@ export default {
         }, '全选')
       ])
     },
+    resAllSele () {
+      if (this.caseList.seleMap[this.pageObj.pageNum] === undefined) {
+        this.caseList.seleMap[this.pageObj.pageNum] = true
+      } else {
+        this.caseList.seleMap[this.pageObj.pageNum] = !this.caseList.seleMap[this.pageObj.pageNum]
+      }
+      this.caseList.bodyList.forEach((item, index) => {
+        let _obj = item
+        if (this.search.batchCondition !== '1' && _obj.pendBtnStatus === '3') {
+          this.seleArrChange(item, this.caseList.seleMap[this.pageObj.pageNum])
+        }
+      })
+    },
     seleArrChange (_data, bool) {
       let info = _data
       if (bool) {
