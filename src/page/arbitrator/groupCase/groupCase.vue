@@ -215,7 +215,8 @@ export default {
             title: '原因',
             key: 'id',
             align: 'center',
-            slot: 'reason'
+            slot: 'reason',
+            minWidth: 60
           },
           {
             title: '操作',

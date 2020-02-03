@@ -54,9 +54,9 @@
               <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="票据单号"></Input>
             </Col>
             <Col span="16">
-              <div class="tr pr20">
-                <!-- <Button v-if="publicData.status === 2" class="ml20" type="primary" @click="resAction('dowZip', null)">批量下载收据</Button> -->
-              </div>
+              <!-- <div class="tr pr20">
+                <Button v-if="publicData.status === 2" class="ml20" type="primary" @click="resAction('dowZip', null)">批量下载收据</Button>
+              </div> -->
             </Col>
           </Row>
           <Row>

@@ -496,6 +496,7 @@ export default {
           this.alertShow.reje = false
           this.alertShow.id = null
           this.alertShow.avoidRequestId = null
+          this.resCaseList()
           break
       }
     },

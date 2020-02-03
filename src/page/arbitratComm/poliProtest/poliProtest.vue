@@ -201,6 +201,7 @@ export default {
           this.alertShow.docuType = null
           this.alertShow.id = null
           this.alertShow.diss = false
+          this.resCaseList()
           break
       }
     },
