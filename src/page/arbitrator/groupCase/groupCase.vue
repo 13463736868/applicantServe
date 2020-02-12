@@ -52,6 +52,7 @@
                   <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase('resEndCase', row)">重新生成文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase('resCancCase', row)">重新生成撤案书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase('resEndCase', row)">重新起草文书</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_AVOID')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '11'" @click="resEndCase('resAvoid', row)">请求回避</Button>
                 </div>
                 <div v-else="">
                   <span style="color: #2d8cf0" type="text" size="small">{{row.endCasePatten}}</span>
@@ -78,6 +79,7 @@
     <div v-if="alertShow.editorDest">
       <alert-editor :alertShow="alertShow.editor" :editorId="alertShow.editorId" :editorValue="alertShow.editorValue" @alertConfirm="editorSave" @alertCancel="alertCanc('editor')" alertTitle="编辑"></alert-editor>
     </div>
+    <res-avoid v-if="alertShow.avoid" :resCaseId="alertShow.userId" @alertConfirm="alertSave('avoid')" @alertCancel="alertCanc('avoid')"></res-avoid>
     <res-batch-end-docu v-if="alertShow.batchEnd" :resIdsList="alertShow.idsList" @alertConfirm="alertSave('resBatchEnd')" @alertCancel="alertCanc('resBatchEnd')"></res-batch-end-docu>
     <res-end-docu v-if="alertShow.end" :resCaseId="alertShow.userId" :resTempCode="alertShow.endNewTempCode" @alertConfirm="alertSave('endNew')" @alertCancel="alertCanc('endNew')"></res-end-docu>
     <res-reve-docu v-if="alertShow.reve" :resCaseId="alertShow.userId" @alertConfirm="alertSave('reve')" @alertCancel="alertCanc('reve')"></res-reve-docu>
@@ -104,6 +106,7 @@ import resCancDocu from '@/page/arbitrator/groupCase/children/resCancDocu'
 import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
 import resEndDocu from '@/page/arbitrator/groupCase/children/resEndDocu'
 import resBatchEndDocu from '@/page/arbitrator/groupCase/children/resBatchEndDocu'
+import resAvoid from '@/page/arbitrator/groupCase/children/resAvoid'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -111,7 +114,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu, resBatchEndDocu },
+  components: { spinComp, alertBtnInfo, alertEditor, editDataModal, uploadQuesAlert, resBatchEdit, resFind, resReveDocu, resCancDocu, resAddeDocu, resEndDocu, resBatchEndDocu, resAvoid },
   data () {
     return {
       spinShow: false,
@@ -234,6 +237,7 @@ export default {
         pageSize: 10
       },
       alertShow: {
+        avoid: false,
         endNewTempCode: '',
         canc: false,
         docuType: null,
@@ -651,6 +655,10 @@ export default {
             this.alertObj.uploadQues = true
           }
           break
+        case 'resAvoid':
+          this.alertShow.userId = data.id
+          this.alertShow.avoid = true
+          break
       }
     },
     alertSave (type, data) {
@@ -722,6 +730,11 @@ export default {
           this.alertCanc('clearIds')
           this.resCaseList()
           break
+        case 'avoid':
+          this.alertShow.avoid = false
+          this.alertShow.userId = null
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
@@ -782,6 +795,10 @@ export default {
           this.alertShow.batchEnd = false
           this.alertShow.idsList = []
           this.caseList.seleMap = {}
+          break
+        case 'avoid':
+          this.alertShow.avoid = false
+          this.alertShow.userId = null
           break
       }
     }

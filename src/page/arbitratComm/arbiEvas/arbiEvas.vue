@@ -7,8 +7,9 @@
           <Col span="24" class="pl20 pr20">
             <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
                <template slot-scope="{ row, index }" slot="action">
-                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resNewSaveEvas(index)">同意</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_PASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1' || row.showButtonState === '0'" @click="resNewSaveEvas(index)">同意</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resAction('resCancEvas', row)">退回</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '0'" @click="resAction('resCancEvasS', row)">退回</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '2'" @click="resAction('resCancEvas', row)">重新生成文书</Button>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '3'">文书审核中</span>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '4'">文书审核通过</span>
@@ -180,6 +181,7 @@ export default {
         arbitratorIds: null,
         avoidState: null,
         agre: false,
+        partyType: null,
         avoidRequestId: null,
         infoUser: null,
         infoMoney: null,
@@ -280,7 +282,22 @@ export default {
               this.resArbiEvas(params.index)
             }
           }
-        }, '查看')
+        }, '查看'),
+        h('Button', {
+          props: {
+            type: 'primary',
+            size: 'small'
+          },
+          style: {
+            marginRight: '5px',
+            display: params.row.partyType === '3' || params.row.partyType === 3 ? '' : 'none'
+          },
+          on: {
+            click: () => {
+              window.open(params.row.filePath, '_blank')
+            }
+          }
+        }, '查看文件')
       ])
     },
     renderCheck (h, params) {
@@ -374,6 +391,7 @@ export default {
     resNewSaveEvas (index) {
       this.alertShow.agreNew = true
       this.alertShow.avoidRequestId = this.caseList.bodyList[index].avoidRequestId
+      this.alertShow.partyType = this.caseList.bodyList[index].partyType
     },
     resUserList () {
       axios.post('/clientRequest/findUsersList', {
@@ -465,7 +483,8 @@ export default {
       this.alertShow.agreNew = false
       axios.post('/approve/updateAvoidRequestAppover', {
         avoidRequestId: this.alertShow.avoidRequestId,
-        avoidState: 1
+        avoidState: 1,
+        partyType: this.alertShow.partyType
       }).then(res => {
         this.alertCanc('agreNew')
         this.$Message.success({
@@ -487,6 +506,24 @@ export default {
           this.alertShow.id = data.id
           this.alertShow.avoidRequestId = data.avoidRequestId
           this.alertShow.reje = true
+          break
+        case 'resCancEvasS':
+          axios.post('/approve/updateAvoidRequestAppover', {
+            avoidRequestId: data.avoidRequestId,
+            avoidState: 2,
+            partyType: data.partyType
+          }).then(res => {
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
           break
       }
     },
