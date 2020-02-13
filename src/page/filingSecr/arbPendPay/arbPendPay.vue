@@ -72,7 +72,7 @@ export default {
             align: 'center'
           },
           {
-            title: '通知缴费日期',
+            title: '通知交费日期',
             key: 'acceptTime',
             tooltip: 'true',
             align: 'center'

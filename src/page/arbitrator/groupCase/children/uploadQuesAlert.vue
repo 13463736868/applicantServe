@@ -134,6 +134,7 @@ export default {
     },
     resError (error, file) {
       this.spinShow = false
+      this.fileObj = null
       this.resMessage('error', '错误信息:' + error.status + ' 稍后再试')
     },
     alertSave () {
