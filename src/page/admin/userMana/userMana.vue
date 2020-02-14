@@ -166,7 +166,7 @@ export default {
             }
           },
           {
-            title: '固话/手机号',
+            title: '联系方式',
             key: 'phone',
             align: 'center'
           },
@@ -509,12 +509,12 @@ export default {
         })
       } else if (this.addData.phone === '') {
         this.$Message.warning({
-          content: '固话/手机号不能为空',
+          content: '联系方式不能为空',
           duration: 5
         })
       } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'phone'))) {
         this.$Message.warning({
-          content: '固话/手机号格式不正确',
+          content: '联系方式格式不正确',
           duration: 5
         })
         // if (this.addData.email === '') {

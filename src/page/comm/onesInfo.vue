@@ -28,7 +28,7 @@
                       <p v-text="dataObj.name"></p>
                     </Col>
                     <Col class="_label" span="11" offset="2">
-                      <p>固定号码：</p>
+                      <p>联系方式：</p>
                       <p v-text="dataObj.phone"></p>
                     </Col>
                   </Row>
@@ -93,10 +93,10 @@
       </Row> -->
       <Row class="pt10">
         <Col span="6" offset="1">
-          <p class="pt7 pb7">固定号码：</p>
+          <p class="pt7 pb7">联系方式：</p>
         </Col>
         <Col span="12">
-           <Input v-model="alertData.phone" placeholder="请输入固定号码..."/>
+           <Input v-model="alertData.phone" placeholder="请输入联系方式..."/>
         </Col>
       </Row>
       <Row class="pt10" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
@@ -317,12 +317,12 @@ export default {
       // } else
       if (this.alertData.phone === null || this.alertData.phone === '') {
         this.$Message.warning({
-          content: '固定号码不能为空',
+          content: '联系方式不能为空',
           duration: 5
         })
-      } else if (!setRegExp(this.alertData.phone, 'landline')) {
+      } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'phone'))) {
         this.$Message.warning({
-          content: '请填写正确固定号码格式',
+          content: '请填写正确联系方式格式',
           duration: 5
         })
       } else {
