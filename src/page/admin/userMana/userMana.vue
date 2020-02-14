@@ -59,7 +59,7 @@
         </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
-            <p><span class="_span">*</span><b>固话/手机号：</b></p>
+            <p><span class="_span">*</span><b>联系方式：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="addData.phone"></Input>
