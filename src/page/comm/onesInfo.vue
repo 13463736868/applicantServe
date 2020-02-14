@@ -320,7 +320,7 @@ export default {
           content: '联系方式不能为空',
           duration: 5
         })
-      } else if (!(setRegExp(this.addData.phone, 'landline') || setRegExp(this.addData.phone, 'phone'))) {
+      } else if (!(setRegExp(this.alertData.phone, 'landline') || setRegExp(this.alertData.phone, 'phone'))) {
         this.$Message.warning({
           content: '请填写正确联系方式格式',
           duration: 5
