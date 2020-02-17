@@ -218,6 +218,7 @@ export default {
             title: '原因',
             key: 'id',
             align: 'center',
+            minWidth: 70,
             slot: 'reason'
           },
           {
