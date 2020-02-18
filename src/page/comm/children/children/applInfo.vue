@@ -4,7 +4,7 @@
       <Col class="_listL" span="24">
         <Row>
           <Col span="22" offset="1">
-            <p>
+            <p v-if="infoData">
               <span class="mr10 _file" v-text="infoData.filename" :title="'点击查看: '+infoData.filename" @click="seeFile(infoData.filepath)"></span>
             </p>
           </Col>

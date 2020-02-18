@@ -3,7 +3,7 @@
     <div class="_center pr">
       <Row class="pb20" v-if="stepData !== null">
         <Steps :current="stepData.length">
-          <Step v-for="(item,index) in stepData" :key="index" :title="item.processName" :content="item.processTime + ' ; ' + item.processInfo">
+          <Step v-for="(item,index) in stepData" :key="index" :title="item.processName" :content="item.processInfo === '' ? item.processTime : item.processTime + '；' + item.processInfo">
           </Step>
         </Steps>
       </Row>

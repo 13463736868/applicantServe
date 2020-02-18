@@ -515,63 +515,64 @@ export default {
       this.alertObj.time = val
     },
     beginSave () {
-      if (this.alertObj.type === 'once') {
-        axios.post('/getDateSection').then(res => {
-          let _res = res.data.data
-          try {
-            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-            let _sTime = res.data.data.startDate.split('-').join('')
-            let _eTime = res.data.data.endDate.split('-').join('')
-            if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
-            } else {
-              this.upTimeSave()
-            }
-          } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
-          }
-        }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
-        })
-      } else if (this.alertObj.type === 'edit') {
-        axios.post('/getDateSection', {
-          baseDate: this.alertObj.composeTime
-        }).then(res => {
-          let _res = res.data.data
-          try {
-            let _time = this.alertObj.time.substr(0, 10).split('-').join('')
-            let _sTime = res.data.data.startDate.split('-').join('')
-            let _eTime = res.data.data.endDate.split('-').join('')
-            if (_time - _sTime < 0 || _time - _eTime > 0) {
-              this.$Message.warning({
-                content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
-                duration: 6
-              })
-            } else {
-              this.upTimeSave()
-            }
-          } catch (e) {
-            this.$Message.error({
-              content: '调取时间范围出错,稍后再试',
-              duration: 5
-            })
-          }
-        }).catch(e => {
-          this.$Message.error({
-            content: '调取时间范围出错,稍后再试',
-            duration: 5
-          })
-        })
-      }
+      this.upTimeSave()
+      // if (this.alertObj.type === 'once') {
+      //   axios.post('/getDateSection').then(res => {
+      //     let _res = res.data.data
+      //     try {
+      //       let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+      //       let _sTime = res.data.data.startDate.split('-').join('')
+      //       let _eTime = res.data.data.endDate.split('-').join('')
+      //       if (_time - _sTime < 0 || _time - _eTime > 0) {
+      //         this.$Message.warning({
+      //           content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+      //           duration: 6
+      //         })
+      //       } else {
+      //         this.upTimeSave()
+      //       }
+      //     } catch (e) {
+      //       this.$Message.error({
+      //         content: '调取时间范围出错,稍后再试',
+      //         duration: 5
+      //       })
+      //     }
+      //   }).catch(e => {
+      //     this.$Message.error({
+      //       content: '调取时间范围出错,稍后再试',
+      //       duration: 5
+      //     })
+      //   })
+      // } else if (this.alertObj.type === 'edit') {
+      //   axios.post('/getDateSection', {
+      //     baseDate: this.alertObj.composeTime
+      //   }).then(res => {
+      //     let _res = res.data.data
+      //     try {
+      //       let _time = this.alertObj.time.substr(0, 10).split('-').join('')
+      //       let _sTime = res.data.data.startDate.split('-').join('')
+      //       let _eTime = res.data.data.endDate.split('-').join('')
+      //       if (_time - _sTime < 0 || _time - _eTime > 0) {
+      //         this.$Message.warning({
+      //           content: '时间范围必须在 ' + _res.startDate + ' 00:00:00 ~ ' + _res.endDate + ' 23:59:59 之间',
+      //           duration: 6
+      //         })
+      //       } else {
+      //         this.upTimeSave()
+      //       }
+      //     } catch (e) {
+      //       this.$Message.error({
+      //         content: '调取时间范围出错,稍后再试',
+      //         duration: 5
+      //       })
+      //     }
+      //   }).catch(e => {
+      //     this.$Message.error({
+      //       content: '调取时间范围出错,稍后再试',
+      //       duration: 5
+      //     })
+      //   })
+      // }
     },
     upTimeSave () {
       let _type = null

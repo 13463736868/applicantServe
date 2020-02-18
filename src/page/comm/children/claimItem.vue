@@ -23,12 +23,14 @@
 
 <script>
 import axios from 'axios'
+import {resMess} from '@/components/common/mixin.js'
 import claimInfo from '@/page/comm/children/children/claimInfo'
 import reasInfo from '@/page/comm/children/children/reasInfo'
 import applInfo from '@/page/comm/children/children/applInfo'
 
 export default {
   name: 'claimItem',
+  mixins: [resMess],
   props: ['caseId', 'caseState'],
   components: { claimInfo, reasInfo, applInfo },
   data () {
@@ -52,10 +54,7 @@ export default {
         this.reasData = res.data.data.factMap
         this.applData = res.data.data.factMap
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     }
   }

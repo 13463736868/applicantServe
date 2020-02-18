@@ -788,7 +788,7 @@ export default {
               }
             } else {
               this.$Message.error({
-                content: '不能同时指定仲裁员数不一的致案件',
+                content: '不能同时指定仲裁员数不一致的案件',
                 duration: 5
               })
               return false
@@ -816,7 +816,7 @@ export default {
               }
             } else {
               this.$Message.error({
-                content: '不能同时指定仲裁员数不一的致案件',
+                content: '不能同时指定仲裁员数不一致的案件',
                 duration: 5
               })
               return false

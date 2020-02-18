@@ -16,11 +16,13 @@
 
 <script>
 import axios from 'axios'
+import {resMess} from '@/components/common/mixin.js'
 import propInfo from '@/page/comm/children/children/propInfo'
 import seePropInfo from '@/page/comm/children/children/seePropInfo'
 
 export default {
   name: 'respondentInfo',
+  mixins: [resMess],
   props: ['caseId', 'caseState'],
   components: { propInfo, seePropInfo },
   data () {
@@ -45,10 +47,7 @@ export default {
       }).then(res => {
         this.respData = res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     seeRespInfo (obj) {

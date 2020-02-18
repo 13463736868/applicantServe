@@ -70,12 +70,14 @@
 
 <script>
 import axios from 'axios'
+import {resMess} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import setRegExp from '@/config/regExp.js'
 
 export default {
   name: 'depa_mana',
+  mixins: [resMess],
   components: { spinComp, alertBtnInfo },
   data () {
     return {
@@ -236,10 +238,7 @@ export default {
         this.spinShow = false
       }).catch(e => {
         this.spinShow = false
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resSearch () {
@@ -261,17 +260,11 @@ export default {
         }
       }).then(res => {
         this.alertCanc('state')
-        this.$Message.success({
-          content: '操作成功',
-          duration: 2
-        })
+        this.resMessage('success', '操作成功')
         this.resCaseList()
       }).catch(e => {
         this.alertCanc('state')
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     resEditDepa (index) {
@@ -309,33 +302,18 @@ export default {
         this.principalList = select
         this.alertShow.addDepa = true
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e + ' 稍后再试',
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     addDepaSave () {
       if (this.addData.name === '') {
-        this.$Message.warning({
-          content: '部门名称不能为空',
-          duration: 5
-        })
+        this.resMessage('warning', '部门名称不能为空')
       } else if (!setRegExp(this.addData.name, 'name')) {
-        this.$Message.warning({
-          content: '部门名称只能包含汉字',
-          duration: 5
-        })
+        this.resMessage('warning', '部门名称只能包含汉字')
       } else if (this.addData.code === '') {
-        this.$Message.warning({
-          content: '部门编码不能为空',
-          duration: 5
-        })
+        this.resMessage('warning', '部门编码不能为空')
       } else if (!setRegExp(this.addData.code, 'depaCode')) {
-        this.$Message.warning({
-          content: '部门编码只能包含数字,字母及下划线,长度6~20位',
-          duration: 5
-        })
+        this.resMessage('warning', '部门编码只能包含数字,字母及下划线,长度6~20位')
       } else {
         this.sendAjax()
       }
@@ -351,17 +329,11 @@ export default {
           leaderId: this.addData.leader
         }).then(res => {
           this.alertCanc('addDepa')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('addDepa')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       } else if (type === 'edit') {
         this.alertShow.addDepa = false
@@ -377,17 +349,11 @@ export default {
           }
         }).then(res => {
           this.alertCanc('addDepa')
-          this.$Message.success({
-            content: '操作成功',
-            duration: 2
-          })
+          this.resMessage('success', '操作成功')
           this.resCaseList()
         }).catch(e => {
           this.alertCanc('addDepa')
-          this.$Message.error({
-            content: '错误信息:' + e + ' 稍后再试',
-            duration: 5
-          })
+          this.resMessage('error', '错误信息:' + e + ' 稍后再试')
         })
       }
     },

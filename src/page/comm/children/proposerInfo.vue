@@ -27,6 +27,7 @@
 
 <script>
 import axios from 'axios'
+import {resMess} from '@/components/common/mixin.js'
 import propInfo from '@/page/comm/children/children/propInfo'
 import agenInfo from '@/page/comm/children/children/agenInfo'
 import seePropInfo from '@/page/comm/children/children/seePropInfo'
@@ -34,6 +35,7 @@ import seeAgenInfo from '@/page/comm/children/children/seeAgenInfo'
 
 export default {
   name: 'proposerInfo',
+  mixins: [resMess],
   props: ['caseId', 'caseState'],
   components: { propInfo, agenInfo, seePropInfo, seeAgenInfo },
   data () {
@@ -65,10 +67,7 @@ export default {
         this.propData = res.data.data.applicantPropleMessage
         this.agenData = res.data.data.proxyPropleMessage
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     },
     seePropInfo (obj) {

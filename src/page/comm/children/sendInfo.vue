@@ -20,6 +20,12 @@
         </Row>
       </div>
     </div>
+    <div class="_emailProof">
+      <div class="_top">电子送达证明</div>
+      <div class="_mid" v-if="JSON.stringify(electronWarnList.bodyList) !== '{}'">
+        <appl-info :infoData="electronWarnList.bodyList"></appl-info>
+      </div>
+    </div>
     <alert-see-info :alertShow="alertShowSub" @alertConfirm="seeInfoSave" alertTitle="查看">
       <div v-if="alertShowSub">
         <Row>
@@ -77,12 +83,13 @@
 
 <script>
 import axios from 'axios'
+import applInfo from '@/page/comm/children/children/applInfo'
 import alertSeeInfo from '@/page/comm/children/children/alertSeeInfo'
 
 export default {
   name: 'sendInfo',
   props: ['caseId', 'caseState'],
-  components: { alertSeeInfo },
+  components: { alertSeeInfo, applInfo },
   data () {
     return {
       alertShowSub: false,
@@ -176,6 +183,9 @@ export default {
           }
         ],
         bodyList: []
+      },
+      electronWarnList: {
+        bodyList: null
       }
     }
   },
@@ -202,6 +212,16 @@ export default {
         messageType: 'sms'
       }).then(res => {
         this.smsWarnList.bodyList = res.data.data === null ? [] : res.data.data
+      }).catch(e => {
+        this.$Message.error({
+          content: '错误信息:' + e,
+          duration: 5
+        })
+      })
+      axios.post('/case/findServiceProve', {
+        caseId: this.caseId
+      }).then(res => {
+        this.electronWarnList.bodyList = res.data.data === null ? {} : res.data.data
       }).catch(e => {
         this.$Message.error({
           content: '错误信息:' + e,
@@ -253,11 +273,11 @@ export default {
 <style lang="scss" scoped>
 @import '@/style/mixin';
 .sendInfo {
-  ._smsWarn {
-    padding-top: 60px;
+  ._smsWarn, ._emailProof, ._emailWarn {
+    // padding-top: 60px;
     padding-bottom: 60px;
   }
-  ._emailWarn ._top, ._smsWarn ._top {
+  ._emailWarn ._top, ._smsWarn ._top, ._emailProof ._top {
     @include backgroundLine(right, #1a2b58, #126eaf);
     @include borderRadius(5px);
     text-align: center;
@@ -266,7 +286,7 @@ export default {
     color: #fff;
     font-size: 20px;
   }
-  ._emailWarn ._mid, ._smsWarn ._mid {
+  ._emailWarn ._mid, ._smsWarn ._mid, ._emailProof ._mid {
     @include borderRadius(3px);
     @include boxShadow(0 1px 6px -1px #bbb);
     background: #fff;

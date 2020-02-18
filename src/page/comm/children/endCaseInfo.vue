@@ -11,10 +11,12 @@
 
 <script>
 import axios from 'axios'
+import {resMess} from '@/components/common/mixin.js'
 import endInfo from '@/page/comm/children/children/endInfo'
 
 export default {
   name: 'endCaseInfo',
+  mixins: [resMess],
   props: ['caseId', 'caseState'],
   components: { endInfo },
   data () {
@@ -34,10 +36,7 @@ export default {
       }).then(res => {
         this.endCaseD = res.data.data
       }).catch(e => {
-        this.$Message.error({
-          content: '错误信息:' + e,
-          duration: 5
-        })
+        this.resMessage('error', '错误信息:' + e + ' 稍后再试')
       })
     }
   }

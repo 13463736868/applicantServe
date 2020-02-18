@@ -59,7 +59,7 @@
               <Row>
                 <Col class="tr" span="5"><span class="mr10">授权委托书 :</span></Col>
                 <Col span="18">
-                  <span v-if="infoData.authorizeBook !== undefined && infoData.authorizeBook !== null" @click="seeFile(infoData.authorizeBook.filepath)" class="_autBook" v-text="infoData.authorizeBook.filename"></span>
+                  <span v-if="infoData.authorizeBook !== undefined && infoData.authorizeBook !== null" @click="seeFile(infoData.authorizeBook.filepath)" class="_autBook" v-text="infoData.authorizeBook.filename.length > 45 ? infoData.authorizeBook.filename.substr(0, 40) + '...' : infoData.authorizeBook.filename" :title="infoData.authorizeBook.filename"></span>
                 </Col>
               </Row>
             </p>
