@@ -21,6 +21,9 @@
                 <DropdownItem name="resMeet" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</DropdownItem>
               </DropdownMenu>
             </Dropdown>
+            <Badge class="hand" :count="badgeNum">
+              <Icon @click="listNotice(badgeObj)" color="white" :class="badgeNum !== 0 ? 'spin-icon-bange' : ''" type="md-notifications" size="22"></Icon>
+            </Badge>
           </Col>
           <Col span="6">
             <Icon class="hand" type="md-close" size="26" color="#ffffff" @click="loginOut"></Icon>
@@ -63,11 +66,15 @@ export default {
       },
       img: {
         logoUrl: require('../../static/images/logo.png')
-      }
+      },
+      sendTimeOut: null,
+      badgeNum: 0,
+      badgeObj: []
     }
   },
   created () {
     this.setUserName()
+    this.getNotice()
   },
   computed: {
     ...mapGetters([
@@ -80,6 +87,45 @@ export default {
       'setMenu',
       'setRouter'
     ]),
+    listNotice (list) {
+      this.$Notice.config({
+        top: 80
+      })
+      if (list.length !== 0) {
+        list.forEach(a => {
+          this.$Notice.close(a)
+          this.$Notice.info({
+            name: a,
+            title: '通知',
+            desc: a,
+            duration: 0,
+            top: 80
+          })
+        })
+      }
+    },
+    getNotice () {
+      let _this = this
+      this.sendTimeOut = setTimeout(() => {
+        clearTimeout(_this.sendTimeOut)
+        _this.getNotice()
+        axios.post('/caseStatistics/messageList').then(res => {
+          if (res.data.data !== null) {
+            this.badgeNum = res.data.data.length
+            this.badgeObj = res.data.data
+          }
+          clearTimeout(_this.sendTimeOut)
+          _this.getNotice()
+        }).catch(e => {
+          console.log(e)
+          clearTimeout(_this.sendTimeOut)
+          _this.$Message.error({
+            content: '错误信息:' + e + ' 稍后再试',
+            duration: 5
+          })
+        })
+      }, 5000)
+    },
     loginOut () {
       this.alertShowOut = true
     },
@@ -191,6 +237,14 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/style/mixin';
+.spin-icon-bange{
+  animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from { opacity: 1;}
+  30%  { opacity: 0.7;}
+  to   { opacity: 0;}
+}
 ._header {
   @include wh(100%, 13rem);
   @include mw(1180px);
