@@ -372,7 +372,7 @@ export default {
           if ((type === 'resBatchFiling' && this.search.batchCondition !== '4') || (type === 'resResubmitBatch' && this.search.batchCondition !== '7')) {
             this.resMessage('error', type === 'resBatchFiling' ? '请先条件选择 \'批量立案\'' : '请先条件选择 \'批量重新提交\'')
           } else if (this.alertShow.ids.length === 0) {
-            this.resMessage('error', '请先选择一个案件')
+            this.resMessage('error', '请先勾选一个案件')
           } else {
             this.alertObj.batchFilingData = {
               caseIds: this.alertShow.idsList,
@@ -385,7 +385,7 @@ export default {
           if (this.search.batchCondition !== '3') {
             this.resMessage('error', '请先条件选择 \'批量保存审批表\'')
           } else if (this.alertShow.ids.length === 0) {
-            this.resMessage('error', '请先选择一个案件')
+            this.resMessage('error', '请先勾选一个案件')
           } else {
             this.alertObj.batchSaveForm = true
           }
@@ -394,7 +394,7 @@ export default {
           if (this.search.batchCondition !== '5') {
             this.resMessage('error', '请先条件选择 \'批量退回\'')
           } else if (this.alertShow.ids.length === 0) {
-            this.resMessage('error', '请先选择一个案件')
+            this.resMessage('error', '请先勾选一个案件')
           } else {
             this.alertObj.rejectBatch = true
           }
@@ -404,7 +404,7 @@ export default {
           if ((type === 'resPassTypeBatch' && this.search.batchCondition !== '2') || (type === 'resUpdateTypeBatch' && this.search.batchCondition !== '6')) {
             this.resMessage('error', type === 'resPassTypeBatch' ? '请先条件选择 \'批量确认案由\'' : '请先条件选择 \'批量修订案由\'')
           } else if (this.alertShow.ids.length === 0) {
-            this.resMessage('error', '请先选择一个案件')
+            this.resMessage('error', '请先勾选一个案件')
           } else {
             this.alertObj.updateTypeBatch = true
           }
