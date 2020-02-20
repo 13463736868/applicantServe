@@ -7,7 +7,7 @@ import {removeToken} from '@/cookies'
 Vue.config.productionTip = process.env.NODE_ENV === 'production'
 // 在axios拦截器中判断当前环境，来决定是否增加前缀
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8'
-axios.defaults.timeout = 20000
+axios.defaults.timeout = 100000
 axios.interceptors.request.use((config) => {
   if (config.method === 'post') {
     config.data = qs.stringify(config.data)
