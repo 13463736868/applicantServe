@@ -117,7 +117,6 @@ export default {
           clearTimeout(_this.sendTimeOut)
           _this.getNotice()
         }).catch(e => {
-          console.log(e)
           clearTimeout(_this.sendTimeOut)
           _this.$Message.error({
             content: '错误信息:' + e + ' 稍后再试',
