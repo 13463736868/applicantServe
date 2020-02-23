@@ -13,7 +13,13 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                <!-- <Button class="mr5" type="primary" size="small" @click="resAction('inquire', row)" :style="{display: resBtnDis('TRANRECOE_PROCESS')}">进度查询</Button> -->
+                <!-- <Button class="mr5" type="primary" size="small" @click="resAction('seeFile', row)" :style="{display: resBtnDis('TRANRECOE_FILELIST')}">查看文件</Button> -->
+                <Button class="mr5" type="primary" size="small" @click="resAction('seeFile', row)">查看文件</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -25,19 +31,23 @@
         </Row>
       </div>
     </div>
+    <res-see-file v-if="alertObj.seeFile" :resCaseId="alertObj.resCaseId" @alertConfirm="alertSave('seeFile')" @alertCancel="alertCanc('seeFile')"></res-see-file>
+    <res-inquire-alert v-if="alertObj.inquire" :resCaseId="alertObj.resCaseId" @alertConfirm="alertSave('inquire')" @alertCancel="alertCanc('inquire')"></res-inquire-alert>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import spinComp from '@/components/common/spin'
-import { resPage } from '@/components/common/mixin.js'
+import {resBtn, resPage} from '@/components/common/mixin.js'
 import { caseInfo } from '@/config/common.js'
+import spinComp from '@/components/common/spin'
+import resSeeFile from '@/page/filingSecr/tranReco/children/resSeeFile'
+import resInquireAlert from '@/page/filingSecr/tranReco/children/resInquireAlert'
 
 export default {
   name: 'tran_reco_e',
-  mixins: [resPage],
-  components: { spinComp },
+  mixins: [resBtn, resPage],
+  components: { spinComp, resSeeFile, resInquireAlert },
   data () {
     return {
       spinShow: false,
@@ -107,19 +117,35 @@ export default {
             key: 'acctime',
             tooltip: 'true',
             align: 'center'
+          },
+          {
+            title: '操作',
+            key: 'id',
+            align: 'center',
+            minWidth: 80,
+            slot: 'action'
           }
         ],
-        bodyList: []
+        bodyList: [
+          {
+            caseid: 200000007
+          }
+        ]
       },
       pageObj: {
         total: 0,
         pageNum: 1,
         pageSize: 10
+      },
+      alertObj: {
+        inquire: false,
+        resCaseId: null,
+        seeFile: false
       }
     }
   },
   created () {
-    this.resCaseList()
+    // this.resCaseList()
   },
   methods: {
     resCaseList () {
@@ -148,6 +174,43 @@ export default {
     reschangePage (page) {
       this.pageObj.pageNum = page
       this.resCaseList()
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.resCaseId = data.caseid
+          this.alertObj.inquire = true
+          break
+        case 'seeFile':
+          this.alertObj.resCaseId = data.caseid
+          this.alertObj.seeFile = true
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.inquire = false
+          this.alertObj.resCaseId = null
+          this.resSearch()
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.resCaseId = null
+          break
+      }
+    },
+    alertCanc (type) {
+      switch (type) {
+        case 'inquire':
+          this.alertObj.inquire = false
+          this.alertObj.resCaseId = null
+          break
+        case 'seeFile':
+          this.alertObj.seeFile = false
+          this.alertObj.resCaseId = null
+          break
+      }
     },
     goCaseInfo (index) {
       let obj = {}
