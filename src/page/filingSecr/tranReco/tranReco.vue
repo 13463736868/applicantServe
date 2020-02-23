@@ -126,11 +126,7 @@ export default {
             slot: 'action'
           }
         ],
-        bodyList: [
-          {
-            caseid: 200000007
-          }
-        ]
+        bodyList: []
       },
       pageObj: {
         total: 0,
@@ -145,7 +141,7 @@ export default {
     }
   },
   created () {
-    // this.resCaseList()
+    this.resCaseList()
   },
   methods: {
     resCaseList () {
