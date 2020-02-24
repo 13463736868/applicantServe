@@ -590,7 +590,7 @@ export default {
           this.alertShow.reas = true
           break
         case 'uploadQues':
-          this.alertObj.caseId = data.id
+          this.alertObj.caseId = [data.id]
           this.alertObj.uploadQues = true
           break
         case 'resEditData':

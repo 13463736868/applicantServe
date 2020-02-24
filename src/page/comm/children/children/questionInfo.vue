@@ -6,6 +6,16 @@
           <Col span="22" offset="1">
             <p>
               <Row>
+                <Col class="tr" span="3"><span class="mr10">提交人 :</span></Col>
+                <Col span="20">
+                  <span v-if="[1, '1'].indexOf(infoData.clientEvidenceId) !== -1">申请人</span>
+                  <span v-if="[2, '2'].indexOf(infoData.clientEvidenceId) !== -1">被申请人</span>
+                  <span v-if="[3, '3'].indexOf(infoData.clientEvidenceId) !== -1">仲裁委</span>
+                </Col>
+              </Row>
+            </p>
+            <p>
+              <Row>
                 <Col class="tr" span="3"><span class="mr10">文件名称 :</span></Col>
                 <Col span="20">
                   <span v-text="infoData.fileName"></span>
