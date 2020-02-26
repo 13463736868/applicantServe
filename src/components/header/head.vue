@@ -21,9 +21,11 @@
                 <DropdownItem name="resMeet" v-if="userName !== 'admin' && userName !== 'modelmanger'">视频会议</DropdownItem>
               </DropdownMenu>
             </Dropdown>
-            <Badge class="hand" :count="badgeNum">
-              <Icon @click="listNotice(badgeObj)" color="white" :class="badgeNum !== 0 ? 'spin-icon-bange' : ''" type="md-notifications" size="22"></Icon>
-            </Badge>
+            <span @click="listNotice(badgeObj)">
+              <Badge class="hand" :count="badgeNum">
+                <Icon color="white" :class="badgeNum !== 0 ? 'spin-icon-bange' : ''" type="md-notifications" size="22"></Icon>
+              </Badge>
+            </span>
           </Col>
           <Col span="6">
             <Icon class="hand" type="md-close" size="26" color="#ffffff" @click="loginOut"></Icon>

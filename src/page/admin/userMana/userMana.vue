@@ -65,14 +65,14 @@
             <Input v-model="addData.phone"></Input>
           </Col>
         </Row>
-        <!-- <Row class="_labelFor">
+        <Row class="_labelFor">
           <Col span="6" offset="1">
             <p><span class="_span">*</span><b>邮箱：</b></p>
           </Col>
           <Col span="16">
             <Input v-model="addData.email"></Input>
           </Col>
-        </Row> -->
+        </Row>
         <Row class="_labelFor">
           <Col span="6" offset="1">
             <p><span class="_span">*</span><b>用户状态：</b></p>
@@ -517,17 +517,16 @@ export default {
           content: '联系方式格式不正确',
           duration: 5
         })
-        // if (this.addData.email === '') {
-        //   this.$Message.warning({
-        //     content: '邮箱地址不能为空',
-        //     duration: 5
-        //   })
-        // } else if (!setRegExp(this.addData.email, 'email')) {
-        //   this.$Message.warning({
-        //     content: '邮箱地址格式不正确',
-        //     duration: 5
-        //   })
-        // } else
+      } else if (this.addData.email === '') {
+        this.$Message.warning({
+          content: '邮箱地址不能为空',
+          duration: 5
+        })
+      } else if (!setRegExp(this.addData.email, 'email')) {
+        this.$Message.warning({
+          content: '邮箱地址格式不正确',
+          duration: 5
+        })
       } else if (this.addData.state !== 1 && this.addData.state !== 2) {
         this.$Message.warning({
           content: '请选择用户状态',
