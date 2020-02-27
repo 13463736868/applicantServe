@@ -325,7 +325,7 @@ export default {
         this.dataObj.acceAB = null
       } else if (!setRegExp(this.dataObj.acceAA, 'money')) {
         this.emObj.status = 1
-        this.emObj.text = '请输入正确金额格式 例: 10.00 或 10;范围(0~9999999999)'
+        this.emObj.text = '请输入正确金额格式 例: 10.00 或 10;范围(0~9999999)'
         this.dataObj.acceAB = null
       } else if (this.dataObj.acceAA === '0' || this.dataObj.acceAA === '0.0' || this.dataObj.acceAA === '0.00') {
         this.emObj.status = 1

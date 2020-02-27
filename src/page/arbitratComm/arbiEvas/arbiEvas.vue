@@ -11,6 +11,7 @@
                 <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '1'" @click="resAction('resCancEvas', row)">退回</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_NOPASS')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '0'" @click="resAction('resCancEvasS', row)">退回</Button>
                 <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '2'" @click="resAction('resCancEvas', row)">重新生成文书</Button>
+                <Button :style="{display: resBtnDis('ARBIEVAS_REGEN')}" class="mr5" type="primary" size="small" v-if="row.showButtonState === '7'" @click="resAction('resCancEvasC', row)">重新生成文书</Button>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '3'">文书审核中</span>
                 <span style="color: #2d8cf0" type="text" size="small" v-if="row.showButtonState === '4'">文书审核通过</span>
               </template>
@@ -512,6 +513,24 @@ export default {
             avoidRequestId: data.avoidRequestId,
             avoidState: 2,
             partyType: data.partyType
+          }).then(res => {
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+        case 'resCancEvasC':
+          axios.post('/batchCaseDocument/decisionDocument', {
+            businessId: data.avoidRequestId,
+            documentType: 16,
+            caseId: data.id
           }).then(res => {
             this.$Message.success({
               content: '操作成功',

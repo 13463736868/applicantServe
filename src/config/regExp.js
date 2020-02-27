@@ -135,7 +135,7 @@ export default function (val, type) {
       return false
     }
   } else if (type === 'money') {
-    let reg = new RegExp('^(([0-9]|([1-9][0-9]{0,9}))((\\.[0-9]{1,2})?))$')
+    let reg = new RegExp('^(([0-9]|([1-9][0-9]{0,6}))((\\.[0-9]{1,2})?))$')
     if (reg.test(val)) {
       return true
     } else {
