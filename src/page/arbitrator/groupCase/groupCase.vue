@@ -52,7 +52,7 @@
                   <Button :style="{display: resBtnDis('GROUPCASE_REGEN')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '6'" @click="resEndCase('resEndCase', row)">重新生成文书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REGENWITHDRAWDOC')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '7'" @click="resCancCase('resCancCase', row)">重新生成撤案书</Button>
                   <Button :style="{display: resBtnDis('GROUPCASE_REENDCASE')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '10'" @click="resEndCase('resEndCase', row)">重新起草文书</Button>
-                  <Button :style="{display: resBtnDis('GROUPCASE_AVOID')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '11'" @click="resEndCase('resAvoid', row)">请求回避</Button>
+                  <Button :style="{display: resBtnDis('GROUPCASE_AVOID')}" class="mr5" type="primary" size="small" v-if="row.endCasePatten === '11' && !row.avoidancStatus" @click="resEndCase('resAvoid', row)">请求回避</Button>
                 </div>
                 <div v-else="">
                   <span style="color: #2d8cf0" type="text" size="small">{{row.endCasePatten}}</span>
