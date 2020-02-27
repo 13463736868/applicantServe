@@ -257,7 +257,7 @@ export default {
         id: this.alertShow.id,
         state: this.alertShow.cancType
       }).then(res => {
-        this.resSearch()
+        this.resPayList()
         this.$Message.success({
           content: '操作成功',
           duration: 2

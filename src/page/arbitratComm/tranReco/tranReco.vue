@@ -192,12 +192,12 @@ export default {
     },
     resSearch () {
       if ((this.caseFeeStart !== null && this.caseFeeStart !== '') && (this.caseFeeEnd !== null && this.caseFeeEnd !== '')) {
-        if (!setRegExp(this.caseFeeStart, 'money')) {
+        if (!setRegExp(this.caseFeeStart, 'intNum')) {
           this.$Message.error({
             content: '请正确填写起始仲裁费格式',
             duration: 5
           })
-        } else if (!setRegExp(this.caseFeeEnd, 'money')) {
+        } else if (!setRegExp(this.caseFeeEnd, 'intNum')) {
           this.$Message.error({
             content: '请正确填写结束仲裁费格式',
             duration: 5

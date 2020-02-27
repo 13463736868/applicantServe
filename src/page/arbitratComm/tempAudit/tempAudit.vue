@@ -245,7 +245,7 @@ export default {
       })
     },
     resSearch () {
-      this.pageObj.pageNum = 1
+      // this.pageObj.pageNum = 1
       this.resCaseList()
     },
     reschangePage (page) {

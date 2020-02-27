@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">搜索</label>
         </Col>
         <Col span="8">
-          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
+          <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch('pageNum1')" @keyup.enter.native="resSearch('pageNum1')" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
         <Col span="10">
           &nbsp;
@@ -670,11 +670,13 @@ export default {
         })
       })
     },
-    resSearch () {
+    resSearch (type) {
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
+      if (type === 'pageNum1') {
+        this.pageObj.pageNum = 1
+      }
       this.resCaseList()
     },
     reschangePage (page) {
@@ -1162,7 +1164,7 @@ export default {
       switch (type) {
         case 'resEndCase':
           this.alertObj.resEndCase = false
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }

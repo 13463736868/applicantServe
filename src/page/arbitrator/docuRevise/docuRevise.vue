@@ -511,19 +511,19 @@ export default {
           this.alertShow.editor = false
           this.alertShow.caseId = null
           this.alertShow.docuType = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resSubmit':
           this.alertObj.resSubmit = false
           this.alertObj.resSubmitData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resUploadDoc':
           this.alertObj.resUploadDoc = false
           this.alertObj.resUploadDocData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }

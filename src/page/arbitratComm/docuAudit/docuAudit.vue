@@ -336,7 +336,7 @@ export default {
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
+      // this.pageObj.pageNum = 1
       this.resCaseList()
     },
     reschangePage (page) {
@@ -584,7 +584,7 @@ export default {
           this.alertShow.editor = false
           this.alertShow.caseId = null
           this.alertShow.docuType = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }
