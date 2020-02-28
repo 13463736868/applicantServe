@@ -14,10 +14,10 @@
         </Col>
         <Col span="3">
           <Select v-model="search.batchCondition" @on-change="resSearch">
-            <Option value="all" key="all">全部</Option>
-            <Option value="1" key="1">待撤回 (未立案案件)</Option>
-            <Option value="4" key="4">待撤回 (已立案未组庭案件)</Option>
-            <Option value="5" key="5">待撤回 (已组庭案件)</Option>
+            <Option v-if="usersInfo.roleCode === 'ROLE_LAMS'" value="all" key="all">全部</Option>
+            <Option v-if="usersInfo.roleCode === 'ROLE_LAMS'" value="1" key="1">待撤回 (未立案案件)</Option>
+            <Option v-if="usersInfo.roleCode === 'ROLE_LAMS'" value="4" key="4">待撤回 (已立案未组庭案件)</Option>
+            <Option v-if="usersInfo.roleCode === 'ROLE_BAMS'" value="5" key="5">待撤回 (已组庭案件)</Option>
           </Select>
         </Col>
         <Col span="11">
@@ -55,6 +55,7 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertWithdrawInfo from '@/page/arbitratSecr/withdrawList/children/alertWithdrawInfo'
 import {resBtn, resMess} from '@/components/common/mixin.js'
@@ -194,6 +195,14 @@ export default {
   },
   created () {
     this.resCaseList()
+    if (this.usersInfo) {
+      this.search.batchCondition = this.usersInfo.roleCode === 'ROLE_BAMS' ? '5' : 'all'
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'usersInfo'
+    ])
   },
   methods: {
     resCaseList () {
