@@ -29,7 +29,7 @@
                     </Col>
                   </Row>
                   <Row class="pt10">
-                    <Col class="_label" span="11" offset="2" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
+                    <Col class="_label" span="11" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
                       <p>擅长领域：</p>
                       <p v-text="dataObj.sign"></p>
                     </Col>
