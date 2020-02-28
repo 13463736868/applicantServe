@@ -14,10 +14,6 @@
                       <p v-text="dataObj.loginname"></p>
                     </Col>
                     <Col class="_label" span="11" offset="2"  v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
-                      <p>擅长领域：</p>
-                      <p v-text="dataObj.sign"></p>
-                    </Col>
-                    <Col class="_label" span="11" offset="2">
                       <p>邮箱：</p>
                       <p v-text="dataObj.email"></p>
                     </Col>
@@ -30,6 +26,12 @@
                     <Col class="_label" span="11" offset="2">
                       <p>联系方式：</p>
                       <p v-text="dataObj.phone"></p>
+                    </Col>
+                  </Row>
+                  <Row class="pt10">
+                    <Col class="_label" span="11" offset="2" v-if="dataObj !== null && dataObj.role !== null && dataObj.role.roleCode === 'ROLE_ZCY'">
+                      <p>擅长领域：</p>
+                      <p v-text="dataObj.sign"></p>
                     </Col>
                   </Row>
                 </Col>
