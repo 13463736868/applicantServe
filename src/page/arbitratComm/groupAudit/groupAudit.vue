@@ -234,7 +234,7 @@ export default {
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
-      this.pageObj.pageNum = 1
+      // this.pageObj.pageNum = 1
       this.resCaseList()
     },
     renderAllSele (h, params) {
@@ -417,7 +417,7 @@ export default {
         case 'groupForm':
           this.formObj.filing = false
           this.formObj.caseId = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'groupPass':
@@ -428,7 +428,7 @@ export default {
         case 'resPass':
           this.alertObj.pass = false
           this.alertObj.passData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resRevise':
