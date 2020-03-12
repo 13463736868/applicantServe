@@ -484,13 +484,13 @@ export default {
           this.alertShow.editor = false
           this.alertShow.caseId = null
           this.alertShow.docuType = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resService':
           this.alertShow.sendService = false
           this.alertShow.serviceData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }

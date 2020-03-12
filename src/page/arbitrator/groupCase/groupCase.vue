@@ -682,7 +682,7 @@ export default {
         case 'uploadQues':
           this.alertObj.uploadQues = false
           this.alertObj.caseId = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'reve':
@@ -702,19 +702,19 @@ export default {
           break
         case 'resEndCase':
           this.alertObj.resEndCase = false
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resClose':
           this.alertShow.resClose = false
           this.alertShow.closeData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
         case 'resErvation':
           this.alertShow.resErvation = false
           this.alertShow.ervationData = null
-          this.pageObj.pageNum = 1
+          // this.pageObj.pageNum = 1
           this.resCaseList()
           break
       }
