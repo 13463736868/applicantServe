@@ -29,7 +29,7 @@
               <template slot-scope="{ row, index }" slot="action">
                 <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PREVIWDOC')}" @click="resAction('resPreviwdoc', row)">预览文书</Button>
                 <Button class="mr5" type="primary" size="small" v-if="row.isServed === null" :style="{display: resBtnDis('DOCUAUDIT_SERVICE')}" @click="resAction('resService', row)">文书送达</Button>
-                <div v-if="row.caseDocuemntApproveState === null || row.caseDocuemntApproveState === 3">
+                <div v-if="row.auditBtn">
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_PASS')}" @click="resSaveDocu(index)">通过</Button>
                   <Button class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_NOPASS')}" @click="resCancDocu(index)">驳回</Button>
                   <Button v-if="row.source === 1" class="mr5" type="primary" size="small" :style="{display: resBtnDis('DOCUAUDIT_EDIT')}" @click="resEditDocu(index)">修改</Button>
