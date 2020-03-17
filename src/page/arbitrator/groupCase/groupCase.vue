@@ -11,8 +11,7 @@
         </Col>
         <Col span="16">
           <div class="tr pr20">
-            <Button class="ml20" type="primary" @click="resAction('resUploadBatch', null)">批量上传文书</Button>
-            <!-- <Button class="ml20" type="primary" @click="resAction('resUploadBatch', row)" :style="{display: resBtnDis('GROUPCASE_BATCHUPLOAD')}">批量上传文书</Button> -->
+            <Button class="ml20" type="primary" @click="resAction('resUploadBatch', null)" :style="{display: resBtnDis('GROUPCASE_BATCHUPLOAD')}">批量上传文书</Button>
             <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
             <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
             <Button class="ml20" type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量闭庭</Button>

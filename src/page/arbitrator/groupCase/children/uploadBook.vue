@@ -28,7 +28,7 @@
               :with-credentials="true"
               :show-upload-list="false"
               :format="fileType"
-              :max-size="10240"
+              :max-size="204800"
               :data="resData"
               :on-format-error="resFormError"
               :on-exceeded-size="resSzieError"
