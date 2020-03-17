@@ -174,7 +174,7 @@ export default {
             align: 'center',
             render: (h, params) => {
               return h('span', {
-              }, params.row.caseDocuemntApproveState === 1 ? '通过' : (params.row.caseDocuemntApproveState === 2 ? '驳回' : (params.row.caseDocuemntApproveState === 3 ? '未审核' : '')))
+              }, params.row.caseDocuemntApproveState === 1 ? '通过' : (params.row.caseDocuemntApproveState === 2 ? '驳回' : (params.row.caseDocuemntApproveState === 3 ? '未审核' : (params.row.caseDocuemntApproveState === 5 ? '审核中' : ''))))
             }
           },
           {
