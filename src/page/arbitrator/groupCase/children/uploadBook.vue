@@ -96,7 +96,7 @@ export default {
     resSzieError (file) {
       this.spinShow = false
       this.$Message.error({
-        content: '文件不能超过10MB',
+        content: '文件不能超过200MB',
         duration: 5
       })
     },
