@@ -11,6 +11,8 @@
         </Col>
         <Col span="16">
           <div class="tr pr20">
+            <Button class="ml20" type="primary" @click="resAction('resUploadBatch', null)">批量上传文书</Button>
+            <!-- <Button class="ml20" type="primary" @click="resAction('resUploadBatch', row)" :style="{display: resBtnDis('GROUPCASE_BATCHUPLOAD')}">批量上传文书</Button> -->
             <Button class="ml20" type="primary" @click="resAction('resBatchEdit', null)" :style="{display: resBtnDis('GROUPCASE_BATCH_DOWNLOAD')}">批量下载</Button>
             <Button class="ml20" type="primary" @click="resAction('resFind', null)" :style="{display: resBtnDis('GROUPCASE_QUERY')}">条件搜索</Button>
             <Button class="ml20" type="primary" @click="resEnds" :style="{display: resBtnDis('GROUPCASE_BATCHEND')}">批量闭庭</Button>
@@ -78,6 +80,7 @@
     <upload-ques-alert v-if="alertObj.uploadQues" :resCaseId="alertObj.caseId" @alertConfirm="alertSave('uploadQues')" @alertCancel="alertCanc('uploadQues')"></upload-ques-alert>
     <res-ervation v-if="alertShow.resErvation" :resErvationData="alertShow.ervationData"  @alertConfirm="alertSave('resErvation')" @alertCancel="alertCanc('resErvation')"></res-ervation>
     <res-close v-if="alertShow.resClose" :resCloseData="alertShow.closeData" @alertConfirm="alertSave('resClose')" @alertCancel="alertCanc('resClose')"></res-close>
+    <res-upload-batch v-if="alertShow.resUploadBatch" @alertConfirm="alertSave('resUploadBatch')" @alertCancel="alertCanc('resUploadBatch')"></res-upload-batch>
   </div>
 </template>
 
@@ -96,6 +99,7 @@ import resAddeDocu from '@/page/arbitrator/groupCase/children/resAddeDocu'
 import resEndDocu from '@/page/arbitrator/groupCase/children/resEndDocu'
 import resErvation from '@/page/arbitrator/groupCase/children/resErvation'
 import resClose from '@/page/arbitrator/groupCase/children/resClose'
+import resUploadBatch from '@/page/arbitrator/groupCase/children/resUploadBatch'
 import alertEditor from '@/components/common/alertEditor'
 import { caseInfo } from '@/config/common.js'
 import setRegExp from '@/config/regExp.js'
@@ -103,7 +107,7 @@ import setRegExp from '@/config/regExp.js'
 export default {
   name: 'group_case',
   mixins: [resBtn, resPage, resMess],
-  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, editDataModal, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu, resErvation, resClose },
+  components: { spinComp, alertBtnInfo, alertEditor, uploadQuesAlert, editDataModal, resBatchEdit, resFind, resEndDocu, resReveDocu, resCancDocu, resAddeDocu, resErvation, resClose, resUploadBatch },
   data () {
     return {
       spinShow: false,
@@ -240,7 +244,8 @@ export default {
         resErvation: false,
         ervationData: null,
         resClose: false,
-        closeData: null
+        closeData: null,
+        resUploadBatch: false
       },
       alertObj: {
         uploadQues: false,
@@ -646,6 +651,9 @@ export default {
           this.alertShow.resClose = true
           this.alertShow.closeData = data
           break
+        case 'resUploadBatch':
+          this.alertShow.resUploadBatch = true
+          break
       }
     },
     alertSave (type, data) {
@@ -717,6 +725,10 @@ export default {
           // this.pageObj.pageNum = 1
           this.resCaseList()
           break
+        case 'resUploadBatch':
+          this.alertShow.resUploadBatch = false
+          this.resCaseList()
+          break
       }
     },
     alertCanc (type) {
@@ -781,6 +793,9 @@ export default {
         case 'resErvation':
           this.alertShow.resErvation = false
           this.alertShow.ervationData = null
+          break
+        case 'resUploadBatch':
+          this.alertShow.resUploadBatch = false
           break
       }
     }

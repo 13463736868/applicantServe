@@ -160,6 +160,10 @@ export default {
       this.resSee()
     } else if (this.userType === 2) {
       this.resSee()
+    } else {
+      this.$router.push({
+        path: '/idenCheck'
+      })
     }
   },
   computed: {
