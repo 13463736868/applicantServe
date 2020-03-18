@@ -53,6 +53,7 @@
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
     </alert-btn-info>
     <alert-btn-info :alertShow="alertShow.batch" @alertConfirm="batchSave" @alertCancel="alertCanc('docu')" alertTitle="操作">
+      <spin-comp :spinShow="alertShow.spinShow"></spin-comp>
       <p v-if="alertShow.state === 1">确定要通过吗？</p>
       <p class="mb10" v-if="alertShow.state === 2">确定要驳回吗？</p>
       <Input v-if="alertShow.state === 2" v-model.trim="alertShow.rejeReason" type="textarea" :autosize="{minRows: 3,maxRows: 10}" placeholder="请输入驳回原因..." />
@@ -194,6 +195,7 @@ export default {
         pageSize: 10
       },
       alertShow: {
+        spinShow: false,
         state: null,
         docu: false,
         id: null,
@@ -406,6 +408,8 @@ export default {
       }
     },
     resBatch (type) {
+      this.alertShow.state = type
+      this.alertShow.batch = true
       if (this.alertShow.ids.length === 0) {
         this.resMessage('error', '请先选择一个案件')
       } else {
@@ -438,6 +442,7 @@ export default {
           })
         }
       } else {
+        this.alertShow.spinShow = true
         this.alertShow.docu = false
         axios.post('/approve/caseDocumentBatch', {
           caseDocumentIds: JSON.stringify(this.alertShow.idsList),
