@@ -302,6 +302,16 @@ const routerMap = [
     component: r => require.ensure([], () => r(require('@/page/filingSecr/succCase/succCase.vue')))
   },
   {
+    path: '/archiveCase',
+    name: 'archiveCase',
+    meta: {
+      requireAuth: true,
+      title: '线下案件',
+      keepAlive: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCase.vue')))
+  },
+  {
     path: '/tranRecoE',
     name: 'tranRecoE',
     meta: {
@@ -464,6 +474,80 @@ const routerMap = [
         component: r => require.ensure([], () => r(require('@/page/comm/children/endCaseInfo.vue')), 'endCaseInfo')
       }
     ]
+  },
+  {
+    path: '/archiveCaseInfo',
+    meta: {
+      requireAuth: true,
+      keepAlive: true
+    },
+    component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/caseInfo.vue'))),
+    children: [
+      {
+        path: '',
+        redirect: '/archiveCaseInfo/basicInfoA'
+      },
+      {
+        path: 'basicInfoA',
+        name: 'basicInfoA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/basicInfo.vue')), 'basicInfoA')
+      },
+      {
+        path: 'proposerInfoA',
+        name: 'proposerInfoA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/proposerInfo.vue')), 'proposerInfoA')
+      },
+      {
+        path: 'respondentInfoA',
+        name: 'respondentInfoA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/respondentInfo.vue')), 'respondentInfoA')
+      },
+      {
+        path: 'claimItemA',
+        name: 'claimItemA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/claimItem.vue')), 'claimItemA')
+      },
+      {
+        path: 'evidencesInfoA',
+        name: 'evidencesInfoA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/evidencesInfo.vue')), 'evidencesInfoA')
+      },
+      {
+        path: 'endCaseInfoA',
+        name: 'endCaseInfoA',
+        meta: {
+          requireAuth: true,
+          title: '案件详情',
+          keepAlive: true
+        },
+        component: r => require.ensure([], () => r(require('@/page/filingSecr/archiveCase/archiveCaseInfo/children/endCaseInfo.vue')), 'endCaseInfoA')
+      }
+    ]
   }
 ]
 
@@ -471,7 +555,7 @@ export const getRouter = (obj) => {
   let _a = obj.menu
   let _r = []
   let _l = 0
-  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList')
+  _a.push('/onesInfo', '/caseInfo', '/idenInfo', '/paymentInfo', '/meetList', '/archiveCaseInfo')
   _r.push({
     path: '/',
     component: r => require.ensure([], () => r(require('@/components/mains/mains.vue'))),

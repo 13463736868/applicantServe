@@ -21,3 +21,15 @@ export const caseInfo = (obj) => {
     })
   }
 }
+
+export const archiveCaseInfo = (obj) => {
+  let loc = null
+  if (window.localStorage) {
+    loc = window.localStorage
+    loc.setItem('archCaseObj', JSON.stringify(obj))
+  }
+  store.commit('SET_ARCHCASEOBJ', obj)
+  router.push({
+    path: '/archiveCaseInfo/basicInfoA'
+  })
+}

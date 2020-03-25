@@ -23,6 +23,9 @@ export default {
   [types.SET_CASESTATE] (state, obj) {
     state.caseState = obj
   },
+  [types.SET_ARCHCASEOBJ] (state, obj) {
+    state.archCaseObj = obj
+  },
   [types.SET_IDENCHECKID] (state, obj) {
     state.idenCheckId = obj
   },

@@ -57,6 +57,14 @@ const beforeEach = (to, from, next) => {
           }
         }
       }
+      if (to.fullPath.indexOf('archiveCaseInfo') === -1) {
+        loc.removeItem('archCaseObj')
+        store.commit('SET_ARCHCASEOBJ', null)
+      } else {
+        if (store.state.archCaseObj === null) {
+          store.commit('SET_ARCHCASEOBJ', JSON.parse(loc.getItem('archCaseObj')))
+        }
+      }
       if (to.fullPath.indexOf('idenInfo') === -1) {
         loc.removeItem('idenCheckId')
         loc.removeItem('idenCheckType')

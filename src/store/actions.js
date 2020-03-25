@@ -21,6 +21,9 @@ export default {
   setCaseState ({commit, state}, obj) {
     commit('SET_CASESTATE', obj)
   },
+  setArchCaseObj ({commit, state}, obj) {
+    commit('SET_ARCHCASEOBJ', obj)
+  },
   setIdenCheckId ({commit, state}, obj) {
     commit('SET_IDENCHECKID', obj)
   },

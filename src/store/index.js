@@ -14,6 +14,7 @@ const state = {
   router: null,
   caseId: '',
   caseState: null,
+  archCaseObj: null,
   idenCheckId: null,
   idenCheckType: null,
   idenCheckState: null,
