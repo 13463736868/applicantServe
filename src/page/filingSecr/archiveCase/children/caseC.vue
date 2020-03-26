@@ -139,7 +139,7 @@ export default {
             align: 'center'
           },
           {
-            title: '争议金额',
+            title: '争议金额(元)',
             key: 'money',
             align: 'center'
           },

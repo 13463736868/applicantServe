@@ -85,7 +85,7 @@
         </Row>
         <Row>
           <Col span="4">
-            <p class="tr">总仲裁费：</p>
+            <p class="tr">总仲裁费(元)：</p>
           </Col>
           <Col span="18">
             <p v-text="dataBasic.cost"></p>
