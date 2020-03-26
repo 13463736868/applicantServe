@@ -31,6 +31,6 @@ export default {
 .nav_more {
   padding: 0 15px;
   height: 100%;
-  line-height: 4rem;
+  line-height: 2rem;
 }
 </style>

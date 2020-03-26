@@ -1,7 +1,7 @@
 <template>
   <div class="_header pr not_s" :style="style.bg">
     <div class="header_top clearfix">
-      <template v-if="roleCode === 'ROLE_ZCMS'">
+      <!-- <template v-if="roleCode === 'ROLE_ZCMS'">
         <res-dropdown v-for="item in resMenuObj[roleCode]" :key="item.id" :resTitle="item.title" :resMenu="item.obj"></res-dropdown>
         <ul class="nav fl" v-if="isRegister">
           <router-link v-for="item in resMenuDrop[roleCode].resDefault" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
@@ -20,7 +20,10 @@
         <ul class="nav fl" v-if="isRegister">
           <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
         </ul>
-      </template>
+      </template> -->
+      <ul class="nav fl" v-if="isRegister">
+        <router-link v-for="item in menu" :to="item.url" :key="item.id" tag="li" class="hand fl">{{item.text}}</router-link>
+      </ul>
       <!-- <Dropdown class="nav_more" v-if="menu.length > 9" @on-click="resToRoute">
         <span class="hand fcf">更多 </span><Icon class="hand" color="#ffffff" type="ios-arrow-down"></Icon>
         <DropdownMenu class="tl" slot="list">
@@ -256,7 +259,7 @@ export default {
   @include wh(100%, 13rem);
   @include mw(1180px);
   .header_top {
-    @include wh(90%, 4rem);
+    @include wh(90%, 2rem);
     @include mw(1180px);
     @include bc;
     .nav {
@@ -265,7 +268,7 @@ export default {
       li {
         padding: 0 15px;
         height: 100%;
-        line-height: 4rem;
+        line-height: 2rem;
         text-align: center;
         color: #fff;
       }
@@ -276,7 +279,7 @@ export default {
     .nav_more {
       padding: 0 15px;
       height: 100%;
-      line-height: 4rem;
+      line-height: 2rem;
     }
     .user {
       height: 100%;
