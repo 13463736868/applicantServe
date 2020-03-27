@@ -205,6 +205,11 @@ export default {
       this.resBaseItem()
     }
   },
+  watch: {
+    'caseState': function (val) {
+      this.resBaseItem()
+    }
+  },
   methods: {
     resBaseItem () {
       axios.post('/casesUnderLine/getCaseUnderLineDetailsByCaseId', {

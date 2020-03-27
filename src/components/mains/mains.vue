@@ -6,7 +6,7 @@
       </head-top>
     </div>
     <div class="mainCont">
-      <keep-alive exclude="archiveCaseInfo,case_info,payment_info,iden_info,ceshi_editor,alert_editor,iframe_alert">
+      <keep-alive exclude="archiveCase,archiveCaseInfo,case_info,payment_info,iden_info,ceshi_editor,alert_editor,iframe_alert">
         <router-view></router-view>
       </keep-alive>
     </div>

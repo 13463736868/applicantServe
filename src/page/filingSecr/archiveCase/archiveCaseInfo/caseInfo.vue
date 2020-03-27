@@ -16,6 +16,7 @@
         </Col>
         <Col span="4">
           <right-arbi :caseId="archCaseObj.caseId" :caseState="archCaseObj.state"></right-arbi>
+          <right-btn :caseId="archCaseObj.caseId" :caseState="archCaseObj.state"></right-btn>
         </Col>
       </Row>
     </div>
@@ -26,10 +27,11 @@
 import axios from 'axios'
 import { mapGetters } from 'vuex'
 import rightArbi from '@/page/filingSecr/archiveCase/archiveCaseInfo/children/rightArbi'
+import rightBtn from '@/page/filingSecr/archiveCase/archiveCaseInfo/children/rightBtn'
 
 export default {
   name: 'archiveCaseInfo',
-  components: { rightArbi },
+  components: { rightArbi, rightBtn },
   data () {
     return {
       menuClaim: [],

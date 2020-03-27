@@ -7,7 +7,7 @@
           <label class="lh32 f16 fc6 fr mr15">条件选择</label>
         </Col>
         <Col span="3">
-          <Select v-model="search.batchCondition" @on-change="resSearch">
+          <Select v-model="search.batchCondition" @on-change="resSearch(0)">
             <Option :value="0" :key="0">全部</Option>
             <Option :value="1" :key="1">指定仲裁员(速裁)</Option>
             <Option :value="4" :key="4">指定仲裁员(普裁)</Option>
@@ -230,7 +230,10 @@ export default {
       obj.state = this.caseList.bodyList[index].state
       caseInfo(obj)
     },
-    resSearch () {
+    resSearch (type) {
+      if (type === 0) {
+        this.pageObj.pageNum = 1
+      }
       this.search.requestName = ''
       this.search.caseType = ''
       this.alertCanc('clearIds')
