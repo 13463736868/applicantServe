@@ -302,7 +302,7 @@ export default {
           break
         case 'resPassBatch':
           if (this.search.state !== 2) {
-            this.resMessage('error', '请先条件选择 \'未审核\'')
+            this.resMessage('error', '请先条件选择 \'立案审核中\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -316,7 +316,7 @@ export default {
           break
         case 'resRejeBatch':
           if (this.search.state !== 2) {
-            this.resMessage('error', '请先条件选择 \'未审核\'')
+            this.resMessage('error', '请先条件选择 \'立案审核中\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -330,7 +330,7 @@ export default {
           break
         case 'resFilingBatch':
           if (this.search.state !== 1 && this.search.state !== 10) {
-            this.resMessage('error', '请先条件选择 \'待立案 或 审核未通过\'')
+            this.resMessage('error', '请先条件选择 \'立案待受理 或 立案审核驳回\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -344,7 +344,7 @@ export default {
           break
         case 'resRefuBatch':
           if (this.search.state !== 1 && this.search.state !== 10) {
-            this.resMessage('error', '请先条件选择 \'待立案 或 审核未通过\'')
+            this.resMessage('error', '请先条件选择 \'立案待受理 或 立案审核驳回\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {

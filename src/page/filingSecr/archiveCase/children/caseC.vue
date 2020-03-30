@@ -232,7 +232,7 @@ export default {
           break
         case 'resPassBatch':
           if (this.search.state !== 5) {
-            this.resMessage('error', '请先条件选择 \'未审核\'')
+            this.resMessage('error', '请先条件选择 \'结案审核中\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
@@ -246,7 +246,7 @@ export default {
           break
         case 'resRejeBatch':
           if (this.search.state !== 5) {
-            this.resMessage('error', '请先条件选择 \'未审核\'')
+            this.resMessage('error', '请先条件选择 \'结案审核中\'')
           } else if (this.alertObj.ids.length === 0) {
             this.resMessage('error', '请先选择一个案件')
           } else {
