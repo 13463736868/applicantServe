@@ -120,6 +120,13 @@
         </Row>
       </div>
     </div>
+    <div class="_reason" v-if="[10, 6, 4].indexOf(caseState) !== -1">
+      <div class="_top">驳回原因</div>
+      <div class="_mid" v-if="dataBasic !== null">
+        <p v-if="caseState === 4 || caseState === 10" v-text="dataBasic.decisionReason"></p>
+        <p v-if="caseState === 6" v-text="dataBasic.correctionsReason"></p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -249,11 +256,10 @@ export default {
     padding-top: 60px;
     padding-bottom: 60px;
   }
-  ._evidence {
-    // padding-top: 60px;
+  ._evidence, ._reason {
     padding-bottom: 60px;
   }
-  ._basic ._top, ._progress ._top, ._evidence ._top {
+  ._basic ._top, ._progress ._top, ._evidence ._top, ._reason ._top {
     @include backgroundLine(right, #1a2b58, #126eaf);
     @include borderRadius(5px);
     text-align: center;
@@ -262,7 +268,7 @@ export default {
     color: #fff;
     font-size: 20px;
   }
-  ._basic ._mid, ._progress ._mid, ._evidence ._mid {
+  ._basic ._mid, ._progress ._mid, ._evidence ._mid, ._reason ._mid {
     @include borderRadius(3px);
     @include boxShadow(0 1px 6px -1px #bbb);
     background: #fff;

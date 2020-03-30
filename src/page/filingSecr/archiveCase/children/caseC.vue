@@ -10,7 +10,7 @@
           <Input v-model="search.text" icon="ios-search" class="_search hand" @on-click="resSearch" @keyup.enter.native="resSearch" placeholder="案号 / 申请人 / 被申请人"></Input>
         </Col>
         <Col span="2">
-          <label class="lh32 f16 fc6 fr mr15">条件选择</label>
+          <label class="lh32 f16 fc6 fr mr15">案件状态</label>
         </Col>
         <Col span="3">
           <Select v-model="search.state" @on-change="resSearch">
