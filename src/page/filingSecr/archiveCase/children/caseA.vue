@@ -16,15 +16,15 @@
           <Select v-model="search.state" @on-change="resSearch">
             <Option :value="0" :key="0">全部</Option>
             <template v-if="roleCode === 'ROLE_ZCMS'">
-              <Option :value="1" :key="1">待立案</Option>
-              <Option :value="2" :key="2">立案待审核</Option>
-              <Option :value="10" :key="10">审核未通过</Option>
-              <Option :value="9" :key="9">撤回中</Option>
+              <Option :value="1" :key="1">立案待受理</Option>
+              <Option :value="2" :key="2">立案审核中</Option>
+              <Option :value="10" :key="10">立案审核驳回</Option>
+              <Option :value="9" :key="9">撤案中</Option>
             </template>
             <template v-if="roleCode === 'ROLE_YWZR'">
-              <Option :value="2" :key="2">未审核</Option>
-              <Option :value="3" :key="3">已通过</Option>
-              <Option :value="10" :key="10">已驳回</Option>
+              <Option :value="2" :key="2">立案审核中</Option>
+              <Option :value="3" :key="3">立案已受理</Option>
+              <Option :value="10" :key="10">立案审核驳回</Option>
             </template>
           </Select>
         </Col>

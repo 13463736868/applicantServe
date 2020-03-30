@@ -15,9 +15,9 @@
         <Col span="3">
           <Select v-model="search.state" @on-change="resSearch">
             <Option :value="0" :key="0">全部</Option>
-            <Option :value="5" :key="5">未审核</Option>
-            <Option :value="7" :key="7">已通过</Option>
-            <Option :value="6" :key="6">已驳回</Option>
+            <Option :value="5" :key="5">结案审核中</Option>
+            <Option :value="7" :key="7">结案通过</Option>
+            <Option :value="6" :key="6">结案驳回</Option>
           </Select>
         </Col>
         <Col span="12">
