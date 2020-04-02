@@ -112,7 +112,6 @@ import {resBtn, resPage} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import alertEditor from '@/page/arbitrator/stencilList/children/ceshiEditor'
-// import alertEditor from '@/page/arbitrator/stencilList/children/alertEditor'
 
 export default {
   name: 'stenci_list',

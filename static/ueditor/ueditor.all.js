@@ -11481,7 +11481,25 @@ UE.plugins['font'] = function () {
             { name: 'impact', val: 'impact,chicago'},
             { name: 'timesNewRoman', val: 'times new roman'}
         ],
-        'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36]
+        // 'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36]
+        'fontsize': [
+            {label: '初号', val: 56},
+            {label: '小初', val: 48},
+            {label: '一号', val: 35},
+            {label: '小一', val: 32},
+            {label: '二号', val: 29},
+            {label: '小二', val: 24},
+            {label: '三号', val: 21},
+            {label: '小三', val: 20},
+            {label: '四号', val: 19},
+            {label: '小四', val: 16},
+            {label: '五号', val: 14},
+            {label: '小五', val: 12},
+            {label: '六号', val: 10},
+            {label: '小六', val: 9},
+            {label: '七号', val: 8},
+            {label: '八号', val: 7}
+        ]
     });
 
     function mergeWithParent(node){
@@ -28229,9 +28247,10 @@ UE.ui = baidu.editor.ui = {};
         if (!list.length) return;
         var items = [];
         for (var i = 0; i < list.length; i++) {
-            var size = list[i] + 'px';
+            var size = list[i].val + 'px';
+            var sizename = list[i].label;
             items.push({
-                label:size,
+                label:sizename,
                 value:size,
                 theme:editor.options.theme,
                 renderLabelHtml:function () {
