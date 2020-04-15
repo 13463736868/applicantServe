@@ -3,7 +3,7 @@
     <Modal v-model="alertShow"
            :mask-closable="false"
            :closable="false"
-           width='960'
+           width='1300'
            class="not_s dialog">
       <div>
         <div style="border-bottom:1px solid #e8eaec;margin-bottom:10px">

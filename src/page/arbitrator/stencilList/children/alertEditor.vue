@@ -53,7 +53,7 @@
         </Row>
       </div>
       <div>
-        <div :id="randomId" :key="randomId" style="width:100%;"></div>
+        <div :id="randomId" :key="randomId" style="width:21cm;margin: 0 auto;"></div>
       </div>
       <div slot="footer">
         <Button size="large" @click="alertCancel">取消</Button>
