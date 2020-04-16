@@ -13,7 +13,13 @@
       <div class="_caseList clearfix">
         <Row>
           <Col span="24" class="pl20 pr20">
-            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList"></Table>
+            <Table stripe border align="center" :loading="caseList.loading" :columns="caseList.header" :data="caseList.bodyList">
+              <template slot-scope="{ row, index }" slot="action">
+                 <Button :style="{display: resBtnDis('CLOSECASE_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11' || row.requestState === '12'" @click="resFileList(index)">查看文件</Button>
+                 <Button :style="{display: resBtnDis('CLOSECASE_OFFLINEARR')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11'" @click="resSendDoc(index)">线下送达</Button>
+                 <Button v-if="row.closingServiceFlag === '0' && usersInfo.roleCode === 'ROLE_BAMSLEADER'" class="mr5" type="primary" size="small" @click="resAction('sendEmailDoc', row)">送达</Button>
+              </template>
+            </Table>
           </Col>
         </Row>
       </div>
@@ -50,21 +56,24 @@
         </Col>
       </Row>
     </alert-btn-info>
+    <alert-tip :alertShow="alertObj.alertSend" @alertCancel="alertCanc('sendEmailDoc')" @alertConfirm="alertSave('sendEmailDoc')" alertTitle="提示" alertText="确定要发送邮件，短信通知吗？（确认内容无误后点击确定）"></alert-tip>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 import {resBtn} from '@/components/common/mixin.js'
 import spinComp from '@/components/common/spin'
 import alertBtnInfo from '@/components/common/alertBtnInfo'
 import { caseInfo } from '@/config/common.js'
+import alertTip from '@/components/common/alertTip'
 import regi from '@/config/regiType.js'
 
 export default {
   name: 'close_case',
   mixins: [resBtn],
-  components: { spinComp, alertBtnInfo },
+  components: { spinComp, alertBtnInfo, alertTip },
   data () {
     return {
       dateDisa: {
@@ -155,62 +164,8 @@ export default {
             title: '操作',
             key: 'caseId',
             align: 'center',
-            render: (h, params) => {
-              let _state = params.row.requestState
-              if (_state === '11') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resFileList(params.index)
-                      }
-                    }
-                  }, '查看文件'),
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      marginTop: '5px',
-                      display: this.resBtnDis('CLOSECASE_OFFLINEARR')
-                    },
-                    on: {
-                      click: () => {
-                        this.resSendDoc(params.index)
-                      }
-                    }
-                  }, '线下送达')
-                ])
-              } else if (_state === '12') {
-                return h('div', [
-                  h('Button', {
-                    props: {
-                      type: 'primary',
-                      size: 'small'
-                    },
-                    style: {
-                      marginRight: '5px',
-                      display: this.resBtnDis('CLOSECASE_VIEWFILE')
-                    },
-                    on: {
-                      click: () => {
-                        this.resFileList(params.index)
-                      }
-                    }
-                  }, '查看文件')
-                ])
-              }
-            }
+            minWidth: 90,
+            slot: 'action'
           }
         ],
         bodyList: []
@@ -227,7 +182,9 @@ export default {
       },
       alertObj: {
         file: false,
-        fileIdArr: []
+        fileIdArr: [],
+        alertSend: false,
+        caseId: null
       },
       fileList: {
         header: [
@@ -289,6 +246,11 @@ export default {
         caseId: null
       }
     }
+  },
+  computed: {
+    ...mapGetters([
+      'usersInfo'
+    ])
   },
   created () {
     this.resCaseList()
@@ -445,6 +407,9 @@ export default {
         this.sendDocObj.show = false
         this.sendDocObj.servDate = ''
         this.sendDocObj.id = null
+      } else if (type === 'sendEmailDoc') {
+        this.alertObj.caseId = null
+        this.alertObj.alertSend = false
       }
     },
     seeDoc (path) {
@@ -456,6 +421,36 @@ export default {
     dowZip () {
       let _fileIds = this.alertObj.fileIdArr.join(',')
       window.open(regi.api + '/file/documentZip/download?fileIds=' + _fileIds, '_blank')
+    },
+    resAction (type, data) {
+      switch (type) {
+        case 'sendEmailDoc':
+          this.alertObj.alertSend = true
+          this.alertObj.caseId = data.caseId
+          break
+      }
+    },
+    alertSave (type) {
+      switch (type) {
+        case 'sendEmailDoc':
+          this.alertObj.alertSend = false
+          axios.post('/electronic/service/103', {
+            caseId: this.alertObj.caseId
+          }).then(res => {
+            this.alertCanc('sendDoc')
+            this.$Message.success({
+              content: '操作成功',
+              duration: 2
+            })
+            this.resCaseList()
+          }).catch(e => {
+            this.$Message.error({
+              content: '错误信息:' + e + ' 稍后再试',
+              duration: 5
+            })
+          })
+          break
+      }
     }
   }
 }
