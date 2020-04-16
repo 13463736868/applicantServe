@@ -728,7 +728,8 @@ export default {
       return bytes
     },
     alertConfirm (type) {
-      console.log(this.editor.getContent())
+      // this.editor.execCommand('pagebreak')
+      // console.log(this.editor.getContent())
       if (this.tempName === '') {
         this.$Message.error({
           content: '模版名称不能为空',
