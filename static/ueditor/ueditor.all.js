@@ -11498,7 +11498,23 @@ UE.plugins['font'] = function () {
             {label: '六号', val: 10},
             {label: '小六', val: 9},
             {label: '七号', val: 8},
-            {label: '八号', val: 7}
+            {label: '八号', val: 7},
+            {label: '8', val: 11},
+            {label: '9', val: 12},
+            {label: '10', val: 13},
+            {label: '11', val: 15},
+            {label: '12', val: 16},
+            {label: '14', val: 19},
+            {label: '16', val: 21},
+            {label: '18', val: 24},
+            {label: '20', val: 27},
+            {label: '22', val: 39},
+            {label: '24', val: 32},
+            {label: '26', val: 35},
+            {label: '28', val: 37},
+            {label: '36', val: 48},
+            {label: '48', val: 64},
+            {label: '72', val: 96}
         ]
     });
 
