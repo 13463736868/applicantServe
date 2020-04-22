@@ -6920,7 +6920,7 @@ var fillCharReg = new RegExp(domUtils.fillChar, 'g');
                     '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;}\n' +
                     //设置默认字体和字号
                     //font-family不能呢随便改，在safari下fillchar会有解析问题
-                    'body{margin:8px;font-family:SimSun;font-size:16px;}' +
+                    'body{margin:0px;padding:2.54cm 3.18cm!important;font-family:SimSun;font-size:16px;}' +
                     //设置段落间距
                     'p{margin:5px 0;}</style>' +
                     ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +
@@ -11481,7 +11481,43 @@ UE.plugins['font'] = function () {
             { name: 'impact', val: 'impact,chicago'},
             { name: 'timesNewRoman', val: 'times new roman'}
         ],
-        'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36]
+        // 'fontsize': [10, 11, 12, 14, 16, 18, 20, 24, 36]
+        'fontsize': [
+            {label: '初号', val: 56},
+            {label: '小初', val: 48},
+            {label: '一号', val: 35},
+            {label: '小一', val: 32},
+            {label: '二号', val: 29},
+            {label: '小二', val: 24},
+            {label: '三号', val: 21},
+            {label: '小三', val: 20},
+            {label: '四号', val: 19},
+            {label: '小四', val: 16},
+            {label: '五号', val: 14},
+            {label: '小五', val: 12},
+            {label: '六号', val: 10},
+            {label: '小六', val: 9},
+            {label: '七号', val: 8},
+            {label: '八号', val: 7},
+            {label: '8', val: 11},
+            {label: '9', val: 12},
+            {label: '10', val: 13},
+            {label: '10.5', val: 14},
+            {label: '11', val: 15},
+            {label: '12', val: 16},
+            {label: '14', val: 19},
+            {label: '16', val: 21},
+            {label: '18', val: 24},
+            {label: '20', val: 27},
+            {label: '22', val: 39},
+            {label: '24', val: 32},
+            {label: '26', val: 35},
+            {label: '26.5', val: 35.5},
+            {label: '28', val: 37},
+            {label: '36', val: 48},
+            {label: '48', val: 64},
+            {label: '72', val: 96}
+        ]
     });
 
     function mergeWithParent(node){
@@ -28229,9 +28265,10 @@ UE.ui = baidu.editor.ui = {};
         if (!list.length) return;
         var items = [];
         for (var i = 0; i < list.length; i++) {
-            var size = list[i] + 'px';
+            var size = list[i].val + 'px';
+            var sizename = list[i].label;
             items.push({
-                label:size,
+                label:sizename,
                 value:size,
                 theme:editor.options.theme,
                 renderLabelHtml:function () {
@@ -28761,7 +28798,7 @@ UE.ui = baidu.editor.ui = {};
             function setCount(editor,ui) {
                 editor.setOpt({
                     wordCount:true,
-                    maximumWords:10000,
+                    maximumWords:20000,
                     wordCountMsg:editor.options.wordCountMsg || editor.getLang("wordCountMsg"),
                     wordOverFlowMsg:editor.options.wordOverFlowMsg || editor.getLang("wordOverFlowMsg")
                 });

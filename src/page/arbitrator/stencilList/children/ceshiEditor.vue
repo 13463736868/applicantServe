@@ -3,7 +3,7 @@
     <Modal v-model="alertShow"
            :mask-closable="false"
            :closable="false"
-           width='960'
+           width='1300'
            class="not_s dialog">
       <div>
         <div style="border-bottom:1px solid #e8eaec;margin-bottom:10px">
@@ -171,7 +171,7 @@
             <div>
               <div :id="randomId"
                    :key="randomId"
-                   style="width:100%;"></div>
+                   style="width:21cm;"></div>
             </div>
           </div>
           </Col>
@@ -808,5 +808,11 @@ z-index: 10 !important;
 }
 .dialog .ivu-modal-wrap {
 z-index: 10 !important;
+}
+.dialog .edui-editor-iframeholder {
+  width: 21cm !important;
+}
+.dialog .edui-editor {
+  width: 21cm !important;
 }
 </style>
