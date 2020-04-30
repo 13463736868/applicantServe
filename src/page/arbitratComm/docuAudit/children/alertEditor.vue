@@ -8,7 +8,7 @@
       width='960'
       class="not_s">
       <div>
-        <div :id="randomId" :key="randomId" style="width:100%;"></div>
+        <div :id="randomId" :key="randomId" style="width:21cm;margin: 0 auto;"></div>
       </div>
       <div slot="footer">
         <Button size="large" @click="alertCancel">取消</Button>
@@ -21,7 +21,7 @@
 <script>
 import axios from 'axios'
 import '../../../static/ueditor/ueditor.config.js'
-import '../../../static/ueditor/ueditor.all.min.js'
+import '../../../static/ueditor/ueditor.all.js'
 import '../../../static/ueditor/lang/zh-cn/zh-cn.js'
 import '../../../static/ueditor/ueditor.parse.min.js'
 
