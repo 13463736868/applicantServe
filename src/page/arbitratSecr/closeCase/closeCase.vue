@@ -17,7 +17,7 @@
               <template slot-scope="{ row, index }" slot="action">
                  <Button :style="{display: resBtnDis('CLOSECASE_VIEWFILE')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11' || row.requestState === '12'" @click="resFileList(index)">查看文件</Button>
                  <Button :style="{display: resBtnDis('CLOSECASE_OFFLINEARR')}" class="mr5" type="primary" size="small" v-if="row.requestState === '11'" @click="resSendDoc(index)">线下送达</Button>
-                 <Button v-if="row.closingServiceFlag === '0' && usersInfo.roleCode === 'ROLE_BAMSLEADER'" class="mr5" type="primary" size="small" @click="resAction('sendEmailDoc', row)">送达</Button>
+                 <!-- <Button v-if="row.closingServiceFlag === '0' && usersInfo.roleCode === 'ROLE_BAMSLEADER'" class="mr5" type="primary" size="small" @click="resAction('sendEmailDoc', row)">送达</Button> -->
               </template>
             </Table>
           </Col>
